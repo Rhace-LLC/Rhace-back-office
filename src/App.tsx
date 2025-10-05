@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { LoadingProvider } from "./contexts/LoadingContext";
 import { ToastProvider } from "./contexts/ToastContext";
+import { Toaster } from "sonner";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             </LoadingProvider>
           </ToastProvider>
         </Provider>
+        <Toaster position="top-right" />
       </ErrorBoundary>
     </>
   );

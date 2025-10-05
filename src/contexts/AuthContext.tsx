@@ -9,8 +9,9 @@ interface AuthContextType {
   email: string;
   token: string;
   accountType: string;
-  isProvider: boolean;
-  isClient: boolean;
+  isWaiter: boolean;
+  isAdmin: boolean;
+  isKitchen: boolean;
 }
 
 const dummyLogin = (): void => {};
@@ -27,8 +28,9 @@ const defaultAuthContext: AuthContextType = {
   email: "",
   token: "",
   accountType: "",
-  isProvider: false,
-  isClient: false,
+  isAdmin: false,
+  isWaiter: false,
+  isKitchen: false,
 };
 
 // Create the context with initial values
@@ -85,8 +87,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   let isAuthenticated = false;
   const [email, setEmail] = useState(email_saved || "");
   const [accountType, setAccountType] = useState<string>("");
-  const isProvider = accountType === "Service Provider";
-  const isClient = accountType === "Client";
+  const isWaiter = accountType === "Admin";
+  const isKitchen = accountType === "Kitchen";
+  const isAdmin = accountType === "Admin";
   const [token, setToken] = useState(accessToken || "");
 
   if (token) {
@@ -148,8 +151,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         email,
         token,
         accountType,
-        isProvider,
-        isClient,
+        isAdmin,
+        isKitchen,
+        isWaiter,
       }}
     >
       {children}

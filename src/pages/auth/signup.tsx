@@ -4,7 +4,7 @@ export default function Signup() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
-        <h2 className="text-blue-600 mb-6 text-center text-2xl font-bold">
+        <h2 className="mb-6 text-center text-2xl font-bold text-blue-600">
           Create Account
         </h2>
 
@@ -12,32 +12,29 @@ export default function Signup() {
           <input
             type="text"
             placeholder="Full Name"
-            className="focus:ring-blue-500 w-full rounded-lg border p-3 focus:ring-2"
+            className="w-full rounded-lg border p-3 focus:ring-2 focus:ring-blue-500"
           />
           <input
             type="email"
             placeholder="Email"
-            className="focus:ring-blue-500 w-full rounded-lg border p-3 focus:ring-2"
+            className="w-full rounded-lg border p-3 focus:ring-2 focus:ring-blue-500"
           />
           <input
             type="password"
             placeholder="Password"
-            className="focus:ring-blue-500 w-full rounded-lg border p-3 focus:ring-2"
+            className="w-full rounded-lg border p-3 focus:ring-2 focus:ring-blue-500"
           />
 
           <label className="flex items-center text-sm text-gray-600">
             <input type="checkbox" className="mr-2" />I agree to the{" "}
-            <Link
-              to="/terms"
-              className="text-blue-600 ml-1 hover:underline"
-            >
+            <Link to="/terms" className="ml-1 text-blue-600 hover:underline">
               Terms & Conditions
             </Link>
           </label>
 
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 w-full rounded-lg py-3 text-white"
+            className="w-full rounded-lg bg-blue-600 py-3 text-white hover:bg-blue-700"
           >
             Signup
           </button>

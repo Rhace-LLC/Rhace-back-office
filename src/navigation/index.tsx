@@ -1,13 +1,9 @@
-import Footer from "@/components/footer";
-import Header from "@/components/header";
 import { useAuth } from "@/contexts/AuthContext";
 import NotFound from "@/pages/404";
 import ForgotPassword from "@/pages/auth/forgotpassword";
-import Login from "@/pages/auth/login";
 import ResetPassword from "@/pages/auth/resetpassword";
 import Signup from "@/pages/auth/signup";
 import OtpVerification from "@/pages/auth/verifyaccount";
-import HomePage from "@/pages/home";
 import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
@@ -16,6 +12,21 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
+
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { Login } from "@/pages/auth/login";
+import { Dashboard } from "@/pages/dashboard";
+import { Orders } from "@/pages/orders";
+import { TablesPage } from "@/pages/tables";
+
+export type UserRole = "Waiter" | "Kitchen" | "Admin";
+
+export interface User {
+  id: string;
+  name: string;
+  role: UserRole;
+  shift: string;
+}
 
 // Import pages
 
@@ -34,7 +45,9 @@ function Navigation(): React.JSX.Element {
   return (
     <Router>
       <ScrollToTop />
-      <NavigationContent />
+      <DashboardLayout>
+        <NavigationContent />
+      </DashboardLayout>
     </Router>
   );
 }
@@ -60,11 +73,10 @@ function NavigationContent() {
 
   return (
     <div className="min-h-screen">
-      <Header />
       <main className={`flex`}>
         <section id="mainpage" className={`flex-1`}>
           <Routes>
-            <Route path="/" Component={HomePage} />
+            <Route path="/" Component={Login} />
             {/* Auth Pages */}
             <Route path="/login" Component={Login} />
             <Route path="/signup" Component={Signup} />
@@ -72,12 +84,21 @@ function NavigationContent() {
             <Route path="/resetpassword" Component={ResetPassword} />
             <Route path="/verify-email" Component={OtpVerification} />
 
+            {/* Functional Logged In Pages */}
+            <Route path="/dashboard" Component={Dashboard} />
+            <Route path="/orders" Component={Orders} />
+            <Route path="/tables" Component={TablesPage} />
+            <Route path="/menu" Component={Login} />
+            <Route path="/notifications" Component={Login} />
+            <Route path="/profile" Component={Login} />
+            <Route path="/analytics" Component={Login} />
+
+
             {/* 404 Route - must be last */}
             <Route path="*" Component={NotFound} />
           </Routes>
         </section>
       </main>
-      {<Footer />}
     </div>
   );
 }
