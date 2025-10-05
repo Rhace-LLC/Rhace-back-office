@@ -74,13 +74,17 @@ export function AppSidebar({ isOpen }: { isOpen: boolean }) {
   const navigate = useNavigate();
   const location = useLocation();
   const currentRoute = location.pathname;
+  console.log("isOpen", isOpen)
 
   const isActive = (url?: string) => {
     if (!url) return false;
-    if (url === "/dashboard") {
-      return currentRoute === "/dashboard";
-    }
+    if (url === "/dashboard") return currentRoute === "/dashboard";
     return currentRoute.startsWith(url);
+  };
+
+  const handleNavigate = (url?: string) => {
+    if (!url) return;
+    navigate(url);
   };
 
   const [logoutOpen, setLogoutOpen] = useState(false);
@@ -88,7 +92,7 @@ export function AppSidebar({ isOpen }: { isOpen: boolean }) {
   return (
     <Sidebar
       className={`border-sidebar-border flex h-full flex-col border-r transition-all duration-300 ${
-        isOpen ? "w-64" : "w-16"
+        isOpen ? "w-64" : "w-0"
       }`}
     >
       <SidebarHeader className="border-sidebar-border border-b">
@@ -119,7 +123,7 @@ export function AppSidebar({ isOpen }: { isOpen: boolean }) {
                       {item.items.map((subItem: any) => (
                         <SidebarMenuButton
                           key={subItem.title}
-                          onClick={() => navigate(subItem.url as any)}
+                        onClick={() => handleNavigate(subItem.url)}
                           isActive={isActive(subItem.url)}
                           className="ml-6"
                         >
@@ -130,7 +134,7 @@ export function AppSidebar({ isOpen }: { isOpen: boolean }) {
                     </div>
                   ) : (
                     <SidebarMenuButton
-                      onClick={() => navigate(item.url as any)}
+                        onClick={() => handleNavigate(item.url)}
                       isActive={isActive(item.url)}
                     >
                       <item.icon className="h-4 w-4" />
