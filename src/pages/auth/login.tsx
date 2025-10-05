@@ -44,6 +44,7 @@ export function Login() {
   const quickLogin = (role: string, email: string) => {
     setEmail(email);
     setPassword("password");
+    console.log("role",role)
   };
 
   return (

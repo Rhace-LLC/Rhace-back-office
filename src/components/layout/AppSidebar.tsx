@@ -26,7 +26,13 @@ import {
   Bell,
   User,
 } from "lucide-react";
-export const menuItems = [
+export interface MenuItem {
+  title: string;
+  url?: string;
+  icon: any;
+  items?: MenuItem[];
+}
+export const menuItems : MenuItem[] = [
   {
     title: "Dashboard",
     url: "/dashboard",
@@ -110,7 +116,7 @@ export function AppSidebar({ isOpen }: { isOpen: boolean }) {
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
                       </div>
-                      {item.items.map((subItem) => (
+                      {item.items.map((subItem: any) => (
                         <SidebarMenuButton
                           key={subItem.title}
                           onClick={() => navigate(subItem.url as any)}
