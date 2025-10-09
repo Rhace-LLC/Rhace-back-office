@@ -1,9 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
 import NotFound from "@/pages/404";
-import ForgotPassword from "@/pages/auth/forgotpassword";
-import ResetPassword from "@/pages/auth/resetpassword";
-import Signup from "@/pages/auth/signup";
-import OtpVerification from "@/pages/auth/verifyaccount";
 import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
@@ -18,6 +14,14 @@ import { Login } from "@/pages/auth/login";
 import { Dashboard } from "@/pages/dashboard";
 import { Orders } from "@/pages/orders";
 import { TablesPage } from "@/pages/tables";
+import { MenuManagement } from "@/pages/menu";
+import { Notifications } from "@/pages/notification";
+import { Profile } from "@/pages/profile";
+import { Analytics } from "@/pages/analytics";
+import { SignUp } from "@/pages/auth/signup";
+import { ForgotPassword } from "@/pages/auth/forgotpassword";
+import { ResetPassword } from "@/pages/auth/resetpassword";
+import { VerifyOtp } from "@/pages/auth/verifyaccount";
 
 export type UserRole = "Waiter" | "Kitchen" | "Admin";
 
@@ -79,20 +83,19 @@ function NavigationContent() {
             <Route path="/" Component={Login} />
             {/* Auth Pages */}
             <Route path="/login" Component={Login} />
-            <Route path="/signup" Component={Signup} />
+            <Route path="/signup" Component={SignUp} />
             <Route path="/forgot-password" Component={ForgotPassword} />
             <Route path="/resetpassword" Component={ResetPassword} />
-            <Route path="/verify-email" Component={OtpVerification} />
+            <Route path="/verify-email" Component={VerifyOtp} />
 
             {/* Functional Logged In Pages */}
             <Route path="/dashboard" Component={Dashboard} />
             <Route path="/orders" Component={Orders} />
             <Route path="/tables" Component={TablesPage} />
-            <Route path="/menu" Component={Login} />
-            <Route path="/notifications" Component={Login} />
-            <Route path="/profile" Component={Login} />
-            <Route path="/analytics" Component={Login} />
-
+            <Route path="/menu" Component={MenuManagement} />
+            <Route path="/notifications" Component={Notifications} />
+            <Route path="/profile" Component={Profile} />
+            <Route path="/analytics" Component={Analytics} />
 
             {/* 404 Route - must be last */}
             <Route path="*" Component={NotFound} />

@@ -1,30 +1,56 @@
 "use client";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { toast } from "sonner";
 
-export default function OtpVerification() {
+export function VerifyOtp() {
+  const [otp, setOtp] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (otp.length !== 6) {
+      toast.error("Invalid OTP");
+      return;
+    }
+    toast.success("OTP verified successfully!");
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white">
-      <div className="w-full max-w-md rounded-2xl bg-gray-50 p-8 shadow">
-        <h2 className="mb-6 text-center text-2xl font-bold text-blue-600">
-          OTP Verification
-        </h2>
-        <p className="mb-4 text-center text-gray-600">
-          Enter the 6-digit code sent to your email.
-        </p>
-        <form className="space-y-4">
-          <input
-            type="text"
-            placeholder="Enter OTP"
-            maxLength={6}
-            className="w-full rounded-lg border px-4 py-2 text-center tracking-widest focus:border-blue-500 focus:outline-none"
-          />
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-blue-600 py-2 text-white hover:bg-blue-700"
-          >
-            Verify
-          </button>
-        </form>
-      </div>
+    <div className="flex min-h-screen items-center justify-center p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <CardTitle>Verify OTP</CardTitle>
+          <CardDescription>
+            Enter the 6-digit code sent to your email
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label>OTP</Label>
+              <Input
+                maxLength={6}
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                placeholder="Enter 6-digit code"
+                required
+              />
+            </div>
+            <Button className="w-full" style={{ backgroundColor: "#2542e3" }}>
+              Verify
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

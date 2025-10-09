@@ -10,20 +10,10 @@ const adminScreens = [
 ];
 
 // Waiter Screens
-const waiterScreens = [
-  "Orders",
-  "Tables",
-  "Notifications",
-  "Profile",
-];
+const waiterScreens = ["Orders", "Tables", "Notifications", "Profile"];
 
 // Kitchen Screens
-const kitchenScreens = [
-  "Dashboard",
-  "Orders",
-  "Notifications",
-  "Profile",
-];
+const kitchenScreens = ["Dashboard", "Orders", "Notifications", "Profile"];
 
 export const roleScreens = {
   Admin: adminScreens,

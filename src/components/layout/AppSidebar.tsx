@@ -32,7 +32,7 @@ export interface MenuItem {
   icon: any;
   items?: MenuItem[];
 }
-export const menuItems : MenuItem[] = [
+export const menuItems: MenuItem[] = [
   {
     title: "Dashboard",
     url: "/dashboard",
@@ -69,12 +69,13 @@ export const menuItems : MenuItem[] = [
     icon: User,
   },
 ];
+
 export function AppSidebar({ isOpen }: { isOpen: boolean }) {
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const currentRoute = location.pathname;
-  console.log("isOpen", isOpen)
+  console.log("isOpen", isOpen);
 
   const isActive = (url?: string) => {
     if (!url) return false;
@@ -123,7 +124,7 @@ export function AppSidebar({ isOpen }: { isOpen: boolean }) {
                       {item.items.map((subItem: any) => (
                         <SidebarMenuButton
                           key={subItem.title}
-                        onClick={() => handleNavigate(subItem.url)}
+                          onClick={() => handleNavigate(subItem.url)}
                           isActive={isActive(subItem.url)}
                           className="ml-6"
                         >
@@ -134,7 +135,7 @@ export function AppSidebar({ isOpen }: { isOpen: boolean }) {
                     </div>
                   ) : (
                     <SidebarMenuButton
-                        onClick={() => handleNavigate(item.url)}
+                      onClick={() => handleNavigate(item.url)}
                       isActive={isActive(item.url)}
                     >
                       <item.icon className="h-4 w-4" />

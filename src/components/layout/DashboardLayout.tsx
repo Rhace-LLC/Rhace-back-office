@@ -18,27 +18,25 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   useEffect(() => {
     if (!auth.isAuthenticated) {
       setSidebarOpen(false);
-    } else {  
+    } else {
       setSidebarOpen(true);
     }
   }, [auth.isAuthenticated]);
 
   // Automatically close sidebar on route change (mobile only)
-useEffect(() => {
-  console.log("location changed:", location.pathname, window.innerWidth);
-  if (window.innerWidth < 768) {
-  console.log("location changed:", "DEbug");
-    setSidebarOpen(false)
-  }
-}, [location]);
+  useEffect(() => {
+    console.log("location changed:", location.pathname, window.innerWidth);
+    if (window.innerWidth < 768) {
+      console.log("location changed:", "DEbug");
+      setSidebarOpen(false);
+    }
+  }, [location]);
 
   return (
     <SidebarProvider>
       <div className="flex h-screen w-full">
         {/* Only show sidebar on md and above */}
-        {auth.isAuthenticated && (
-            <AppSidebar isOpen={sidebarOpen} />
-        )}
+        {auth.isAuthenticated && <AppSidebar isOpen={sidebarOpen} />}
 
         {/* SidebarInset flexes to remaining space */}
         <SidebarInset
@@ -49,8 +47,9 @@ useEffect(() => {
           <div className="flex flex-1 flex-col gap-4">
             {auth.isAuthenticated && (
               <div className="flex items-center gap-4 p-3">
-                <SidebarTrigger onClick={() => setSidebarOpen((prev) => !prev)}>
-                </SidebarTrigger>
+                <SidebarTrigger
+                  onClick={() => setSidebarOpen((prev) => !prev)}
+                ></SidebarTrigger>
                 <div className="bg-border h-4 w-px" />
               </div>
             )}

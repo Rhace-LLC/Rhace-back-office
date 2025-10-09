@@ -1,76 +1,207 @@
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronRight, Plus, Edit, DollarSign, UtensilsCrossed } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  ChevronDown,
+  ChevronRight,
+  Plus,
+  Edit,
+  DollarSign,
+  UtensilsCrossed,
+} from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 const mockCategories = [
   {
     id: 1,
-    name: 'Appetizers',
+    name: "Appetizers",
     dishes: [
-      { id: 1, name: 'Bruschetta', price: 12.50, description: 'Toasted bread with tomatoes and basil', available: true, addons: ['Extra Cheese', 'Garlic'] },
-      { id: 2, name: 'Caesar Salad', price: 14.00, description: 'Romaine lettuce with parmesan and croutons', available: true, addons: ['Chicken', 'Shrimp'] },
-      { id: 3, name: 'Calamari Rings', price: 16.50, description: 'Crispy fried squid with marinara sauce', available: false, addons: ['Spicy Sauce'] }
-    ]
+      {
+        id: 1,
+        name: "Bruschetta",
+        price: 12.5,
+        description: "Toasted bread with tomatoes and basil",
+        available: true,
+        addons: ["Extra Cheese", "Garlic"],
+      },
+      {
+        id: 2,
+        name: "Caesar Salad",
+        price: 14.0,
+        description: "Romaine lettuce with parmesan and croutons",
+        available: true,
+        addons: ["Chicken", "Shrimp"],
+      },
+      {
+        id: 3,
+        name: "Calamari Rings",
+        price: 16.5,
+        description: "Crispy fried squid with marinara sauce",
+        available: false,
+        addons: ["Spicy Sauce"],
+      },
+    ],
   },
   {
     id: 2,
-    name: 'Main Courses',
+    name: "Main Courses",
     dishes: [
-      { id: 4, name: 'Margherita Pizza', price: 18.50, description: 'Classic pizza with tomato, mozzarella, and basil', available: true, addons: ['Extra Cheese', 'Pepperoni', 'Mushrooms'] },
-      { id: 5, name: 'Spaghetti Carbonara', price: 19.50, description: 'Pasta with eggs, cheese, and pancetta', available: true, addons: ['Extra Parmesan', 'Black Pepper'] },
-      { id: 6, name: 'Ribeye Steak', price: 35.00, description: '12oz premium cut with seasonal vegetables', available: true, addons: ['Medium Rare', 'Well Done', 'Garlic Butter'] },
-      { id: 7, name: 'Fish & Chips', price: 22.00, description: 'Beer-battered cod with crispy fries', available: true, addons: ['Mushy Peas', 'Tartar Sauce'] }
-    ]
+      {
+        id: 4,
+        name: "Margherita Pizza",
+        price: 18.5,
+        description: "Classic pizza with tomato, mozzarella, and basil",
+        available: true,
+        addons: ["Extra Cheese", "Pepperoni", "Mushrooms"],
+      },
+      {
+        id: 5,
+        name: "Spaghetti Carbonara",
+        price: 19.5,
+        description: "Pasta with eggs, cheese, and pancetta",
+        available: true,
+        addons: ["Extra Parmesan", "Black Pepper"],
+      },
+      {
+        id: 6,
+        name: "Ribeye Steak",
+        price: 35.0,
+        description: "12oz premium cut with seasonal vegetables",
+        available: true,
+        addons: ["Medium Rare", "Well Done", "Garlic Butter"],
+      },
+      {
+        id: 7,
+        name: "Fish & Chips",
+        price: 22.0,
+        description: "Beer-battered cod with crispy fries",
+        available: true,
+        addons: ["Mushy Peas", "Tartar Sauce"],
+      },
+    ],
   },
   {
     id: 3,
-    name: 'Desserts',
+    name: "Desserts",
     dishes: [
-      { id: 8, name: 'Tiramisu', price: 8.50, description: 'Classic Italian dessert with coffee and mascarpone', available: true, addons: [] },
-      { id: 9, name: 'Chocolate Lava Cake', price: 9.00, description: 'Warm chocolate cake with molten center', available: true, addons: ['Vanilla Ice Cream'] },
-      { id: 10, name: 'Cheesecake', price: 7.50, description: 'New York style with berry compote', available: false, addons: ['Extra Berries'] }
-    ]
+      {
+        id: 8,
+        name: "Tiramisu",
+        price: 8.5,
+        description: "Classic Italian dessert with coffee and mascarpone",
+        available: true,
+        addons: [],
+      },
+      {
+        id: 9,
+        name: "Chocolate Lava Cake",
+        price: 9.0,
+        description: "Warm chocolate cake with molten center",
+        available: true,
+        addons: ["Vanilla Ice Cream"],
+      },
+      {
+        id: 10,
+        name: "Cheesecake",
+        price: 7.5,
+        description: "New York style with berry compote",
+        available: false,
+        addons: ["Extra Berries"],
+      },
+    ],
   },
   {
     id: 4,
-    name: 'Beverages',
+    name: "Beverages",
     dishes: [
-      { id: 11, name: 'House Wine', price: 12.00, description: 'Red or white wine selection', available: true, addons: [] },
-      { id: 12, name: 'Craft Beer', price: 6.50, description: 'Local brewery selection', available: true, addons: [] },
-      { id: 13, name: 'Fresh Juices', price: 4.50, description: 'Orange, apple, or cranberry', available: true, addons: [] },
-      { id: 14, name: 'Coffee', price: 3.50, description: 'Freshly brewed coffee', available: true, addons: ['Extra Shot', 'Decaf'] }
-    ]
-  }
+      {
+        id: 11,
+        name: "House Wine",
+        price: 12.0,
+        description: "Red or white wine selection",
+        available: true,
+        addons: [],
+      },
+      {
+        id: 12,
+        name: "Craft Beer",
+        price: 6.5,
+        description: "Local brewery selection",
+        available: true,
+        addons: [],
+      },
+      {
+        id: 13,
+        name: "Fresh Juices",
+        price: 4.5,
+        description: "Orange, apple, or cranberry",
+        available: true,
+        addons: [],
+      },
+      {
+        id: 14,
+        name: "Coffee",
+        price: 3.5,
+        description: "Freshly brewed coffee",
+        available: true,
+        addons: ["Extra Shot", "Decaf"],
+      },
+    ],
+  },
 ];
 
 export function MenuManagement() {
   const [categories, setCategories] = useState(mockCategories);
-  const [expandedCategories, setExpandedCategories] = useState<number[]>([1, 2]);
+  const [expandedCategories, setExpandedCategories] = useState<number[]>([
+    1, 2,
+  ]);
   const [selectedDish, setSelectedDish] = useState<any>(null);
-  console.log({selectedDish})
+  console.log({ selectedDish });
   const [isEditMode, setIsEditMode] = useState(false);
   const [dishForm, setDishForm] = useState({
-    name: '',
-    price: '',
-    description: '',
+    name: "",
+    price: "",
+    description: "",
     available: true,
-    addons: ''
+    addons: "",
   });
 
   const toggleCategory = (categoryId: number) => {
-    setExpandedCategories(prev => 
-      prev.includes(categoryId) 
-        ? prev.filter(id => id !== categoryId)
+    setExpandedCategories((prev) =>
+      prev.includes(categoryId)
+        ? prev.filter((id) => id !== categoryId)
         : [...prev, categoryId]
     );
   };
@@ -83,17 +214,17 @@ export function MenuManagement() {
         price: dish.price.toString(),
         description: dish.description,
         available: dish.available,
-        addons: dish.addons.join(', ')
+        addons: dish.addons.join(", "),
       });
       setIsEditMode(true);
     } else {
       setSelectedDish(null);
       setDishForm({
-        name: '',
-        price: '',
-        description: '',
+        name: "",
+        price: "",
+        description: "",
         available: true,
-        addons: ''
+        addons: "",
       });
       setIsEditMode(false);
     }
@@ -101,69 +232,87 @@ export function MenuManagement() {
 
   const saveDish = () => {
     // In a real app, this would save to the backend
-    console.log('Saving dish:', dishForm);
+    console.log("Saving dish:", dishForm);
     // Reset form
     setDishForm({
-      name: '',
-      price: '',
-      description: '',
+      name: "",
+      price: "",
+      description: "",
       available: true,
-      addons: ''
+      addons: "",
     });
   };
 
   const toggleDishAvailability = (categoryId: number, dishId: number) => {
-    setCategories(prev => prev.map(category => 
-      category.id === categoryId 
-        ? {
-            ...category,
-            dishes: category.dishes.map(dish => 
-              dish.id === dishId 
-                ? { ...dish, available: !dish.available }
-                : dish
-            )
-          }
-        : category
-    ));
+    setCategories((prev) =>
+      prev.map((category) =>
+        category.id === categoryId
+          ? {
+              ...category,
+              dishes: category.dishes.map((dish) =>
+                dish.id === dishId
+                  ? { ...dish, available: !dish.available }
+                  : dish
+              ),
+            }
+          : category
+      )
+    );
   };
 
-  const totalDishes = categories.reduce((sum, category) => sum + category.dishes.length, 0);
-  const availableDishes = categories.reduce((sum, category) => 
-    sum + category.dishes.filter(dish => dish.available).length, 0
+  const totalDishes = categories.reduce(
+    (sum, category) => sum + category.dishes.length,
+    0
   );
-  const averagePrice = categories.reduce((sum, category) => 
-    sum + category.dishes.reduce((catSum, dish) => catSum + dish.price, 0), 0
-  ) / totalDishes;
+  const availableDishes = categories.reduce(
+    (sum, category) =>
+      sum + category.dishes.filter((dish) => dish.available).length,
+    0
+  );
+  const averagePrice =
+    categories.reduce(
+      (sum, category) =>
+        sum + category.dishes.reduce((catSum, dish) => catSum + dish.price, 0),
+      0
+    ) / totalDishes;
 
   return (
-    <div className="p-5 space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 p-5">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1>Menu Management</h1>
-          <p className="text-muted-foreground">Manage dishes, categories, and availability</p>
+          <p className="text-muted-foreground">
+            Manage dishes, categories, and availability
+          </p>
         </div>
         <Sheet>
           <SheetTrigger asChild>
             <Button onClick={() => openDishForm()} className="bg-[#2542e3]">
-              <Plus className="w-4 h-4 mr-1" />
+              <Plus className="mr-1 h-4 w-4" />
               Add Dish
             </Button>
           </SheetTrigger>
-          <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto">
+          <SheetContent className="w-[400px] overflow-y-auto sm:w-[540px]">
             <SheetHeader>
-              <SheetTitle>{isEditMode ? 'Edit Dish' : 'Add New Dish'}</SheetTitle>
+              <SheetTitle>
+                {isEditMode ? "Edit Dish" : "Add New Dish"}
+              </SheetTitle>
               <SheetDescription>
-                {isEditMode ? 'Update dish information' : 'Create a new dish for the menu'}
+                {isEditMode
+                  ? "Update dish information"
+                  : "Create a new dish for the menu"}
               </SheetDescription>
             </SheetHeader>
-            
+
             <div className="mt-6 space-y-4">
               <div>
                 <Label htmlFor="name">Dish Name</Label>
                 <Input
                   id="name"
                   value={dishForm.name}
-                  onChange={(e) => setDishForm(prev => ({ ...prev, name: e.target.value }))}
+                  onChange={(e) =>
+                    setDishForm((prev) => ({ ...prev, name: e.target.value }))
+                  }
                   placeholder="Enter dish name"
                 />
               </div>
@@ -175,7 +324,9 @@ export function MenuManagement() {
                   type="number"
                   step="0.01"
                   value={dishForm.price}
-                  onChange={(e) => setDishForm(prev => ({ ...prev, price: e.target.value }))}
+                  onChange={(e) =>
+                    setDishForm((prev) => ({ ...prev, price: e.target.value }))
+                  }
                   placeholder="0.00"
                 />
               </div>
@@ -185,7 +336,12 @@ export function MenuManagement() {
                 <Textarea
                   id="description"
                   value={dishForm.description}
-                  onChange={(e) => setDishForm(prev => ({ ...prev, description: e.target.value }))}
+                  onChange={(e) =>
+                    setDishForm((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
                   placeholder="Describe the dish..."
                   rows={3}
                 />
@@ -196,7 +352,9 @@ export function MenuManagement() {
                 <Input
                   id="addons"
                   value={dishForm.addons}
-                  onChange={(e) => setDishForm(prev => ({ ...prev, addons: e.target.value }))}
+                  onChange={(e) =>
+                    setDishForm((prev) => ({ ...prev, addons: e.target.value }))
+                  }
                   placeholder="Extra Cheese, Spicy Sauce, etc."
                 />
               </div>
@@ -205,7 +363,9 @@ export function MenuManagement() {
                 <Switch
                   id="available"
                   checked={dishForm.available}
-                  onCheckedChange={(checked: any) => setDishForm(prev => ({ ...prev, available: checked }))}
+                  onCheckedChange={(checked: any) =>
+                    setDishForm((prev) => ({ ...prev, available: checked }))
+                  }
                 />
                 <Label htmlFor="available">Available for ordering</Label>
               </div>
@@ -214,7 +374,7 @@ export function MenuManagement() {
 
               <div className="flex gap-2">
                 <Button onClick={saveDish} className="flex-1 bg-[#2542e3]">
-                  {isEditMode ? 'Update Dish' : 'Add Dish'}
+                  {isEditMode ? "Update Dish" : "Add Dish"}
                 </Button>
                 <Button variant="outline" className="flex-1">
                   Cancel
@@ -225,15 +385,17 @@ export function MenuManagement() {
         </Sheet>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm">Total Dishes</CardTitle>
-            <UtensilsCrossed className="h-4 w-4 text-muted-foreground" />
+            <UtensilsCrossed className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl">{totalDishes}</div>
-            <p className="text-xs text-muted-foreground">Across {categories.length} categories</p>
+            <p className="text-muted-foreground text-xs">
+              Across {categories.length} categories
+            </p>
           </CardContent>
         </Card>
 
@@ -246,7 +408,7 @@ export function MenuManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl">{availableDishes}</div>
-            <p className="text-xs text-muted-foreground">Currently available</p>
+            <p className="text-muted-foreground text-xs">Currently available</p>
           </CardContent>
         </Card>
 
@@ -259,18 +421,18 @@ export function MenuManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl">{totalDishes - availableDishes}</div>
-            <p className="text-xs text-muted-foreground">Out of stock</p>
+            <p className="text-muted-foreground text-xs">Out of stock</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm">Avg Price</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <DollarSign className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl">${averagePrice.toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground">Per dish</p>
+            <p className="text-muted-foreground text-xs">Per dish</p>
           </CardContent>
         </Card>
       </div>
@@ -289,12 +451,12 @@ export function MenuManagement() {
               open={expandedCategories.includes(category.id)}
               onOpenChange={() => toggleCategory(category.id)}
             >
-              <CollapsibleTrigger className="flex items-center justify-between w-full p-3 border rounded-lg hover:bg-muted/50">
+              <CollapsibleTrigger className="hover:bg-muted/50 flex w-full items-center justify-between rounded-lg border p-3">
                 <div className="flex items-center gap-3">
                   {expandedCategories.includes(category.id) ? (
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronDown className="h-4 w-4" />
                   ) : (
-                    <ChevronRight className="w-4 h-4" />
+                    <ChevronRight className="h-4 w-4" />
                   )}
                   <span className="font-medium">{category.name}</span>
                   <Badge variant="outline" className="text-xs">
@@ -302,10 +464,11 @@ export function MenuManagement() {
                   </Badge>
                 </div>
                 <Badge className="text-xs">
-                  {category.dishes.filter(dish => dish.available).length} available
+                  {category.dishes.filter((dish) => dish.available).length}{" "}
+                  available
                 </Badge>
               </CollapsibleTrigger>
-              
+
               <CollapsibleContent className="mt-3">
                 <Table>
                   <TableHeader>
@@ -323,7 +486,9 @@ export function MenuManagement() {
                         <TableCell>
                           <div>
                             <div>{dish.name}</div>
-                            <div className="text-xs text-muted-foreground">{dish.description}</div>
+                            <div className="text-muted-foreground text-xs">
+                              {dish.description}
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell>${dish.price.toFixed(2)}</TableCell>
@@ -331,46 +496,57 @@ export function MenuManagement() {
                           <div className="flex items-center gap-2">
                             <Switch
                               checked={dish.available}
-                              onCheckedChange={() => toggleDishAvailability(category.id, dish.id)}
-                              
+                              onCheckedChange={() =>
+                                toggleDishAvailability(category.id, dish.id)
+                              }
                             />
-                            <Badge variant={dish.available ? 'default' : 'secondary'} className="text-xs">
-                              {dish.available ? 'Available' : 'Unavailable'}
+                            <Badge
+                              variant={dish.available ? "default" : "secondary"}
+                              className="text-xs"
+                            >
+                              {dish.available ? "Available" : "Unavailable"}
                             </Badge>
                           </div>
                         </TableCell>
                         <TableCell>
                           <div className="text-xs">
-                            {dish.addons.length > 0 ? dish.addons.join(', ') : 'None'}
+                            {dish.addons.length > 0
+                              ? dish.addons.join(", ")
+                              : "None"}
                           </div>
                         </TableCell>
                         <TableCell>
                           <Sheet>
                             <SheetTrigger asChild>
-                              <Button 
-                                variant="outline" 
+                              <Button
+                                variant="outline"
                                 size="sm"
                                 onClick={() => openDishForm(dish)}
                               >
-                                <Edit className="w-4 h-4 mr-1" />
+                                <Edit className="mr-1 h-4 w-4" />
                                 Edit
                               </Button>
                             </SheetTrigger>
-                            <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto">
+                            <SheetContent className="w-[400px] overflow-y-auto sm:w-[540px]">
                               <SheetHeader>
                                 <SheetTitle>Edit Dish</SheetTitle>
                                 <SheetDescription>
                                   Update dish information
                                 </SheetDescription>
                               </SheetHeader>
-                              
+
                               <div className="mt-6 space-y-4">
                                 <div>
                                   <Label htmlFor="name">Dish Name</Label>
                                   <Input
                                     id="name"
                                     value={dishForm.name}
-                                    onChange={(e) => setDishForm(prev => ({ ...prev, name: e.target.value }))}
+                                    onChange={(e) =>
+                                      setDishForm((prev) => ({
+                                        ...prev,
+                                        name: e.target.value,
+                                      }))
+                                    }
                                     placeholder="Enter dish name"
                                   />
                                 </div>
@@ -382,28 +558,47 @@ export function MenuManagement() {
                                     type="number"
                                     step="0.01"
                                     value={dishForm.price}
-                                    onChange={(e) => setDishForm(prev => ({ ...prev, price: e.target.value }))}
+                                    onChange={(e) =>
+                                      setDishForm((prev) => ({
+                                        ...prev,
+                                        price: e.target.value,
+                                      }))
+                                    }
                                     placeholder="0.00"
                                   />
                                 </div>
 
                                 <div>
-                                  <Label htmlFor="description">Description</Label>
+                                  <Label htmlFor="description">
+                                    Description
+                                  </Label>
                                   <Textarea
                                     id="description"
                                     value={dishForm.description}
-                                    onChange={(e) => setDishForm(prev => ({ ...prev, description: e.target.value }))}
+                                    onChange={(e) =>
+                                      setDishForm((prev) => ({
+                                        ...prev,
+                                        description: e.target.value,
+                                      }))
+                                    }
                                     placeholder="Describe the dish..."
                                     rows={3}
                                   />
                                 </div>
 
                                 <div>
-                                  <Label htmlFor="addons">Add-ons (comma separated)</Label>
+                                  <Label htmlFor="addons">
+                                    Add-ons (comma separated)
+                                  </Label>
                                   <Input
                                     id="addons"
                                     value={dishForm.addons}
-                                    onChange={(e) => setDishForm(prev => ({ ...prev, addons: e.target.value }))}
+                                    onChange={(e) =>
+                                      setDishForm((prev) => ({
+                                        ...prev,
+                                        addons: e.target.value,
+                                      }))
+                                    }
                                     placeholder="Extra Cheese, Spicy Sauce, etc."
                                   />
                                 </div>
@@ -412,15 +607,25 @@ export function MenuManagement() {
                                   <Switch
                                     id="available"
                                     checked={dishForm.available}
-                                    onCheckedChange={(checked: any) => setDishForm(prev => ({ ...prev, available: checked }))}
+                                    onCheckedChange={(checked: any) =>
+                                      setDishForm((prev) => ({
+                                        ...prev,
+                                        available: checked,
+                                      }))
+                                    }
                                   />
-                                  <Label htmlFor="available">Available for ordering</Label>
+                                  <Label htmlFor="available">
+                                    Available for ordering
+                                  </Label>
                                 </div>
 
                                 <Separator />
 
                                 <div className="flex gap-2">
-                                  <Button onClick={saveDish} className="flex-1 bg-[#2542e3]">
+                                  <Button
+                                    onClick={saveDish}
+                                    className="flex-1 bg-[#2542e3]"
+                                  >
                                     Update Dish
                                   </Button>
                                   <Button variant="outline" className="flex-1">

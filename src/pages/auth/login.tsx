@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,55 +12,68 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { login, LoginRequestBody } from "@/api-services/auth.service";
+import { parseError } from "@/api-services/utils/parseError";
 
 export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
+  const auth = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password) {
-      login(
-       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODQ5Yzk5YTVkMWY5NGRhNTZlNWFlZjgiLCJlbWFpbCI6ImFkZWZ1eWVhYmF5b21pMTZAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTk2NDQ4OTksImV4cCI6MTc2MDMzNjA5OX0.1Smmsn-zlNFweRG9J7eG7CPJkKPvJtFsHj0nqH7R1Po",
-        "waiter@bookies.com",
-        "user"
-      );
-      if (
-        ![
-          "waiter@bookies.com",
-          "kitchen@bookies.com",
-          "admin@bookies.com",
-        ].includes(email) ||
-        password !== "password"
-      ) {
-        toast.error("Invalid credentials");
-      }
-      navigate('/dashboard')
+
+    // Optional: validate form here
+    if (!email || !password) {
+      toast.error("Email and password are required");
+      return;
+    }
+
+    const payload: LoginRequestBody = { email, password };
+    setLoading(true);
+
+    try {
+      const response = await login(payload); // Await API call
+
+      console.log("Response:", response);
+
+      // Save auth info
+      auth.login(response.token, email, response.role);
+
+      toast.success("Login successful!");
+      navigate("/dashboard"); // or your desired route
+    } catch (error: any) {
+      console.error("Login error:", error);
+      const message = parseError(error) || "Something went wrong!";
+      toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const quickLogin = (role: string, email: string) => {
     setEmail(email);
     setPassword("password");
-    console.log("role",role)
+    console.log("role", role);
   };
 
   return (
-    <div className="to-background flex min-h-screen items-center justify-center bg-gradient-to-br from-[#2542e3]/10">
+    <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
           <div className="mb-4 flex items-center justify-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2542e3]">
-              <div className="h-5 w-5 rounded-full bg-white"></div>
+              <div className="h-5 w-5 rounded-full bg-white" />
             </div>
-            <span className="text-2xl">Bookies</span>
+            <span className="text-2xl font-semibold">Bookies</span>
           </div>
           <CardTitle>Welcome Back</CardTitle>
           <CardDescription>Sign in to your back office account</CardDescription>
         </CardHeader>
+
         <CardContent className="space-y-4">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
@@ -74,7 +88,15 @@ export function Login() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <div className="flex items-center justify-between text-sm">
+                <Label htmlFor="password">Password</Label>
+                <Link
+                  to="/forgot-password"
+                  className="text-[#2542e3] hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
               <Input
                 id="password"
                 type="password"
@@ -84,16 +106,25 @@ export function Login() {
                 required
               />
             </div>
+
+            <div className="text-center text-sm">
+              <span>Don't have an account? </span>
+              <Link to="/signup" className="text-[#2542e3] hover:underline">
+                Sign up
+              </Link>
+            </div>
+
             <Button
               type="submit"
               className="w-full"
+              disabled={loading}
               style={{ backgroundColor: "#2542e3" }}
             >
-              Sign In
+              {loading ? "Signing In..." : "Sign In"}
             </Button>
           </form>
 
-          <div className="space-y-2">
+          <div className="hidden space-y-2">
             <p className="text-muted-foreground text-center text-sm">
               Quick login (demo):
             </p>
