@@ -82,7 +82,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="relative block md:hidden">
         {/* Fixed Menu Icon */}
         {auth.isAuthenticated && (
-          <div className="bg-sidebar text-sidebar-foreground border-sidebar-border fixed top-0 right-0 left-0 z-50 flex items-center justify-between border-b px-4 py-3">
+          <div className="bg-sidebar text-sidebar-foreground border-sidebar-border fixed top-0 right-0 left-0 z-10 flex items-center justify-between border-b px-4 py-3">
             <button onClick={() => setMobileMenuOpen(true)} className="">
               <Menu className="h-6 w-9" />
             </button>

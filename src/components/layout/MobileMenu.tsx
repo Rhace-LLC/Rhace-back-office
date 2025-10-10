@@ -35,21 +35,26 @@ export function MobileMenu({ onNavigate }: MobileMenuProps) {
   return (
     <div className="bg-sidebar text-sidebar-foreground flex h-full flex-col">
       {/* Header */}
-      <div className="border-sidebar-border flex items-center justify-between border-b p-4">
-        <div className="flex items-center gap-3">
-          <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg">
-            <Building2 className="text-primary-foreground h-5 w-5" />
-          </div>
+      <div className="border-sidebar-border flex items-center justify-between border-b p-4 pr-4">
+        <div className="flex w-full items-center gap-3 py-4">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src="" />
+            <AvatarFallback className="bg-primary text-primary-foreground">
+              AD
+            </AvatarFallback>
+          </Avatar>
           <div>
-            <h2 className="text-lg font-semibold">Admin Panel</h2>
-            <p className="text-sidebar-foreground/60 text-xs">
-              Back Office - {auth.accountType ?? "Guest"}
+            <p className="text-sidebar-foreground/60 truncate text-[16px]">
+              {auth.email}
+            </p>
+            <p className="text-[15px] text-gray-500 capitalize">
+              {auth.accountType} Staff
             </p>
           </div>
         </div>
         <button
           onClick={onNavigate}
-          className="text-sidebar-foreground/70 hover:text-primary transition-colors"
+          className="text-sidebar-foreground/70 hover:text-primary flex-1 transition-colors"
         >
           <X className="h-6 w-6" />
         </button>
@@ -99,20 +104,14 @@ export function MobileMenu({ onNavigate }: MobileMenuProps) {
 
       {/* Footer */}
       <div className="border-sidebar-border border-t p-4">
-        <div className="mb-3 flex items-center gap-3">
-          <Avatar className="h-9 w-9">
-            <AvatarImage src="" />
-            <AvatarFallback className="bg-primary text-primary-foreground">
-              {"Adefuye Abayomi"}
-            </AvatarFallback>
-          </Avatar>
+        <div className="mb-5 flex items-center gap-3">
+          <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg">
+            <Building2 className="text-primary-foreground h-5 w-5" />
+          </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium">
-              {"User"} {"Last Name"}
-            </p>
-            <p className="text-sidebar-foreground/60 truncate text-xs">
-              {auth.email ?? "example@mail.com"}
-            </p>
+            <h2 className="text-sidebar-foreground truncate capitalize">
+              Back Office - {auth.accountType}
+            </h2>
           </div>
         </div>
 

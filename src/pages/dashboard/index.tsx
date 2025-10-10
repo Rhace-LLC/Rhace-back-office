@@ -26,6 +26,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { mockUsers } from "@/navigation/mock";
+import { useAuth } from "@/contexts/AuthContext";
 
 const revenueData = [
   { name: "Mon", revenue: 2400 },
@@ -77,12 +78,15 @@ const mockTables = [
 
 export function Dashboard() {
   const user = mockUsers[0];
+  const auth = useAuth();
 
-  if (user?.role === "Waiter") {
+  if (auth.isWaiter) {
     return (
       <div className="space-y-6 p-5">
         <div>
-          <h1>Waiter Dashboard</h1>
+          <h1 className="text-2xl font-medium tracking-tight">
+            Waiter Dashboard
+          </h1>
           <p className="text-muted-foreground">
             Manage your assigned tables and orders
           </p>
@@ -217,11 +221,13 @@ export function Dashboard() {
     );
   }
 
-  if (user?.role === "Kitchen") {
+  if (auth.isKitchen) {
     return (
       <div className="space-y-6 p-5">
         <div>
-          <h1>Kitchen Dashboard</h1>
+          <h1 className="text-2xl font-medium tracking-tight">
+            Kitchen Dashboard
+          </h1>
           <p className="text-muted-foreground">
             Manage incoming orders and preparation queue
           </p>
@@ -324,7 +330,7 @@ export function Dashboard() {
   return (
     <div className="space-y-6 p-5">
       <div>
-        <h1>Admin Dashboard</h1>
+        <h1 className="text-2xl font-medium tracking-tight">Admin Dashboard</h1>
         <p className="text-muted-foreground">
           Restaurant overview and key performance indicators
         </p>

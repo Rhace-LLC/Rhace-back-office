@@ -37,12 +37,6 @@ export interface MenuItem {
 export function useRoleBasedMenu(): MenuItem[] {
   const auth = useAuth();
 
-  console.log("auth", auth, {
-    isAdmin: auth.isAdmin,
-    isWaiter: auth.isWaiter,
-    isKitchen: auth.isKitchen,
-  });
-
   const baseMenu: MenuItem[] = [
     {
       title: "Dashboard",
@@ -156,12 +150,19 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
     >
       <SidebarHeader className="border-sidebar-border border-b">
         <div className="flex items-center gap-3 px-3 py-4">
-          <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg">
-            <Building2 className="text-primary-foreground h-5 w-5" />
-          </div>
+          <Avatar className="h-8 w-8">
+            <AvatarImage src="" />
+            <AvatarFallback className="bg-primary text-primary-foreground">
+              AD
+            </AvatarFallback>
+          </Avatar>
           <div>
-            <h2 className="text-sidebar-foreground">Admin Panel</h2>
-            <p className="text-sidebar-foreground/60">Back Office - `role`</p>
+            <p className="text-sidebar-foreground/60 truncate text-[16px]">
+              {auth.email}
+            </p>
+            <p className="text-[15px] text-gray-500 capitalize">
+              {auth.accountType} Staff
+            </p>
           </div>
         </div>
       </SidebarHeader>
@@ -210,19 +211,13 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
       <SidebarFooter className="border-sidebar-border border-t">
         <div className="space-y-3 p-3">
           <div className="flex items-center gap-3">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="" />
-              <AvatarFallback className="bg-primary text-primary-foreground">
-                AD
-              </AvatarFallback>
-            </Avatar>
+            <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg">
+              <Building2 className="text-primary-foreground h-5 w-5" />
+            </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sidebar-foreground truncate">
-                Waiter / Admin / Kitchen
-              </p>
-              <p className="text-sidebar-foreground/60 truncate text-xs">
-                backoffice@bookies.com
-              </p>
+              <h2 className="text-sidebar-foreground truncate capitalize">
+                Back Office - {auth.accountType}
+              </h2>
             </div>
           </div>
           <Button
