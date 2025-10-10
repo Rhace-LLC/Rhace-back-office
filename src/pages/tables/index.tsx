@@ -199,7 +199,7 @@ export function TablesPage() {
   return (
     <div className="space-y-6 p-5">
       <div>
-        <h1>Table Management</h1>
+        <h1 className="text-2xl font-medium tracking-tight">Table Management</h1>
         <p className="text-muted-foreground">
           Monitor table status and manage assignments
         </p>

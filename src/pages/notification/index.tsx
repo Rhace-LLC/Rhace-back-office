@@ -183,7 +183,7 @@ export function Notifications() {
     <div className="space-y-6 p-5">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1>Notifications</h1>
+          <h1 className="text-2xl font-medium tracking-tight">Notifications</h1>
           <p className="text-muted-foreground">
             Stay updated with restaurant activities and alerts
           </p>

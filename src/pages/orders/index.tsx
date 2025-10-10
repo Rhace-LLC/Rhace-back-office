@@ -160,7 +160,7 @@ export function Orders() {
     <div className="space-y-6 p-5">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1>Orders Management</h1>
+          <h1 className="text-2xl font-medium tracking-tight">Orders Management</h1>
           <p className="text-muted-foreground">
             Track and manage all restaurant orders
           </p>
