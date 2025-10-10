@@ -41,7 +41,7 @@ export function Login() {
       console.log("Response:", response);
 
       // Save auth info
-      auth.login(response.token, email, response.role);
+      auth.login(response.tokens.access, email, response.role);
 
       toast.success("Login successful!");
       navigate("/dashboard"); // or your desired route

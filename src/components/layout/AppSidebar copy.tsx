@@ -26,7 +26,6 @@ import {
   Bell,
   User,
 } from "lucide-react";
-
 export interface MenuItem {
   title: string;
   url?: string;
@@ -120,12 +119,7 @@ export function useRoleBasedMenu(): MenuItem[] {
   return baseMenu;
 }
 
-interface AppSidebarProps {
-  isOpen: boolean;
-  onNavigate?: () => void;
-}
-
-export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
+export function AppSidebar({ isOpen }: { isOpen: boolean }) {
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -143,7 +137,6 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
   const handleNavigate = (url?: string) => {
     if (!url) return;
     navigate(url);
-    if (onNavigate) onNavigate(); // ✅ Close sidebar on mobile
   };
 
   const [logoutOpen, setLogoutOpen] = useState(false);
@@ -242,6 +235,7 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
         onConfirm={() => {
           console.log("Logging out...");
           auth.logout();
+          navigate("/login");
           // your logout logic here
         }}
       />

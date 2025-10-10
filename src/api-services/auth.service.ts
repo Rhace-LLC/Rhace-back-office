@@ -6,6 +6,19 @@ import { bookiesAxiosInstance } from "./utils/baseUrl";
 // ---------------------------
 // 📘 Interfaces
 // ---------------------------
+export interface LoginResponse {
+  tokens: {
+    refresh: string;
+    access: string;
+  };
+  role:
+    | "admin"
+    | "waiter"
+    | "kitchen"
+    | "inventory_mgr"
+    | "driver"
+    | "customer";
+}
 
 // Login request
 export interface LoginRequestBody {
@@ -35,7 +48,7 @@ export interface RegisterRequestBody {
 // ---------------------------
 
 // Login
-const login = async (data: LoginRequestBody): Promise<any> => {
+const login = async (data: LoginRequestBody): Promise<LoginResponse> => {
   const config = getConfig(`/auth/login/`, "POST", undefined, data);
   return bookiesAxiosInstance(config);
 };

@@ -109,7 +109,6 @@ const staffPerformanceData = [
 ];
 
 export function Analytics() {
-
   const user = mockUsers[2];
 
   // Only admins can access analytics

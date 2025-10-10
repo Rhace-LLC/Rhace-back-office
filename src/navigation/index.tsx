@@ -7,6 +7,7 @@ import {
   Routes,
   useLocation,
   useNavigate,
+  Navigate,
 } from "react-router-dom";
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
@@ -23,7 +24,7 @@ import { ForgotPassword } from "@/pages/auth/forgotpassword";
 import { ResetPassword } from "@/pages/auth/resetpassword";
 import { VerifyOtp } from "@/pages/auth/verifyaccount";
 
-export type UserRole = "Waiter" | "Kitchen" | "Admin";
+export type UserRole = "waiter" | "kitchen" | "admin";
 
 export interface User {
   id: string;
@@ -32,18 +33,41 @@ export interface User {
   shift: string;
 }
 
-// Import pages
-
+// Scroll to top on route change
 const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    // Scroll window to the top whenever the route changes
     window.scrollTo(0, 0);
   }, [pathname]);
 
   return null;
 };
+
+/** 🔒 Protected Route Wrapper */
+function ProtectedRoute({
+  children,
+  allowedRoles,
+}: {
+  children: React.ReactNode;
+  allowedRoles?: UserRole[];
+}) {
+  const auth = useAuth();
+
+  if (auth.loading) {
+    return <div className="p-8 text-center">Loading Session...</div>;
+  }
+
+  if (!auth.isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(auth.accountType as UserRole)) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <>{children}</>;
+}
 
 function Navigation(): React.JSX.Element {
   return (
@@ -56,48 +80,96 @@ function Navigation(): React.JSX.Element {
   );
 }
 
-// Move useLocation inside a separate component inside Router
-// How to implement page not found?
 function NavigationContent() {
-  let auth = useAuth();
-  let navigate = useNavigate();
+  const auth = useAuth();
+  const navigate = useNavigate();
   const location = useLocation();
 
+  console.log({ auth });
+
+  // Redirect authenticated users from "/" to /dashboard
   useEffect(() => {
-    // This useEffect is now only for general redirection,
-    // but the core fix is in the conditional rendering below.
     if (auth.isAuthenticated && location.pathname === "/") {
       navigate("/dashboard");
     }
   }, [auth, location, navigate]);
 
   if (auth.isAuthenticated && location.pathname === "/") {
-    return null; // Return nothing to prevent the landing page from rendering
+    return null;
   }
 
   return (
     <div className="min-h-screen">
-      <main className={`flex`}>
-        <section id="mainpage" className={`flex-1`}>
+      <main className="flex">
+        <section id="mainpage" className="flex-1">
           <Routes>
+            {/* Public Routes */}
             <Route path="/" Component={Login} />
-            {/* Auth Pages */}
             <Route path="/login" Component={Login} />
             <Route path="/signup" Component={SignUp} />
             <Route path="/forgot-password" Component={ForgotPassword} />
             <Route path="/resetpassword" Component={ResetPassword} />
             <Route path="/verify-email" Component={VerifyOtp} />
 
-            {/* Functional Logged In Pages */}
-            <Route path="/dashboard" Component={Dashboard} />
-            <Route path="/orders" Component={Orders} />
-            <Route path="/tables" Component={TablesPage} />
-            <Route path="/menu" Component={MenuManagement} />
-            <Route path="/notifications" Component={Notifications} />
-            <Route path="/profile" Component={Profile} />
-            <Route path="/analytics" Component={Analytics} />
+            {/* 🔒 Protected Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute>
+                  <Orders />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tables"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "waiter"]}>
+                  <TablesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/menu"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "kitchen"]}>
+                  <MenuManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <Notifications />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/analytics"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <Analytics />
+                </ProtectedRoute>
+              }
+            />
 
-            {/* 404 Route - must be last */}
+            {/* 404 - Must be last */}
             <Route path="*" Component={NotFound} />
           </Routes>
         </section>
