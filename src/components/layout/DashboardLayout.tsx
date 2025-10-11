@@ -111,7 +111,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
         {/* Slide-out Menu */}
         <div
-          className={`bg-sidebar border-sidebar-border fixed top-0 left-0 z-50 h-full transform border-r transition-transform duration-300 ease-in-out ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"} w-[70%] max-w-[250px]`}
+          className={`bg-sidebar border-sidebar-border fixed top-0 left-0 z-50 h-full transform border-r transition-transform duration-300 ease-in-out ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"} w-[80%] max-w-[300px]`}
         >
           <MobileMenu
             onNavigate={() => {
@@ -122,7 +122,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
 
         {/* Page Content */}
-        <div className="pt-16">{children}</div>
+        <div className="">{children}</div>
       </div>
     </div>
   );

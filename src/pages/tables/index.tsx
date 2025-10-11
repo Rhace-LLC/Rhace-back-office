@@ -197,9 +197,11 @@ export function TablesPage() {
   const totalRevenue = tables.reduce((sum, table) => sum + table.orderValue, 0);
 
   return (
-    <div className="space-y-6 p-5">
+    <div className="mt-15 space-y-6 p-5 md:mt-0">
       <div>
-        <h1 className="text-2xl font-medium tracking-tight">Table Management</h1>
+        <h1 className="text-2xl font-medium tracking-tight">
+          Table Management
+        </h1>
         <p className="text-muted-foreground">
           Monitor table status and manage assignments
         </p>

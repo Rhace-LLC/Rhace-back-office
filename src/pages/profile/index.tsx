@@ -83,9 +83,11 @@ export function Profile() {
     .toUpperCase();
 
   return (
-    <div className="space-y-6 p-5">
+    <div className="mt-15 space-y-6 p-5 md:mt-0">
       <div>
-        <h1 className="text-2xl font-medium tracking-tight">Profile Settings</h1>
+        <h1 className="text-2xl font-medium tracking-tight">
+          Profile Settings
+        </h1>
         <p className="text-muted-foreground">
           Manage your account information and preferences
         </p>

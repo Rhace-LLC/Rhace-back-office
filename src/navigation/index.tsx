@@ -84,9 +84,6 @@ function NavigationContent() {
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
-  console.log({ auth });
-
   // Redirect authenticated users from "/" to /dashboard
   useEffect(() => {
     if (auth.isAuthenticated && location.pathname === "/") {

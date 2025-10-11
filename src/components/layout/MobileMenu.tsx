@@ -44,7 +44,7 @@ export function MobileMenu({ onNavigate }: MobileMenuProps) {
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-sidebar-foreground/60 truncate text-[16px]">
+            <p className="text-sidebar-foreground/60 w-full max-w-[180px] truncate overflow-hidden text-[16px] whitespace-nowrap">
               {auth.email}
             </p>
             <p className="text-[15px] text-gray-500 capitalize">

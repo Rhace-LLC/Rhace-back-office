@@ -10,15 +10,40 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { requestPasswordReset } from "@/api-services/auth.service";
+import { parseError } from "@/api-services/utils/parseError";
 
 export function ForgotPassword() {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Password reset link sent to your email!");
+
+    if (!email.trim()) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Await the password reset API call
+      const response = await requestPasswordReset(email);
+
+      console.log("Password reset response:", response);
+      toast.success("Password reset link sent to your email!");
+      navigate(`/resetpassword?email=${email}`);
+    } catch (error: any) {
+      console.error("Password reset error:", error);
+      const message = parseError(error) || "Failed to send reset link!";
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,8 +66,12 @@ export function ForgotPassword() {
                 required
               />
             </div>
-            <Button className="w-full" style={{ backgroundColor: "#2542e3" }}>
-              Send Reset Link
+            <Button
+              className="w-full"
+              disabled={loading}
+              style={{ backgroundColor: "#2542e3" }}
+            >
+              {loading ? "Sending Reset Link..." : "Send Reset Link"}
             </Button>
             <p className="text-muted-foreground mt-3 text-center text-sm">
               Remember your password?{" "}

@@ -277,10 +277,12 @@ export function MenuManagement() {
     ) / totalDishes;
 
   return (
-    <div className="space-y-6 p-5">
+    <div className="mt-15 space-y-6 p-5 md:mt-0">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-medium tracking-tight">Menu Management</h1>
+          <h1 className="text-2xl font-medium tracking-tight">
+            Menu Management
+          </h1>
           <p className="text-muted-foreground">
             Manage dishes, categories, and availability
           </p>
