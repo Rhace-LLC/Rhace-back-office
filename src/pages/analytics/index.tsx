@@ -34,7 +34,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { mockUsers } from "@/navigation/mock";
+import { useAuth } from "@/contexts/AuthContext";
 
 const dailyRevenueData = [
   { day: "Mon", revenue: 2400, orders: 45 },
@@ -109,10 +109,10 @@ const staffPerformanceData = [
 ];
 
 export function Analytics() {
-  const user = mockUsers[2];
+  const auth = useAuth()
 
   // Only admins can access analytics
-  if (user?.role !== "Admin") {
+  if (auth.isAdmin) {
     return (
       <div className="flex min-h-[400px] items-center justify-center p-5">
         <div className="text-center">

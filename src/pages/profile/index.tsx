@@ -25,16 +25,14 @@ import {
 
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
-import { mockUsers } from "@/navigation/mock";
 
 export function Profile() {
-  const { logout } = useAuth();
-  const user = mockUsers[1];
+  const auth = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [profileForm, setProfileForm] = useState({
-    name: user?.name || "",
-    email: user?.role?.toLowerCase() + "@bookies.com" || "",
+    name:  "",
+    email: auth.email || "",
     phone: "+1 (555) 123-4567",
     address: "123 Restaurant St, Food City, FC 12345",
   });
@@ -70,13 +68,13 @@ export function Profile() {
   };
 
   const handleLogout = () => {
-    logout();
+    auth.logout();
     toast.success("Logged out successfully");
   };
 
-  if (!user) return null;
+  if (!auth) return null;
 
-  const userInitials = user.name
+  const userInitials = ""
     .split(" ")
     .map((n) => n[0])
     .join("")
@@ -99,15 +97,15 @@ export function Profile() {
           <CardHeader className="text-center">
             <Avatar className="mx-auto mb-4 h-24 w-24">
               <AvatarImage
-                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`}
+                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${"User Name"}`}
               />
               <AvatarFallback className="text-xl">
                 {userInitials}
               </AvatarFallback>
             </Avatar>
-            <CardTitle>{user.name}</CardTitle>
+            <CardTitle>{"User Name"}</CardTitle>
             <CardDescription className="flex items-center justify-center gap-2">
-              <Badge className="bg-[#2542e3]">{user.role}</Badge>
+              <Badge className="bg-[#2542e3]">{auth.accountType}</Badge>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -121,7 +119,7 @@ export function Profile() {
             </div>
             <div className="flex items-center gap-3 text-sm">
               <Clock className="text-muted-foreground h-4 w-4" />
-              <span>{user.shift}</span>
+              <span>{"Afternoon"}</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
               <MapPin className="text-muted-foreground h-4 w-4" />
@@ -207,7 +205,7 @@ export function Profile() {
               </div>
               <div>
                 <Label htmlFor="role">Role</Label>
-                <Input id="role" value={user.role} disabled />
+                <Input id="role" value={auth.accountType} disabled />
               </div>
             </div>
 
@@ -228,7 +226,7 @@ export function Profile() {
 
             <div>
               <Label htmlFor="shift">Shift Schedule</Label>
-              <Input id="shift" value={user.shift} disabled />
+              <Input id="shift" value={"Afternoon"} disabled />
             </div>
 
             {isEditing && (
