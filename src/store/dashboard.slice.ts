@@ -1,5 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AdminDashboardData, AdminDashboardStats, KitchenDashboardData, KitchenDashboardStats, WaiterDashboardData, WaiterDashboardStats } from "@/types/dashboard.types";
+import {
+  AdminDashboardData,
+  AdminDashboardStats,
+  KitchenDashboardData,
+  KitchenDashboardStats,
+  WaiterDashboardData,
+  WaiterDashboardStats,
+} from "@/types/dashboard.types";
 
 // === Combined Redux Slice State ===
 export interface DashboardState {
@@ -11,8 +18,6 @@ export interface DashboardState {
   waiterStats: WaiterDashboardStats;
   kitchenStats: KitchenDashboardStats;
 }
-
-
 
 const initialState: DashboardState = {
   adminDashboardData: { revenueData: [], staffActivities: [] },
@@ -35,8 +40,6 @@ const initialState: DashboardState = {
     ordersCompleted: { count: 0, period: "" },
   },
 };
-
-
 
 // === Slice ===
 export const dashboardSlice = createSlice({
@@ -67,19 +70,24 @@ export const dashboardSlice = createSlice({
       state.kitchenStats = action.payload;
     },
 
-
     // Replace entire Admin Dashboard data
     updateAdminDashboardData(state, action: PayloadAction<AdminDashboardData>) {
       state.adminDashboardData = action.payload;
     },
 
     // Update only Revenue Data (chart)
-    updateAdminRevenueData(state, action: PayloadAction<AdminDashboardData["revenueData"]>) {
+    updateAdminRevenueData(
+      state,
+      action: PayloadAction<AdminDashboardData["revenueData"]>
+    ) {
       state.adminDashboardData.revenueData = action.payload;
     },
 
     // Update only Staff Activities (table)
-    updateAdminStaffActivities(state, action: PayloadAction<AdminDashboardData["staffActivities"]>) {
+    updateAdminStaffActivities(
+      state,
+      action: PayloadAction<AdminDashboardData["staffActivities"]>
+    ) {
       state.adminDashboardData.staffActivities = action.payload;
     },
 

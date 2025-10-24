@@ -23,6 +23,7 @@ import { SignUp } from "@/pages/auth/signup";
 import { ForgotPassword } from "@/pages/auth/forgotpassword";
 import { ResetPassword } from "@/pages/auth/resetpassword";
 import { VerifyOtp } from "@/pages/auth/verifyaccount";
+import CategoryPage from "@/pages/category";
 
 export type UserRole = "waiter" | "kitchen" | "admin";
 
@@ -130,6 +131,14 @@ function NavigationContent() {
               element={
                 <ProtectedRoute allowedRoles={["admin", "waiter"]}>
                   <TablesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/category"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <CategoryPage />
                 </ProtectedRoute>
               }
             />

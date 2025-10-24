@@ -109,7 +109,7 @@ const staffPerformanceData = [
 ];
 
 export function Analytics() {
-  const auth = useAuth()
+  const auth = useAuth();
 
   // Only admins can access analytics
   if (auth.isAdmin) {

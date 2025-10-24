@@ -20,12 +20,11 @@ export interface Table {
 }
 
 export interface StaffActivity {
-  staffName: string;        // Full name of the staff member
-  role: string;         // e.g., "Waiter", "Kitchen", "Chef", etc.
-  orders: number;       // Number of orders handled or completed
+  staffName: string; // Full name of the staff member
+  role: string; // e.g., "Waiter", "Kitchen", "Chef", etc.
+  orders: number; // Number of orders handled or completed
   performance: "Excellent" | "Good" | "Average" | "Poor";
 }
-
 
 // === Admin Dashboard Stats ===
 export interface AdminDashboardStats {
@@ -84,7 +83,7 @@ export interface KitchenDashboardStats {
 // === Dashboard Data (Charts, Tables, Lists) ===
 export interface AdminDashboardData {
   revenueData: RevenueItem[];
-  staffActivities: StaffActivity[]
+  staffActivities: StaffActivity[];
 }
 
 export interface WaiterDashboardData {

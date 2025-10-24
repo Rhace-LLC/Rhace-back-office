@@ -31,7 +31,7 @@ export function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [profileForm, setProfileForm] = useState({
-    name:  "",
+    name: "",
     email: auth.email || "",
     phone: "+1 (555) 123-4567",
     address: "123 Restaurant St, Food City, FC 12345",

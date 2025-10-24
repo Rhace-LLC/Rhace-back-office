@@ -47,9 +47,9 @@ export function StatsAdminDashboard() {
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="bg-muted text-muted-foreground flex flex-col gap-6 rounded-xl border animate-pulse"
+            className="bg-muted text-muted-foreground flex animate-pulse flex-col gap-6 rounded-xl border"
           >
-            <div className="[&:last-child]:pb-6 p-4">
+            <div className="p-4 [&:last-child]:pb-6">
               <div className="text-2xl font-bold">--</div>
               <div className="text-sm">Loading...</div>
             </div>
@@ -60,14 +60,14 @@ export function StatsAdminDashboard() {
 
   if (fetchSummaryError)
     return (
-      <div className="col-span-4 bg-red-50 text-muted-foreground rounded-xl border border-red-100 p-6 flex flex-col items-center justify-center gap-3">
-        <div className="text-red-500 text-[18px] font-medium tracking-tight">
+      <div className="text-muted-foreground col-span-4 flex flex-col items-center justify-center gap-3 rounded-xl border border-red-100 bg-red-50 p-6">
+        <div className="text-[18px] font-medium tracking-tight text-red-500">
           Unable to load summary data
         </div>
-        <div className="text-red-500 tracking-tight">{fetchSummaryError}</div>
+        <div className="tracking-tight text-red-500">{fetchSummaryError}</div>
         <button
           onClick={fetchSummary}
-          className="px-10 cursor-pointer py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
+          className="cursor-pointer rounded-lg bg-red-500 px-10 py-2 text-white transition hover:bg-red-600"
         >
           Retry
         </button>
@@ -85,7 +85,7 @@ export function StatsAdminDashboard() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl">{stats.activeOrders.count}</div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-xs">
             +{stats.activeOrders.change} from last hour
           </p>
         </CardContent>
@@ -98,7 +98,7 @@ export function StatsAdminDashboard() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl">${stats.todaysRevenue.amount}</div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-xs">
             +{stats.todaysRevenue.percentChange}% from yesterday
           </p>
         </CardContent>
@@ -111,8 +111,9 @@ export function StatsAdminDashboard() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl">{stats.tableOccupancy.percentage}%</div>
-          <p className="text-xs text-muted-foreground">
-            {stats.tableOccupancy.occupied}/{stats.tableOccupancy.totalTables} tables
+          <p className="text-muted-foreground text-xs">
+            {stats.tableOccupancy.occupied}/{stats.tableOccupancy.totalTables}{" "}
+            tables
           </p>
         </CardContent>
       </Card>
@@ -124,11 +125,11 @@ export function StatsAdminDashboard() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl">{stats.staffActive.count}</div>
-          <p className="text-xs text-muted-foreground">{stats.staffActive.note}</p>
+          <p className="text-muted-foreground text-xs">
+            {stats.staffActive.note}
+          </p>
         </CardContent>
       </Card>
     </div>
   );
 }
-
-

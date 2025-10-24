@@ -1,11 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
-import dashboardReducer from "./dashboard.slice"
+import dashboardReducer from "./dashboard.slice";
+import categoryReducer from "./category.slice";
+import menuReducer from "./menu.slice";
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
-    dashboard: dashboardReducer
+    dashboard: dashboardReducer,
+    category: categoryReducer,
+    menu: menuReducer,
     // Add more slices here
   },
   devTools: import.meta.env.MODE !== "production",

@@ -12,7 +12,7 @@ import {
 } from "../ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { LayoutDashboard, LogOut, Building2 } from "lucide-react";
+import { LayoutDashboard, LogOut, Building2, Snowflake } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
@@ -67,6 +67,11 @@ export function useRoleBasedMenu(): MenuItem[] {
         title: "Tables",
         url: "/tables",
         icon: ListOrdered,
+      },
+      {
+        title: "Category",
+        url: "/category",
+        icon: Snowflake,
       },
       {
         title: "Menu Management",
@@ -157,7 +162,6 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
             </AvatarFallback>
           </Avatar>
           <div>
-
             <p className="text-sidebar-foreground/60 w-full max-w-[180px] truncate overflow-hidden text-[16px] whitespace-nowrap">
               {auth.email}
             </p>

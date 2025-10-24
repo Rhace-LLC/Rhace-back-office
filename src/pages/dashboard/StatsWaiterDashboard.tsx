@@ -47,9 +47,9 @@ export function StatsWaiterDashboard() {
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="bg-muted text-muted-foreground flex flex-col gap-6 rounded-xl border animate-pulse"
+            className="bg-muted text-muted-foreground flex animate-pulse flex-col gap-6 rounded-xl border"
           >
-            <div className="[&:last-child]:pb-6 p-4">
+            <div className="p-4 [&:last-child]:pb-6">
               <div className="text-2xl font-bold">--</div>
               <div className="text-sm">Loading...</div>
             </div>
@@ -60,14 +60,14 @@ export function StatsWaiterDashboard() {
 
   if (fetchSummaryError)
     return (
-      <div className="col-span-3 bg-red-50 text-muted-foreground rounded-xl border border-red-100 p-6 flex flex-col items-center justify-center gap-3">
-        <div className="text-red-500 text-[18px] font-medium tracking-tight">
+      <div className="text-muted-foreground col-span-3 flex flex-col items-center justify-center gap-3 rounded-xl border border-red-100 bg-red-50 p-6">
+        <div className="text-[18px] font-medium tracking-tight text-red-500">
           Unable to load summary data
         </div>
-        <div className="text-red-500 tracking-tight">{fetchSummaryError}</div>
+        <div className="tracking-tight text-red-500">{fetchSummaryError}</div>
         <button
           onClick={fetchSummary}
-          className="px-10 cursor-pointer py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
+          className="cursor-pointer rounded-lg bg-red-500 px-10 py-2 text-white transition hover:bg-red-600"
         >
           Retry
         </button>
@@ -85,7 +85,7 @@ export function StatsWaiterDashboard() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl">{stats.myTables.total}</div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-xs">
             {stats.myTables.occupied} occupied, {stats.myTables.free} free
           </p>
         </CardContent>
@@ -98,7 +98,7 @@ export function StatsWaiterDashboard() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl">{stats.pendingOrders.count}</div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-xs">
             {stats.pendingOrders.note}
           </p>
         </CardContent>
@@ -111,7 +111,7 @@ export function StatsWaiterDashboard() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl">${stats.todaysTips.amount}</div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-xs">
             +{stats.todaysTips.percentChange}% from yesterday
           </p>
         </CardContent>
@@ -119,5 +119,3 @@ export function StatsWaiterDashboard() {
     </div>
   );
 }
-
-

@@ -52,7 +52,10 @@ export const AdminDashboard = () => {
       await new Promise((resolve) => setTimeout(resolve, 2500));
 
       // dummy simulated response
-      const simulatedData: {revenueData: RevenueItem[], staffActivities: StaffActivity[]} = {
+      const simulatedData: {
+        revenueData: RevenueItem[];
+        staffActivities: StaffActivity[];
+      } = {
         revenueData: [
           { name: "Mon", revenue: 1200 },
           { name: "Tue", revenue: 1800 },
@@ -116,7 +119,7 @@ export const AdminDashboard = () => {
           {[...Array(2)].map((_, i) => (
             <Card key={i}>
               <CardHeader>
-                <Skeleton className="h-5 w-2/3 mb-2" />
+                <Skeleton className="mb-2 h-5 w-2/3" />
                 <Skeleton className="h-4 w-1/2" />
               </CardHeader>
               <CardContent>
@@ -126,7 +129,7 @@ export const AdminDashboard = () => {
           ))}
         </div>
       ) : error ? (
-        <div className="text-center text-red-600 font-medium">{error}</div>
+        <div className="text-center font-medium text-red-600">{error}</div>
       ) : (
         <div className="grid grid-cols-1 gap-6">
           {/* === Revenue Chart === */}
@@ -156,9 +159,7 @@ export const AdminDashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle>Staff Activity</CardTitle>
-              <CardDescription>
-                Performance summary for today
-              </CardDescription>
+              <CardDescription>Performance summary for today</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -182,11 +183,11 @@ export const AdminDashboard = () => {
                             activity.performance === "Excellent"
                               ? "bg-green-100 text-green-800"
                               : activity.performance === "Good"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-red-100 text-red-800"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800"
                           }
                         >
-                           4.5 {" "} <Star className="w-3 h-3" />
+                          4.5 <Star className="h-3 w-3" />
                         </Badge>
                       </TableCell>
                     </TableRow>

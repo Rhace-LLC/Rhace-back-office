@@ -5,6 +5,7 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "../ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { Menu } from "lucide-react";
 import { MobileMenu } from "./MobileMenu";
+import RhaceImg from "../../assets/Rhace-10.png";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -59,11 +60,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     </div>
 
                     <div className="flex items-center justify-center gap-2">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#2542e3]">
-                        <div className="h-4 w-4 rounded-full bg-white" />
-                      </div>
                       <span className="text-royalblue-600 text-[18px] font-semibold">
-                        Bookies
+                        <img src={RhaceImg} className="w-[80px]" />
                       </span>
                       <span className="relative top-[1.5px] text-[15px] font-medium text-gray-600 capitalize italic">
                         {auth.accountType}
@@ -88,11 +86,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </button>
 
             <div className="flex items-center justify-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#2542e3]">
-                <div className="h-4 w-4 rounded-full bg-white" />
-              </div>
               <span className="text-royalblue-600 text-[18px] font-semibold">
-                Bookies
+                <img src={RhaceImg} className="w-[80px]" />
               </span>
               <span className="relative top-[1.5px] text-[15px] font-medium text-gray-600 capitalize italic">
                 {auth.accountType}

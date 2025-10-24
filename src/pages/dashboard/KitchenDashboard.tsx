@@ -95,7 +95,9 @@ export const KitchenDashboard = () => {
   return (
     <div className="mt-15 space-y-6 p-5 md:mt-0">
       <div>
-        <h1 className="text-2xl font-medium tracking-tight">Kitchen Dashboard</h1>
+        <h1 className="text-2xl font-medium tracking-tight">
+          Kitchen Dashboard
+        </h1>
         <p className="text-muted-foreground">
           Manage incoming orders and preparation queue
         </p>
@@ -108,25 +110,25 @@ export const KitchenDashboard = () => {
         <div className="grid grid-cols-1 gap-6">
           <Card>
             <CardHeader>
-              <Skeleton className="h-6 w-1/3 mb-2" />
+              <Skeleton className="mb-2 h-6 w-1/3" />
               <Skeleton className="h-4 w-1/2" />
             </CardHeader>
             <CardContent>
               {[...Array(4)].map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full mb-2" />
+                <Skeleton key={i} className="mb-2 h-12 w-full" />
               ))}
             </CardContent>
           </Card>
         </div>
       ) : error ? (
-        <div className="col-span-1 bg-red-50 text-muted-foreground rounded-xl border border-red-100 p-6 flex flex-col items-center justify-center gap-3">
-          <div className="text-red-500 text-[18px] font-medium tracking-tight">
+        <div className="text-muted-foreground col-span-1 flex flex-col items-center justify-center gap-3 rounded-xl border border-red-100 bg-red-50 p-6">
+          <div className="text-[18px] font-medium tracking-tight text-red-500">
             Unable to load kitchen data
           </div>
-          <div className="text-red-500 tracking-tight">{error}</div>
+          <div className="tracking-tight text-red-500">{error}</div>
           <button
             onClick={simulateFetchKitchenData}
-            className="px-10 cursor-pointer py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
+            className="cursor-pointer rounded-lg bg-red-500 px-10 py-2 text-white transition hover:bg-red-600"
           >
             Retry
           </button>
@@ -135,7 +137,9 @@ export const KitchenDashboard = () => {
         <Card>
           <CardHeader>
             <CardTitle>Orders Queue</CardTitle>
-            <CardDescription>Orders awaiting preparation with timer</CardDescription>
+            <CardDescription>
+              Orders awaiting preparation with timer
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
@@ -162,7 +166,9 @@ export const KitchenDashboard = () => {
                     </TableCell>
                     <TableCell>
                       <Badge
-                        variant={order.status === "Pending" ? "destructive" : "default"}
+                        variant={
+                          order.status === "Pending" ? "destructive" : "default"
+                        }
                       >
                         {order.status}
                       </Badge>

@@ -22,7 +22,6 @@ const GenericSheet: React.FC<GenericSheetProps> = ({
   onOpenChange,
   title = "Sheet Title",
   subtitle = "Sheet subtitle goes here.",
-  maxWidth = 600,
   children,
   footer,
 }) => {
@@ -30,7 +29,7 @@ const GenericSheet: React.FC<GenericSheetProps> = ({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className={`w-full pt-10 !max-w-[${maxWidth}px] overflow-y-auto`}
+        className={`w-full !max-w-[500px] overflow-y-auto p-4 pt-10`}
       >
         <SheetHeader>
           <SheetTitle className="text-2xl tracking-tight">{title}</SheetTitle>
@@ -38,7 +37,7 @@ const GenericSheet: React.FC<GenericSheetProps> = ({
         </SheetHeader>
 
         {/* Body */}
-        <div className="border-t border-b border-dashed border-gray-400">
+        <div className="mt-5 mb-5 border-t border-b border-dashed border-gray-400">
           {children ?? (
             <div className="flex min-h-[220px] items-center justify-center">
               <span className="text-muted-foreground text-sm">

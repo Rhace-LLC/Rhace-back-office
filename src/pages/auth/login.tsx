@@ -68,7 +68,7 @@ export function Login() {
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2542e3]">
               <div className="h-5 w-5 rounded-full bg-white" />
             </div>
-            <span className="text-2xl font-semibold">Bookies</span>
+            <span className="text-2xl font-semibold">Rhace</span>
           </div>
           <CardTitle>Welcome Back</CardTitle>
           <CardDescription>Sign in to your back office account</CardDescription>

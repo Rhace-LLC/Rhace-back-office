@@ -7,19 +7,13 @@ export function Dashboard() {
   const auth = useAuth();
 
   if (auth.isWaiter) {
-    return (
-      <WaiterDashboard />
-    );
+    return <WaiterDashboard />;
   }
 
   if (auth.isKitchen) {
-    return (
-      <KitchenDashboard />
-    );
+    return <KitchenDashboard />;
   }
 
   // Admin Dashboard
-  return (
-    <AdminDashboard />
-  );
+  return <AdminDashboard />;
 }

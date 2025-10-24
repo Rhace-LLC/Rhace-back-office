@@ -154,7 +154,7 @@ export function SignUp() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle>Create Account</CardTitle>
-          <CardDescription>Sign up for a new Bookies account</CardDescription>
+          <CardDescription>Sign up for a new Rhace account</CardDescription>
         </CardHeader>
 
         <CardContent>

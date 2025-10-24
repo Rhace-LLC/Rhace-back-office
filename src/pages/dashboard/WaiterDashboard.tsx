@@ -98,8 +98,12 @@ export const WaiterDashboard = () => {
   return (
     <div className="mt-15 space-y-6 p-5 md:mt-0">
       <div>
-        <h1 className="text-2xl font-medium tracking-tight">Waiter Dashboard</h1>
-        <p className="text-muted-foreground">Manage your assigned tables and orders</p>
+        <h1 className="text-2xl font-medium tracking-tight">
+          Waiter Dashboard
+        </h1>
+        <p className="text-muted-foreground">
+          Manage your assigned tables and orders
+        </p>
       </div>
 
       <StatsWaiterDashboard />
@@ -109,26 +113,26 @@ export const WaiterDashboard = () => {
           {[...Array(2)].map((_, i) => (
             <Card key={i}>
               <CardHeader>
-                <Skeleton className="h-5 w-1/2 mb-2" />
+                <Skeleton className="mb-2 h-5 w-1/2" />
                 <Skeleton className="h-4 w-1/3" />
               </CardHeader>
               <CardContent>
                 {[...Array(4)].map((_, j) => (
-                  <Skeleton key={j} className="h-12 w-full mb-2" />
+                  <Skeleton key={j} className="mb-2 h-12 w-full" />
                 ))}
               </CardContent>
             </Card>
           ))}
         </div>
       ) : error ? (
-        <div className="col-span-1 bg-red-50 text-muted-foreground rounded-xl border border-red-100 p-6 flex flex-col items-center justify-center gap-3">
-          <div className="text-red-500 text-[18px] font-medium tracking-tight">
+        <div className="text-muted-foreground col-span-1 flex flex-col items-center justify-center gap-3 rounded-xl border border-red-100 bg-red-50 p-6">
+          <div className="text-[18px] font-medium tracking-tight text-red-500">
             Unable to load waiter data
           </div>
-          <div className="text-red-500 tracking-tight">{error}</div>
+          <div className="tracking-tight text-red-500">{error}</div>
           <button
             onClick={simulateFetchWaiterData}
-            className="px-10 cursor-pointer py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
+            className="cursor-pointer rounded-lg bg-red-500 px-10 py-2 text-white transition hover:bg-red-600"
           >
             Retry
           </button>
@@ -139,7 +143,9 @@ export const WaiterDashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle>My Assigned Tables</CardTitle>
-              <CardDescription>Tables currently under your care</CardDescription>
+              <CardDescription>
+                Tables currently under your care
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -155,8 +161,8 @@ export const WaiterDashboard = () => {
                           table.status === "Occupied"
                             ? "destructive"
                             : table.status === "Free"
-                            ? "default"
-                            : "secondary"
+                              ? "default"
+                              : "secondary"
                         }
                       >
                         {table.status}
@@ -176,7 +182,9 @@ export const WaiterDashboard = () => {
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>Pending Orders</CardTitle>
-                <CardDescription>Orders requiring your attention</CardDescription>
+                <CardDescription>
+                  Orders requiring your attention
+                </CardDescription>
               </div>
             </CardHeader>
             <CardContent>
@@ -198,7 +206,9 @@ export const WaiterDashboard = () => {
                       <div className="text-right">
                         <div className="text-sm">${order.total}</div>
                         <Badge
-                          variant={order.status === "Pending" ? "secondary" : "default"}
+                          variant={
+                            order.status === "Pending" ? "secondary" : "default"
+                          }
                           className="text-xs"
                         >
                           {order.status}
