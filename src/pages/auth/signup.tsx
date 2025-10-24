@@ -12,9 +12,9 @@ import {
 } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { register, RegisterRequestBody } from "@/api-services/auth.service";
+import { register, RegisterRequestBody, requestPasswordReset } from "@/api-services/auth.service";
 import { parseError } from "@/api-services/utils/parseError";
-import RhaceImage from "../../assets/Rhace-10.png"
+import RhaceImage from "../../assets/Rhace-10.png";
 
 /** User roles available in Bookies system */
 export type UserRole =
@@ -136,6 +136,7 @@ export function SignUp() {
     try {
       // Await the register API call
       const response = await register(payload);
+      
 
       console.log("Response:", response);
 

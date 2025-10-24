@@ -13,7 +13,7 @@ import {
 import { toast } from "sonner";
 
 export function VerifyOtp() {
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +22,7 @@ export function VerifyOtp() {
       return;
     }
     toast.success("OTP verified successfully!");
-  };
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
@@ -52,5 +52,5 @@ export function VerifyOtp() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

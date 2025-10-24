@@ -20,10 +20,10 @@ import { Notifications } from "@/pages/notification";
 import { Profile } from "@/pages/profile";
 import { Analytics } from "@/pages/analytics";
 import { SignUp } from "@/pages/auth/signup";
-import { ForgotPassword } from "@/pages/auth/forgotpassword";
-import { ResetPassword } from "@/pages/auth/resetpassword";
 import { VerifyOtp } from "@/pages/auth/verifyaccount";
 import CategoryPage from "@/pages/category";
+import ForgotPassword from "@/pages/auth/forgotpassword";
+import ResetPassword from "@/pages/auth/resetpassword";
 
 export type UserRole = "waiter" | "kitchen" | "admin";
 
@@ -87,14 +87,10 @@ function NavigationContent() {
   const location = useLocation();
   // Redirect authenticated users from "/" to /dashboard
   useEffect(() => {
-    if (auth.isAuthenticated && location.pathname === "/") {
+    if (auth.isAuthenticated && location.pathname === "/login") {
       navigate("/dashboard");
     }
   }, [auth, location, navigate]);
-
-  if (auth.isAuthenticated && location.pathname === "/") {
-    return null;
-  }
 
   return (
     <div className="min-h-screen">

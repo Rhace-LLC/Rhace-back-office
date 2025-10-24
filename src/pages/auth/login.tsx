@@ -15,7 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { login, LoginRequestBody } from "@/api-services/auth.service";
 import { parseError } from "@/api-services/utils/parseError";
-import RhaceImage from "../../assets/Rhace-10.png"
+import RhaceImage from "../../assets/Rhace-10.png";
 
 export function Login() {
   const [email, setEmail] = useState("");
@@ -55,19 +55,17 @@ export function Login() {
     }
   };
 
-  const quickLogin = (role: string, email: string) => {
-    setEmail(email);
-    setPassword("password");
-    console.log("role", role);
-  };
-
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-7 text-center">
-        <div className="text-center">
-          <img src={RhaceImage} alt="Rhace Logo" className="w-[150px] mx-auto" />
-        </div>
+          <div className="text-center">
+            <img
+              src={RhaceImage}
+              alt="Rhace Logo"
+              className="mx-auto w-[150px]"
+            />
+          </div>
           <CardTitle>Welcome Back</CardTitle>
           <CardDescription>Sign in to your back office account</CardDescription>
         </CardHeader>
@@ -121,35 +119,6 @@ export function Login() {
               {loading ? "Signing In..." : "Sign In"}
             </Button>
           </form>
-
-          <div className="hidden space-y-2">
-            <p className="text-muted-foreground text-center text-sm">
-              Quick login (demo):
-            </p>
-            <div className="grid grid-cols-3 gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => quickLogin("Waiter", "waiter@bookies.com")}
-              >
-                Waiter
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => quickLogin("Kitchen", "kitchen@bookies.com")}
-              >
-                Kitchen
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => quickLogin("Admin", "admin@bookies.com")}
-              >
-                Admin
-              </Button>
-            </div>
-          </div>
         </CardContent>
       </Card>
     </div>
