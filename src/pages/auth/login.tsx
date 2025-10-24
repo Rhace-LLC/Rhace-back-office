@@ -15,6 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { login, LoginRequestBody } from "@/api-services/auth.service";
 import { parseError } from "@/api-services/utils/parseError";
+import RhaceImage from "../../assets/Rhace-10.png"
 
 export function Login() {
   const [email, setEmail] = useState("");
@@ -63,13 +64,10 @@ export function Login() {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1 text-center">
-          <div className="mb-4 flex items-center justify-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2542e3]">
-              <div className="h-5 w-5 rounded-full bg-white" />
-            </div>
-            <span className="text-2xl font-semibold">Rhace</span>
-          </div>
+        <CardHeader className="space-y-7 text-center">
+        <div className="text-center">
+          <img src={RhaceImage} alt="Rhace Logo" className="w-[150px] mx-auto" />
+        </div>
           <CardTitle>Welcome Back</CardTitle>
           <CardDescription>Sign in to your back office account</CardDescription>
         </CardHeader>
