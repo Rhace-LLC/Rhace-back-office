@@ -46,6 +46,7 @@ export function MenuManagement() {
   useEffect(() => {
     fetchCategory();
   }, []);
+  
   return (
     <div className="mt-15 space-y-6 p-5 md:mt-0">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">

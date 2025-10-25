@@ -188,7 +188,7 @@ export const AddDish: React.FC = () => {
     formData.append("description", dishForm.description.trim());
     formData.append("category_id", dishForm.category_id);
     formData.append("prep_time", dishForm.prep_time);
-    formData.append("ingredients_data", JSON.stringify([]));
+    formData.append("ingredients_data", JSON.stringify([{inventory_item: 3, quantity: 2}]));
 
     if (dishForm.image) formData.append("image", dishForm.image);
 
