@@ -135,7 +135,6 @@ export function SignUp() {
     try {
       // Await the register API call
       const response = await register(payload);
-      
 
       console.log("Response:", response);
 

@@ -68,7 +68,7 @@ export default function ResetPassword() {
           newPassword: form.password,
         };
         const response = await resetPassword(payload);
-        console.log("Response", response)
+        console.log("Response", response);
         toast.success(response?.message || "Password reset successful!");
       }
     } catch (error) {
@@ -80,17 +80,17 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 bg-gray-50">
-      <div className="w-full max-w-lg bg-transparent shadow-sm rounded-[10px] p-8 py-[100px] space-y-10 relative z-10">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+      <div className="relative z-10 w-full max-w-lg space-y-10 rounded-[10px] bg-transparent p-8 py-[100px] shadow-sm">
         <div className="text-center">
-          <img src={RhaceLogo} alt="Rhace Logo" className="w-[150px] mx-auto" />
+          <img src={RhaceLogo} alt="Rhace Logo" className="mx-auto w-[150px]" />
         </div>
 
         <div className="text-center">
           <h3 className="text-3xl font-bold text-gray-800">
             {step === "otp" ? "Verify OTP" : "Reset Password"}
           </h3>
-          <p className="font-medium text-gray-500 mt-2">
+          <p className="mt-2 font-medium text-gray-500">
             {step === "otp"
               ? "Enter your email and OTP sent to you"
               : "Set a new password for your account"}
@@ -134,14 +134,14 @@ export default function ResetPassword() {
 
               <Button
                 type="submit"
-                className="rounded-[10px] w-full bg-blue-600 hover:bg-blue-700"
+                className="w-full rounded-[10px] bg-blue-600 hover:bg-blue-700"
               >
                 Verify OTP
               </Button>
             </>
           ) : (
             <>
-              <div className="space-y-1 relative">
+              <div className="relative space-y-1">
                 <Label htmlFor="password">New Password</Label>
                 <Input
                   id="password"
@@ -155,12 +155,12 @@ export default function ResetPassword() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-8 text-gray-500 hover:text-gray-700"
+                  className="absolute top-8 right-3 text-gray-500 hover:text-gray-700"
                 >
                   {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
+                    <EyeOff className="h-4 w-4" />
                   ) : (
-                    <Eye className="w-4 h-4" />
+                    <Eye className="h-4 w-4" />
                   )}
                 </button>
                 {errors.password && (
@@ -168,7 +168,7 @@ export default function ResetPassword() {
                 )}
               </div>
 
-              <div className="space-y-1 relative">
+              <div className="relative space-y-1">
                 <Label htmlFor="confirm_password">Confirm Password</Label>
                 <Input
                   id="confirm_password"
@@ -182,12 +182,12 @@ export default function ResetPassword() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-8 text-gray-500 hover:text-gray-700"
+                  className="absolute top-8 right-3 text-gray-500 hover:text-gray-700"
                 >
                   {showConfirmPassword ? (
-                    <EyeOff className="w-4 h-4" />
+                    <EyeOff className="h-4 w-4" />
                   ) : (
-                    <Eye className="w-4 h-4" />
+                    <Eye className="h-4 w-4" />
                   )}
                 </button>
                 {errors.confirm_password && (
@@ -199,7 +199,7 @@ export default function ResetPassword() {
 
               <Button
                 type="submit"
-                className="rounded-[10px] w-full bg-blue-600 hover:bg-blue-700"
+                className="w-full rounded-[10px] bg-blue-600 hover:bg-blue-700"
               >
                 Reset Password
               </Button>

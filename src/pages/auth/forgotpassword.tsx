@@ -57,15 +57,15 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 bg-gray-50">
-      <div className="w-full max-w-lg bg-transparent shadow-sm rounded-[10px] p-8 py-[100px] space-y-10 relative z-10">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+      <div className="relative z-10 w-full max-w-lg space-y-10 rounded-[10px] bg-transparent p-8 py-[100px] shadow-sm">
         <div className="text-center">
-          <img src={RhaceLogo} alt="Rhace Logo" className="w-[150px] mx-auto" />
+          <img src={RhaceLogo} alt="Rhace Logo" className="mx-auto w-[150px]" />
         </div>
 
         <div className="text-center">
           <h3 className="text-3xl font-bold text-gray-800">Forgot Password</h3>
-          <p className="font-medium text-gray-500 mt-2">
+          <p className="mt-2 font-medium text-gray-500">
             Enter your email to receive a reset link.
           </p>
         </div>
@@ -82,12 +82,14 @@ export default function ForgotPassword() {
               placeholder="you@example.com"
               required
             />
-            {errors.email && <small className="text-red-500">{errors.email}</small>}
+            {errors.email && (
+              <small className="text-red-500">{errors.email}</small>
+            )}
           </div>
 
           <Button
             type="submit"
-            className="rounded-[10px] w-full bg-blue-600 hover:bg-blue-700"
+            className="w-full rounded-[10px] bg-blue-600 hover:bg-blue-700"
           >
             Send Reset Link
           </Button>

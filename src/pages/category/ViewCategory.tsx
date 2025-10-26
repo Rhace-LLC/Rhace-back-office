@@ -52,7 +52,7 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
     const formData = new FormData();
     formData.append("name", form.name);
     formData.append("description", form.description);
-    if (form.image) formData.append("image", form.image);
+    if (form.image) formData.append("image", form.imageFile || "");
 
     try {
       setLoading(true);

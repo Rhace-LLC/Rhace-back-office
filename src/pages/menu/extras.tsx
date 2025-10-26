@@ -8,24 +8,51 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { MenuDishData } from "@/store/menu.slice";
 import { useLoading } from "@/contexts/LoadingContext";
-import { createMenuItem } from "@/api-services/menu.service";
+import { createMenuItem, updateMenuItem } from "@/api-services/menu.service";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { parseError } from "@/api-services/utils/parseError";
 
 // =============== MANAGE DISH ===============
+// =============== MANAGE DISH ===============
 export const ManageDish: React.FC<{ dish: MenuDishData }> = ({ dish }) => {
+  const auth = useAuth();
   const [editMode, setEditMode] = useState(false);
+  const [preview, setPreview] = useState<string | null>(dish.image_url || null);
+
   const [dishForm, setDishForm] = useState({
     name: dish.name,
     price: dish.price,
     description: dish.description,
     available: dish.availability,
+    image: null as File | null,
   });
 
-  const handleSave = () => {
-    // Implement your API update logic here
-    console.log("Updated Dish:", dishForm);
+  // Handle image file selection + live preview
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    if (file) {
+      setDishForm((prev) => ({ ...prev, image: file }));
+
+      // Generate preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSave = async () => {
+    const formData = new FormData();
+    formData.append("name", dishForm.name);
+    formData.append("price", dishForm.price);
+    formData.append("description", dishForm.description);
+    formData.append("available", String(dishForm.available));
+    if (dishForm.image) formData.append("image", dishForm.image);
+    const response = await updateMenuItem(dish.id, formData, auth.token);
+
+    console.log("Updated Dish:", dishForm, response);
     setEditMode(false);
   };
 
@@ -39,10 +66,10 @@ export const ManageDish: React.FC<{ dish: MenuDishData }> = ({ dish }) => {
                 <img
                   src={dish.image_url}
                   alt={dish.name || "Dish image"}
-                  className="h-48 w-full rounded-2xl border border-gray-100 object-cover shadow-md"
+                  className="h-[100px] w-full rounded-2xl border border-gray-100 object-cover shadow-md"
                 />
               ) : (
-                <div className="flex h-48 w-full items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 text-sm text-gray-500 shadow-sm">
+                <div className="flex h-[100px] w-full items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 text-sm text-gray-500 shadow-sm">
                   No Image Available
                 </div>
               )}
@@ -84,6 +111,61 @@ export const ManageDish: React.FC<{ dish: MenuDishData }> = ({ dish }) => {
       ) : (
         <>
           <div className="space-y-4">
+            {/* === Image Upload + Preview === */}
+            <div>
+              <Label htmlFor="image">Dish Image</Label>
+              {preview ? (
+                <div className="relative mt-2">
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    className="h-[120px] w-full rounded-2xl border border-gray-200 object-cover shadow-md"
+                  />
+                  <button
+                    onClick={() => {
+                      setPreview(null);
+                      setDishForm((prev) => ({ ...prev, image: null }));
+                    }}
+                    className="absolute top-2 right-2 rounded-full bg-black/60 px-2 py-1 text-xs text-white transition hover:bg-black"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                // Clickable upload area
+                <label
+                  htmlFor="image"
+                  className="mt-2 flex h-[120px] w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 text-gray-500 transition hover:border-gray-400 hover:bg-gray-100"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="mb-1 h-8 w-8 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  <p className="text-sm font-medium">Click to upload image</p>
+                </label>
+              )}
+
+              {/* Hidden file input */}
+              <input
+                id="image"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </div>
+
+            {/* === Editable Fields === */}
             <div>
               <Label htmlFor="name">Dish Name</Label>
               <Input
@@ -188,9 +270,14 @@ export const AddDish: React.FC = () => {
     formData.append("description", dishForm.description.trim());
     formData.append("category_id", dishForm.category_id);
     formData.append("prep_time", dishForm.prep_time);
-    formData.append("ingredients_data", JSON.stringify([{inventory_item: 3, quantity: 2}]));
+    formData.append(
+      "ingredients_data",
+      JSON.stringify([{ inventory_item: 3, quantity: 2 }])
+    );
+    formData.append("is_special", "true");
 
     if (dishForm.image) formData.append("image", dishForm.image);
+    console.log("Dish Image", dishForm.image);
 
     try {
       setLoading(true);
