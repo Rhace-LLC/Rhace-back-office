@@ -1,0 +1,217 @@
+import React, { useEffect, useState } from "react";
+import { LucideDownload } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { parseError } from "@/api-services/utils/parseError";
+import { RootState } from "@/store/store";
+import { Pagination } from "@/components/pagination";
+import InventoryFilters from "./inventory_filters";
+
+import { ContentHOC } from "@/components/nocontent";
+import {
+  InventoryItem,
+  updateInventoryData,
+//  updateInventoryTotal,
+} from "@/store/inventory.slice";
+import { useAuth } from "@/contexts/AuthContext";
+import { getInventoryTransactions } from "@/api-services/inventory.service";
+import RenderInventoryTableData from "./inventory_table";
+import InventoryItemDialog from "./inventory_dialog";
+
+const ManageInventoryPage: React.FC = () => {
+  const auth = useAuth();
+  const dispatch = useDispatch();
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
+
+  const [viewState, setViewState] = useState<"normal" | "search" | "filter">(
+    "normal"
+  );
+
+  const [totalItems, setTotalItems] = useState(0);
+  const [page, setPage] = useState(1);
+  const page_size = 8;
+  const total_pages = Math.ceil(totalItems / page_size);
+
+  const [fetchLoading, setFetchLoading] = useState(false);
+  const [fetchError, setFetchError] = useState("");
+  const [dataDisposable, setDataDisposable] = useState<Record<string, InventoryItem[]>>({});
+
+  const [filters, setFilters] = useState<any>({
+    searchTerm: "",
+    category: "",
+  });
+
+  const dataStore = useSelector((state: RootState) => state.inventory);
+  const allData = dataStore.data;
+
+  // Normal Mode
+  const toShow = React.useMemo(() => allData[String(page)] ?? [], [allData, page]);
+
+  // Filter/Search Mode
+  const toShowWithFilters = React.useMemo(
+    () => dataDisposable[String(page)] ?? [],
+    [page, dataDisposable]
+  );
+
+  // ========== API Calls ==========
+  const fetchAllData = async () => {
+    try {
+      setFetchLoading(true);
+      setFetchError("");
+      const res = await getInventoryTransactions(auth.token);
+      dispatch(updateInventoryData({ key: String(page), data: res }));
+      //dispatch(updateInventoryTotal({ data_total: 69 }));
+    } catch (error) {
+      setFetchError(parseError(error) || "Failed to fetch inventory.");
+    } finally {
+      setFetchLoading(false);
+    }
+  };
+
+  const fetchDataWithFiltersAndSearch = async () => {
+    try {
+      setFetchLoading(true);
+      setFetchError("");
+      const res = await getInventoryTransactions(auth.token);
+      setTotalItems(50);
+      setDataDisposable((prev) => {
+        const existing = prev[String(page)] ?? [];
+        const combined = [...existing, ...res];
+        const unique = combined.filter(
+          (item, index, self) =>
+            index === self.findIndex((p) => p.id === item.id)
+        );
+        return { ...prev, [String(page)]: unique };
+      });
+    } catch (error) {
+      setFetchError(parseError(error) || "Failed to fetch inventory.");
+    } finally {
+      setFetchLoading(false);
+    }
+  };
+
+  const handleBack = () => {
+    setFilters({ searchTerm: "", category: "" });
+    setViewState("normal");
+    setPage(1);
+    //setTotalItems(dataStore.data_total);
+    setDataDisposable({});
+  };
+
+  // Pagination & Effects
+  useEffect(() => {
+    if (viewState !== "normal") return;
+    if (!allData[String(page)]) fetchAllData();
+  }, [page, viewState, allData]);
+
+  useEffect(() => {
+    if (viewState !== "search" && viewState !== "filter") return;
+    if (!dataDisposable[String(page)]) fetchDataWithFiltersAndSearch();
+  }, [page, viewState, dataDisposable, filters]);
+
+  useEffect(() => setPage(1), [viewState]);
+
+  useEffect(() => {
+    if (filters.category !== "" || filters.searchTerm.trim() !== "") {
+      setPage(1);
+      setViewState("filter");
+      setDataDisposable({});
+      fetchDataWithFiltersAndSearch();
+    } else handleBack();
+  }, [filters.category, filters.searchTerm]);
+
+  useEffect(() => setTotalItems(dataStore?.data_total || 0), [dataStore]);
+
+  return (
+    <div className="space-y-6 p-5 md:mt-0">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-medium">Manage Inventory</h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Track and manage your inventory items.
+          </p>
+        </div>
+        <button
+          className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium hover:bg-gray-200"
+          onClick={() => {
+            setSelectedItem(null);
+            setDialogOpen(true);
+          }}
+        >
+          + Add Inventory Item
+        </button>
+      </div>
+
+      {/* Filters */}
+      <InventoryFilters
+        filters={filters}
+        setFilters={setFilters}
+        onSearch={() => fetchDataWithFiltersAndSearch()}
+      />
+
+      {/* Inventory Table */}
+      {viewState === "normal" ? (
+        <ContentHOC
+          loading={fetchLoading}
+          error={!!fetchError}
+          noContent={toShow.length === 0}
+          loadingText="Fetching Inventory..."
+          noContentMessage="No Inventory Found"
+          noContentBtnText="Reload"
+          noContentAction={fetchAllData}
+          errMessage={fetchError}
+          actionFn={fetchAllData}
+        >
+          <RenderInventoryTableData
+            data={toShow}
+            onView={(item) => {
+              setSelectedItem(item);
+              setDialogOpen(true);
+            }}
+          />
+        </ContentHOC>
+      ) : (
+        <ContentHOC
+          loading={fetchLoading}
+          error={!!fetchError}
+          noContent={toShowWithFilters.length === 0}
+          loadingText="Fetching Filtered Inventory..."
+          noContentBtnText="Refresh"
+          errMessage={fetchError}
+          noContentMessage="No items found"
+          noContentAction={fetchDataWithFiltersAndSearch}
+          actionFn={fetchDataWithFiltersAndSearch}
+        >
+          <RenderInventoryTableData
+            data={toShowWithFilters}
+            onView={(item) => {
+              setSelectedItem(item);
+              setDialogOpen(true);
+            }}
+          />
+        </ContentHOC>
+      )}
+
+      {/* Pagination */}
+      <Pagination
+        currentPage={page}
+        totalPages={total_pages}
+        onPageChange={(p) => setPage(p)}
+      />
+
+      {/* Inventory Dialog */}
+      {dialogOpen && (
+        <InventoryItemDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          item={selectedItem}
+          onClose={() => setDialogOpen(false)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default ManageInventoryPage;

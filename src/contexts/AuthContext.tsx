@@ -1,14 +1,29 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
+// ------------------ USER ROLE TYPE ------------------
+export type UserRole =
+  | "admin"
+  | "restaurant_owner"
+  | "waiter"
+  | "kitchen"
+  | "inventory_mgr"
+  | "driver"
+  | "customer";
+
+// ------------------ FRIENDLY LABELS ------------------
+export const UserRoleLabels: Record<UserRole, string> = {
+  admin: "Admin",
+  restaurant_owner: "Restaurant Owner",
+  waiter: "Waiter",
+  kitchen: "Kitchen",
+  inventory_mgr: "Inventory Manager",
+  driver: "Driver",
+  customer: "Customer",
+};
+
 export interface DecodedToken extends JwtPayload {
-  role:
-    | "admin"
-    | "waiter"
-    | "kitchen"
-    | "inventory_mgr"
-    | "driver"
-    | "customer";
+  role: UserRole;
   user_id: string;
   token_type: string;
   jti: string;
@@ -16,12 +31,13 @@ export interface DecodedToken extends JwtPayload {
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (token: string, email: string, accountType: string) => void;
+  login: (token: string, email: string, accountType: UserRole) => void;
   logout: () => void;
   saveProfile: (profile: unknown) => void;
   email: string;
   token: string;
   accountType: string;
+  isOwner: boolean;
   isWaiter: boolean;
   isAdmin: boolean;
   isKitchen: boolean;
@@ -39,6 +55,7 @@ const defaultAuthContext: AuthContextType = {
   isAdmin: false,
   isWaiter: false,
   isKitchen: false,
+  isOwner: false,
   loading: true,
 };
 
@@ -93,13 +110,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
-  const [accountType, setAccountType] = useState("");
+  const [accountType, setAccountType] = useState<UserRole | "">("");
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const isWaiter = accountType === "waiter";
   const isKitchen = accountType === "kitchen";
   const isAdmin = accountType === "admin";
+  const isOwner = accountType === "restaurant_owner"
 
   useEffect(() => {
     const restoreSession = () => {
@@ -133,7 +151,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     restoreSession();
   }, []);
 
-  const login = (accessToken: string, email: string, accountType: string) => {
+  const login = (accessToken: string, email: string, accountType: UserRole) => {
     setToken(accessToken);
     setEmail(email);
     setAccountType(accountType);
@@ -167,6 +185,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isAdmin,
         isKitchen,
         isWaiter,
+        isOwner,
         loading,
       }}
     >

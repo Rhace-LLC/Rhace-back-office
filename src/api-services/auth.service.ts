@@ -2,6 +2,7 @@
 
 import { getConfig } from "./utils/reqConfig";
 import { bookiesAxiosInstance } from "./utils/baseUrl";
+import { RegisterRestaurantResponse } from "./utils/types.service";
 
 // ---------------------------
 // 📘 Interfaces
@@ -29,18 +30,6 @@ export interface LoginRequestBody {
 // Logout request
 export interface LogoutRequestBody {
   refresh: string;
-}
-
-// Register request
-export interface RegisterRequestBody {
-  id?: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  phone: string;
-  password: string;
-  confirm_password: string;
-  role: string;
 }
 
 // ---------------------------
@@ -72,6 +61,18 @@ const requestPasswordReset = async (email: string): Promise<any> => {
   });
   return bookiesAxiosInstance(config);
 };
+// Request password reset
+const resendOtp = async (email: string): Promise<any> => {
+  const config = getConfig(`/auth/resend/verify-email/otp/`, "POST", undefined, {
+    email,
+  });
+  return bookiesAxiosInstance(config);
+};
+// Request password reset
+const verifyOtp = async (data:any): Promise<any> => {
+  const config = getConfig(`/auth/verify/email/`, "POST", undefined, data);
+  return bookiesAxiosInstance(config);
+};
 
 // Verify password reset token
 const verifyPasswordReset = async (data: Record<string, any>): Promise<any> => {
@@ -96,8 +97,19 @@ const resetPassword = async (data: Record<string, any>): Promise<any> => {
 };
 
 // Register
-const register = async (data: RegisterRequestBody): Promise<any> => {
+const registerEmployee = async (data: any): Promise<any> => {
   const config = getConfig(`/auth/register/`, "POST", undefined, data);
+  return bookiesAxiosInstance(config);
+};
+
+// Register
+const registerRestaurant = async (data: any): Promise<RegisterRestaurantResponse> => {
+  const config = getConfig(
+    `/auth/register-restaurant/`,
+    "POST",
+    undefined,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
@@ -111,5 +123,8 @@ export {
   requestPasswordReset,
   verifyPasswordReset,
   resetPassword,
-  register,
+  registerRestaurant,
+  registerEmployee,
+  verifyOtp,
+  resendOtp
 };

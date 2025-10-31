@@ -3,6 +3,9 @@ import userReducer from "./userSlice";
 import dashboardReducer from "./dashboard.slice";
 import categoryReducer from "./category.slice";
 import menuReducer from "./menu.slice";
+import reservationReducer from "./reservation.slice"
+import staffReducer from "./staff.slice"
+import inventoryReducer from "./inventory.slice"
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +14,9 @@ export const store = configureStore({
     category: categoryReducer,
     menu: menuReducer,
     // Add more slices here
+    reservation: reservationReducer,
+    staff: staffReducer,
+    inventory: inventoryReducer
   },
   devTools: import.meta.env.MODE !== "production",
 });

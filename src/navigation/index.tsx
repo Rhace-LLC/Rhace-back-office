@@ -1,4 +1,4 @@
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, UserRole } from "@/contexts/AuthContext";
 import NotFound from "@/pages/404";
 import React, { useEffect } from "react";
 import {
@@ -24,8 +24,9 @@ import { VerifyOtp } from "@/pages/auth/verifyaccount";
 import CategoryPage from "@/pages/category";
 import ForgotPassword from "@/pages/auth/forgotpassword";
 import ResetPassword from "@/pages/auth/resetpassword";
-
-export type UserRole = "waiter" | "kitchen" | "admin";
+import ManageReservation from "@/pages/reservations";
+import ManageInventoryPage from "@/pages/inventory/manage_inventory_page";
+import ManageStaff from "@/pages/staffmanagement";
 
 export interface User {
   id: string;
@@ -87,7 +88,10 @@ function NavigationContent() {
   const location = useLocation();
   // Redirect authenticated users from "/" to /dashboard
   useEffect(() => {
-    if (auth.isAuthenticated && location.pathname === "/login") {
+    if (
+      auth.isAuthenticated &&
+      (location.pathname === "/login" || location.pathname === "/")
+    ) {
       navigate("/dashboard");
     }
   }, [auth, location, navigate]);
@@ -125,23 +129,47 @@ function NavigationContent() {
             <Route
               path="/tables"
               element={
-                <ProtectedRoute allowedRoles={["admin", "waiter"]}>
+                <ProtectedRoute allowedRoles={["admin", "waiter", "restaurant_owner"]}>
                   <TablesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reservations"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "waiter", "restaurant_owner"]}>
+                  <ManageReservation />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inventory"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "waiter", "restaurant_owner"]}>
+                  <ManageInventoryPage />
                 </ProtectedRoute>
               }
             />
             <Route
               path="/category"
               element={
-                <ProtectedRoute allowedRoles={["admin"]}>
+                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
                   <CategoryPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/staff"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
+                  <ManageStaff />
                 </ProtectedRoute>
               }
             />
             <Route
               path="/menu"
               element={
-                <ProtectedRoute allowedRoles={["admin", "kitchen"]}>
+                <ProtectedRoute allowedRoles={["admin", "kitchen", "restaurant_owner"]}>
                   <MenuManagement />
                 </ProtectedRoute>
               }
@@ -165,7 +193,7 @@ function NavigationContent() {
             <Route
               path="/analytics"
               element={
-                <ProtectedRoute allowedRoles={["admin"]}>
+                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
                   <Analytics />
                 </ProtectedRoute>
               }

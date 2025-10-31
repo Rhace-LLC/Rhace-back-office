@@ -8,6 +8,7 @@ import RenderTableData from "./render_table";
 
 import { ContentHOC } from "@/components/nocontent";
 import {
+  CategoryData,
   updateCategoryData,
   updateCategoryTotal,
 } from "@/store/category.slice";
@@ -15,8 +16,6 @@ import { getAllCategories } from "@/api-services/menu.service";
 import { useAuth } from "@/contexts/AuthContext";
 import GenericSheet from "@/components/generic_sheet_overlay";
 import AddCategoryForm from "./add_category";
-
-type Data = any;
 
 const CategoryPage: React.FC = () => {
   const auth = useAuth();
@@ -34,7 +33,7 @@ const CategoryPage: React.FC = () => {
 
   const [fetchAllDataLoading, setFetchAllDataLoading] = useState(false);
   const [fetchAllDataError, setFetchAllDataError] = useState("");
-  const [dataDisposable, setDataDisposable] = useState<Record<string, Data[]>>(
+  const [dataDisposable, setDataDisposable] = useState<Record<string, CategoryData[]>>(
     {}
   );
 

@@ -12,9 +12,9 @@ import {
 } from "../ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { LayoutDashboard, LogOut, Building2, Snowflake } from "lucide-react";
+import { LayoutDashboard, LogOut, Building2, Snowflake, Layers3, Package, Users, CalendarDays } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, UserRole, UserRoleLabels } from "@/contexts/AuthContext";
 import { useState } from "react";
 import { LogoutDialog } from "./logoutdialog";
 
@@ -22,7 +22,6 @@ import {
   ShoppingCart,
   Utensils,
   ListOrdered,
-  BarChart3,
   Bell,
   User,
 } from "lucide-react";
@@ -60,32 +59,44 @@ export function useRoleBasedMenu(): MenuItem[] {
     },
   ];
 
-  if (auth.isAdmin) {
-    return [
-      ...baseMenu.slice(0, 2), // Dashboard, Orders
-      {
-        title: "Tables",
-        url: "/tables",
-        icon: ListOrdered,
-      },
-      {
-        title: "Category",
-        url: "/category",
-        icon: Snowflake,
-      },
-      {
-        title: "Menu Management",
-        url: "/menu",
-        icon: Utensils,
-      },
-      {
-        title: "Analytics",
-        url: "/analytics",
-        icon: BarChart3,
-      },
-      ...baseMenu.slice(2), // Notifications, Profile
-    ];
-  }
+if (auth.isAdmin || auth.isOwner) {
+  return [
+    ...baseMenu.slice(0, 2), // Dashboard, Orders
+
+    {
+      title: "Reservations",
+      url: "/reservations",
+      icon: CalendarDays,
+    },
+    {
+      title: "Tables",
+      url: "/tables",
+      icon: ListOrdered,
+    },
+    {
+      title: "Category",
+      url: "/category",
+      icon: Layers3,
+    },
+    {
+      title: "Inventory Management",
+      url: "/inventory",
+      icon: Package,
+    },
+    {
+      title: "Menu Management",
+      url: "/menu",
+      icon: Utensils,
+    },
+    {
+      title: "Staff Management",
+      url: "/staff",
+      icon: Users,
+    },
+
+    ...baseMenu.slice(2), // Notifications, Profile
+  ];
+}
 
   if (auth.isWaiter) {
     return [
@@ -158,7 +169,7 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
           <Avatar className="h-8 w-8">
             <AvatarImage src="" />
             <AvatarFallback className="bg-primary text-primary-foreground">
-              AD
+              <User className="w-4 h-4" />
             </AvatarFallback>
           </Avatar>
           <div>
@@ -166,7 +177,7 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
               {auth.email}
             </p>
             <p className="text-[15px] text-gray-500 capitalize">
-              {auth.accountType} Staff
+                {UserRoleLabels[auth.accountType as UserRole]}
             </p>
           </div>
         </div>

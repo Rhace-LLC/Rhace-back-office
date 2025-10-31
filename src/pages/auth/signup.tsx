@@ -10,12 +10,19 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { register, RegisterRequestBody } from "@/api-services/auth.service";
 import { parseError } from "@/api-services/utils/parseError";
+import {
+  registerEmployee,
+  registerRestaurant,
+} from "@/api-services/auth.service";
+import { Eye, EyeOff } from "lucide-react";
+import RhaceImage from "../../assets/Rhace-10.png";
+import { Country, State, City } from "country-state-city";
 
-/** User roles available in Bookies system */
+// -------------------- TYPES --------------------
 export type UserRole =
   | "admin"
   | "waiter"
@@ -24,7 +31,6 @@ export type UserRole =
   | "driver"
   | "customer";
 
-/** Optional: Friendly display mapping */
 export const UserRoleLabels: Record<UserRole, string> = {
   admin: "Admin",
   waiter: "Waiter",
@@ -34,48 +40,138 @@ export const UserRoleLabels: Record<UserRole, string> = {
   customer: "Customer",
 };
 
-interface SignupForm {
+export interface SignUpData {
+  restaurant_name: string;
+  restaurant_email: string;
+  restaurant_phone: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  postal_code: string;
+  description: string;
+  cuisine_type: string;
+  owner_first_name: string;
+  owner_last_name: string;
+  owner_email: string;
+  owner_phone: string;
+  password: string;
+  confirm_password: string;
+}
+
+export interface EmployeeSignUpData {
+  id?: string;
+  email: string;
   first_name: string;
   last_name: string;
-  email: string;
   phone: string;
   password: string;
   confirm_password: string;
-  role: UserRole;
+  role: "admin" | "manager" | "staff" | string;
+  is_verified?: boolean;
+  invitation_token?: string;
 }
 
 interface FormErrors {
   [key: string]: string;
 }
 
-// -------------------- VALIDATOR --------------------
-export const validateSignupForm = (form: SignupForm) => {
+/** Validate employee signup form */
+export const validateEmployeeSignupForm = (form: EmployeeSignUpData) => {
   const errors: FormErrors = {};
 
-  if (!form.first_name.trim()) errors.first_name = "First name is required";
-  if (!form.last_name.trim()) errors.last_name = "Last name is required";
-  if (!form.email.trim()) errors.email = "Email is required";
-  if (!form.phone.trim()) errors.phone = "Phone number is required";
-  if (!form.password.trim()) errors.password = "Password is required";
-  if (!form.confirm_password.trim())
+  // --- Required field checks ---
+  if (!form.first_name?.trim()) errors.first_name = "First name is required";
+  if (!form.last_name?.trim()) errors.last_name = "Last name is required";
+  if (!form.email?.trim()) errors.email = "Email is required";
+  if (!form.phone?.trim()) errors.phone = "Phone number is required";
+  if (!form.password?.trim()) errors.password = "Password is required";
+  if (!form.confirm_password?.trim())
     errors.confirm_password = "Confirm password is required";
 
+  // --- Email validation ---
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (form.email && !emailRegex.test(form.email)) {
     errors.email = "Invalid email address";
   }
 
-  const phoneRegex = /^[0-9]{7,15}$/;
+  // --- Phone validation ---
+  const phoneRegex = /^[0-9+]{7,15}$/;
   if (form.phone && !phoneRegex.test(form.phone)) {
     errors.phone = "Invalid phone number";
   }
 
+  // --- Password validation ---
   const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
   if (form.password && !passwordRegex.test(form.password)) {
     errors.password =
       "Password must be at least 6 characters, include one uppercase letter and one number";
   }
 
+  // --- Confirm password match ---
+  if (form.password !== form.confirm_password) {
+    errors.confirm_password = "Passwords do not match";
+  }
+
+  return {
+    valid: Object.keys(errors).length === 0,
+    errors,
+  };
+};
+
+/** Validate restaurant (owner) signup form */
+export const validateRestaurantSignupForm = (form: SignUpData) => {
+  const errors: FormErrors = {};
+
+  // --- Restaurant info ---
+  if (!form.restaurant_name?.trim())
+    errors.restaurant_name = "Restaurant name is required";
+  if (!form.restaurant_email?.trim())
+    errors.restaurant_email = "Restaurant email is required";
+  if (!form.restaurant_phone?.trim())
+    errors.restaurant_phone = "Restaurant phone is required";
+  if (!form.address?.trim()) errors.address = "Address is required";
+  if (!form.city?.trim()) errors.city = "City is required";
+  if (!form.state?.trim()) errors.state = "State is required";
+  if (!form.country?.trim()) errors.country = "Country is required";
+
+  // --- Owner info ---
+  if (!form.owner_first_name?.trim())
+    errors.owner_first_name = "Owner first name is required";
+  if (!form.owner_last_name?.trim())
+    errors.owner_last_name = "Owner last name is required";
+  if (!form.owner_email?.trim()) errors.owner_email = "Owner email is required";
+  if (!form.owner_phone?.trim()) errors.owner_phone = "Owner phone is required";
+  if (!form.password?.trim()) errors.password = "Password is required";
+  if (!form.confirm_password?.trim())
+    errors.confirm_password = "Confirm password is required";
+
+  // --- Email validation ---
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (form.restaurant_email && !emailRegex.test(form.restaurant_email)) {
+    errors.restaurant_email = "Invalid restaurant email address";
+  }
+  if (form.owner_email && !emailRegex.test(form.owner_email)) {
+    errors.owner_email = "Invalid owner email address";
+  }
+
+  // --- Phone validation ---
+  const phoneRegex = /^[0-9+]{7,15}$/;
+  if (form.restaurant_phone && !phoneRegex.test(form.restaurant_phone)) {
+    errors.restaurant_phone = "Invalid restaurant phone number";
+  }
+  if (form.owner_phone && !phoneRegex.test(form.owner_phone)) {
+    errors.owner_phone = "Invalid owner phone number";
+  }
+
+  // --- Password validation ---
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
+  if (form.password && !passwordRegex.test(form.password)) {
+    errors.password =
+      "Password must be at least 6 characters, include one uppercase letter and one number";
+  }
+
+  // --- Confirm password match ---
   if (form.password !== form.confirm_password) {
     errors.confirm_password = "Passwords do not match";
   }
@@ -88,61 +184,160 @@ export const validateSignupForm = (form: SignupForm) => {
 
 // -------------------- COMPONENT --------------------
 export function SignUp() {
-  const [form, setForm] = useState<SignupForm>({
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+
+  const [showOwnerPassword, setShowOwnerPassword] = useState(false);
+  const [showOwnerConfirmPassword, setShowOwnerConfirmPassword] =
+    useState(false);
+
+  const [showEmployeePassword, setShowEmployeePassword] = useState(false);
+  const [showEmployeeConfirmPassword, setShowEmployeeConfirmPassword] =
+    useState(false);
+
+  // Owner signup form
+  const [ownerForm, setOwnerForm] = useState<SignUpData>({
+    restaurant_name: "",
+    restaurant_email: "",
+    restaurant_phone: "",
+    address: "",
+    city: "",
+    state: "",
+    country: "",
+    postal_code: "",
+    description: "",
+    cuisine_type: "",
+    owner_first_name: "",
+    owner_last_name: "",
+    owner_email: "",
+    owner_phone: "",
+    password: "",
+    confirm_password: "",
+  });
+
+  // Employee signup form
+  const [employeeForm, setEmployeeForm] = useState<EmployeeSignUpData>({
+    email: "",
     first_name: "",
     last_name: "",
-    email: "",
     phone: "",
     password: "",
     confirm_password: "",
-    role: "admin",
+    role: "staff",
   });
 
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [countries] = useState(Country.getAllCountries());
+  const [states, setStates] = useState<any[]>([]);
+  const [cities, setCities] = useState<any[]>([]); // 👈 added city state
 
-  const handleChange = (field: keyof SignupForm, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: "" })); // clear field error on change
+  const handleCountryChange = (value: string) => {
+    handleOwnerChange("country", value);
+    const selectedCountry = countries.find((c: any) => c.name === value);
+    if (selectedCountry) {
+      const fetchedStates = State.getStatesOfCountry(selectedCountry.isoCode);
+      setStates(fetchedStates);
+    }
+  };
+  
+  const handleStateChange = (value: string) => {
+    handleOwnerChange("state", value);
+    handleOwnerChange("city", "");
+    const selectedCountry = countries.find(
+      (c: any) => c.name === ownerForm.country
+    );
+    const selectedState = states.find((s: any) => s.name === value);
+    if (selectedCountry && selectedState) {
+      const fetchedCities = City.getCitiesOfState(
+        selectedCountry.isoCode,
+        selectedState.isoCode
+      );
+      setCities(fetchedCities);
+    }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleEmployeeChange = (
+    field: keyof EmployeeSignUpData,
+    value: string
+  ) => {
+    setEmployeeForm((prev) => ({ ...prev, [field]: value }));
+    setErrors(() => ({}));
+  };
 
-    // Validate form
-    const { valid, errors } = validateSignupForm(form);
+  const handleOwnerChange = (field: keyof SignUpData, value: string) => {
+    setOwnerForm((prev) => ({ ...prev, [field]: value }));
+    setErrors(() => ({}));
+  };
+
+  const handleEmployeeSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { valid, errors } = validateEmployeeSignupForm(employeeForm);
     setErrors(errors);
 
     if (!valid) {
-      Object.values(errors).forEach((err) => toast.error(err));
       return;
     }
 
-    // Prepare payload
-    const payload: RegisterRequestBody = {
-      email: form.email,
-      first_name: form.first_name,
-      last_name: form.last_name,
-      phone: form.phone,
-      password: form.password,
-      confirm_password: form.confirm_password,
-      role: form.role,
+    const payload = {
+      email: employeeForm.email,
+      first_name: employeeForm.first_name,
+      last_name: employeeForm.last_name,
+      phone: employeeForm.phone,
+      password: employeeForm.password,
+      confirm_password: employeeForm.confirm_password,
+      role: employeeForm.role,
     };
 
     setLoading(true);
-
     try {
-      // Await the register API call
-      const response = await register(payload);
-
+      const response = await registerEmployee(payload);
       console.log("Response:", response);
-
-      toast.success("Account created successfully!");
-      navigate("/verify-email");
+      toast.success("Employee account created successfully!");
+      navigate(`/verify-email?email=${employeeForm.email}`);
     } catch (error: any) {
-      // Handle API errors
-      console.error("Registration error:", error);
+      const message = parseError(error) || "Something went wrong!";
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOwnerSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    e.preventDefault();
+    const { valid, errors } = validateRestaurantSignupForm(ownerForm);
+    setErrors(errors);
+    console.log(valid, errors);
+
+    if (!valid) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const payload = {
+        restaurant_name: ownerForm.restaurant_name,
+        restaurant_email: ownerForm.restaurant_email,
+        restaurant_phone: ownerForm.restaurant_phone,
+        address: ownerForm.address,
+        city: ownerForm.city,
+        state: ownerForm.state,
+        country: ownerForm.country,
+        postal_code: ownerForm.postal_code,
+        description: ownerForm.description,
+        cuisine_type: ownerForm.cuisine_type,
+        owner_first_name: ownerForm.owner_first_name,
+        owner_last_name: ownerForm.owner_last_name,
+        owner_email: ownerForm.owner_email,
+        owner_phone: ownerForm.owner_phone,
+        password: ownerForm.password,
+        confirm_password: ownerForm.confirm_password,
+      };
+      const response = await registerRestaurant(payload);
+      console.log("Response:", response);
+      toast.success("Restaurant Registered successfully!");
+      navigate(`/verify-email?email=${ownerForm.owner_email}`);
+    } catch (error: any) {
       const message = parseError(error) || "Something went wrong!";
       toast.error(message);
     } finally {
@@ -152,147 +347,439 @@ export function SignUp() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-2xl">
         <CardHeader className="text-center">
-          <CardTitle>Create Account</CardTitle>
-          <CardDescription>Sign up for a new Rhace account</CardDescription>
+          <div className="mb-5 text-center">
+            <img
+              src={RhaceImage}
+              alt="Rhace Logo"
+              className="mx-auto !w-[100px]"
+            />
+          </div>
+          <CardTitle className="text-2xl font-semibold text-gray-800">Create Account</CardTitle>
+          <CardDescription>
+            Register your restaurant or join as an employee
+          </CardDescription>
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <Label>First Name</Label>
-                <Input
-                  onFocus={() => {
-                    setErrors({});
-                  }}
-                  value={form.first_name}
-                  onChange={(e) => handleChange("first_name", e.target.value)}
-                />
-                {errors.first_name && (
-                  <small className="text-red-500">{errors.first_name}</small>
-                )}
-              </div>
+          <Tabs defaultValue="owner" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="owner">Restaurant Registration</TabsTrigger>
+              <TabsTrigger value="employee">Employee Sign Up</TabsTrigger>
+            </TabsList>
 
-              <div>
-                <Label>Last Name</Label>
-                <Input
-                  onFocus={() => {
-                    setErrors({});
-                  }}
-                  value={form.last_name}
-                  onChange={(e) => handleChange("last_name", e.target.value)}
-                />
-                {errors.last_name && (
-                  <small className="text-red-500">{errors.last_name}</small>
-                )}
-              </div>
-            </div>
+            {/* ---------------- RESTAURANT OWNER ---------------- */}
+            <TabsContent value="owner">
+              <form onSubmit={handleOwnerSubmit} className="mt-4 space-y-3">
+                <div>
+                  <Label>Restaurant Name</Label>
+                  <Input
+                    value={ownerForm.restaurant_name}
+                    onChange={(e) =>
+                      handleOwnerChange("restaurant_name", e.target.value)
+                    }
+                  />
+                  {errors.restaurant_name && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.restaurant_name}
+                    </p>
+                  )}
+                </div>
 
-            <div>
-              <Label>Email</Label>
-              <Input
-                onFocus={() => {
-                  setErrors({});
-                }}
-                type="email"
-                value={form.email}
-                onChange={(e) => handleChange("email", e.target.value)}
-              />
-              {errors.email && (
-                <small className="text-red-500">{errors.email}</small>
-              )}
-            </div>
-
-            <div>
-              <Label>Phone</Label>
-              <Input
-                onFocus={() => {
-                  setErrors({});
-                }}
-                type="tel"
-                value={form.phone}
-                onChange={(e) => handleChange("phone", e.target.value)}
-              />
-              {errors.phone && (
-                <small className="text-red-500">{errors.phone}</small>
-              )}
-            </div>
-
-            <div>
-              <Label>Password</Label>
-              <Input
-                onFocus={() => {
-                  setErrors({});
-                }}
-                type="password"
-                value={form.password}
-                onChange={(e) => handleChange("password", e.target.value)}
-              />
-              {errors.password && (
-                <small className="text-red-500">{errors.password}</small>
-              )}
-            </div>
-
-            <div>
-              <Label>Confirm Password</Label>
-              <Input
-                onFocus={() => {
-                  setErrors({});
-                }}
-                type="password"
-                value={form.confirm_password}
-                onChange={(e) =>
-                  handleChange("confirm_password", e.target.value)
-                }
-              />
-              {errors.confirm_password && (
-                <small className="text-red-500">
-                  {errors.confirm_password}
-                </small>
-              )}
-            </div>
-
-            {/* ================= ROLE SELECTION ================= */}
-            <div className="my-3 space-y-2">
-              <Label>User Role</Label>
-              <div className="grid grid-cols-3 gap-2">
-                {(["admin", "waiter", "kitchen"] as UserRole[]).map((role) => (
-                  <label
-                    key={role}
-                    className={`flex cursor-pointer items-center gap-2 rounded border border-gray-100 p-2`}
-                  >
-                    <input
-                      type="radio"
-                      name="role"
-                      value={role}
-                      checked={form.role === role}
-                      onChange={() => handleChange("role", role)}
-                      className="accent-blue-600"
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label>Restaurant Email</Label>
+                    <Input
+                      type="email"
+                      value={ownerForm.restaurant_email}
+                      onChange={(e) =>
+                        handleOwnerChange("restaurant_email", e.target.value)
+                      }
                     />
-                    {UserRoleLabels[role]}
-                  </label>
-                ))}
-              </div>
-            </div>
+                    {errors.restaurant_email && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.restaurant_email}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <Label>Restaurant Phone</Label>
+                    <Input
+                      type="tel"
+                      value={ownerForm.restaurant_phone}
+                      onChange={(e) =>
+                        handleOwnerChange("restaurant_phone", e.target.value)
+                      }
+                    />
+                    {errors.restaurant_phone && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.restaurant_phone}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full"
-              style={{ backgroundColor: "#2542e3" }}
-            >
-              {loading ? "Creating account..." : "Sign Up"}
-            </Button>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label>Owner First Name</Label>
+                    <Input
+                      value={ownerForm.owner_first_name}
+                      onChange={(e) =>
+                        handleOwnerChange("owner_first_name", e.target.value)
+                      }
+                    />
+                    {errors.owner_first_name && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.owner_first_name}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <Label>Owner Last Name</Label>
+                    <Input
+                      value={ownerForm.owner_last_name}
+                      onChange={(e) =>
+                        handleOwnerChange("owner_last_name", e.target.value)
+                      }
+                    />
+                    {errors.owner_last_name && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.owner_last_name}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-            <p className="text-muted-foreground mt-3 text-center text-sm">
-              Already have an account?{" "}
-              <Link to="/login" className="text-[#2542e3] hover:underline">
-                Log in
-              </Link>
-            </p>
-          </form>
+                {/* ---------------- OWNER CONTACT ---------------- */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label>Owner Email</Label>
+                    <Input
+                      type="email"
+                      value={ownerForm.owner_email}
+                      onChange={(e) =>
+                        handleOwnerChange("owner_email", e.target.value)
+                      }
+                    />
+                    {errors.owner_email && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.owner_email}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label>Owner Phone</Label>
+                    <Input
+                      type="tel"
+                      value={ownerForm.owner_phone}
+                      onChange={(e) =>
+                        handleOwnerChange("owner_phone", e.target.value)
+                      }
+                    />
+                    {errors.owner_phone && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.owner_phone}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* ---------------- ADDRESS INFO ---------------- */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label>Address</Label>
+                    <Input
+                      value={ownerForm.address}
+                      onChange={(e) =>
+                        handleOwnerChange("address", e.target.value)
+                      }
+                    />
+                    {errors.address && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.address}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <Label>Country</Label>
+                    <select
+                      className="w-full rounded border border-gray-300 p-2"
+                      value={ownerForm.country}
+                      onChange={(e) => handleCountryChange(e.target.value)}
+                    >
+                      <option value="">Select Country</option>
+                      {countries.map((country) => (
+                        <option key={country.isoCode} value={country.name}>
+                          {country.name}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.country && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.country}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* ---------------- COUNTRY & STATE ---------------- */}
+                <div className="grid grid-cols-2 gap-3">
+
+
+                  <div>
+                    <Label>State</Label>
+                    <select
+                      className="w-full rounded border border-gray-300 p-2"
+                      value={ownerForm.state}
+                      onChange={(e) => handleStateChange(e.target.value)}
+                      disabled={!ownerForm.country}
+                    >
+                      <option value="">Select State</option>
+                      {states.map((state) => (
+                        <option key={state.isoCode} value={state.name}>
+                          {state.name}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.state && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.state}
+                      </p>
+                    )}
+                  </div>
+                  
+
+      {/* City */}
+      <div>
+        <Label>City</Label>
+        <select
+          className="w-full border rounded-md p-2 mt-1"
+          value={ownerForm.city}
+          onChange={(e) => handleOwnerChange("city", e.target.value)}
+          disabled={!ownerForm.state}
+        >
+          <option value="">Select City</option>
+          {cities.map((city) => (
+            <option key={city.name} value={city.name}>
+              {city.name}
+            </option>
+          ))}
+        </select>
+        {errors.city && (
+          <p className="text-sm text-red-500 mt-1">{errors.city}</p>
+        )}
+      </div>
+                </div>
+
+                <div className="relative">
+                  <Label>Password</Label>
+                  <Input
+                    type={showOwnerPassword ? "text" : "password"}
+                    value={ownerForm.password}
+                    onChange={(e) =>
+                      handleOwnerChange("password", e.target.value)
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowOwnerPassword(!showOwnerPassword)}
+                    className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
+                  >
+                    {showOwnerPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.password}
+                    </p>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <Label>Confirm Password</Label>
+                  <Input
+                    type={showOwnerConfirmPassword ? "text" : "password"}
+                    value={ownerForm.confirm_password}
+                    onChange={(e) =>
+                      handleOwnerChange("confirm_password", e.target.value)
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowOwnerConfirmPassword(!showOwnerConfirmPassword)
+                    }
+                    className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
+                  >
+                    {showOwnerConfirmPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                  {errors.confirm_password && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.confirm_password}
+                    </p>
+                  )}
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full"
+                  style={{ backgroundColor: "#2542e3" }}
+                >
+                  {loading ? "Registering..." : "Register Restaurant"}
+                </Button>
+              </form>
+            </TabsContent>
+
+            {/* ---------------- EMPLOYEE ---------------- */}
+            <TabsContent value="employee">
+              <form onSubmit={handleEmployeeSubmit} className="mt-4 space-y-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <Label>First Name</Label>
+                    <Input
+                      value={employeeForm.first_name}
+                      onChange={(e) =>
+                        handleEmployeeChange("first_name", e.target.value)
+                      }
+                    />
+                    {errors.first_name && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.first_name}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <Label>Last Name</Label>
+                    <Input
+                      value={employeeForm.last_name}
+                      onChange={(e) =>
+                        handleEmployeeChange("last_name", e.target.value)
+                      }
+                    />
+                    {errors.last_name && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.last_name}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Email</Label>
+                  <Input
+                    type="email"
+                    value={employeeForm.email}
+                    onChange={(e) =>
+                      handleEmployeeChange("email", e.target.value)
+                    }
+                  />
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label>Phone</Label>
+                  <Input
+                    type="tel"
+                    value={employeeForm.phone}
+                    onChange={(e) =>
+                      handleEmployeeChange("phone", e.target.value)
+                    }
+                  />
+                  {errors.phone && (
+                    <p className="mt-1 text-sm text-red-500">{errors.phone}</p>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <Label>Password</Label>
+                  <Input
+                    type={showEmployeePassword ? "text" : "password"}
+                    value={employeeForm.password}
+                    onChange={(e) =>
+                      handleEmployeeChange("password", e.target.value)
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowEmployeePassword(!showEmployeePassword)
+                    }
+                    className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
+                  >
+                    {showEmployeePassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.password}
+                    </p>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <Label>Confirm Password</Label>
+                  <Input
+                    type={showEmployeeConfirmPassword ? "text" : "password"}
+                    value={employeeForm.confirm_password}
+                    onChange={(e) =>
+                      handleEmployeeChange("confirm_password", e.target.value)
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowEmployeeConfirmPassword(
+                        !showEmployeeConfirmPassword
+                      )
+                    }
+                    className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
+                  >
+                    {showEmployeeConfirmPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                  {errors.confirm_password && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.confirm_password}
+                    </p>
+                  )}
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full"
+                  style={{ backgroundColor: "#2542e3" }}
+                >
+                  {loading ? "Creating account..." : "Sign Up"}
+                </Button>
+              </form>
+            </TabsContent>
+          </Tabs>
+
+          <p className="text-muted-foreground mt-5 text-center text-sm">
+            Already have an account?{" "}
+            <Link to="/login" className="text-[#2542e3] hover:underline">
+              Log in
+            </Link>
+          </p>
         </CardContent>
       </Card>
     </div>

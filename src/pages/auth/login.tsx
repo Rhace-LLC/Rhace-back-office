@@ -59,14 +59,14 @@ export function Login() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-7 text-center">
-          <div className="text-center">
+          <div className="mb-5 text-center">
             <img
               src={RhaceImage}
               alt="Rhace Logo"
-              className="mx-auto w-[150px]"
+              className="mx-auto !w-[100px]"
             />
           </div>
-          <CardTitle>Welcome Back</CardTitle>
+          <CardTitle className="text-2xl font-semibold text-gray-800">Welcome Back</CardTitle>
           <CardDescription>Sign in to your back office account</CardDescription>
         </CardHeader>
 
