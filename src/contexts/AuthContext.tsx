@@ -117,7 +117,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const isWaiter = accountType === "waiter";
   const isKitchen = accountType === "kitchen";
   const isAdmin = accountType === "admin";
-  const isOwner = accountType === "restaurant_owner"
+  const isOwner = accountType === "restaurant_owner";
 
   useEffect(() => {
     const restoreSession = () => {

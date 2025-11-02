@@ -19,7 +19,7 @@ const InviteEmployeeForm: React.FC<Props> = ({ onSubmit }) => {
   return (
     <div className="space-y-6 p-4">
       <div>
-        <label className="block text-sm font-medium mb-1">Employee Email</label>
+        <label className="mb-1 block text-sm font-medium">Employee Email</label>
         <Input
           type="email"
           placeholder="Enter employee email"
@@ -29,8 +29,8 @@ const InviteEmployeeForm: React.FC<Props> = ({ onSubmit }) => {
       </div>
 
       {inviteLink ? (
-        <div className="bg-gray-50 p-3 rounded border text-sm">
-          <p className="text-gray-600 mb-2">Invite Link:</p>
+        <div className="rounded border bg-gray-50 p-3 text-sm">
+          <p className="mb-2 text-gray-600">Invite Link:</p>
           <p className="break-all text-blue-600 underline">{inviteLink}</p>
         </div>
       ) : null}
@@ -41,11 +41,7 @@ const InviteEmployeeForm: React.FC<Props> = ({ onSubmit }) => {
           Generate Link
         </Button>
         {inviteLink && (
-          <Button
-            variant="secondary"
-            onClick={onSubmit}
-            className="gap-2"
-          >
+          <Button variant="secondary" onClick={onSubmit} className="gap-2">
             Forward Invite
           </Button>
         )}

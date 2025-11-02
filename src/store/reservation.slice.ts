@@ -158,7 +158,7 @@ export const mockReservations: Reservation[] = [
   },
 ];
 const initialState: ReservationState = {
-  data: {"1": mockReservations},
+  data: { "1": mockReservations },
 };
 
 // ---------------- Helper ----------------

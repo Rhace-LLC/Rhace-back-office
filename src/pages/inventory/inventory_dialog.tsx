@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { InventoryItem, StockStatus } from "@/store/inventory.slice";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -12,7 +18,12 @@ interface Props {
   onClose?: () => void;
 }
 
-const InventoryItemDialog: React.FC<Props> = ({ open, onOpenChange, item, onClose }) => {
+const InventoryItemDialog: React.FC<Props> = ({
+  open,
+  onOpenChange,
+  item,
+  onClose,
+}) => {
   const [formData, setFormData] = useState<InventoryItem | null>(item);
 
   useEffect(() => {
@@ -25,7 +36,9 @@ const InventoryItemDialog: React.FC<Props> = ({ open, onOpenChange, item, onClos
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>{item?.id ? "View / Edit Inventory Item" : "Add Inventory Item"}</DialogTitle>
+          <DialogTitle>
+            {item?.id ? "View / Edit Inventory Item" : "Add Inventory Item"}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 py-2">
@@ -33,7 +46,9 @@ const InventoryItemDialog: React.FC<Props> = ({ open, onOpenChange, item, onClos
             <Label>Name</Label>
             <Input
               value={formData.name || ""}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
             />
           </div>
 
@@ -41,7 +56,9 @@ const InventoryItemDialog: React.FC<Props> = ({ open, onOpenChange, item, onClos
             <Label>Category</Label>
             <Input
               value={formData.category || ""}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, category: e.target.value })
+              }
             />
           </div>
 
@@ -60,10 +77,14 @@ const InventoryItemDialog: React.FC<Props> = ({ open, onOpenChange, item, onClos
             <Label>Status</Label>
             <Input
               value={formData.status || ""}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value as StockStatus })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  status: e.target.value as StockStatus,
+                })
+              }
             />
           </div>
-
         </div>
 
         <DialogFooter className="flex justify-end gap-2">

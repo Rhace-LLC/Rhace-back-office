@@ -29,7 +29,10 @@ export const OtpInput: React.FC<OtpInputProps> = ({
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
     if (e.key === "Backspace" && !value[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
     }
@@ -50,7 +53,7 @@ export const OtpInput: React.FC<OtpInputProps> = ({
             inputsRef.current[index] = el;
           }}
           className={cn(
-            "w-13 h-13 text-center text-lg font-semibold tracking-widest",
+            "h-13 w-13 text-center text-lg font-semibold tracking-widest",
             "border-gray-300 focus-visible:ring-2 focus-visible:ring-blue-500"
           )}
         />

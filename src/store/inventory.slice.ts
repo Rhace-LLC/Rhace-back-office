@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export type StockStatus = "in_stock" | "low_stock" | "out_of_stock"
+export type StockStatus = "in_stock" | "low_stock" | "out_of_stock";
 // ---------------- Types ----------------
 export interface InventoryItem {
   id: string;
@@ -99,8 +99,8 @@ interface InventoryState {
 }
 
 const initialState: InventoryState = {
-  data: {"1": sampleInventoryItems},
-}
+  data: { "1": sampleInventoryItems },
+};
 
 // ---------------- Helper ----------------
 function uniqueBy<T, K extends keyof T>(items: T[], key: K): T[] {

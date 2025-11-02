@@ -33,9 +33,9 @@ const CategoryPage: React.FC = () => {
 
   const [fetchAllDataLoading, setFetchAllDataLoading] = useState(false);
   const [fetchAllDataError, setFetchAllDataError] = useState("");
-  const [dataDisposable, setDataDisposable] = useState<Record<string, CategoryData[]>>(
-    {}
-  );
+  const [dataDisposable, setDataDisposable] = useState<
+    Record<string, CategoryData[]>
+  >({});
 
   const [filters, setFilters] = useState<any>({
     searchTerm: "",

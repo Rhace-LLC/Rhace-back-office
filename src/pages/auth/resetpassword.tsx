@@ -6,7 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { requestPasswordReset, resetPassword } from "@/api-services/auth.service";
+import {
+  requestPasswordReset,
+  resetPassword,
+} from "@/api-services/auth.service";
 import { Link, useSearchParams } from "react-router-dom";
 import { OtpInput } from "@/components/OTP/otp";
 import { parseError } from "@/api-services/utils/parseError";
@@ -70,28 +73,29 @@ export default function ResetPassword() {
           email,
           otp: otp,
           new_password: form.password,
-          confirm_password: form.confirm_password
+          confirm_password: form.confirm_password,
         };
         const response = await resetPassword(payload);
         console.log("Response", response);
         toast.success(response?.message || "Password reset successful!");
       }
     } catch (error) {
-      const errorMessage = parseError(error)
-      toast.error(errorMessage || "Failed to reset password. Please try again.")
-      setStep('otp')
-
+      const errorMessage = parseError(error);
+      toast.error(
+        errorMessage || "Failed to reset password. Please try again."
+      );
+      setStep("otp");
     } finally {
       setLoading(false);
       setLoadingText("");
     }
   };
 
-    const passwordResetRequest = async (e: React.FormEvent) => {
+  const passwordResetRequest = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email) {
-      toast.error('No Mail Found')
+      toast.error("No Mail Found");
       return;
     }
 
@@ -105,8 +109,8 @@ export default function ResetPassword() {
     } catch (error) {
       toast.error("Failed to send reset link. Please try again.");
     } finally {
-      setStep('otp')
-      setOtp('')
+      setStep("otp");
+      setOtp("");
       setLoading(false);
       setLoadingText("");
     }
@@ -133,7 +137,6 @@ export default function ResetPassword() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {step === "otp" ? (
             <>
-
               <div className="space-y-1">
                 <Label htmlFor="otp">Enter OTP</Label>
                 <OtpInput value={otp} onChange={setOtp} />
@@ -216,8 +219,11 @@ export default function ResetPassword() {
             </>
           )}
         </form>
-        <p className="text-center text-sm text-gray-600 flex justify-between">
-          <span className="font-medium cursor-pointer" onClick={passwordResetRequest}>
+        <p className="flex justify-between text-center text-sm text-gray-600">
+          <span
+            className="cursor-pointer font-medium"
+            onClick={passwordResetRequest}
+          >
             Resend OTP
           </span>
           <Link to="/login" className="text-blue-600 hover:underline">

@@ -63,13 +63,18 @@ const requestPasswordReset = async (email: string): Promise<any> => {
 };
 // Request password reset
 const resendOtp = async (email: string): Promise<any> => {
-  const config = getConfig(`/auth/resend/verify-email/otp/`, "POST", undefined, {
-    email,
-  });
+  const config = getConfig(
+    `/auth/resend/verify-email/otp/`,
+    "POST",
+    undefined,
+    {
+      email,
+    }
+  );
   return bookiesAxiosInstance(config);
 };
 // Request password reset
-const verifyOtp = async (data:any): Promise<any> => {
+const verifyOtp = async (data: any): Promise<any> => {
   const config = getConfig(`/auth/verify/email/`, "POST", undefined, data);
   return bookiesAxiosInstance(config);
 };
@@ -103,7 +108,9 @@ const registerEmployee = async (data: any): Promise<any> => {
 };
 
 // Register
-const registerRestaurant = async (data: any): Promise<RegisterRestaurantResponse> => {
+const registerRestaurant = async (
+  data: any
+): Promise<RegisterRestaurantResponse> => {
   const config = getConfig(
     `/auth/register-restaurant/`,
     "POST",
@@ -126,5 +133,5 @@ export {
   registerRestaurant,
   registerEmployee,
   verifyOtp,
-  resendOtp
+  resendOtp,
 };

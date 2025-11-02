@@ -16,7 +16,7 @@ export default function ForgotPassword() {
   const { setLoading, setLoadingText } = useLoading();
   const [form, setForm] = useState({ email: "" });
   const [errors, setErrors] = useState<FormErrors>({});
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const validateForm = () => {
     const errors: FormErrors = {};
@@ -49,7 +49,7 @@ export default function ForgotPassword() {
       const response = await requestPasswordReset(form.email);
 
       toast.success(response?.message || "Password reset link sent!");
-      navigate(`/resetpassword?email=${form.email}`)
+      navigate(`/resetpassword?email=${form.email}`);
     } catch (error) {
       toast.error("Failed to send reset link. Please try again.");
     } finally {
@@ -61,16 +61,18 @@ export default function ForgotPassword() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="relative z-10 w-full max-w-lg space-y-10 rounded-[10px] bg-transparent p-8 py-[100px] shadow-sm">
-          <div className="mb-5 text-center">
-            <img
-              src={RhaceLogo}
-              alt="Rhace Logo"
-              className="mx-auto !w-[100px]"
-            />
-          </div>
+        <div className="mb-5 text-center">
+          <img
+            src={RhaceLogo}
+            alt="Rhace Logo"
+            className="mx-auto !w-[100px]"
+          />
+        </div>
 
         <div className="text-center">
-          <h3 className="text-2xl font-semibold text-gray-800">Forgot Password</h3>
+          <h3 className="text-2xl font-semibold text-gray-800">
+            Forgot Password
+          </h3>
           <p className="mt-2 text-gray-500">
             Enter your email to receive a reset link.
           </p>

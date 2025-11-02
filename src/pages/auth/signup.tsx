@@ -239,7 +239,7 @@ export function SignUp() {
       setStates(fetchedStates);
     }
   };
-  
+
   const handleStateChange = (value: string) => {
     handleOwnerChange("state", value);
     handleOwnerChange("city", "");
@@ -356,7 +356,9 @@ export function SignUp() {
               className="mx-auto !w-[100px]"
             />
           </div>
-          <CardTitle className="text-2xl font-semibold text-gray-800">Create Account</CardTitle>
+          <CardTitle className="text-2xl font-semibold text-gray-800">
+            Create Account
+          </CardTitle>
           <CardDescription>
             Register your restaurant or join as an employee
           </CardDescription>
@@ -526,8 +528,6 @@ export function SignUp() {
 
                 {/* ---------------- COUNTRY & STATE ---------------- */}
                 <div className="grid grid-cols-2 gap-3">
-
-
                   <div>
                     <Label>State</Label>
                     <select
@@ -549,28 +549,29 @@ export function SignUp() {
                       </p>
                     )}
                   </div>
-                  
 
-      {/* City */}
-      <div>
-        <Label>City</Label>
-        <select
-          className="w-full border rounded-md p-2 mt-1"
-          value={ownerForm.city}
-          onChange={(e) => handleOwnerChange("city", e.target.value)}
-          disabled={!ownerForm.state}
-        >
-          <option value="">Select City</option>
-          {cities.map((city) => (
-            <option key={city.name} value={city.name}>
-              {city.name}
-            </option>
-          ))}
-        </select>
-        {errors.city && (
-          <p className="text-sm text-red-500 mt-1">{errors.city}</p>
-        )}
-      </div>
+                  {/* City */}
+                  <div>
+                    <Label>City</Label>
+                    <select
+                      className="mt-1 w-full rounded-md border p-2"
+                      value={ownerForm.city}
+                      onChange={(e) =>
+                        handleOwnerChange("city", e.target.value)
+                      }
+                      disabled={!ownerForm.state}
+                    >
+                      <option value="">Select City</option>
+                      {cities.map((city) => (
+                        <option key={city.name} value={city.name}>
+                          {city.name}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.city && (
+                      <p className="mt-1 text-sm text-red-500">{errors.city}</p>
+                    )}
+                  </div>
                 </div>
 
                 <div className="relative">

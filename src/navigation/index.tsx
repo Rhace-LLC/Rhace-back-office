@@ -27,6 +27,7 @@ import ResetPassword from "@/pages/auth/resetpassword";
 import ManageReservation from "@/pages/reservations";
 import ManageInventoryPage from "@/pages/inventory/manage_inventory_page";
 import ManageStaff from "@/pages/staffmanagement";
+import RestaurantProfilePage from "@/pages/myRestaurant";
 
 export interface User {
   id: string;
@@ -129,7 +130,9 @@ function NavigationContent() {
             <Route
               path="/tables"
               element={
-                <ProtectedRoute allowedRoles={["admin", "waiter", "restaurant_owner"]}>
+                <ProtectedRoute
+                  allowedRoles={["admin", "waiter", "restaurant_owner"]}
+                >
                   <TablesPage />
                 </ProtectedRoute>
               }
@@ -137,7 +140,9 @@ function NavigationContent() {
             <Route
               path="/reservations"
               element={
-                <ProtectedRoute allowedRoles={["admin", "waiter", "restaurant_owner"]}>
+                <ProtectedRoute
+                  allowedRoles={["admin", "waiter", "restaurant_owner"]}
+                >
                   <ManageReservation />
                 </ProtectedRoute>
               }
@@ -145,7 +150,9 @@ function NavigationContent() {
             <Route
               path="/inventory"
               element={
-                <ProtectedRoute allowedRoles={["admin", "waiter", "restaurant_owner"]}>
+                <ProtectedRoute
+                  allowedRoles={["admin", "waiter", "restaurant_owner"]}
+                >
                   <ManageInventoryPage />
                 </ProtectedRoute>
               }
@@ -167,9 +174,19 @@ function NavigationContent() {
               }
             />
             <Route
+              path="/myrestaurant"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
+                  <RestaurantProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/menu"
               element={
-                <ProtectedRoute allowedRoles={["admin", "kitchen", "restaurant_owner"]}>
+                <ProtectedRoute
+                  allowedRoles={["admin", "kitchen", "restaurant_owner"]}
+                >
                   <MenuManagement />
                 </ProtectedRoute>
               }

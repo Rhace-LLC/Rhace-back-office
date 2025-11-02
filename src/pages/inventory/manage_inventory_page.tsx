@@ -10,7 +10,7 @@ import { ContentHOC } from "@/components/nocontent";
 import {
   InventoryItem,
   updateInventoryData,
-//  updateInventoryTotal,
+  //  updateInventoryTotal,
 } from "@/store/inventory.slice";
 import { useAuth } from "@/contexts/AuthContext";
 import { getInventoryTransactions } from "@/api-services/inventory.service";
@@ -35,7 +35,9 @@ const ManageInventoryPage: React.FC = () => {
 
   const [fetchLoading, setFetchLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
-  const [dataDisposable, setDataDisposable] = useState<Record<string, InventoryItem[]>>({});
+  const [dataDisposable, setDataDisposable] = useState<
+    Record<string, InventoryItem[]>
+  >({});
 
   const [filters, setFilters] = useState<any>({
     searchTerm: "",
@@ -46,7 +48,10 @@ const ManageInventoryPage: React.FC = () => {
   const allData = dataStore.data;
 
   // Normal Mode
-  const toShow = React.useMemo(() => allData[String(page)] ?? [], [allData, page]);
+  const toShow = React.useMemo(
+    () => allData[String(page)] ?? [],
+    [allData, page]
+  );
 
   // Filter/Search Mode
   const toShowWithFilters = React.useMemo(

@@ -22,16 +22,20 @@ const RenderEmployeeTable: React.FC<Props> = ({ data, onRowClick }) => {
           {data.map((employee) => (
             <tr
               key={employee.id}
-              className="cursor-pointer hover:bg-gray-50 transition"
+              className="cursor-pointer transition hover:bg-gray-50"
               onClick={() => onRowClick(employee)}
             >
-              <td className="p-3 font-medium">{employee.first_name} {employee.last_name}</td>
+              <td className="p-3 font-medium">
+                {employee.first_name} {employee.last_name}
+              </td>
               <td className="p-3 text-gray-600">{employee.email}</td>
               <td className="p-3 capitalize">{employee.role}</td>
               <td className="p-3">
                 <span
-                  className={`px-2 py-1 rounded text-xs ${
-                    employee.status ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                  className={`rounded px-2 py-1 text-xs ${
+                    employee.status
+                      ? "bg-green-100 text-green-700"
+                      : "bg-gray-100 text-gray-500"
                   }`}
                 >
                   {employee.status}

@@ -1,5 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { LucidePlus, LucideSearch, LucideMail, LucideUserPlus } from "lucide-react";
+import {
+  LucidePlus,
+  LucideSearch,
+  LucideMail,
+  LucideUserPlus,
+} from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { parseError } from "@/api-services/utils/parseError";
@@ -9,13 +14,17 @@ import { ContentHOC } from "@/components/nocontent";
 import GenericSheet from "@/components/generic_sheet_overlay";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { StaffAccount } from "@/store/staff.slice";
 import RenderEmployeeTable from "./employee_table";
 import InviteEmployeeForm from "./invite_employee";
 import ViewEmployeeDetails from "./view_employee";
-
-
 
 const ManageStaff: React.FC = () => {
   const auth = useAuth();
@@ -23,7 +32,9 @@ const ManageStaff: React.FC = () => {
 
   // ---------------- State ----------------
   const [page, setPage] = useState(1);
-  const [viewState, setViewState] = useState<"normal" | "search" | "filter">("normal");
+  const [viewState, setViewState] = useState<"normal" | "search" | "filter">(
+    "normal"
+  );
   const [totalItems, setTotalItems] = useState(0);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
@@ -89,9 +100,11 @@ const ManageStaff: React.FC = () => {
     <div className="space-y-6 p-5 md:mt-0">
       <div className="mx-auto space-y-6">
         {/* Header */}
-        <div className="mt-4 mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="mt-4 mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-2xl font-medium tracking-tight">Manage Staffs</h1>
+            <h1 className="text-2xl font-medium tracking-tight">
+              Manage Staffs
+            </h1>
             <p className="text-gray-600 dark:text-gray-400">
               View, filter, and manage Staff roles and invitations.
             </p>
@@ -110,13 +123,15 @@ const ManageStaff: React.FC = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4 bg-gray-50 p-4 rounded-lg border border-gray-100">
-          <div className="flex items-center gap-2 w-full md:w-1/3">
-            <LucideSearch className="text-gray-400 h-4 w-4" />
+        <div className="flex flex-col gap-3 rounded-lg border border-gray-100 bg-gray-50 p-4 md:flex-row md:items-center md:gap-4">
+          <div className="flex w-full items-center gap-2 md:w-1/3">
+            <LucideSearch className="h-4 w-4 text-gray-400" />
             <Input
               placeholder="Search by name or email..."
               value={filters.searchTerm}
-              onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })}
+              onChange={(e) =>
+                setFilters({ ...filters, searchTerm: e.target.value })
+              }
             />
           </div>
 
@@ -124,7 +139,7 @@ const ManageStaff: React.FC = () => {
             value={filters.role}
             onValueChange={(value) => setFilters({ ...filters, role: value })}
           >
-            <SelectTrigger className="w-full md:w-1/4 bg-white">
+            <SelectTrigger className="w-full bg-white md:w-1/4">
               <SelectValue placeholder="Filter by role" />
             </SelectTrigger>
             <SelectContent>
@@ -152,8 +167,7 @@ const ManageStaff: React.FC = () => {
           errMessage={fetchError || "Failed to load Staffs."}
           actionFn={fetchAllStaffs}
         >
-          <RenderEmployeeTable
-           data={toShow} onRowClick={handleStaffClick} />
+          <RenderEmployeeTable data={toShow} onRowClick={handleStaffClick} />
         </ContentHOC>
 
         {/* Pagination */}

@@ -64,7 +64,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                         <img src={RhaceImg} className="w-[80px]" />
                       </span>
                       <span className="relative top-[1.5px] text-[15px] font-medium text-gray-600 capitalize italic">
-                {UserRoleLabels[auth.accountType as UserRole]}
+                        {UserRoleLabels[auth.accountType as UserRole]}
                       </span>
                     </div>
                   </div>

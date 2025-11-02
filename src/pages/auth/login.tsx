@@ -66,7 +66,9 @@ export function Login() {
               className="mx-auto !w-[100px]"
             />
           </div>
-          <CardTitle className="text-2xl font-semibold text-gray-800">Welcome Back</CardTitle>
+          <CardTitle className="text-2xl font-semibold text-gray-800">
+            Welcome Back
+          </CardTitle>
           <CardDescription>Sign in to your back office account</CardDescription>
         </CardHeader>
 

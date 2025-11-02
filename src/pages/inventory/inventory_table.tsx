@@ -31,11 +31,7 @@ const RenderInventoryTableData: React.FC<Props> = ({ data, onView }) => {
               {true ? new Date().toLocaleString() : "—"}
             </td>
             <td className="border px-3 py-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onView(item)}
-              >
+              <Button variant="outline" size="sm" onClick={() => onView(item)}>
                 View Details
               </Button>
             </td>

@@ -109,7 +109,7 @@ interface StaffState {
 }
 
 const initialState: StaffState = {
-  data: {"1": staffAccounts},
+  data: { "1": staffAccounts },
 };
 
 // ---------------- Helper ----------------

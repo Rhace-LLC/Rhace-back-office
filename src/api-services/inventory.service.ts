@@ -28,7 +28,13 @@ const createInventoryItem = async (data: any, token?: string) => {
  * @param token - Optional authorization token
  */
 const getInventoryTransactions = async (params?: any, token?: string) => {
-  const config = getConfig("/inventory/transactions/", "GET", token, undefined, params);
+  const config = getConfig(
+    "/inventory/transactions/",
+    "GET",
+    token,
+    undefined,
+    params
+  );
   return await bookiesAxiosInstance(config);
 };
 
@@ -38,7 +44,12 @@ const getInventoryTransactions = async (params?: any, token?: string) => {
  * @param token - Optional authorization token
  */
 const createInventoryTransaction = async (data: any, token?: string) => {
-  const config = getConfig("/inventory/transactions/create/", "POST", token, data);
+  const config = getConfig(
+    "/inventory/transactions/create/",
+    "POST",
+    token,
+    data
+  );
   return await bookiesAxiosInstance(config);
 };
 

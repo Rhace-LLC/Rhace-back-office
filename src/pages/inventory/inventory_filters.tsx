@@ -9,14 +9,20 @@ interface Props {
   onSearch: () => void;
 }
 
-const InventoryFilters: React.FC<Props> = ({ filters, setFilters, onSearch }) => {
+const InventoryFilters: React.FC<Props> = ({
+  filters,
+  setFilters,
+  onSearch,
+}) => {
   return (
-    <div className="flex flex-wrap gap-4 mb-4">
+    <div className="mb-4 flex flex-wrap gap-4">
       <div>
         <Label>Search</Label>
         <Input
           value={filters.searchTerm}
-          onChange={(e) => setFilters((prev: any) => ({ ...prev, searchTerm: e.target.value }))}
+          onChange={(e) =>
+            setFilters((prev: any) => ({ ...prev, searchTerm: e.target.value }))
+          }
           placeholder="Search inventory"
         />
       </div>
@@ -24,7 +30,9 @@ const InventoryFilters: React.FC<Props> = ({ filters, setFilters, onSearch }) =>
         <Label>Category</Label>
         <Input
           value={filters.category}
-          onChange={(e) => setFilters((prev: any) => ({ ...prev, category: e.target.value }))}
+          onChange={(e) =>
+            setFilters((prev: any) => ({ ...prev, category: e.target.value }))
+          }
           placeholder="Category"
         />
       </div>

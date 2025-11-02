@@ -13,7 +13,12 @@ const getOrders = async (token?: string, params?: any) => {
 
 // POST /orders/{order_id}/assign-table/
 const assignTable = async (order_id: string, data: any, token?: string) => {
-  const config = getConfig(`/orders/${order_id}/assign-table/`, "POST", token, data);
+  const config = getConfig(
+    `/orders/${order_id}/assign-table/`,
+    "POST",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
@@ -30,8 +35,17 @@ const getOrderQueue = async (order_id: string, token?: string) => {
 };
 
 // POST /orders/{order_id}/update-status/
-const updateOrderStatus = async (order_id: string, data: any, token?: string) => {
-  const config = getConfig(`/orders/${order_id}/update-status/`, "POST", token, data);
+const updateOrderStatus = async (
+  order_id: string,
+  data: any,
+  token?: string
+) => {
+  const config = getConfig(
+    `/orders/${order_id}/update-status/`,
+    "POST",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
@@ -79,19 +93,33 @@ const confirmDelivery = async (
 
 // GET /orders/orders/{order_id}/wait-time/
 const getWaitTime = async (order_id: string, token?: string) => {
-  const config = getConfig(`/orders/orders/${order_id}/wait-time/`, "GET", token);
+  const config = getConfig(
+    `/orders/orders/${order_id}/wait-time/`,
+    "GET",
+    token
+  );
   return bookiesAxiosInstance(config);
 };
 
 // POST /orders/orders/bulk-confirm-delivery/
 const bulkConfirmDelivery = async (data: any, token?: string) => {
-  const config = getConfig("/orders/orders/bulk-confirm-delivery/", "POST", token, data);
+  const config = getConfig(
+    "/orders/orders/bulk-confirm-delivery/",
+    "POST",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
 // POST /orders/orders/send-delivery-email/
 const sendDeliveryEmail = async (data: any, token?: string) => {
-  const config = getConfig("/orders/orders/send-delivery-email/", "POST", token, data);
+  const config = getConfig(
+    "/orders/orders/send-delivery-email/",
+    "POST",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
@@ -99,7 +127,13 @@ const sendDeliveryEmail = async (data: any, token?: string) => {
 
 // GET /orders/reservations/
 const getReservations = async (token?: string, params?: any): Promise<any> => {
-  const config = getConfig("/orders/reservations/", "GET", token, undefined, params);
+  const config = getConfig(
+    "/orders/reservations/",
+    "GET",
+    token,
+    undefined,
+    params
+  );
   return bookiesAxiosInstance(config);
 };
 
@@ -135,13 +169,27 @@ const deleteReservation = async (id: string, token?: string) => {
 
 // PUT /orders/reservations/{id}/cancel/
 const cancelReservation = async (id: string, data?: any, token?: string) => {
-  const config = getConfig(`/orders/reservations/${id}/cancel/`, "PUT", token, data);
+  const config = getConfig(
+    `/orders/reservations/${id}/cancel/`,
+    "PUT",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
 // PUT /orders/reservations/{id}/status-update/
-const updateReservationStatus = async (id: string, data: any, token?: string) => {
-  const config = getConfig(`/orders/reservations/${id}/status-update/`, "PUT", token, data);
+const updateReservationStatus = async (
+  id: string,
+  data: any,
+  token?: string
+) => {
+  const config = getConfig(
+    `/orders/reservations/${id}/status-update/`,
+    "PUT",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
@@ -152,7 +200,12 @@ const updateReservationDetails = async (
   method: "PUT" | "PATCH" = "PUT",
   token?: string
 ) => {
-  const config = getConfig(`/orders/reservations/${id}/update`, method, token, data);
+  const config = getConfig(
+    `/orders/reservations/${id}/update`,
+    method,
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 

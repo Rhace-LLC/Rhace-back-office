@@ -6,9 +6,21 @@ import { RootState } from "@/store/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { ContentHOC } from "@/components/nocontent";
 import { Pagination } from "@/components/pagination";
 
@@ -17,10 +29,18 @@ import { Pagination } from "@/components/pagination";
 import { parseError } from "@/api-services/utils/parseError";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { assignTable, getReservations, updateReservation } from "@/api-services/order.service";
+import {
+  assignTable,
+  getReservations,
+  updateReservation,
+} from "@/api-services/order.service";
 
 // ---------------------- Types ----------------------
-export type ReservationStatus = "pending" | "confirmed" | "completed" | "cancelled";
+export type ReservationStatus =
+  | "pending"
+  | "confirmed"
+  | "completed"
+  | "cancelled";
 
 export interface Reservation {
   id: string;
@@ -46,22 +66,28 @@ interface ReservationFiltersProps {
   onSearch: () => void;
 }
 
-export const ReservationFilters: React.FC<ReservationFiltersProps> = ({ filters, setFilters, onSearch }) => {
+export const ReservationFilters: React.FC<ReservationFiltersProps> = ({
+  filters,
+  setFilters,
+  onSearch,
+}) => {
   return (
-    <div className="flex flex-col md:flex-row md:items-end md:gap-4 gap-3">
+    <div className="flex flex-col gap-3 md:flex-row md:items-end md:gap-4">
       <div className="flex-1">
         <Label>Search</Label>
         <Input
           placeholder="Search by name, phone or email"
           value={filters.searchTerm}
-          onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })}
+          onChange={(e) =>
+            setFilters({ ...filters, searchTerm: e.target.value })
+          }
         />
       </div>
 
       <div className="w-48">
         <Label>Status</Label>
         <select
-          className="w-full rounded border p-2 mt-1"
+          className="mt-1 w-full rounded border p-2"
           value={filters.status}
           onChange={(e) => setFilters({ ...filters, status: e.target.value })}
         >
@@ -74,7 +100,9 @@ export const ReservationFilters: React.FC<ReservationFiltersProps> = ({ filters,
       </div>
 
       <div>
-        <Button onClick={onSearch} className="mt-1">Search</Button>
+        <Button onClick={onSearch} className="mt-1">
+          Search
+        </Button>
       </div>
     </div>
   );
@@ -88,7 +116,9 @@ interface RenderReservationTableDataProps {
   onCancel?: (r: Reservation) => void;
 }
 
-export const RenderReservationTableData: React.FC<RenderReservationTableDataProps> = ({ data, onView, onConfirm, onCancel }) => {
+export const RenderReservationTableData: React.FC<
+  RenderReservationTableDataProps
+> = ({ data, onView, onConfirm, onCancel }) => {
   return (
     <Table>
       <TableHeader>
@@ -108,23 +138,33 @@ export const RenderReservationTableData: React.FC<RenderReservationTableDataProp
             <TableCell>{r.reservation_id ?? r.id.slice(0, 8)}</TableCell>
             <TableCell>
               <div className="font-medium">{r.customer_name}</div>
-              <div className="text-sm text-muted-foreground">{r.customer_phone || r.customer_email}</div>
+              <div className="text-muted-foreground text-sm">
+                {r.customer_phone || r.customer_email}
+              </div>
             </TableCell>
             <TableCell>
               <div>{new Date(r.date).toLocaleDateString()}</div>
-              <div className="text-sm text-muted-foreground">{r.time}</div>
+              <div className="text-muted-foreground text-sm">{r.time}</div>
             </TableCell>
             <TableCell>{r.party_size}</TableCell>
             <TableCell>{r.table_name || "—"}</TableCell>
             <TableCell>
-              <Badge variant={r.status === "confirmed" ? "secondary" : r.status === "cancelled" ? "destructive" : "outline"}>
+              <Badge
+                variant={
+                  r.status === "confirmed"
+                    ? "secondary"
+                    : r.status === "cancelled"
+                      ? "destructive"
+                      : "outline"
+                }
+              >
                 {r.status}
               </Badge>
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
                 <button
-                  className="text-sm px-2 py-1 rounded bg-muted text-muted-foreground hover:opacity-90"
+                  className="bg-muted text-muted-foreground rounded px-2 py-1 text-sm hover:opacity-90"
                   onClick={() => onView(r)}
                 >
                   View details
@@ -132,7 +172,7 @@ export const RenderReservationTableData: React.FC<RenderReservationTableDataProp
 
                 {r.status !== "confirmed" && onConfirm && (
                   <button
-                    className="text-sm px-2 py-1 rounded bg-green-50 text-green-700 hover:opacity-90"
+                    className="rounded bg-green-50 px-2 py-1 text-sm text-green-700 hover:opacity-90"
                     onClick={() => onConfirm(r)}
                   >
                     Confirm
@@ -141,7 +181,7 @@ export const RenderReservationTableData: React.FC<RenderReservationTableDataProp
 
                 {r.status !== "cancelled" && onCancel && (
                   <button
-                    className="text-sm px-2 py-1 rounded bg-red-50 text-red-700 hover:opacity-90"
+                    className="rounded bg-red-50 px-2 py-1 text-sm text-red-700 hover:opacity-90"
                     onClick={() => onCancel(r)}
                   >
                     Cancel
@@ -162,12 +202,23 @@ interface ReservationDetailProps {
   reservation?: Reservation | null;
   onClose: () => void;
   onAssignTable?: (reservationId: string, tableId: string) => Promise<void>;
-  onUpdateStatus?: (reservationId: string, status: ReservationStatus) => Promise<void>;
+  onUpdateStatus?: (
+    reservationId: string,
+    status: ReservationStatus
+  ) => Promise<void>;
 }
 
-export const ReservationDetail: React.FC<ReservationDetailProps> = ({ open, reservation, onClose, onAssignTable, onUpdateStatus }) => {
+export const ReservationDetail: React.FC<ReservationDetailProps> = ({
+  open,
+  reservation,
+  onClose,
+  onAssignTable,
+  onUpdateStatus,
+}) => {
   const [tableId, setTableId] = useState("");
-  const [status, setStatus] = useState<ReservationStatus>(reservation?.status ?? "pending");
+  const [status, setStatus] = useState<ReservationStatus>(
+    reservation?.status ?? "pending"
+  );
 
   useEffect(() => {
     setStatus(reservation?.status ?? "pending");
@@ -204,51 +255,66 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ open, rese
 
         <div className="space-y-4">
           <div>
-            <div className="text-sm text-muted-foreground">Customer</div>
+            <div className="text-muted-foreground text-sm">Customer</div>
             <div className="font-medium">{reservation.customer_name}</div>
             <div className="text-sm">{reservation.customer_phone}</div>
             <div className="text-sm">{reservation.customer_email}</div>
           </div>
 
           <div>
-            <div className="text-sm text-muted-foreground">When</div>
-            <div className="font-medium">{new Date(reservation.date).toLocaleDateString()} @ {reservation.time}</div>
+            <div className="text-muted-foreground text-sm">When</div>
+            <div className="font-medium">
+              {new Date(reservation.date).toLocaleDateString()} @{" "}
+              {reservation.time}
+            </div>
           </div>
 
           <div>
-            <div className="text-sm text-muted-foreground">Party Size</div>
+            <div className="text-muted-foreground text-sm">Party Size</div>
             <div className="font-medium">{reservation.party_size}</div>
           </div>
 
           <div>
-            <div className="text-sm text-muted-foreground">Table</div>
-            <div className="font-medium">{reservation.table_name || "Not assigned"}</div>
+            <div className="text-muted-foreground text-sm">Table</div>
+            <div className="font-medium">
+              {reservation.table_name || "Not assigned"}
+            </div>
           </div>
 
           <div>
             <Label>Assign Table</Label>
-            <Input placeholder="Table ID" value={tableId} onChange={(e) => setTableId(e.target.value)} />
-            <div className="flex gap-2 mt-2">
+            <Input
+              placeholder="Table ID"
+              value={tableId}
+              onChange={(e) => setTableId(e.target.value)}
+            />
+            <div className="mt-2 flex gap-2">
               <Button onClick={handleAssign}>Assign</Button>
             </div>
           </div>
 
           <div>
             <Label>Status</Label>
-            <select value={status} onChange={(e) => setStatus(e.target.value as ReservationStatus)} className="w-full rounded border p-2 mt-1">
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value as ReservationStatus)}
+              className="mt-1 w-full rounded border p-2"
+            >
               <option value="pending">Pending</option>
               <option value="confirmed">Confirmed</option>
               <option value="completed">Completed</option>
               <option value="cancelled">Cancelled</option>
             </select>
-            <div className="flex gap-2 mt-2">
+            <div className="mt-2 flex gap-2">
               <Button onClick={handleStatusUpdate}>Update Status</Button>
             </div>
           </div>
 
           <div>
-            <div className="text-sm text-muted-foreground">Notes</div>
-            <div className="font-medium whitespace-pre-wrap">{reservation.notes || "—"}</div>
+            <div className="text-muted-foreground text-sm">Notes</div>
+            <div className="font-medium whitespace-pre-wrap">
+              {reservation.notes || "—"}
+            </div>
           </div>
         </div>
       </SheetContent>
@@ -262,7 +328,9 @@ export const ManageReservation: React.FC = () => {
   const dispatch = useDispatch();
   const reservationsState = useSelector((s: RootState) => s.reservation);
 
-  const [viewState, setViewState] = useState<"normal" | "search" | "filter">("normal");
+  const [viewState, setViewState] = useState<"normal" | "search" | "filter">(
+    "normal"
+  );
   const [page, setPage] = useState(1);
   const page_size = 10;
   const [totalItems, setTotalItems] = useState(0);
@@ -273,16 +341,20 @@ export const ManageReservation: React.FC = () => {
 
   const [filters, setFilters] = useState<any>({ searchTerm: "", status: "" });
 
-  const [dataDisposable, setDataDisposable] = useState<Record<string, Reservation[]>>({});
+  const [dataDisposable, setDataDisposable] = useState<
+    Record<string, Reservation[]>
+  >({});
 
   const toShow = useMemo(() => {
-    if (viewState === "normal") return reservationsState.data[String(page)] ?? [];
+    if (viewState === "normal")
+      return reservationsState.data[String(page)] ?? [];
     return dataDisposable[String(page)] ?? [];
   }, [reservationsState.data, dataDisposable, page, viewState]);
 
   // Sheet state
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
+  const [selectedReservation, setSelectedReservation] =
+    useState<Reservation | null>(null);
 
   // ========== API CALLS ==========
   const fetchAllReservations = async () => {
@@ -312,7 +384,11 @@ export const ManageReservation: React.FC = () => {
     try {
       setLoading(true);
       setError("");
-      const res = await getReservations(auth.token, { page, page_size, ...filters });
+      const res = await getReservations(auth.token, {
+        page,
+        page_size,
+        ...filters,
+      });
       setDataDisposable((prev) => ({ ...prev, [String(page)]: res.data }));
       setTotalItems(res.total);
     } catch (err) {
@@ -403,7 +479,9 @@ export const ManageReservation: React.FC = () => {
       await assignTable(reservationId, { table_id: tableId });
       toast.success("Table assigned");
       fetchAllReservations();
-      setSelectedReservation((prev) => (prev ? { ...prev, table_id: tableId, table_name: tableId } : prev));
+      setSelectedReservation((prev) =>
+        prev ? { ...prev, table_id: tableId, table_name: tableId } : prev
+      );
     } catch (err) {
       toast.error(parseError(err) || "Failed to assign table");
     } finally {
@@ -411,7 +489,10 @@ export const ManageReservation: React.FC = () => {
     }
   };
 
-  const handleUpdateStatus = async (reservationId: string, status: ReservationStatus) => {
+  const handleUpdateStatus = async (
+    reservationId: string,
+    status: ReservationStatus
+  ) => {
     try {
       setLoading(true);
       await updateReservation(reservationId, { status });
@@ -425,14 +506,20 @@ export const ManageReservation: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 p-4 md:p-6 lg:p-8 overflow-auto">
+    <div className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
       <div className="mx-auto space-y-6">
         <div className="space-y-6">
-            <div>
-                <h3 className="text-2xl font-medium tracking-tight">Reservations</h3>
-                <p>Manage reservations, assign tables and update statuses.</p>
-            </div>
-          <ReservationFilters filters={filters} setFilters={setFilters} onSearch={onSearch} />
+          <div>
+            <h3 className="text-2xl font-medium tracking-tight">
+              Reservations
+            </h3>
+            <p>Manage reservations, assign tables and update statuses.</p>
+          </div>
+          <ReservationFilters
+            filters={filters}
+            setFilters={setFilters}
+            onSearch={onSearch}
+          />
 
           <div>
             <ContentHOC
@@ -446,13 +533,22 @@ export const ManageReservation: React.FC = () => {
               errMessage={error || "Failed to load reservations."}
               actionFn={fetchAllReservations}
             >
-              <RenderReservationTableData data={toShow} onView={handleView} onConfirm={handleConfirm} onCancel={handleCancel} />
+              <RenderReservationTableData
+                data={toShow}
+                onView={handleView}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+              />
             </ContentHOC>
           </div>
         </div>
       </div>
 
-      <Pagination currentPage={page} totalPages={total_pages} onPageChange={(p) => setPage(p)} />
+      <Pagination
+        currentPage={page}
+        totalPages={total_pages}
+        onPageChange={(p) => setPage(p)}
+      />
 
       {/* Reservation Detail Sheet */}
       <ReservationDetail

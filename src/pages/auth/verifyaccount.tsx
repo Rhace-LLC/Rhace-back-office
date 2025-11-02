@@ -69,7 +69,8 @@ export function VerifyOtp() {
         <CardHeader className="text-center">
           <CardTitle>Verify OTP</CardTitle>
           <CardDescription>
-            Enter the 6-digit code sent to your email <span className="font-medium">{email}</span>
+            Enter the 6-digit code sent to your email{" "}
+            <span className="font-medium">{email}</span>
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -93,10 +94,10 @@ export function VerifyOtp() {
               Verify
             </Button>
 
-            <p className="text-sm text-center mt-2">
+            <p className="mt-2 text-center text-sm">
               Didn't receive the code?{" "}
               <span
-                className="text-blue-600 cursor-pointer underline"
+                className="cursor-pointer text-blue-600 underline"
                 onClick={handleResendOtp}
               >
                 Resend OTP
