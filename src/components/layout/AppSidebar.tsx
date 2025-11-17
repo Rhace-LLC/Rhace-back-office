@@ -16,7 +16,6 @@ import {
   LayoutDashboard,
   LogOut,
   Building2,
-  Snowflake,
   Layers3,
   Package,
   Users,
@@ -113,6 +112,16 @@ export function useRoleBasedMenu(): MenuItem[] {
         title: "Tables",
         url: "/tables",
         icon: ListOrdered,
+      },
+      ...baseMenu.slice(2),
+    ];
+  }
+  if (auth.isInventoryMgr) {
+    return [
+      {
+        title: "Inventory Management",
+        url: "/inventory",
+        icon: Package,
       },
       ...baseMenu.slice(2),
     ];

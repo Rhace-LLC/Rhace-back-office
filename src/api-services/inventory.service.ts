@@ -1,10 +1,62 @@
 // service.ts
 import { getConfig } from "./utils/reqConfig";
 import { bookiesAxiosInstance } from "./utils/baseUrl";
+import { InventoryResponse } from "./utils/types.service";
+
+/**
+ * ==============================
+ * INVENTORY ITEMS
+ * ==============================
+ */
+
+/**
+ * Get all inventory items (paginated)
+ * @param params - Optional query parameters { page, page_size }
+ * @param token - Optional authorization token
+ */
+const getInventoryItems = async (
+  params?: { page?: number; page_size?: number },
+  token?: string
+) => {
+  const config = getConfig(
+    "/inventory/items/",
+    "GET",
+    token,
+    undefined,
+    params
+  );
+  return await bookiesAxiosInstance(config);
+};
+
+/**
+ * Create a new inventory item
+ * @param data - Data for the new item
+ * {
+ *   name: string,
+ *   is_allergen: boolean,
+ *   unit: string,
+ *   threshold: number,
+ *   restaurant: string (UUID)
+ * }
+ * @param token - Optional authorization token
+ */
+const createInventoryItem = async (
+  data: {
+    name: string;
+    is_allergen: boolean;
+    unit: string;
+    threshold: number;
+    restaurant: string;
+  },
+  token?: string
+) => {
+  const config = getConfig("/inventory/items/create/", "POST", token, data);
+  return await bookiesAxiosInstance(config);
+};
 
 /**
  * Delete an inventory item by ID
- * @param id - The ID of the item to delete
+ * @param id - The ID (UUID) of the item to delete
  * @param token - Optional authorization token
  */
 const deleteInventoryItem = async (id: string, token?: string) => {
@@ -13,21 +65,20 @@ const deleteInventoryItem = async (id: string, token?: string) => {
 };
 
 /**
- * Create a new inventory item
- * @param data - Data for the new item
- * @param token - Optional authorization token
+ * ==============================
+ * INVENTORY TRANSACTIONS
+ * ==============================
  */
-const createInventoryItem = async (data: any, token?: string) => {
-  const config = getConfig("/inventory/items/create/", "POST", token, data);
-  return await bookiesAxiosInstance(config);
-};
 
 /**
- * Get inventory transactions
- * @param params - Optional query parameters
+ * Get inventory transactions (paginated)
+ * @param params - Optional query parameters { page, page_size }
  * @param token - Optional authorization token
  */
-const getInventoryTransactions = async (params?: any, token?: string) => {
+const getInventoryTransactions = async (
+  params?: { page?: number; page_size?: number },
+  token?: string
+): Promise<InventoryResponse> => {
   const config = getConfig(
     "/inventory/transactions/",
     "GET",
@@ -40,10 +91,26 @@ const getInventoryTransactions = async (params?: any, token?: string) => {
 
 /**
  * Create a new inventory transaction
- * @param data - Data for the transaction
+ * @param data - Data for the new transaction
+ * {
+ *   item: number,
+ *   transaction_type: "wastage" | "purchase" | "adjustment" | "usage",
+ *   reason: string,
+ *   quantity: number,
+ *   recorded_by: string
+ * }
  * @param token - Optional authorization token
  */
-const createInventoryTransaction = async (data: any, token?: string) => {
+const createInventoryTransaction = async (
+  data: {
+    item: number;
+    transaction_type: string;
+    reason: string;
+    quantity: number;
+    recorded_by: string;
+  },
+  token?: string
+) => {
   const config = getConfig(
     "/inventory/transactions/create/",
     "POST",
@@ -53,10 +120,15 @@ const createInventoryTransaction = async (data: any, token?: string) => {
   return await bookiesAxiosInstance(config);
 };
 
-// Export all functions
+/**
+ * ==============================
+ * EXPORTS
+ * ==============================
+ */
 export {
-  deleteInventoryItem,
+  getInventoryItems,
   createInventoryItem,
+  deleteInventoryItem,
   getInventoryTransactions,
   createInventoryTransaction,
 };

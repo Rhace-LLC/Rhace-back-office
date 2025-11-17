@@ -62,7 +62,7 @@ const CategoryPage: React.FC = () => {
     try {
       setFetchAllDataLoading(true);
       setFetchAllDataError("");
-      let res = await getAllCategories(auth.token);
+      let res = await getAllCategories(auth.restaurants[0].id, auth.token);
       console.log("Category Data Response", res);
       dispatch(updateCategoryData({ key: String(page), data: res }));
       dispatch(updateCategoryTotal({ data_total: 69 }));
@@ -80,7 +80,7 @@ const CategoryPage: React.FC = () => {
       setFetchAllDataLoading(true);
       setFetchAllDataError("");
 
-      let res = await getAllCategories(auth.token);
+      let res = await getAllCategories(auth.restaurants[0].id, auth.token);
       setTotalItems(50);
       setDataDisposable((prev) => {
         const existing = prev[String(page)] ?? [];
@@ -212,7 +212,7 @@ const CategoryPage: React.FC = () => {
               error={!!fetchAllDataError}
               noContent={toShow.length === 0}
               loadingText="Fetching Categories. Please Wait."
-              noContentMessage="Reload Categorie List"
+              noContentMessage="Reload Categories List"
               noContentBtnText="Reload Categories"
               noContentAction={fetchAllData}
               errMessage={fetchAllDataError || "Failed to load borrowers."}

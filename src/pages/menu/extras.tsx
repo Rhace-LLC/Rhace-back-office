@@ -50,7 +50,12 @@ export const ManageDish: React.FC<{ dish: MenuDishData }> = ({ dish }) => {
     formData.append("description", dishForm.description);
     formData.append("available", String(dishForm.available));
     if (dishForm.image) formData.append("image", dishForm.image);
-    const response = await updateMenuItem(dish.id, formData, auth.token);
+    const response = await updateMenuItem(
+      auth.restaurants[0].id,
+      dish.id,
+      formData,
+      auth.token
+    );
 
     console.log("Updated Dish:", dishForm, response);
     setEditMode(false);
@@ -272,7 +277,7 @@ export const AddDish: React.FC = () => {
     formData.append("prep_time", dishForm.prep_time);
     formData.append(
       "ingredients_data",
-      JSON.stringify([{ inventory_item: 3, quantity: 2 }])
+      JSON.stringify([{ inventory_item: 10, quantity: 2 }])
     );
     formData.append("is_special", "true");
 
@@ -283,7 +288,11 @@ export const AddDish: React.FC = () => {
       setLoading(true);
       setLoadingText("Creating Dish... Please Wait");
 
-      const res = await createMenuItem(formData, auth.token);
+      const res = await createMenuItem(
+        auth.restaurants[0].id,
+        formData,
+        auth.token
+      );
 
       toast.success("Dish created successfully!");
       console.log("✅ API Response:", res);

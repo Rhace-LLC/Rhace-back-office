@@ -57,7 +57,12 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
     try {
       setLoading(true);
 
-      const res = await updateCategory(String(data.id), formData, auth.token);
+      const res = await updateCategory(
+        auth.restaurants[0].id,
+        String(data.id),
+        formData,
+        auth.token
+      );
       console.log("Response:", res);
 
       dispatch(updateCategoryDataById(res));

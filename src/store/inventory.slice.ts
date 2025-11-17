@@ -11,95 +11,14 @@ export interface InventoryItem {
   status: StockStatus;
 }
 
-export const sampleInventoryItems: InventoryItem[] = [
-  {
-    id: "1",
-    name: "Premium Rice (50kg)",
-    category: "Food",
-    quantity: 120,
-    unit: "bags",
-    status: "in_stock",
-  },
-  {
-    id: "2",
-    name: "Cooking Oil (5L)",
-    category: "Food",
-    quantity: 85,
-    unit: "bottles",
-    status: "in_stock",
-  },
-  {
-    id: "3",
-    name: "Toilet Tissue Roll",
-    category: "Household",
-    quantity: 250,
-    unit: "packs",
-    status: "in_stock",
-  },
-  {
-    id: "4",
-    name: "Detergent Powder (1kg)",
-    category: "Cleaning",
-    quantity: 60,
-    unit: "bags",
-    status: "low_stock",
-  },
-  {
-    id: "5",
-    name: "Cement (50kg)",
-    category: "Building Materials",
-    quantity: 15,
-    unit: "bags",
-    status: "low_stock",
-  },
-  {
-    id: "6",
-    name: "Paint (20L)",
-    category: "Building Materials",
-    quantity: 0,
-    unit: "buckets",
-    status: "out_of_stock",
-  },
-  {
-    id: "7",
-    name: "Sugar (25kg)",
-    category: "Food",
-    quantity: 90,
-    unit: "bags",
-    status: "in_stock",
-  },
-  {
-    id: "8",
-    name: "Floor Cleaner (1L)",
-    category: "Cleaning",
-    quantity: 200,
-    unit: "bottles",
-    status: "in_stock",
-  },
-  {
-    id: "9",
-    name: "Toothpaste (100ml)",
-    category: "Personal Care",
-    quantity: 50,
-    unit: "boxes",
-    status: "low_stock",
-  },
-  {
-    id: "10",
-    name: "Hand Sanitizer (500ml)",
-    category: "Health & Safety",
-    quantity: 0,
-    unit: "bottles",
-    status: "out_of_stock",
-  },
-];
-
 interface InventoryState {
   data: Record<string, InventoryItem[]>; // paginated
+  data_total: number;
 }
 
 const initialState: InventoryState = {
-  data: { "1": sampleInventoryItems },
+  data: {},
+  data_total: 0,
 };
 
 // ---------------- Helper ----------------
@@ -142,6 +61,9 @@ const inventorySlice = createSlice({
     clearInventoryData: (state) => {
       state.data = {};
     },
+    updateInventoryTotal: (state, action: PayloadAction<number>) => {
+      state.data_total = action.payload;
+    },
   },
 });
 
@@ -150,6 +72,7 @@ export const {
   updateInventoryDataById,
   removeInventoryDataById,
   clearInventoryData,
+  updateInventoryTotal,
 } = inventorySlice.actions;
 
 export default inventorySlice.reducer;

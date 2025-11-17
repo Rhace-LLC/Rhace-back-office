@@ -1,3 +1,5 @@
+import { Table } from "@/store/table.slice";
+
 // === Shared Interfaces ===
 export interface RevenueItem {
   name: string; // e.g., "Mon", "Tue", etc.
@@ -10,13 +12,6 @@ export interface Order {
   status: string; // e.g., "Preparing", "Completed", "Pending"
   time: string; // e.g., "15:30"
   total: number; // monetary value
-}
-
-export interface Table {
-  id: number;
-  waiter: string;
-  status: "Occupied" | "Free" | "Reserved";
-  orders: number;
 }
 
 export interface StaffActivity {

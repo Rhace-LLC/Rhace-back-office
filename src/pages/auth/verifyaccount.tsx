@@ -53,7 +53,7 @@ export function VerifyOtp() {
     try {
       setLoading(true);
       setLoadingText("Resending OTP...");
-      await resendOtp(email);
+      await resendOtp({ email });
       toast.success("OTP resent successfully!");
     } catch (error: any) {
       toast.error(parseError(error) || "Failed to resend OTP");

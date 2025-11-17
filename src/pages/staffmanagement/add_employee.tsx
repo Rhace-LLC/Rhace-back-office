@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectTrigger,
@@ -9,29 +9,33 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { LucideMail, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useAuth } from "@/contexts/AuthContext";
-import { inviteStaff } from "@/api-services/auth.service";
-import { UserRole } from "@/contexts/AuthContext";
+import { Loader2 } from "lucide-react";
+import { registerEmployee } from "@/api-services/auth.service";
 
-interface Props {
-  onSubmit: () => void;
-}
+export type UserRole =
+  | "admin"
+  | "restaurant_owner"
+  | "waiter"
+  | "kitchen"
+  | "inventory_mgr"
+  | "driver";
 
-const InviteEmployeeForm: React.FC<Props> = ({ onSubmit }) => {
-  const auth = useAuth();
-  const [inviteLink, setInviteLink] = useState("");
-  const [loading, setLoading] = useState(false);
-
+const RegisterEmployeeForm: React.FC = () => {
   const [formData, setFormData] = useState({
     id: "",
     email: "",
     first_name: "",
     last_name: "",
     phone: "",
+    password: "",
+    confirm_password: "",
     role: "admin" as UserRole,
+    is_verified: true,
+    invitation_token: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -40,38 +44,39 @@ const InviteEmployeeForm: React.FC<Props> = ({ onSubmit }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleGenerateLink = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
     try {
-      setLoading(true);
-
-      const restaurantId = auth.restaurants?.[0]?.id;
-      if (!restaurantId) {
-        toast.error("No restaurant found for your account");
-        return;
-      }
-
-      const response = await inviteStaff(restaurantId, formData, auth.token);
-
-      if (response?.invite_link) {
-        setInviteLink(response.invite_link);
-        toast.success("Invite link generated successfully!");
-      } else {
-        toast.success("Invitation sent successfully!");
-      }
+      const response = await registerEmployee(formData);
+      toast.success("Employee registered successfully!");
+      console.log("✅ Response:", response);
+      setFormData({
+        id: "-1",
+        email: "",
+        first_name: "",
+        last_name: "",
+        phone: "",
+        password: "",
+        confirm_password: "",
+        role: "admin",
+        is_verified: true,
+        invitation_token: "",
+      });
     } catch (error: any) {
-      console.error(error);
-      toast.error(
-        error?.response?.data?.message || "Failed to generate invite link"
-      );
+      console.error("❌ Error:", error);
+      toast.error(error?.response?.data?.message || "Registration failed.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="space-y-6 p-4">
-      {/* Employee Email */}
-
+    <form
+      onSubmit={handleSubmit}
+      className="mx-auto max-w-lg space-y-4 rounded-lg bg-white py-11"
+    >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <Label>Email</Label>
@@ -112,6 +117,27 @@ const InviteEmployeeForm: React.FC<Props> = ({ onSubmit }) => {
           />
         </div>
 
+        <div>
+          <Label>Password</Label>
+          <Input
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <Label>Confirm Password</Label>
+          <Input
+            name="confirm_password"
+            type="password"
+            value={formData.confirm_password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
         <div className="md:col-span-2">
           <Label>Role</Label>
           <Select
@@ -133,50 +159,27 @@ const InviteEmployeeForm: React.FC<Props> = ({ onSubmit }) => {
             </SelectContent>
           </Select>
         </div>
-      </div>
 
-      {/* Invite Link Display */}
-      {inviteLink && (
-        <div className="rounded border bg-gray-50 p-3 text-sm">
-          <p className="mb-2 text-gray-600">Invite Link:</p>
-          <p
-            className="cursor-pointer break-all text-blue-600 underline"
-            onClick={() => navigator.clipboard.writeText(inviteLink)}
-          >
-            {inviteLink}
-          </p>
-          <p className="mt-1 text-xs text-gray-400">(Click to copy link)</p>
+        <div className="md:col-span-2">
+          <Label>Invitation Token (optional)</Label>
+          <Input
+            name="invitation_token"
+            value={formData.invitation_token}
+            onChange={handleChange}
+          />
         </div>
-      )}
-
-      {/* Actions */}
-      <div className="flex gap-3">
-        <Button
-          onClick={handleGenerateLink}
-          className="w-full gap-2"
-          disabled={loading}
-        >
-          {loading ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Generating...
-            </>
-          ) : (
-            <>
-              <LucideMail className="h-4 w-4" />
-              Generate Link
-            </>
-          )}
-        </Button>
-
-        {inviteLink && (
-          <Button variant="secondary" onClick={onSubmit} className="gap-2">
-            Forward Invite
-          </Button>
-        )}
       </div>
-    </div>
+
+      <Button
+        type="submit"
+        disabled={loading}
+        className="w-full bg-blue-600 hover:bg-blue-700"
+      >
+        {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+        {loading ? "Registering..." : "Register Employee"}
+      </Button>
+    </form>
   );
 };
 
-export default InviteEmployeeForm;
+export default RegisterEmployeeForm;

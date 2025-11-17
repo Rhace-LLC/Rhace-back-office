@@ -31,7 +31,10 @@ export function MenuManagement() {
       setFetchCategoryLoading(true);
       setFetchCategoryError("");
 
-      const response = await getAllCategories(auth.token);
+      const response = await getAllCategories(
+        auth.restaurants[0].id,
+        auth.token
+      );
       console.log("Menu Data Response:", response);
       dispatch(updatMenuCategoryData(response));
     } catch (error: any) {
@@ -63,13 +66,15 @@ export function MenuManagement() {
           Add Dish
         </Button>
       </div>
-
+      {/*
+  
       <MenuStats
         totalDishes={24}
         availableDishes={18}
         categories={[]}
         averagePrice={12.5}
       />
+  */}
 
       <ContentHOC
         loading={fetchCategoryLoading}
