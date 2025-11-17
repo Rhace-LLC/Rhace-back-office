@@ -361,7 +361,7 @@ export function SignUp() {
 
         <CardContent>
           <Tabs defaultValue="owner" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-1">
               <TabsTrigger value="owner">Restaurant Registration</TabsTrigger>
             </TabsList>
 
