@@ -6,7 +6,6 @@ import { getAllCategories } from "@/api-services/menu.service";
 import { useAuth } from "@/contexts/AuthContext";
 import GenericSheet from "@/components/generic_sheet_overlay";
 import { AddDish } from "./extras";
-import { MenuStats } from "./MenuStats";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { ContentHOC } from "@/components/nocontent";

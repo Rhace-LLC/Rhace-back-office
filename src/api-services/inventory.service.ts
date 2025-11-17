@@ -17,7 +17,7 @@ import { InventoryResponse } from "./utils/types.service";
 const getInventoryItems = async (
   params?: { page?: number; page_size?: number },
   token?: string
-) => {
+): Promise<InventoryResponse> => {
   const config = getConfig(
     "/inventory/items/",
     "GET",

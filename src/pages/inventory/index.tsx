@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { parseError } from "@/api-services/utils/parseError";
 import { RootState } from "@/store/store";
 import { Pagination } from "@/components/pagination";
@@ -8,22 +8,20 @@ import InventoryFilters from "./inventory_filters";
 import { ContentHOC } from "@/components/nocontent";
 import {
   InventoryItem,
-  updateInventoryData,
   //  updateInventoryTotal,
 } from "@/store/inventory.slice";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   getInventoryItems,
-  getInventoryTransactions,
 } from "@/api-services/inventory.service";
 import RenderInventoryTableData from "./inventory_table";
 import GenericSheet from "@/components/generic_sheet_overlay";
 import { AddInventoryItem } from "./AddInventoryItem";
 import { ViewInventoryItem } from "./ViewInventoryItem";
+import { useInventory } from "./useInventory";
 
 const ManageInventoryPage: React.FC = () => {
   const auth = useAuth();
-  const dispatch = useDispatch();
 
   const [viewInventoryOpen, setViewInventoryOpen] = useState(false);
   const [addInventoryOpen, setAddInventoryOpen] = useState(false);
@@ -54,7 +52,7 @@ const ManageInventoryPage: React.FC = () => {
     searchTerm: "",
     category: "",
   });
-
+const { loading, error, fetchAllData } = useInventory({ page: 1 });
   const dataStore = useSelector((state: RootState) => state.inventory);
   const allData = dataStore.data;
 
@@ -69,21 +67,6 @@ const ManageInventoryPage: React.FC = () => {
     () => dataDisposable[String(page)] ?? [],
     [page, dataDisposable]
   );
-
-  // ========== API Calls ==========
-  const fetchAllData = async () => {
-    try {
-      setFetchLoading(true);
-      setFetchError("");
-      const res = await getInventoryItems({ page, page_size }, auth.token);
-      dispatch(updateInventoryData({ key: String(page), data: res.results }));
-      //dispatch(updateInventoryTotal({ data_total: 69 }));
-    } catch (error) {
-      setFetchError(parseError(error) || "Failed to fetch inventory.");
-    } finally {
-      setFetchLoading(false);
-    }
-  };
 
   const fetchDataWithFiltersAndSearch = async () => {
     try {
@@ -170,8 +153,8 @@ const ManageInventoryPage: React.FC = () => {
       {/* Inventory Table */}
       {viewState === "normal" ? (
         <ContentHOC
-          loading={fetchLoading}
-          error={!!fetchError}
+          loading={loading}
+          error={!!error}
           noContent={toShow.length === 0}
           loadingText="Fetching Inventory..."
           noContentMessage="No Inventory Found"

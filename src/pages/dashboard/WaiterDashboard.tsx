@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Card,
   CardContent,
@@ -10,20 +11,39 @@ import { Badge } from "@/components/ui/badge";
 import { StatsWaiterDashboard } from "./StatsWaiterDashboard";
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import {
-  WaiterDashboardData,
-  Table as TableType,
-  Order as OrderType,
-} from "@/types/dashboard.types";
-import { updateWaiterDashboardData } from "@/store/dashboard.slice";
 
+// ---------------- Types ----------------
+export type TableStatus = "Free" | "Occupied" | "Reserved";
+
+export interface Table {
+  id: string;
+  waiter?: string;
+  status: TableStatus;
+  orders: number;
+}
+
+export type OrderStatus = "Pending" | "Preparing" | "Served";
+
+export interface Order {
+  id: string;
+  table: string;
+  status: OrderStatus;
+  time: string;
+  total: number;
+}
+
+export interface WaiterDashboardData {
+  tables: Table[];
+  orders: Order[];
+}
+
+// =============== Waiter Dashboard ===============
 export const WaiterDashboard = () => {
-  const dispatch = useDispatch();
   const waiterDashboardData = useSelector(
     (state: RootState) => state.dashboard.waiterDashboardData
-  ) as WaiterDashboardData;
+  ) 
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -34,52 +54,12 @@ export const WaiterDashboard = () => {
       setLoading(true);
       setError("");
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      const simulatedTables: TableType[] = [
-        { id: 1, waiter: "Sarah Johnson", status: "Occupied", orders: 2 },
-        { id: 2, waiter: "Mike Chen", status: "Free", orders: 0 },
-        { id: 5, waiter: "Sarah Johnson", status: "Occupied", orders: 1 },
-        { id: 8, waiter: "Alex Thompson", status: "Reserved", orders: 0 },
-      ];
 
-      const simulatedOrders: OrderType[] = [
-        {
-          id: "ORD-001",
-          table: "Table 5",
-          status: "Preparing",
-          time: "15:30",
-          total: 45.5,
-        },
-        {
-          id: "ORD-002",
-          table: "Table 2",
-          status: "Pending",
-          time: "15:25",
-          total: 32.75,
-        },
-        {
-          id: "ORD-003",
-          table: "Table 8",
-          status: "Served",
-          time: "15:20",
-          total: 67.25,
-        },
-        {
-          id: "ORD-004",
-          table: "Table 1",
-          status: "Preparing",
-          time: "15:15",
-          total: 28.5,
-        },
-      ];
 
-      const payload: WaiterDashboardData = {
-        tables: simulatedTables,
-        orders: simulatedOrders,
-      };
-
-      dispatch(updateWaiterDashboardData(payload));
+      //dispatch(updateWaiterDashboardData(payload));
     } catch (err) {
       setError("Failed to load waiter data");
     } finally {
@@ -97,10 +77,9 @@ export const WaiterDashboard = () => {
 
   return (
     <div className="mt-15 space-y-6 p-5 md:mt-0">
+      {/* Header */}
       <div>
-        <h1 className="text-2xl font-medium tracking-tight">
-          Waiter Dashboard
-        </h1>
+        <h1 className="text-2xl font-medium tracking-tight">Waiter Dashboard</h1>
         <p className="text-muted-foreground">
           Manage your assigned tables and orders
         </p>
@@ -143,36 +122,42 @@ export const WaiterDashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle>My Assigned Tables</CardTitle>
-              <CardDescription>
-                Tables currently under your care
-              </CardDescription>
+              <CardDescription>Tables currently under your care</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {tables.map((table) => (
-                  <div
-                    key={table.id}
-                    className="flex items-center justify-between rounded-lg border p-3"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="text-lg">Table {table.id}</div>
-                      <Badge
-                        variant={
-                          table.status === "Occupied"
-                            ? "destructive"
-                            : table.status === "Free"
-                              ? "default"
-                              : "secondary"
-                        }
-                      >
-                        {table.status}
-                      </Badge>
-                    </div>
-                    <div className="text-muted-foreground text-sm">
-                      {table.orders} order{table.orders !== 1 ? "s" : ""}
-                    </div>
-                  </div>
-                ))}
+{tables.map((table) => {
+  // Compute status based on is_available
+  const status = table.is_available ? "Free" : "Occupied";
+
+  // Compute orders count dynamically if you have orders data
+  const ordersCount = orders.filter((o) => o.table === table.table_number).length;
+
+  return (
+    <div
+      key={table.id}
+      className="flex items-center justify-between rounded-lg border p-3"
+    >
+      <div className="flex items-center gap-3">
+        <div className="text-lg">Table {table.table_number}</div>
+        <Badge
+          variant={
+            status === "Occupied"
+              ? "destructive"
+              : status === "Free"
+              ? "default"
+              : "secondary"
+          }
+        >
+          {status}
+        </Badge>
+      </div>
+      <div className="text-muted-foreground text-sm">
+        {ordersCount} order{ordersCount !== 1 ? "s" : ""}
+      </div>
+    </div>
+  );
+})}
               </div>
             </CardContent>
           </Card>
@@ -182,9 +167,7 @@ export const WaiterDashboard = () => {
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>Pending Orders</CardTitle>
-                <CardDescription>
-                  Orders requiring your attention
-                </CardDescription>
+                <CardDescription>Orders requiring your attention</CardDescription>
               </div>
             </CardHeader>
             <CardContent>

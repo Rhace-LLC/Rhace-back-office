@@ -12,6 +12,10 @@ import { createMenuItem, updateMenuItem } from "@/api-services/menu.service";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { parseError } from "@/api-services/utils/parseError";
+import { useCategoryData } from "../category/useCategoryData";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { useInventory } from "../inventory/useInventory";
 
 // =============== MANAGE DISH ===============
 // =============== MANAGE DISH ===============
@@ -248,56 +252,83 @@ export const ManageDish: React.FC<{ dish: MenuDishData }> = ({ dish }) => {
   );
 };
 
+
+
+interface Ingredient {
+  inventory_item: string;
+  quantity: number;
+}
+
+interface DishForm {
+  name: string;
+  price: string;
+  description: string;
+  category_id: string;
+  prep_time: string;
+  available: boolean;
+  image: File | null;
+  ingredients_data: Ingredient[];
+}
+
 // =============== ADD DISH ===============
 export const AddDish: React.FC = () => {
-  const { setLoading, setLoadingText } = useLoading();
   const auth = useAuth();
-  const [dishForm, setDishForm] = useState({
+  const { setLoading, setLoadingText } = useLoading();
+
+  // --- Form State ---
+  const [dishForm, setDishForm] = useState<DishForm>({
     name: "",
     price: "",
     description: "",
     category_id: "",
     prep_time: "",
     available: true,
-    image: null as File | null,
+    image: null,
+    ingredients_data: [{ inventory_item: "", quantity: 1 }],
   });
 
+  // --- File Upload ---
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
     setDishForm((prev) => ({ ...prev, image: file }));
   };
 
+  // --- Categories ---
+  const page = 1;
+  const categoryStore = useSelector((state: RootState) => state.category);
+  const allDataCategory = categoryStore.data[String(page)] ?? [];
+  const {
+    fetchAllData: fetchCategories,
+    loading: fetchCategoriesLoading,
+    error: fetchCategoriesError,
+  } = useCategoryData(page);
+
+  // --- Inventory ---
+  const inventoryHook = useInventory({ page: 1 });
+  const inventoryData = inventoryHook.allData;
+  const inventoryLoading = inventoryHook.loading;
+  const inventoryError = inventoryHook.error;
+  const fetchInventory = inventoryHook.fetchAllData;
+
+  // --- Submit Handler ---
   const handleSubmit = async () => {
-    // Prepare FormData payload
     const formData = new FormData();
     formData.append("name", dishForm.name.trim());
     formData.append("price", dishForm.price);
     formData.append("description", dishForm.description.trim());
     formData.append("category_id", dishForm.category_id);
     formData.append("prep_time", dishForm.prep_time);
-    formData.append(
-      "ingredients_data",
-      JSON.stringify([{ inventory_item: 10, quantity: 2 }])
-    );
+    formData.append("ingredients_data", JSON.stringify(dishForm.ingredients_data));
     formData.append("is_special", "true");
-
     if (dishForm.image) formData.append("image", dishForm.image);
-    console.log("Dish Image", dishForm.image);
 
     try {
       setLoading(true);
       setLoadingText("Creating Dish... Please Wait");
-
-      const res = await createMenuItem(
-        auth.restaurants[0].id,
-        formData,
-        auth.token
-      );
-
+      const res = await createMenuItem(auth.restaurants[0].id, formData, auth.token);
       toast.success("Dish created successfully!");
-      console.log("✅ API Response:", res);
 
-      // Optionally clear form
+      // Reset form
       setDishForm({
         name: "",
         price: "",
@@ -306,11 +337,14 @@ export const AddDish: React.FC = () => {
         prep_time: "",
         available: true,
         image: null,
+        ingredients_data: [{ inventory_item: "", quantity: 1 }],
       });
+
+      console.log("Dish Created:", res);
     } catch (error: any) {
       const message = parseError(error) || "Failed to add dish.";
       toast.error(message);
-      console.error("❌ Error creating dish:", message);
+      console.error("Error creating dish:", message);
     } finally {
       setLoading(false);
     }
@@ -318,18 +352,18 @@ export const AddDish: React.FC = () => {
 
   return (
     <div className="mx-auto max-w-md space-y-4 pt-5">
+      {/* Dish Name */}
       <div>
         <Label htmlFor="name">Dish Name</Label>
         <Input
           id="name"
           value={dishForm.name}
-          onChange={(e) =>
-            setDishForm((prev) => ({ ...prev, name: e.target.value }))
-          }
+          onChange={(e) => setDishForm((prev) => ({ ...prev, name: e.target.value }))}
           placeholder="Enter dish name"
         />
       </div>
 
+      {/* Price */}
       <div>
         <Label htmlFor="price">Price ($)</Label>
         <Input
@@ -337,81 +371,197 @@ export const AddDish: React.FC = () => {
           type="number"
           step="0.01"
           value={dishForm.price}
-          onChange={(e) =>
-            setDishForm((prev) => ({ ...prev, price: e.target.value }))
-          }
+          onChange={(e) => setDishForm((prev) => ({ ...prev, price: e.target.value }))}
           placeholder="0.00"
         />
       </div>
 
+      {/* Description */}
       <div>
         <Label htmlFor="description">Description</Label>
         <Textarea
           id="description"
           value={dishForm.description}
-          onChange={(e) =>
-            setDishForm((prev) => ({
-              ...prev,
-              description: e.target.value,
-            }))
-          }
+          onChange={(e) => setDishForm((prev) => ({ ...prev, description: e.target.value }))}
           placeholder="Describe the dish..."
           rows={3}
         />
       </div>
 
-      <div>
-        <Label htmlFor="category">Category ID</Label>
-        <Input
-          id="category"
-          value={dishForm.category_id}
-          onChange={(e) =>
-            setDishForm((prev) => ({ ...prev, category_id: e.target.value }))
-          }
-          placeholder="Enter category ID"
-        />
+      {/* Category */}
+      <div className="space-y-2">
+        <Label htmlFor="category">Category</Label>
+
+        {fetchCategoriesError && (
+          <div className="flex flex-col items-start gap-2 text-red-600">
+            <p>Error loading categories: {fetchCategoriesError}</p>
+            <Button size="sm" variant="outline" onClick={fetchCategories}>
+              Reload Categories
+            </Button>
+          </div>
+        )}
+
+        {!fetchCategoriesError && !fetchCategoriesLoading && allDataCategory.length === 0 && (
+          <div className="flex flex-col items-start gap-2 text-gray-600">
+            <p>No categories found.</p>
+            <Button size="sm" variant="outline" onClick={fetchCategories}>
+              Reload Categories
+            </Button>
+          </div>
+        )}
+
+        {!fetchCategoriesError && allDataCategory.length > 0 && (
+          <select
+            id="category"
+            value={dishForm.category_id}
+            onChange={(e) => setDishForm((prev) => ({ ...prev, category_id: e.target.value }))}
+            className="w-full rounded-md border p-2"
+          >
+            <option value="">Select a category</option>
+            {allDataCategory.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
+      {/* Ingredients */}
+      <div className="space-y-4">
+        <Label>Ingredients</Label>
+
+        {inventoryError && (
+          <div className="flex flex-col items-start gap-2 text-red-600">
+            <p>Error loading inventory: {inventoryError}</p>
+            <Button size="sm" variant="outline" onClick={fetchInventory}>
+              Reload Inventory
+            </Button>
+          </div>
+        )}
+
+        {!inventoryError && !inventoryLoading && inventoryData.length === 0 && (
+          <div className="flex flex-col items-start gap-2 text-gray-600">
+            <p>No inventory items found.</p>
+            <Button size="sm" variant="outline" onClick={fetchInventory}>
+              Reload Inventory
+            </Button>
+          </div>
+        )}
+
+        {!inventoryError && inventoryData.length > 0 && (
+          <>
+            {dishForm.ingredients_data.map((ing, idx) => (
+              <div key={idx} className="flex items-center gap-2">
+                <select
+                  value={ing.inventory_item}
+                  onChange={(e) =>
+                    setDishForm((prev) => {
+                      const newIngredients = [...prev.ingredients_data];
+                      newIngredients[idx].inventory_item = e.target.value;
+                      return { ...prev, ingredients_data: newIngredients };
+                    })
+                  }
+                  className="flex-1 rounded-md border p-2"
+                >
+                  <option value="">Select Inventory Item</option>
+                  {inventoryData
+                    .filter(
+                      (item) =>
+                        !dishForm.ingredients_data.some(
+                          (i, iIdx) => i.inventory_item === item.id && iIdx !== idx
+                        )
+                    )
+                    .map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name} ({item.quantity} {item.unit})
+                      </option>
+                    ))}
+                </select>
+
+                <Input
+                  type="number"
+                  min={1}
+                  value={ing.quantity}
+                  onChange={(e) =>
+                    setDishForm((prev) => {
+                      const newIngredients = [...prev.ingredients_data];
+                      newIngredients[idx].quantity = Number(e.target.value);
+                      return { ...prev, ingredients_data: newIngredients };
+                    })
+                  }
+                  className="w-24"
+                />
+
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() =>
+                    setDishForm((prev) => ({
+                      ...prev,
+                      ingredients_data: prev.ingredients_data.filter((_, i) => i !== idx),
+                    }))
+                  }
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() =>
+                setDishForm((prev) => {
+                  const last = prev.ingredients_data[prev.ingredients_data.length - 1];
+                  if (!last || (last.inventory_item && last.quantity > 0)) {
+                    return {
+                      ...prev,
+                      ingredients_data: [...prev.ingredients_data, { inventory_item: "", quantity: 1 }],
+                    };
+                  }
+                  return prev; // Do nothing if last row is incomplete
+                })
+              }
+            >
+              + Add Ingredient
+            </Button>
+          </>
+        )}
+      </div>
+
+      {/* Prep Time */}
       <div>
-        <Label htmlFor="prep_time">Preparation Time (HH:MM:SS)</Label>
+        <Label htmlFor="prep_time">Preparation Time</Label>
         <Input
           id="prep_time"
           value={dishForm.prep_time}
-          onChange={(e) =>
-            setDishForm((prev) => ({ ...prev, prep_time: e.target.value }))
-          }
+          onChange={(e) => setDishForm((prev) => ({ ...prev, prep_time: e.target.value }))}
           placeholder="00:30:00"
         />
       </div>
 
+      {/* Dish Image */}
       <div>
         <Label htmlFor="image">Dish Image</Label>
-        <Input
-          id="image"
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-        />
+        <Input id="image" type="file" accept="image/*" onChange={handleFileChange} />
       </div>
 
+      {/* Availability */}
       <div className="flex items-center space-x-2">
         <Switch
           id="available"
           checked={dishForm.available}
-          onCheckedChange={(checked: any) =>
-            setDishForm((prev) => ({ ...prev, available: checked }))
-          }
+          onCheckedChange={(checked: boolean) => setDishForm((prev) => ({ ...prev, available: checked }))}
         />
         <Label htmlFor="available">Available for ordering</Label>
       </div>
 
       <Separator />
 
+      {/* Submit */}
       <div className="space-y-3 pt-5 pb-10">
-        <Button
-          className="w-full cursor-pointer bg-[#2542e3]"
-          onClick={handleSubmit}
-        >
+        <Button className="w-full cursor-pointer bg-[#2542e3]" onClick={handleSubmit}>
           Add Dish
         </Button>
       </div>

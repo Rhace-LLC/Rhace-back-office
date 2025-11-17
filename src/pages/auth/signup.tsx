@@ -363,7 +363,6 @@ export function SignUp() {
           <Tabs defaultValue="owner" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="owner">Restaurant Registration</TabsTrigger>
-              <TabsTrigger value="employee">Employee Sign Up</TabsTrigger>
             </TabsList>
 
             {/* ---------------- RESTAURANT OWNER ---------------- */}
