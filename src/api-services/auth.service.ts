@@ -24,6 +24,7 @@ export interface LoginResponse {
   user: UserDataLogin;
   restaurants: RestaurantDataLogin[];
 }
+
 export interface UserDataLogin {
   id: string;
   email: string;

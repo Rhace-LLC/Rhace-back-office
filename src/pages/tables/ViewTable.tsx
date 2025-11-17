@@ -256,12 +256,13 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
                     setLoading(true);
                     setTimeout(() => {
                       const data = {
-                        tableId: table.table_number,
+                        tableId: table.id,
+                        tableNumber: table.table_number,
                         restaurantId: auth.restaurants[0].id,
                         restaurantName: auth.restaurants[0].name
                       }
 
-                      const newQR = `http://localhost:3010?tid=${data.tableId}&rid=${data.restaurantId}&r=${data.restaurantName}`;
+                      const newQR = `http://localhost:3010?tid=${data.tableId}&rid=${data.restaurantId}&r=${data.restaurantName}&tno=${data.tableNumber}`;
                       setQrValue(newQR);
                       setLoading(false);
                     }, 200);
