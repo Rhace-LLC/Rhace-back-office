@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { parseError } from "@/api-services/utils/parseError";
 import { RootState } from "@/store/store";
 import { Pagination } from "@/components/pagination";
-import InventoryFilters from "./inventory_filters";
+//import InventoryFilters from "./inventory_filters";
 
 import { ContentHOC } from "@/components/nocontent";
 import {
@@ -143,12 +143,12 @@ const { loading, error, fetchAllData } = useInventory({ page: 1 });
         </button>
       </div>
 
-      {/* Filters */}
+      {/* Filters 
       <InventoryFilters
         filters={filters}
         setFilters={setFilters}
         onSearch={() => fetchDataWithFiltersAndSearch()}
-      />
+      />*/}
 
       {/* Inventory Table */}
       {viewState === "normal" ? (
