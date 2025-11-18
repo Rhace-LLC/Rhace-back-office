@@ -1,3 +1,6 @@
+import { InventoryItem } from "@/store/inventory.slice";
+import { Table } from "@/store/table.slice";
+
 export interface RegisterRestaurantResponse {
   detail: string;
   restaurant: {
@@ -10,3 +13,12 @@ export interface RegisterRestaurantResponse {
   };
   owner_email: string;
 }
+
+export interface InventoryResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: InventoryItem[];
+}
+
+export type GetTablesResponse = Table[];

@@ -6,7 +6,6 @@ import { getAllCategories } from "@/api-services/menu.service";
 import { useAuth } from "@/contexts/AuthContext";
 import GenericSheet from "@/components/generic_sheet_overlay";
 import { AddDish } from "./extras";
-import { MenuStats } from "./MenuStats";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { ContentHOC } from "@/components/nocontent";
@@ -31,7 +30,10 @@ export function MenuManagement() {
       setFetchCategoryLoading(true);
       setFetchCategoryError("");
 
-      const response = await getAllCategories(auth.token);
+      const response = await getAllCategories(
+        auth.restaurants[0].id,
+        auth.token
+      );
       console.log("Menu Data Response:", response);
       dispatch(updatMenuCategoryData(response));
     } catch (error: any) {
@@ -63,13 +65,15 @@ export function MenuManagement() {
           Add Dish
         </Button>
       </div>
-
+      {/*
+  
       <MenuStats
         totalDishes={24}
         availableDishes={18}
         categories={[]}
         averagePrice={12.5}
       />
+  */}
 
       <ContentHOC
         loading={fetchCategoryLoading}

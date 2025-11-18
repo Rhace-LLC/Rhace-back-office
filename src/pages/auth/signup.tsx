@@ -16,20 +16,13 @@ import { toast } from "sonner";
 import { parseError } from "@/api-services/utils/parseError";
 import {
   registerEmployee,
+  RegisterEmployeeBody,
   registerRestaurant,
 } from "@/api-services/auth.service";
 import { Eye, EyeOff } from "lucide-react";
 import RhaceImage from "../../assets/Rhace-10.png";
 import { Country, State, City } from "country-state-city";
-
-// -------------------- TYPES --------------------
-export type UserRole =
-  | "admin"
-  | "waiter"
-  | "kitchen"
-  | "inventory_mgr"
-  | "driver"
-  | "customer";
+import { UserRole } from "@/contexts/AuthContext";
 
 export const UserRoleLabels: Record<UserRole, string> = {
   admin: "Admin",
@@ -38,6 +31,8 @@ export const UserRoleLabels: Record<UserRole, string> = {
   inventory_mgr: "Inventory Manager",
   driver: "Driver",
   customer: "Customer",
+  unassigned: "Unassigned",
+  restaurant_owner: "Owner",
 };
 
 export interface SignUpData {
@@ -67,7 +62,7 @@ export interface EmployeeSignUpData {
   phone: string;
   password: string;
   confirm_password: string;
-  role: "admin" | "manager" | "staff" | string;
+  role: UserRole;
   is_verified?: boolean;
   invitation_token?: string;
 }
@@ -224,7 +219,7 @@ export function SignUp() {
     phone: "",
     password: "",
     confirm_password: "",
-    role: "staff",
+    role: "unassigned",
   });
 
   const [countries] = useState(Country.getAllCountries());
@@ -278,7 +273,7 @@ export function SignUp() {
       return;
     }
 
-    const payload = {
+    const payload: RegisterEmployeeBody = {
       email: employeeForm.email,
       first_name: employeeForm.first_name,
       last_name: employeeForm.last_name,
@@ -366,9 +361,8 @@ export function SignUp() {
 
         <CardContent>
           <Tabs defaultValue="owner" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-1">
               <TabsTrigger value="owner">Restaurant Registration</TabsTrigger>
-              <TabsTrigger value="employee">Employee Sign Up</TabsTrigger>
             </TabsList>
 
             {/* ---------------- RESTAURANT OWNER ---------------- */}

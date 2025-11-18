@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -325,7 +325,6 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
 // ---------------------- Main Page: ManageReservation ----------------------
 export const ManageReservation: React.FC = () => {
   const auth = useAuth();
-  const dispatch = useDispatch();
   const reservationsState = useSelector((s: RootState) => s.reservation);
 
   const [viewState, setViewState] = useState<"normal" | "search" | "filter">(

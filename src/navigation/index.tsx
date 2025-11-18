@@ -25,9 +25,10 @@ import CategoryPage from "@/pages/category";
 import ForgotPassword from "@/pages/auth/forgotpassword";
 import ResetPassword from "@/pages/auth/resetpassword";
 import ManageReservation from "@/pages/reservations";
-import ManageInventoryPage from "@/pages/inventory/manage_inventory_page";
+import ManageInventoryPage from "@/pages/inventory";
 import ManageStaff from "@/pages/staffmanagement";
 import RestaurantProfilePage from "@/pages/myRestaurant";
+import AcceptInvite from "@/pages/AcceptInvite";
 
 export interface User {
   id: string;
@@ -109,6 +110,7 @@ function NavigationContent() {
             <Route path="/forgot-password" Component={ForgotPassword} />
             <Route path="/resetpassword" Component={ResetPassword} />
             <Route path="/verify-email" Component={VerifyOtp} />
+            <Route path="/accept-invite" Component={AcceptInvite} />
 
             {/* 🔒 Protected Routes */}
             <Route
@@ -151,7 +153,7 @@ function NavigationContent() {
               path="/inventory"
               element={
                 <ProtectedRoute
-                  allowedRoles={["admin", "waiter", "restaurant_owner"]}
+                  allowedRoles={["admin", "inventory_mgr", "restaurant_owner"]}
                 >
                   <ManageInventoryPage />
                 </ProtectedRoute>

@@ -31,7 +31,9 @@ export const RenderCatDishes = ({ categoryId }: { categoryId: number }) => {
       setFetchAllDishesLoading(true);
       setFetchAllDishesError("");
 
-      const response = await getMenuItems(auth.token, { category: categoryId });
+      const response = await getMenuItems(auth.restaurants[0].id, auth.token, {
+        category: categoryId,
+      });
       dispatch(updateMenuDishData({ key: String(categoryId), data: response }));
 
       console.log("Response: Dishes Data", response);

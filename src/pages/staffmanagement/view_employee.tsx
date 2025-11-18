@@ -1,8 +1,9 @@
-import { StaffAccount } from "@/store/staff.slice";
+
+import { StaffMember } from "@/api-services/auth.service";
 import React from "react";
 
 interface Props {
-  employee: StaffAccount;
+  employee: StaffMember;
 }
 
 const ViewEmployeeDetails: React.FC<Props> = ({ employee }) => {
@@ -20,7 +21,7 @@ const ViewEmployeeDetails: React.FC<Props> = ({ employee }) => {
           <strong>Role:</strong> {employee.role}
         </p>
         <p>
-          <strong>Status:</strong> {employee.status}
+          <strong>Status:</strong> {employee.is_active}
         </p>
       </div>
     </div>

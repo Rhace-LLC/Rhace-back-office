@@ -1,66 +1,53 @@
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  LucidePlus,
-  LucideSearch,
-  LucideMail,
-  LucideUserPlus,
-} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { LucideUserPlus } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { parseError } from "@/api-services/utils/parseError";
 import { useAuth } from "@/contexts/AuthContext";
-import { Pagination } from "@/components/pagination";
 import { ContentHOC } from "@/components/nocontent";
 import GenericSheet from "@/components/generic_sheet_overlay";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { StaffAccount } from "@/store/staff.slice";
 import RenderEmployeeTable from "./employee_table";
 import InviteEmployeeForm from "./invite_employee";
 import ViewEmployeeDetails from "./view_employee";
+import { getAllStaff, StaffMember } from "@/api-services/auth.service";
+import RegisterEmployeeForm from "./add_employee";
+import { flattenStaffByRole } from "./extras";
+import { updateStaffData } from "@/store/staff.slice";
 
 const ManageStaff: React.FC = () => {
   const auth = useAuth();
   const dispatch = useDispatch();
 
-  // ---------------- State ----------------
-  const [page, setPage] = useState(1);
-  const [viewState, setViewState] = useState<"normal" | "search" | "filter">(
-    "normal"
-  );
-  const [totalItems, setTotalItems] = useState(0);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
-  const [filters, setFilters] = useState({ searchTerm: "", role: "" });
 
   const [inviteSheetOpen, setInviteSheetOpen] = useState(false);
+  const [addSheetOpen, setAddSheetOpen] = useState(false);
+
   const [StaffSheetOpen, setStaffSheetOpen] = useState(false);
-  const [selectedStaff, setSelectedStaff] = useState<StaffAccount | null>(null);
+  const [selectedStaff, setSelectedStaff] = useState<StaffMember | null>(null);
 
   const dataStore = useSelector((state: RootState) => state.staff);
   const allData = dataStore.data;
-  const page_size = 8;
-  const total_pages = Math.ceil(totalItems / page_size);
 
   // ---------------- Derived Data ----------------
-  const toShow = useMemo(() => allData[String(page)] ?? [], [allData, page]);
+  const toShow = allData;
 
   // ---------------- API Call ----------------
   const fetchAllStaffs = async () => {
     try {
       setFetchLoading(true);
       setFetchError("");
-      //const res = await getAllStaffs(auth.token);
-      //dispatch(updateStaffAccount({ key: String(page), data: res }));
-      //dispatch(updateStaffTotal({ data_total: 64 }));
-      setTotalItems(64);
+
+      // ✅ Fetch from API
+      const res = await getAllStaff(auth.token);
+
+      // ✅ Flatten staff_by_role into one array
+      const allStaff = flattenStaffByRole(res.staff_by_role);
+
+      // ✅ Update Redux store
+      dispatch(updateStaffData(allStaff));
     } catch (error) {
       console.error(error);
       setFetchError(parseError(error) || "Failed to fetch Staffs.");
@@ -71,26 +58,19 @@ const ManageStaff: React.FC = () => {
 
   // ---------------- Effects ----------------
   useEffect(() => {
-    const pageData = allData[String(page)];
-    if (!pageData) fetchAllStaffs();
-  }, [page, allData]);
+    const pageData = allData;
+    if (pageData.length === 0) fetchAllStaffs();
+  }, [allData]);
+
+  useEffect(() => {
+    fetchAllStaffs();
+  }, []);
 
   useEffect(() => {
     //setTotalItems(dataStore.data_total);
   }, [dataStore]);
 
-  // ---------------- Handlers ----------------
-  const handleSearch = () => {
-    if (filters.searchTerm.trim() !== "" || filters.role !== "") {
-      setViewState("filter");
-      // you can hook your filtered fetch here
-    } else {
-      setViewState("normal");
-      fetchAllStaffs();
-    }
-  };
-
-  const handleStaffClick = (Staff: StaffAccount) => {
+  const handleStaffClick = (Staff: StaffMember) => {
     setSelectedStaff(Staff);
     setStaffSheetOpen(true);
   };
@@ -117,43 +97,14 @@ const ManageStaff: React.FC = () => {
               onClick={() => setInviteSheetOpen(true)}
             >
               <LucideUserPlus className="h-4 w-4" />
-              Invite Staff
+              Invite New Staff
             </Button>
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-col gap-3 rounded-lg border border-gray-100 bg-gray-50 p-4 md:flex-row md:items-center md:gap-4">
-          <div className="flex w-full items-center gap-2 md:w-1/3">
-            <LucideSearch className="h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search by name or email..."
-              value={filters.searchTerm}
-              onChange={(e) =>
-                setFilters({ ...filters, searchTerm: e.target.value })
-              }
-            />
-          </div>
-
-          <Select
-            value={filters.role}
-            onValueChange={(value) => setFilters({ ...filters, role: value })}
-          >
-            <SelectTrigger className="w-full bg-white md:w-1/4">
-              <SelectValue placeholder="Filter by role" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Roles</SelectItem>
-              <SelectItem value="admin">Admin</SelectItem>
-              <SelectItem value="manager">Manager</SelectItem>
-              <SelectItem value="staff">Staff</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Button className="w-full md:w-auto" onClick={handleSearch}>
-            Apply
-          </Button>
-        </div>
+        {/*
+          <StaffFilters filters={filters} setFilters={setFilters} onSearch={handleSearch} />
+        */}
 
         {/* Table or Content */}
         <ContentHOC
@@ -169,13 +120,6 @@ const ManageStaff: React.FC = () => {
         >
           <RenderEmployeeTable data={toShow} onRowClick={handleStaffClick} />
         </ContentHOC>
-
-        {/* Pagination */}
-        <Pagination
-          currentPage={page}
-          totalPages={total_pages}
-          onPageChange={(p) => setPage(p)}
-        />
       </div>
 
       {/* Invite Staff Sheet */}
@@ -199,6 +143,16 @@ const ManageStaff: React.FC = () => {
           <ViewEmployeeDetails employee={selectedStaff} />
         </GenericSheet>
       )}
+      {
+        <GenericSheet
+          open={addSheetOpen}
+          onOpenChange={setAddSheetOpen}
+          title="Create Employee Account"
+          subtitle="Fill details below correctly"
+        >
+          <RegisterEmployeeForm />
+        </GenericSheet>
+      }
     </div>
   );
 };

@@ -1,45 +1,90 @@
 // menuService.ts
-
 import { getConfig } from "./utils/reqConfig";
 import { bookiesAxiosInstance } from "./utils/baseUrl";
 import { CategoryData } from "@/store/category.slice";
 import { MenuDishData } from "@/store/menu.slice";
+import { Table } from "@/store/table.slice";
 
 // ========== CATEGORIES =========
-const getAllCategories = async (token: string): Promise<CategoryData[]> => {
-  const config = getConfig("/menu/categories/", "GET", token);
+const getAllCategories = async (
+  restaurantId: string,
+  token: string
+): Promise<CategoryData[]> => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/categories/`,
+    "GET",
+    token
+  );
   return bookiesAxiosInstance(config);
 };
 
-const getCategoryById = async (id: string, token: string) => {
-  const config = getConfig(`/menu/categories/${id}/`, "GET", token);
+const getCategoryById = async (
+  restaurantId: string,
+  id: string,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/categories/${id}/`,
+    "GET",
+    token
+  );
   return bookiesAxiosInstance(config);
 };
 
 const createCategory = async (
+  restaurantId: string,
   data: any,
   token: string
 ): Promise<CategoryData> => {
-  const config = getConfig("/menu/categories/create/", "POST", token, data);
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/categories/`,
+    "POST",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
 const updateCategory = async (
+  restaurantId: string,
   id: string,
   data: any,
   token: string
 ): Promise<CategoryData> => {
-  const config = getConfig(`/menu/categories/${id}/`, "PUT", token, data);
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/categories/${id}/`,
+    "PUT",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
-const patchCategory = async (id: string, data: any, token: string) => {
-  const config = getConfig(`/menu/categories/${id}/`, "PATCH", token, data);
+const patchCategory = async (
+  restaurantId: string,
+  id: string,
+  data: any,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/categories/${id}/`,
+    "PATCH",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
-const deleteCategory = async (id: string, token: string) => {
-  const config = getConfig(`/menu/categories/${id}/`, "DELETE", token);
+const deleteCategory = async (
+  restaurantId: string,
+  id: string,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/categories/${id}/`,
+    "DELETE",
+    token
+  );
   return bookiesAxiosInstance(config);
 };
 
@@ -49,78 +94,177 @@ export interface GetMenuParams {
 }
 
 const getMenuItems = async (
+  restaurantId: string,
   token: string,
-  params: GetMenuParams
+  params?: GetMenuParams
 ): Promise<MenuDishData[]> => {
-  const config = getConfig("/menu/", "GET", token, undefined, params);
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/menu-items/`,
+    "GET",
+    token,
+    undefined,
+    params
+  );
   return bookiesAxiosInstance(config);
 };
 
-const getMenuItemById = async (id: string, token: string) => {
-  const config = getConfig(`/menu/items/${id}/`, "GET", token);
+const getMenuItemById = async (
+  restaurantId: string,
+  id: string,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/items/${id}/`,
+    "GET",
+    token
+  );
   return bookiesAxiosInstance(config);
 };
 
-const getMenuItemDetails = async (id: string, token: string) => {
-  const config = getConfig(`/menu/items/${id}/details/`, "GET", token);
+const createMenuItem = async (
+  restaurantId: string,
+  data: any,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/menu-items/`,
+    "POST",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
-const createMenuItem = async (data: any, token: string) => {
-  const config = getConfig("/menu/items/create/", "POST", token, data);
+const updateMenuItem = async (
+  restaurantId: string,
+  id: string,
+  data: any,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/items/${id}/`,
+    "PUT",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
-const updateMenuItem = async (id: string, data: any, token: string) => {
-  const config = getConfig(`/menu/items/${id}/`, "PUT", token, data);
+const patchMenuItem = async (
+  restaurantId: string,
+  id: string,
+  data: any,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/items/${id}/`,
+    "PATCH",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
-const patchMenuItem = async (id: string, data: any, token: string) => {
-  const config = getConfig(`/menu/items/${id}/`, "PATCH", token, data);
-  return bookiesAxiosInstance(config);
-};
-
-const deleteMenuItem = async (id: string, token: string) => {
-  const config = getConfig(`/menu/items/${id}/`, "DELETE", token);
+const deleteMenuItem = async (
+  restaurantId: string,
+  id: string,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/items/${id}/`,
+    "DELETE",
+    token
+  );
   return bookiesAxiosInstance(config);
 };
 
 // ========== PRICING RULES ==========
-
-const getPricingRules = async (token: string) => {
-  const config = getConfig("/menu/pricing-rules/", "GET", token);
-  return bookiesAxiosInstance(config);
-};
-
-const createPricingRule = async (data: any, token: string) => {
-  const config = getConfig("/menu/pricing-rules/", "POST", token, data);
-  return bookiesAxiosInstance(config);
-};
-
-const getPricingRuleById = async (id: string, token: string) => {
-  const config = getConfig(`/menu/pricing-rules/${id}/`, "GET", token);
-  return bookiesAxiosInstance(config);
-};
-
-const updatePricingRule = async (id: string, data: any, token: string) => {
-  const config = getConfig(`/menu/pricing-rules/${id}/`, "PUT", token, data);
-  return bookiesAxiosInstance(config);
-};
-
-const patchPricingRule = async (id: string, data: any, token: string) => {
-  const config = getConfig(`/menu/pricing-rules/${id}/`, "PATCH", token, data);
-  return bookiesAxiosInstance(config);
-};
-
-const deletePricingRule = async (id: string, token: string) => {
-  const config = getConfig(`/menu/pricing-rules/${id}/`, "DELETE", token);
-  return bookiesAxiosInstance(config);
-};
-
-const togglePricingRule = async (ruleId: string, token: string) => {
+const getPricingRules = async (restaurantId: string, token: string) => {
   const config = getConfig(
-    `/menu/pricing-rules/${ruleId}/toggle/`,
+    `/menu/restaurant/${restaurantId}/pricing-rules/`,
+    "GET",
+    token
+  );
+  return bookiesAxiosInstance(config);
+};
+
+const createPricingRule = async (
+  restaurantId: string,
+  data: any,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/pricing-rules/`,
+    "POST",
+    token,
+    data
+  );
+  return bookiesAxiosInstance(config);
+};
+
+const getPricingRuleById = async (
+  restaurantId: string,
+  id: string,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/pricing-rules/${id}/`,
+    "GET",
+    token
+  );
+  return bookiesAxiosInstance(config);
+};
+
+const updatePricingRule = async (
+  restaurantId: string,
+  id: string,
+  data: any,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/pricing-rules/${id}/`,
+    "PUT",
+    token,
+    data
+  );
+  return bookiesAxiosInstance(config);
+};
+
+const patchPricingRule = async (
+  restaurantId: string,
+  id: string,
+  data: any,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/pricing-rules/${id}/`,
+    "PATCH",
+    token,
+    data
+  );
+  return bookiesAxiosInstance(config);
+};
+
+const deletePricingRule = async (
+  restaurantId: string,
+  id: string,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/pricing-rules/${id}/`,
+    "DELETE",
+    token
+  );
+  return bookiesAxiosInstance(config);
+};
+
+const togglePricingRule = async (
+  restaurantId: string,
+  ruleId: string,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/pricing-rules/${ruleId}/toggle/`,
     "POST",
     token
   );
@@ -128,60 +272,145 @@ const togglePricingRule = async (ruleId: string, token: string) => {
 };
 
 // ========== PRICING OPERATIONS ==========
-
-const applyPricing = async (data: any, token: string) => {
-  const config = getConfig("/menu/pricing/apply/", "POST", token, data);
+const applyPricing = async (restaurantId: string, data: any, token: string) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/pricing-rules/apply/`,
+    "POST",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
-const getPricingMenuItems = async (token: string) => {
-  const config = getConfig("/menu/pricing/menu-items/", "GET", token);
+const getPricingMenuItems = async (restaurantId: string, token: string) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/pricing/items/`,
+    "GET",
+    token
+  );
   return bookiesAxiosInstance(config);
 };
 
-const resetPricing = async (token: string) => {
-  const config = getConfig("/menu/pricing/reset/", "POST", token);
+const resetPricing = async (restaurantId: string, token: string) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/pricing/reset/`,
+    "POST",
+    token
+  );
   return bookiesAxiosInstance(config);
 };
 
-const updateBasePricing = async (data: any, token: string) => {
-  const config = getConfig("/menu/pricing/update-base/", "POST", token, data);
+const updateBasePricing = async (
+  restaurantId: string,
+  data: any,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/pricing/update-base/`,
+    "POST",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
 // ========== TABLES ==========
-
-const getTables = async (token: string) => {
-  const config = getConfig("/menu/tables/", "GET", token);
+const getTables = async (
+  restaurantId: string,
+  params: any,
+  token: string
+): Promise<Table[]> => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/tables/`,
+    "GET",
+    token,
+    undefined,
+    params
+  );
   return bookiesAxiosInstance(config);
 };
 
-const createTable = async (data: any, token: string) => {
-  const config = getConfig("/menu/tables/", "POST", token, data);
+const createTable = async (restaurantId: string, data: any, token: string) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/tables/`,
+    "POST",
+    token,
+    data
+  );
   return bookiesAxiosInstance(config);
 };
 
-const deleteTable = async (id: string, token: string) => {
-  const config = getConfig(`/menu/tables/${id}/delete/`, "DELETE", token);
+const getTableById = async (
+  restaurantId: string,
+  id: string,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/tables/${id}/`,
+    "GET",
+    token
+  );
+  return bookiesAxiosInstance(config);
+};
+
+const updateTable = async (
+  restaurantId: string,
+  id: string,
+  data: any,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/tables/${id}/`,
+    "PUT",
+    token,
+    data
+  );
+  return bookiesAxiosInstance(config);
+};
+
+const patchTable = async (
+  restaurantId: string,
+  id: string,
+  data: any,
+  token: string
+) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/tables/${id}/`,
+    "PATCH",
+    token,
+    data
+  );
+  return bookiesAxiosInstance(config);
+};
+
+const deleteTable = async (restaurantId: string, id: string, token: string) => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/tables/${id}/`,
+    "DELETE",
+    token
+  );
   return bookiesAxiosInstance(config);
 };
 
 // ========== EXPORTS ==========
-
 export {
-  getMenuItems,
-  getMenuItemById,
-  getMenuItemDetails,
-  createMenuItem,
-  updateMenuItem,
-  patchMenuItem,
-  deleteMenuItem,
+  // Categories
   getAllCategories,
   getCategoryById,
   createCategory,
   updateCategory,
   patchCategory,
   deleteCategory,
+
+  // Menu Items
+  getMenuItems,
+  getMenuItemById,
+  createMenuItem,
+  updateMenuItem,
+  patchMenuItem,
+  deleteMenuItem,
+
+  // Pricing Rules
   getPricingRules,
   createPricingRule,
   getPricingRuleById,
@@ -189,11 +418,18 @@ export {
   patchPricingRule,
   deletePricingRule,
   togglePricingRule,
+
+  // Pricing Operations
   applyPricing,
   getPricingMenuItems,
   resetPricing,
   updateBasePricing,
+
+  // Tables
   getTables,
   createTable,
+  getTableById,
+  updateTable,
+  patchTable,
   deleteTable,
 };

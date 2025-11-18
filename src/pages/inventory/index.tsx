@@ -1,28 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { LucideDownload } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { parseError } from "@/api-services/utils/parseError";
 import { RootState } from "@/store/store";
 import { Pagination } from "@/components/pagination";
-import InventoryFilters from "./inventory_filters";
+//import InventoryFilters from "./inventory_filters";
 
 import { ContentHOC } from "@/components/nocontent";
 import {
   InventoryItem,
-  updateInventoryData,
   //  updateInventoryTotal,
 } from "@/store/inventory.slice";
 import { useAuth } from "@/contexts/AuthContext";
-import { getInventoryTransactions } from "@/api-services/inventory.service";
+import {
+  getInventoryItems,
+} from "@/api-services/inventory.service";
 import RenderInventoryTableData from "./inventory_table";
-import InventoryItemDialog from "./inventory_dialog";
+import GenericSheet from "@/components/generic_sheet_overlay";
+import { AddInventoryItem } from "./AddInventoryItem";
+import { ViewInventoryItem } from "./ViewInventoryItem";
+import { useInventory } from "./useInventory";
 
 const ManageInventoryPage: React.FC = () => {
   const auth = useAuth();
-  const dispatch = useDispatch();
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
+  const [viewInventoryOpen, setViewInventoryOpen] = useState(false);
+  const [addInventoryOpen, setAddInventoryOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+
+  // Example click handler to simulate opening the view sheet
+  const handleViewItem = (item: any) => {
+    setSelectedItem(item);
+    setViewInventoryOpen(true);
+  };
 
   const [viewState, setViewState] = useState<"normal" | "search" | "filter">(
     "normal"
@@ -43,7 +52,7 @@ const ManageInventoryPage: React.FC = () => {
     searchTerm: "",
     category: "",
   });
-
+const { loading, error, fetchAllData } = useInventory({ page: 1 });
   const dataStore = useSelector((state: RootState) => state.inventory);
   const allData = dataStore.data;
 
@@ -59,30 +68,15 @@ const ManageInventoryPage: React.FC = () => {
     [page, dataDisposable]
   );
 
-  // ========== API Calls ==========
-  const fetchAllData = async () => {
-    try {
-      setFetchLoading(true);
-      setFetchError("");
-      const res = await getInventoryTransactions(auth.token);
-      dispatch(updateInventoryData({ key: String(page), data: res }));
-      //dispatch(updateInventoryTotal({ data_total: 69 }));
-    } catch (error) {
-      setFetchError(parseError(error) || "Failed to fetch inventory.");
-    } finally {
-      setFetchLoading(false);
-    }
-  };
-
   const fetchDataWithFiltersAndSearch = async () => {
     try {
       setFetchLoading(true);
       setFetchError("");
-      const res = await getInventoryTransactions(auth.token);
+      const res = await getInventoryItems({ page, page_size }, auth.token);
       setTotalItems(50);
       setDataDisposable((prev) => {
         const existing = prev[String(page)] ?? [];
-        const combined = [...existing, ...res];
+        const combined = [...existing, ...res.results];
         const unique = combined.filter(
           (item, index, self) =>
             index === self.findIndex((p) => p.id === item.id)
@@ -142,25 +136,25 @@ const ManageInventoryPage: React.FC = () => {
           className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium hover:bg-gray-200"
           onClick={() => {
             setSelectedItem(null);
-            setDialogOpen(true);
+            setAddInventoryOpen(true);
           }}
         >
           + Add Inventory Item
         </button>
       </div>
 
-      {/* Filters */}
+      {/* Filters 
       <InventoryFilters
         filters={filters}
         setFilters={setFilters}
         onSearch={() => fetchDataWithFiltersAndSearch()}
-      />
+      />*/}
 
       {/* Inventory Table */}
       {viewState === "normal" ? (
         <ContentHOC
-          loading={fetchLoading}
-          error={!!fetchError}
+          loading={loading}
+          error={!!error}
           noContent={toShow.length === 0}
           loadingText="Fetching Inventory..."
           noContentMessage="No Inventory Found"
@@ -169,13 +163,7 @@ const ManageInventoryPage: React.FC = () => {
           errMessage={fetchError}
           actionFn={fetchAllData}
         >
-          <RenderInventoryTableData
-            data={toShow}
-            onView={(item) => {
-              setSelectedItem(item);
-              setDialogOpen(true);
-            }}
-          />
+          <RenderInventoryTableData data={toShow} onView={handleViewItem} />
         </ContentHOC>
       ) : (
         <ContentHOC
@@ -191,10 +179,7 @@ const ManageInventoryPage: React.FC = () => {
         >
           <RenderInventoryTableData
             data={toShowWithFilters}
-            onView={(item) => {
-              setSelectedItem(item);
-              setDialogOpen(true);
-            }}
+            onView={handleViewItem}
           />
         </ContentHOC>
       )}
@@ -206,14 +191,26 @@ const ManageInventoryPage: React.FC = () => {
         onPageChange={(p) => setPage(p)}
       />
 
-      {/* Inventory Dialog */}
-      {dialogOpen && (
-        <InventoryItemDialog
-          open={dialogOpen}
-          onOpenChange={setDialogOpen}
-          item={selectedItem}
-          onClose={() => setDialogOpen(false)}
-        />
+      {/* ✅ Add Inventory Sheet */}
+      <GenericSheet
+        title="Inventory"
+        subtitle="Add new inventory item"
+        open={addInventoryOpen}
+        onOpenChange={setAddInventoryOpen}
+      >
+        <AddInventoryItem />
+      </GenericSheet>
+
+      {/* ✅ View Inventory Sheet — only show if an item is selected */}
+      {selectedItem && (
+        <GenericSheet
+          title="Inventory Item"
+          subtitle="View item details"
+          open={viewInventoryOpen}
+          onOpenChange={setViewInventoryOpen}
+        >
+          <ViewInventoryItem item={selectedItem} />
+        </GenericSheet>
       )}
     </div>
   );

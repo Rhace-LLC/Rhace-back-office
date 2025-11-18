@@ -13,7 +13,11 @@ import {
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import { login, LoginRequestBody } from "@/api-services/auth.service";
+import {
+  login,
+  LoginRequestBody,
+  resendOtp,
+} from "@/api-services/auth.service";
 import { parseError } from "@/api-services/utils/parseError";
 import RhaceImage from "../../assets/Rhace-10.png";
 
@@ -23,6 +27,17 @@ export function Login() {
   const auth = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  const handleResend = async () => {
+    try {
+      const resendVerificationMail = await resendOtp({ email });
+      toast.success("OTP has been resent successfully!");
+      return resendVerificationMail;
+    } catch (error: any) {
+      const message = parseError(error) || "Something went wrong!";
+      toast.error(message);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +57,13 @@ export function Login() {
       console.log("Response:", response);
 
       // Save auth info
-      auth.login(response.tokens.access, email, response.role);
+      auth.login(
+        response.tokens.access,
+        email,
+        response.role,
+        response.user,
+        response.restaurants
+      );
 
       toast.success("Login successful!");
       navigate("/dashboard"); // or your desired route
@@ -50,6 +71,11 @@ export function Login() {
       console.error("Login error:", error);
       const message = parseError(error) || "Something went wrong!";
       toast.error(message);
+      if (message === "Please verify your email before logging in") {
+        navigate(`/verify-email?email=${email}`);
+        handleResend();
+        toast.info("A verification OTP would be sent to your mail " + email);
+      }
     } finally {
       setLoading(false);
     }
