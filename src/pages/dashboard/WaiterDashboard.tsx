@@ -43,7 +43,7 @@ export interface WaiterDashboardData {
 export const WaiterDashboard = () => {
   const waiterDashboardData = useSelector(
     (state: RootState) => state.dashboard.waiterDashboardData
-  ) 
+  );
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -56,8 +56,6 @@ export const WaiterDashboard = () => {
 
       // Simulate network delay
       await new Promise((resolve) => setTimeout(resolve, 1500));
-
-
 
       //dispatch(updateWaiterDashboardData(payload));
     } catch (err) {
@@ -79,7 +77,9 @@ export const WaiterDashboard = () => {
     <div className="mt-15 space-y-6 p-5 md:mt-0">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-medium tracking-tight">Waiter Dashboard</h1>
+        <h1 className="text-2xl font-medium tracking-tight">
+          Waiter Dashboard
+        </h1>
         <p className="text-muted-foreground">
           Manage your assigned tables and orders
         </p>
@@ -122,42 +122,48 @@ export const WaiterDashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle>My Assigned Tables</CardTitle>
-              <CardDescription>Tables currently under your care</CardDescription>
+              <CardDescription>
+                Tables currently under your care
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-{tables.map((table) => {
-  // Compute status based on is_available
-  const status = table.is_available ? "Free" : "Occupied";
+                {tables.map((table) => {
+                  // Compute status based on is_available
+                  const status = table.is_available ? "Free" : "Occupied";
 
-  // Compute orders count dynamically if you have orders data
-  const ordersCount = orders.filter((o) => o.table === table.table_number).length;
+                  // Compute orders count dynamically if you have orders data
+                  const ordersCount = orders.filter(
+                    (o) => o.table === table.table_number
+                  ).length;
 
-  return (
-    <div
-      key={table.id}
-      className="flex items-center justify-between rounded-lg border p-3"
-    >
-      <div className="flex items-center gap-3">
-        <div className="text-lg">Table {table.table_number}</div>
-        <Badge
-          variant={
-            status === "Occupied"
-              ? "destructive"
-              : status === "Free"
-              ? "default"
-              : "secondary"
-          }
-        >
-          {status}
-        </Badge>
-      </div>
-      <div className="text-muted-foreground text-sm">
-        {ordersCount} order{ordersCount !== 1 ? "s" : ""}
-      </div>
-    </div>
-  );
-})}
+                  return (
+                    <div
+                      key={table.id}
+                      className="flex items-center justify-between rounded-lg border p-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="text-lg">
+                          Table {table.table_number}
+                        </div>
+                        <Badge
+                          variant={
+                            status === "Occupied"
+                              ? "destructive"
+                              : status === "Free"
+                                ? "default"
+                                : "secondary"
+                          }
+                        >
+                          {status}
+                        </Badge>
+                      </div>
+                      <div className="text-muted-foreground text-sm">
+                        {ordersCount} order{ordersCount !== 1 ? "s" : ""}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
@@ -167,7 +173,9 @@ export const WaiterDashboard = () => {
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>Pending Orders</CardTitle>
-                <CardDescription>Orders requiring your attention</CardDescription>
+                <CardDescription>
+                  Orders requiring your attention
+                </CardDescription>
               </div>
             </CardHeader>
             <CardContent>

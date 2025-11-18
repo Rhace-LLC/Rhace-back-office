@@ -54,6 +54,10 @@ export function TablesPage() {
 
   useEffect(() => setTotalItems(dataStore?.data_total || 0), [dataStore]);
 
+  useEffect(()=> {
+    fetchAllData()
+  },[])
+
   return (
     <div className="mt-15 space-y-6 p-5 md:mt-0">
       <div className="flex items-center justify-between">

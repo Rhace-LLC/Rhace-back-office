@@ -55,6 +55,14 @@ const InviteEmployeeForm: React.FC<Props> = ({ onSubmit }) => {
       if (response?.invite_link) {
         setInviteLink(response.invite_link);
         toast.success("Invite link generated successfully!");
+        setFormData({
+          id: "",
+          email: "",
+          first_name: "",
+          last_name: "",
+          phone: "",
+          role: "admin" as UserRole,
+        });
       } else {
         toast.success("Invitation sent successfully!");
       }
@@ -124,7 +132,6 @@ const InviteEmployeeForm: React.FC<Props> = ({ onSubmit }) => {
               <SelectValue placeholder="Select Role" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="admin">Admin</SelectItem>
               <SelectItem value="restaurant_owner">Restaurant Owner</SelectItem>
               <SelectItem value="waiter">Waiter</SelectItem>
               <SelectItem value="kitchen">Kitchen</SelectItem>

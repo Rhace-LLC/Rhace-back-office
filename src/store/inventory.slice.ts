@@ -3,12 +3,16 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export type StockStatus = "in_stock" | "low_stock" | "out_of_stock";
 // ---------------- Types ----------------
 export interface InventoryItem {
-  id: string;
+  id: number;
   name: string;
-  category: string;
+  is_allergen: boolean;
   quantity: number;
   unit: string;
-  status: StockStatus;
+  threshold: number;
+  available: boolean;
+  created: string;   // ISO datetime string
+  updated: string;   // ISO datetime string
+  restaurant: string;
 }
 
 interface InventoryState {
@@ -44,6 +48,12 @@ const inventorySlice = createSlice({
       const { key, data } = action.payload;
       state.data[key] = uniqueBy([...(state.data[key] || []), ...data], "id");
     },
+
+    appendInventoryItem: (state, action: PayloadAction<{ key: string; item: InventoryItem }>) => {
+      const { key, item } = action.payload;
+      state.data[key] = uniqueBy([...(state.data[key] || []), item], "id");
+    },
+
     updateInventoryDataById: (state, action: PayloadAction<InventoryItem>) => {
       Object.keys(state.data).forEach((key) => {
         state.data[key] = state.data[key].map((item) =>
@@ -51,16 +61,19 @@ const inventorySlice = createSlice({
         );
       });
     },
+
     removeInventoryDataById: (state, action: PayloadAction<string>) => {
       Object.keys(state.data).forEach((key) => {
         state.data[key] = state.data[key].filter(
-          (item) => item.id !== action.payload
+          (item) => String(item.id) !== action.payload
         );
       });
     },
+
     clearInventoryData: (state) => {
       state.data = {};
     },
+
     updateInventoryTotal: (state, action: PayloadAction<number>) => {
       state.data_total = action.payload;
     },
@@ -69,6 +82,7 @@ const inventorySlice = createSlice({
 
 export const {
   updateInventoryData,
+  appendInventoryItem,
   updateInventoryDataById,
   removeInventoryDataById,
   clearInventoryData,

@@ -19,9 +19,10 @@ export interface Table {
   qr_code_image: string;
   max_party_size: number;
   is_available: boolean;
-  created: string;
-  updated: string;
-  restaurant: string;
+  created: string; // ISO datetime
+  updated: string; // ISO datetime
+  status: string;  // e.g., "free", "occupied", etc.
+  restaurant: string; // restaurant ID
 }
 
 export interface TableSummary {

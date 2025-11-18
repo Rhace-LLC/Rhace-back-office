@@ -12,37 +12,34 @@ import { useCategoryData } from "./useCategoryData";
 const CategoryPage: React.FC = () => {
   const [addSheetOpen, setAddSheetOpen] = useState<boolean>(false);
 
-
   const [totalItems, setTotalItems] = useState(0);
   const [page, setPage] = useState(1);
   const page_size = 8;
   const total_pages = Math.ceil(totalItems / page_size);
 
-
   const dataStore = useSelector((state: RootState) => state.category);
   const allData = dataStore.data;
 
   // Hook for fetching categories
-  const { fetchAllData, loading: fetchAllDataLoading, error: fetchAllDataError } =
-    useCategoryData(page);
+  const {
+    fetchAllData,
+    loading: fetchAllDataLoading,
+    error: fetchAllDataError,
+  } = useCategoryData(page);
 
   // ========== Normal Mode Slice ==========
   const toShow = React.useMemo(() => {
     return allData[String(page)] ?? [];
   }, [allData, page]);
 
-
-
   // Normal mode pagination
   useEffect(() => {
-
     const pageData = allData[String(page)];
 
     if (!pageData) {
       fetchAllData();
     }
-  }, [page,  allData]);
-
+  }, [page, allData]);
 
   useEffect(() => {
     setTotalItems(dataStore.data_total);
@@ -76,19 +73,19 @@ const CategoryPage: React.FC = () => {
             </button>
           </div>
 
-            <ContentHOC
-              loading={fetchAllDataLoading}
-              error={!!fetchAllDataError}
-              noContent={toShow.length === 0}
-              loadingText="Fetching Categories. Please Wait."
-              noContentMessage="Reload Categories List"
-              noContentBtnText="Reload Categories"
-              noContentAction={fetchAllData}
-              errMessage={fetchAllDataError || "Failed to load borrowers."}
-              actionFn={fetchAllData}
-            >
-              <RenderTableData data={toShow} />
-            </ContentHOC>
+          <ContentHOC
+            loading={fetchAllDataLoading}
+            error={!!fetchAllDataError}
+            noContent={toShow.length === 0}
+            loadingText="Fetching Categories. Please Wait."
+            noContentMessage="Reload Categories List"
+            noContentBtnText="Reload Categories"
+            noContentAction={fetchAllData}
+            errMessage={fetchAllDataError || "Failed to load borrowers."}
+            actionFn={fetchAllData}
+          >
+            <RenderTableData data={toShow} />
+          </ContentHOC>
 
           {/* Categorie Table or Empty State*/}
         </div>

@@ -11,14 +11,13 @@ import {
   //  updateInventoryTotal,
 } from "@/store/inventory.slice";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-  getInventoryItems,
-} from "@/api-services/inventory.service";
+import { getInventoryItems } from "@/api-services/inventory.service";
 import RenderInventoryTableData from "./inventory_table";
 import GenericSheet from "@/components/generic_sheet_overlay";
 import { AddInventoryItem } from "./AddInventoryItem";
 import { ViewInventoryItem } from "./ViewInventoryItem";
 import { useInventory } from "./useInventory";
+import { Book } from "lucide-react";
 
 const ManageInventoryPage: React.FC = () => {
   const auth = useAuth();
@@ -52,7 +51,7 @@ const ManageInventoryPage: React.FC = () => {
     searchTerm: "",
     category: "",
   });
-const { loading, error, fetchAllData } = useInventory({ page: 1 });
+  const { loading, error, fetchAllData } = useInventory({ page: 1 });
   const dataStore = useSelector((state: RootState) => state.inventory);
   const allData = dataStore.data;
 
@@ -193,12 +192,15 @@ const { loading, error, fetchAllData } = useInventory({ page: 1 });
 
       {/* ✅ Add Inventory Sheet */}
       <GenericSheet
-        title="Inventory"
+        title={      <h2 className="text-lg font-bold text-gray-800">
+        New Ingredient Entry <Book className="w-5 h-5 text-blue-500 inline-block" />
+      </h2>
+}
         subtitle="Add new inventory item"
         open={addInventoryOpen}
         onOpenChange={setAddInventoryOpen}
       >
-        <AddInventoryItem />
+        <AddInventoryItem onSuccess={ ()=> setAddInventoryOpen(false)} currentPage={String(page)} />
       </GenericSheet>
 
       {/* ✅ View Inventory Sheet — only show if an item is selected */}

@@ -18,7 +18,7 @@ interface ViewTableProps {
 }
 
 export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
-  const auth = useAuth()
+  const auth = useAuth();
   const [qrValue, setQrValue] = useState(table.qr_code_image);
   const [loading, setLoading] = useState(false);
   const [showStatusEditor, setShowStatusEditor] = useState(false);
@@ -259,8 +259,8 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
                         tableId: table.id,
                         tableNumber: table.table_number,
                         restaurantId: auth.restaurants[0].id,
-                        restaurantName: auth.restaurants[0].name
-                      }
+                        restaurantName: auth.restaurants[0].name,
+                      };
 
                       const newQR = `http://localhost:3010?tid=${data.tableId}&rid=${data.restaurantId}&r=${data.restaurantName}&tno=${data.tableNumber}`;
                       setQrValue(newQR);

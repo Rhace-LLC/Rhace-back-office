@@ -1,18 +1,13 @@
-import { getAllCategories } from "@/api-services/menu.service";
+import { getMenuItems } from "@/api-services/menu.service";
 import { parseError } from "@/api-services/utils/parseError";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-  updateCategoryData,
-  updateCategoryTotal,
-} from "@/store/category.slice";
+import { updateMenuItemsData, updateMenuItemsTotal } from "@/store/menu.slice";
 
 import { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
-// adjust path
 
-export function useCategoryData(page: number) {
+export function useMenuItemsData(page: number) {
   const dispatch = useDispatch();
-
   const auth = useAuth();
 
   const [loading, setLoading] = useState(false);
@@ -23,16 +18,16 @@ export function useCategoryData(page: number) {
       setLoading(true);
       setError("");
 
-      const res = await getAllCategories(auth.restaurants[0].id, auth.token);
+      const response = await getMenuItems(auth.restaurants[0].id, auth.token);
 
-      // store paginated data
-      dispatch(updateCategoryData({ key: String(page), data: res }));
+      // store paginated data by page
+      dispatch(updateMenuItemsData({ key: String(page), data: response }));
 
-      // update total (if you want dynamic total, replace 69)
-      dispatch(updateCategoryTotal({ data_total: 69 }));
+      // update total dynamically if needed
+      dispatch(updateMenuItemsTotal(100));
     } catch (err) {
       console.error(err);
-      setError(parseError(err) || "Failed to fetch categories.");
+      setError(parseError(err) || "Failed to fetch menu items.");
     } finally {
       setLoading(false);
     }

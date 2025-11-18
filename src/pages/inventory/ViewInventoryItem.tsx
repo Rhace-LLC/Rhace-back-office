@@ -36,19 +36,6 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
       </div>
 
       <div className="space-y-2">
-        <Label>Category</Label>
-        {isEditing ? (
-          <Input
-            name="category"
-            value={editableItem.category}
-            onChange={handleChange}
-          />
-        ) : (
-          <p className="text-gray-700">{editableItem.category}</p>
-        )}
-      </div>
-
-      <div className="space-y-2">
         <Label>Quantity</Label>
         {isEditing ? (
           <Input
@@ -77,7 +64,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
 
       <div className="space-y-2">
         <Label>Status</Label>
-        <p className="text-gray-700">{editableItem.status}</p>
+        <p className="text-gray-700">-</p>
       </div>
     </div>
   );

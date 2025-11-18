@@ -11,7 +11,6 @@ import RenderEmployeeTable from "./employee_table";
 import InviteEmployeeForm from "./invite_employee";
 import ViewEmployeeDetails from "./view_employee";
 import { getAllStaff, StaffMember } from "@/api-services/auth.service";
-import RegisterEmployeeForm from "./add_employee";
 import { flattenStaffByRole } from "./extras";
 import { updateStaffData } from "@/store/staff.slice";
 
@@ -23,7 +22,6 @@ const ManageStaff: React.FC = () => {
   const [fetchError, setFetchError] = useState("");
 
   const [inviteSheetOpen, setInviteSheetOpen] = useState(false);
-  const [addSheetOpen, setAddSheetOpen] = useState(false);
 
   const [StaffSheetOpen, setStaffSheetOpen] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState<StaffMember | null>(null);
@@ -78,7 +76,7 @@ const ManageStaff: React.FC = () => {
   // ---------------- UI ----------------
   return (
     <div className="space-y-6 p-5 md:mt-0">
-      <div className="mx-auto space-y-6">
+      <div className="space-y-6">
         {/* Header */}
         <div className="mt-4 mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
@@ -143,16 +141,6 @@ const ManageStaff: React.FC = () => {
           <ViewEmployeeDetails employee={selectedStaff} />
         </GenericSheet>
       )}
-      {
-        <GenericSheet
-          open={addSheetOpen}
-          onOpenChange={setAddSheetOpen}
-          title="Create Employee Account"
-          subtitle="Fill details below correctly"
-        >
-          <RegisterEmployeeForm />
-        </GenericSheet>
-      }
     </div>
   );
 };

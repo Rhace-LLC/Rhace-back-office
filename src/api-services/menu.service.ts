@@ -2,9 +2,45 @@
 import { getConfig } from "./utils/reqConfig";
 import { bookiesAxiosInstance } from "./utils/baseUrl";
 import { CategoryData } from "@/store/category.slice";
-import { MenuDishData } from "@/store/menu.slice";
 import { Table } from "@/store/table.slice";
+export interface GetMenuItemsResponse extends Array<MenuItem> {}
 
+export interface MenuItem {
+  id: string;
+  restaurant: string;
+  restaurant_name: string;
+  name: string;
+  category: MenuCategory;
+  description: string;
+  price: string;
+  ingredients: MenuIngredient[];
+  display_ingredients: string[];
+  allergens: string[];
+  image_url: string;
+  prep_time: string; // "HH:MM:SS"
+  created: string; // ISO timestamp
+  updated: string; // ISO timestamp
+  available: boolean;
+  is_special: boolean;
+}
+
+export interface MenuCategory {
+  id: number;
+  restaurant: string;
+  restaurant_name: string;
+  name: string;
+  description: string;
+  image: string;
+  image_url: string;
+  items_count: number;
+  created_at: string; // ISO timestamp
+  updated_at: string; // ISO timestamp
+}
+
+export interface MenuIngredient {
+  inventory_item: number;
+  quantity: number;
+}
 // ========== CATEGORIES =========
 const getAllCategories = async (
   restaurantId: string,
@@ -97,7 +133,7 @@ const getMenuItems = async (
   restaurantId: string,
   token: string,
   params?: GetMenuParams
-): Promise<MenuDishData[]> => {
+): Promise<GetMenuItemsResponse> => {
   const config = getConfig(
     `/menu/restaurant/${restaurantId}/menu-items/`,
     "GET",
@@ -125,7 +161,7 @@ const createMenuItem = async (
   restaurantId: string,
   data: any,
   token: string
-) => {
+): Promise<MenuItem> => {
   const config = getConfig(
     `/menu/restaurant/${restaurantId}/menu-items/`,
     "POST",
@@ -140,10 +176,10 @@ const updateMenuItem = async (
   id: string,
   data: any,
   token: string
-) => {
+): Promise<MenuItem> => {
   const config = getConfig(
     `/menu/restaurant/${restaurantId}/items/${id}/`,
-    "PUT",
+    "PATCH",
     token,
     data
   );
@@ -173,6 +209,60 @@ const deleteMenuItem = async (
   const config = getConfig(
     `/menu/restaurant/${restaurantId}/items/${id}/`,
     "DELETE",
+    token
+  );
+  return bookiesAxiosInstance(config);
+};
+// ---------------- Types ----------------
+export interface ToggleMenuItemParams {
+  restaurant_id: string;
+  item_id: string;
+}
+
+// ---------------- Requests ----------------
+
+/**
+ * Toggle availability of a menu item
+ */
+export const toggleMenuItemAvailability = async (
+  restaurantId: string,
+  itemId: string,
+  token: string
+): Promise<MenuItem> => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/items/${itemId}/toggle-availability/`,
+    "POST",
+    token
+  );
+  return bookiesAxiosInstance(config);
+};
+
+/**
+ * Toggle special status of a menu item
+ */
+export const toggleMenuItemSpecial = async (
+  restaurantId: string,
+  itemId: string,
+  token: string
+): Promise<any> => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/items/${itemId}/toggle-special/`,
+    "POST",
+    token
+  );
+  return bookiesAxiosInstance(config);
+};
+
+/**
+ * Get all special menu items for a restaurant
+ */
+export const getSpecialMenuItems = async (
+  restaurantId: string,
+  token: string
+): Promise<GetMenuItemsResponse> => {
+  const config = getConfig(
+    `/menu/restaurant/${restaurantId}/items/special/`,
+    "GET",
     token
   );
   return bookiesAxiosInstance(config);

@@ -2,6 +2,7 @@
 import { getConfig } from "./utils/reqConfig";
 import { bookiesAxiosInstance } from "./utils/baseUrl";
 import { InventoryResponse } from "./utils/types.service";
+import { InventoryItem } from "@/store/inventory.slice";
 
 /**
  * ==============================
@@ -49,7 +50,7 @@ const createInventoryItem = async (
     restaurant: string;
   },
   token?: string
-) => {
+): Promise<InventoryItem> => {
   const config = getConfig("/inventory/items/create/", "POST", token, data);
   return await bookiesAxiosInstance(config);
 };

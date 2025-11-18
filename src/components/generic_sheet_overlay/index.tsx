@@ -10,8 +10,8 @@ import {
 interface GenericSheetProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  title?: string;
-  subtitle?: string;
+  title?: React.ReactNode;
+  subtitle?: React.ReactNode;
   maxWidth?: number;
   children?: React.ReactNode; // body content
   footer?: React.ReactNode; // optional footer actions
@@ -32,7 +32,12 @@ const GenericSheet: React.FC<GenericSheetProps> = ({
         className={`w-full !max-w-[500px] overflow-y-auto p-4 pt-10`}
       >
         <SheetHeader>
-          <SheetTitle className="text-2xl tracking-tight">{title}</SheetTitle>
+          {
+            typeof title == "string" ? (
+          <SheetTitle className="text-2xl tracking-tight">{title}</SheetTitle>):( <SheetTitle>
+            {title}
+          </SheetTitle>)
+          }
           {subtitle && <SheetDescription>{subtitle}</SheetDescription>}
         </SheetHeader>
 
