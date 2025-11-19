@@ -19,9 +19,12 @@ interface InventoryItemData {
   is_allergen: boolean;
 }
 
-export const AddInventoryItem: React.FC<{currentPage: string, onSuccess: ()=> void;}> = ({currentPage, onSuccess}) => {
+export const AddInventoryItem: React.FC<{
+  currentPage: string;
+  onSuccess: () => void;
+}> = ({ currentPage, onSuccess }) => {
   const { token } = useAuth();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const initialFormData: InventoryItemData = {
     name: "",
     quantity: 0,
@@ -38,17 +41,17 @@ export const AddInventoryItem: React.FC<{currentPage: string, onSuccess: ()=> vo
     let newValue: string | number | boolean = value;
 
     if (type === "number") {
-        // Convert to number. If input is empty, reset to 0 to maintain type integrity.
-        // You might consider converting to null/undefined if your API handles optional numbers differently.
-        newValue = value === "" ? 0 : Number(value);
+      // Convert to number. If input is empty, reset to 0 to maintain type integrity.
+      // You might consider converting to null/undefined if your API handles optional numbers differently.
+      newValue = value === "" ? 0 : Number(value);
     } else if (type === "checkbox") {
-        newValue = checked;
+      newValue = checked;
     }
-    
+
     // The 'restaurant' field is not in the form, but if it needs dynamic assignment,
     // that logic should happen here or within handleSubmit.
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: newValue,
     }));
@@ -59,8 +62,8 @@ export const AddInventoryItem: React.FC<{currentPage: string, onSuccess: ()=> vo
 
     // Basic validation check
     if (!formData.name.trim() || !formData.unit.trim()) {
-        toast.error("Please fill in the Item Name and Unit.");
-        return;
+      toast.error("Please fill in the Item Name and Unit.");
+      return;
     }
 
     // Ensure numerical fields are valid numbers before sending
@@ -73,10 +76,10 @@ export const AddInventoryItem: React.FC<{currentPage: string, onSuccess: ()=> vo
     setIsSubmitting(true);
     try {
       const newItem = await createInventoryItem(dataToSend, token);
-      dispatch(appendInventoryItem({key: currentPage, item: newItem}))
+      dispatch(appendInventoryItem({ key: currentPage, item: newItem }));
       toast.success(`${formData.name} added successfully!`);
       setFormData(initialFormData); // Reset form to initial state
-      onSuccess()
+      onSuccess();
     } catch (error: any) {
       toast.error("Failed to add item. Check console for details.");
       console.error("Inventory item creation failed:", error);
@@ -88,20 +91,20 @@ export const AddInventoryItem: React.FC<{currentPage: string, onSuccess: ()=> vo
   return (
     // Modern look: max-width for containment, larger padding, subtle shadow, rounded corners.
     <div className="py-7">
-      
       {/* Title with strong visual presence */}
 
       {/* Main form body with consistent vertical spacing */}
       <div className="space-y-6">
-
         {/* Name Field (Full Width) */}
         <div className="space-y-2">
-          <Label htmlFor="name" className="text-sm font-medium text-gray-700">Ingredient Name</Label>
-          <Input 
-            id="name" 
-            name="name" 
-            value={formData.name} 
-            onChange={handleChange} 
+          <Label htmlFor="name" className="text-sm font-medium text-gray-700">
+            Ingredient Name
+          </Label>
+          <Input
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
             placeholder="e.g., Organic Eggs, Roma Tomatoes"
             className="h-10"
           />
@@ -109,8 +112,13 @@ export const AddInventoryItem: React.FC<{currentPage: string, onSuccess: ()=> vo
 
         {/* Quantity & Unit Fields (Two Columns/Grid) */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="space-y-2 col-span-2">
-            <Label htmlFor="quantity" className="text-sm font-medium text-gray-700">Current Quantity</Label>
+          <div className="col-span-2 space-y-2">
+            <Label
+              htmlFor="quantity"
+              className="text-sm font-medium text-gray-700"
+            >
+              Current Quantity
+            </Label>
             <Input
               id="quantity"
               name="quantity"
@@ -122,13 +130,15 @@ export const AddInventoryItem: React.FC<{currentPage: string, onSuccess: ()=> vo
               className="h-10"
             />
           </div>
-          <div className="space-y-2 col-span-1">
-            <Label htmlFor="unit" className="text-sm font-medium text-gray-700">Unit</Label>
-            <Input 
-              id="unit" 
-              name="unit" 
-              value={formData.unit} 
-              onChange={handleChange} 
+          <div className="col-span-1 space-y-2">
+            <Label htmlFor="unit" className="text-sm font-medium text-gray-700">
+              Unit
+            </Label>
+            <Input
+              id="unit"
+              name="unit"
+              value={formData.unit}
+              onChange={handleChange}
               placeholder="kg, box, oz"
               className="h-10"
             />
@@ -137,40 +147,48 @@ export const AddInventoryItem: React.FC<{currentPage: string, onSuccess: ()=> vo
 
         {/* Threshold Field (Full Width for clarity) */}
         <div className="space-y-2">
-            <Label htmlFor="threshold" className="text-sm font-medium text-gray-700">Low Stock Threshold</Label>
-            <Input
-              id="threshold"
-              name="threshold"
-              type="number"
-              value={formData.threshold}
-              onChange={handleChange}
-              min="0"
-              placeholder="Minimum quantity before reorder (e.g., 5)"
-              className="h-10"
-            />
+          <Label
+            htmlFor="threshold"
+            className="text-sm font-medium text-gray-700"
+          >
+            Low Stock Threshold
+          </Label>
+          <Input
+            id="threshold"
+            name="threshold"
+            type="number"
+            value={formData.threshold}
+            onChange={handleChange}
+            min="0"
+            placeholder="Minimum quantity before reorder (e.g., 5)"
+            className="h-10"
+          />
         </div>
 
         {/* Allergen Checkbox (Separate, attention-grabbing section) */}
-        <div className="pt-4 flex items-center space-x-3">
+        <div className="flex items-center space-x-3 pt-4">
           {/* Using a custom Checkbox component often provides better styling */}
           <input
-             type="checkbox"
-             id="is_allergen"
-             name="is_allergen"
-             checked={formData.is_allergen}
-             onChange={handleChange}
-             // Using native input with custom Tailwind classes for modern look
-             className="h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+            type="checkbox"
+            id="is_allergen"
+            name="is_allergen"
+            checked={formData.is_allergen}
+            onChange={handleChange}
+            // Using native input with custom Tailwind classes for modern look
+            className="h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
           />
-          <Label htmlFor="is_allergen" className="text-sm font-medium text-red-600">
+          <Label
+            htmlFor="is_allergen"
+            className="text-sm font-medium text-red-600"
+          >
             Designate as Allergen
           </Label>
         </div>
 
         {/* Submit Button (Primary action, full width) */}
-        <Button 
-          onClick={handleSubmit} 
-          className="w-full mt-8 py-3 bg-blue-600 hover:bg-blue-700 text-[15px] cursor-pointer font-md transition-colors"
+        <Button
+          onClick={handleSubmit}
+          className="font-md mt-8 w-full cursor-pointer bg-blue-600 py-3 text-[15px] transition-colors hover:bg-blue-700"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Adding Item..." : "Add Item to Inventory"}

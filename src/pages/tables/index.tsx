@@ -54,9 +54,9 @@ export function TablesPage() {
 
   useEffect(() => setTotalItems(dataStore?.data_total || 0), [dataStore]);
 
-  useEffect(()=> {
-    fetchAllData()
-  },[])
+  useEffect(() => {
+    fetchAllData();
+  }, []);
 
   return (
     <div className="mt-15 space-y-6 p-5 md:mt-0">
@@ -108,24 +108,6 @@ export function TablesPage() {
         onPageChange={(p) => setPage(p)}
       />
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <div className="flex items-center gap-2">
-          <div className="h-4 w-4 rounded border border-green-200 bg-green-100"></div>
-          <span className="text-sm">Free</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="h-4 w-4 rounded border border-red-200 bg-red-100"></div>
-          <span className="text-sm">Occupied</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="h-4 w-4 rounded border border-yellow-200 bg-yellow-100"></div>
-          <span className="text-sm">Reserved</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="h-4 w-4 rounded border border-gray-200 bg-gray-100"></div>
-          <span className="text-sm">Needs Cleaning</span>
-        </div>
-      </div>
       <GenericSheet
         title="Table"
         subtitle="Add new Table"

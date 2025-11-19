@@ -62,7 +62,7 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
         auth.token
       );
 
-      dispatch(updateMenuItemById(res))
+      dispatch(updateMenuItemById(res));
 
       toast.success("Dish updated successfully!");
       setEditMode(false);
@@ -78,7 +78,7 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
      ============================================================ */
   if (!editMode) {
     return (
-      <div className="space-y-8 py-6 animate-fadeIn">
+      <div className="animate-fadeIn space-y-8 py-6">
         {/* IMAGE */}
         <div className="w-full">
           {preview ? (
@@ -88,7 +88,7 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
               className="h-[150px] w-full rounded-xl object-cover shadow-sm"
             />
           ) : (
-            <div className="h-[150px] w-full rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 text-sm border">
+            <div className="flex h-[150px] w-full items-center justify-center rounded-xl border bg-gray-100 text-sm text-gray-400">
               No Image
             </div>
           )}
@@ -108,7 +108,7 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
 
           <div className="space-y-1">
             <span className="text-sm text-gray-500">Description</span>
-            <p className="text-[13px] text-gray-700 leading-relaxed">
+            <p className="text-[13px] leading-relaxed text-gray-700">
               {dish.description}
             </p>
           </div>
@@ -139,7 +139,7 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
      EDIT MODE — Modern & Premium Look
      ============================================================ */
   return (
-    <div className="space-y-8 py-6 animate-fadeIn">
+    <div className="animate-fadeIn space-y-8 py-6">
       {/* IMAGE UPLOAD */}
       <div className="space-y-2">
         <Label className="text-sm font-medium text-gray-700">Dish Image</Label>
@@ -155,7 +155,7 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
                 setPreview(null);
                 setDishForm((p) => ({ ...p, image: null }));
               }}
-              className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-lg"
+              className="absolute top-2 right-2 rounded-lg bg-black/60 px-2 py-1 text-xs text-white"
             >
               Remove
             </button>
@@ -163,7 +163,7 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
         ) : (
           <label
             htmlFor="image"
-            className="h-[150px] w-full flex flex-col items-center justify-center rounded-xl border border-dashed bg-gray-50 text-gray-400 cursor-pointer hover:bg-gray-100 transition"
+            className="flex h-[150px] w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed bg-gray-50 text-gray-400 transition hover:bg-gray-100"
           >
             <p className="text-sm font-medium">Click to upload image</p>
           </label>

@@ -10,8 +10,8 @@ export interface InventoryItem {
   unit: string;
   threshold: number;
   available: boolean;
-  created: string;   // ISO datetime string
-  updated: string;   // ISO datetime string
+  created: string; // ISO datetime string
+  updated: string; // ISO datetime string
   restaurant: string;
 }
 
@@ -49,7 +49,10 @@ const inventorySlice = createSlice({
       state.data[key] = uniqueBy([...(state.data[key] || []), ...data], "id");
     },
 
-    appendInventoryItem: (state, action: PayloadAction<{ key: string; item: InventoryItem }>) => {
+    appendInventoryItem: (
+      state,
+      action: PayloadAction<{ key: string; item: InventoryItem }>
+    ) => {
       const { key, item } = action.payload;
       state.data[key] = uniqueBy([...(state.data[key] || []), item], "id");
     },

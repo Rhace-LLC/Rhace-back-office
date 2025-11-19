@@ -331,7 +331,8 @@ export const AddDish: React.FC<{
                         (item) =>
                           !dishForm.ingredients_data.some(
                             (i, iIdx) =>
-                              i.inventory_item === String(item.id) && iIdx !== idx
+                              i.inventory_item === String(item.id) &&
+                              iIdx !== idx
                           )
                       )
                       .map((item) => (

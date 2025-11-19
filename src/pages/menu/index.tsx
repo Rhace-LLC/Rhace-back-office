@@ -63,7 +63,7 @@ export function MenuManagement() {
 
   // Toggle availability handler
   const handleToggleAvailability = async (dish: MenuItem) => {
-    toast.info("Updating Status... Please Wait")
+    toast.info("Updating Status... Please Wait");
     try {
       const updatedDish = await toggleMenuItemAvailability(
         auth.restaurants[0].id,

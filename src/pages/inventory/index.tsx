@@ -192,15 +192,20 @@ const ManageInventoryPage: React.FC = () => {
 
       {/* ✅ Add Inventory Sheet */}
       <GenericSheet
-        title={      <h2 className="text-lg font-bold text-gray-800">
-        New Ingredient Entry <Book className="w-5 h-5 text-blue-500 inline-block" />
-      </h2>
-}
+        title={
+          <h2 className="text-lg font-bold text-gray-800">
+            New Ingredient Entry{" "}
+            <Book className="inline-block h-5 w-5 text-blue-500" />
+          </h2>
+        }
         subtitle="Add new inventory item"
         open={addInventoryOpen}
         onOpenChange={setAddInventoryOpen}
       >
-        <AddInventoryItem onSuccess={ ()=> setAddInventoryOpen(false)} currentPage={String(page)} />
+        <AddInventoryItem
+          onSuccess={() => setAddInventoryOpen(false)}
+          currentPage={String(page)}
+        />
       </GenericSheet>
 
       {/* ✅ View Inventory Sheet — only show if an item is selected */}

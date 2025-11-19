@@ -448,7 +448,7 @@ const updateTable = async (
   id: string,
   data: any,
   token: string
-) => {
+): Promise<Table> => {
   const config = getConfig(
     `/menu/restaurant/${restaurantId}/tables/${id}/`,
     "PUT",

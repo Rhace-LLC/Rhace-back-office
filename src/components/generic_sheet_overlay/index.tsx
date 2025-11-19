@@ -32,12 +32,11 @@ const GenericSheet: React.FC<GenericSheetProps> = ({
         className={`w-full !max-w-[500px] overflow-y-auto p-4 pt-10`}
       >
         <SheetHeader>
-          {
-            typeof title == "string" ? (
-          <SheetTitle className="text-2xl tracking-tight">{title}</SheetTitle>):( <SheetTitle>
-            {title}
-          </SheetTitle>)
-          }
+          {typeof title == "string" ? (
+            <SheetTitle className="text-2xl tracking-tight">{title}</SheetTitle>
+          ) : (
+            <SheetTitle>{title}</SheetTitle>
+          )}
           {subtitle && <SheetDescription>{subtitle}</SheetDescription>}
         </SheetHeader>
 

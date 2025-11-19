@@ -21,7 +21,7 @@ export interface Table {
   is_available: boolean;
   created: string; // ISO datetime
   updated: string; // ISO datetime
-  status: string;  // e.g., "free", "occupied", etc.
+  status: string; // e.g., "free", "occupied", etc.
   restaurant: string; // restaurant ID
 }
 

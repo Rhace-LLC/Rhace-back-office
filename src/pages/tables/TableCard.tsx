@@ -14,18 +14,35 @@ import { Table } from "@/store/table.slice";
 
 interface TableCardProps {
   table: Table;
-  onView?: () => void;
 }
 
-export const TableCard: React.FC<TableCardProps> = ({ table, onView }) => {
+export const TableCard: React.FC<TableCardProps> = ({ table}) => {
   const [viewOpen, setViewOpen] = useState(false);
 
-  const { table_number, max_party_size, is_available, restaurant_name } = table;
+  const {
+    table_number,
+    max_party_size,
+    is_available,
+    restaurant_name,
+    status,
+  } = table;
 
-  const statusLabel = is_available ? "Available" : "Unavailable";
-  const statusColor = is_available
+  // Availability badge
+  const availabilityLabel = is_available ? "Available" : "Unavailable";
+  const availabilityColor = is_available
     ? "text-green-700 bg-green-100/50"
     : "text-red-700 bg-red-100/50";
+
+  // Status box (free, occupied, reserved, etc.)
+  const statusLabel = status
+    ? status.charAt(0).toUpperCase() + status.slice(1)
+    : "-";
+  const statusBoxColor =
+    status === "free"
+      ? "bg-green-50 text-green-800"
+      : status === "occupied"
+        ? "bg-red-50 text-red-800"
+        : "bg-amber-50 text-amber-800";
 
   return (
     <div>
@@ -35,21 +52,23 @@ export const TableCard: React.FC<TableCardProps> = ({ table, onView }) => {
             <CardTitle className="text-md font-semibold">
               Table {table_number}
             </CardTitle>
+
             <span
               className={clsx(
                 "rounded-full px-3 py-1 text-xs font-medium",
-                statusColor
+                availabilityColor
               )}
             >
-              {statusLabel}
+              {availabilityLabel}
             </span>
           </div>
+
           <p className="text-xs text-gray-500">{restaurant_name}</p>
         </CardHeader>
 
         <CardContent className="p-3">
           <div className="grid grid-cols-2 gap-3">
-            {/* Seats Box */}
+            {/* Seats box */}
             <div className="flex flex-col items-start rounded-lg bg-blue-50 p-3">
               <span className="text-xs font-semibold tracking-wide text-blue-800 uppercase">
                 Seats
@@ -59,12 +78,17 @@ export const TableCard: React.FC<TableCardProps> = ({ table, onView }) => {
               </span>
             </div>
 
-            {/* Status Box */}
-            <div className="flex flex-col items-start rounded-lg bg-amber-50 p-3">
-              <span className="text-xs font-semibold tracking-wide text-amber-800 uppercase">
+            {/* Status box */}
+            <div
+              className={clsx(
+                "flex flex-col items-start rounded-lg p-3",
+                statusBoxColor
+              )}
+            >
+              <span className="text-xs font-semibold tracking-wide uppercase">
                 Status
               </span>
-              <span className="text-lg font-bold text-amber-900">Open</span>
+              <span className="text-lg font-bold">{statusLabel}</span>
             </div>
           </div>
         </CardContent>
@@ -77,17 +101,10 @@ export const TableCard: React.FC<TableCardProps> = ({ table, onView }) => {
           >
             Manage Table
           </Button>
-          <Button
-            variant="secondary"
-            className="w-full cursor-pointer bg-blue-100 text-blue-700 hover:bg-blue-200"
-            onClick={onView}
-          >
-            Take Order
-          </Button>
         </CardFooter>
       </Card>
 
-      {/* Sheet for full table details */}
+      {/* Table Detail Sheet */}
       <GenericSheet
         title={`Dining Table ${table_number}`}
         subtitle={`Status: ${statusLabel} • Seats up to ${max_party_size}`}

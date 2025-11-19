@@ -17,7 +17,7 @@ interface ViewCategoryProps {
 
 const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
   const auth = useAuth();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState({
     name: data.name,
@@ -63,7 +63,7 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
         formData,
         auth.token
       );
-      
+
       dispatch(updateCategoryDataById(res));
 
       toast.success("Category updated successfully!");
