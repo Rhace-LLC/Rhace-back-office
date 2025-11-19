@@ -3,7 +3,10 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { parseError } from "@/api-services/utils/parseError";
-import { Reservation, updateReservationStatus } from "@/api-services/order.service";
+import {
+  Reservation,
+  updateReservationStatus,
+} from "@/api-services/order.service";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Calendar,
@@ -16,13 +19,14 @@ import {
   XCircle,
 } from "lucide-react";
 import { ReservationStatus } from "./re";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useTableData } from "../tables/useTableData";
 import { Table } from "@/store/table.slice";
 import GenericDialog from "@/components/generic_sheet_overlay/alert";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLoading } from "@/contexts/LoadingContext";
+import { updateReservationDataById } from "@/store/reservation.slice";
 
 const getStatusColor = (status: ReservationStatus) => {
   switch (status) {
@@ -69,9 +73,12 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
   onConfirmReservation,
   onCompleteReservation,
 }) => {
-    const auth = useAuth();
-    const {setLoading,setLoadingText} = useLoading();
+  const auth = useAuth();
+  const dispatch = useDispatch();
+  const { setLoading, setLoadingText } = useLoading();
   const dataStore = useSelector((state: RootState) => state.table);
+  const [reasonError, setReasonError] = useState("");
+  const [reason, setReason] = useState("");
   const allTables: Table[] = Object.values(dataStore.data).flat();
   const { fetchAllData, fetchLoading, fetchError } = useTableData({
     page: 1,
@@ -103,34 +110,62 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
     }
   };
 
-const handleConfirm = async () => {
-  try {
-    setLoading(true);
-    setLoadingText("Confirming Reservation...");
-    await updateReservationStatus(String(reservation.id), { status: "confirmed" }, auth.token);
-    toast.success("Reservation confirmed");
-    setConfirmDialogOpen(false);
-  } catch (error: any) {
-    toast.error(parseError(error) || "Failed to confirm reservation");
-  } finally {
-    setLoading(false);
-    setLoadingText("");
-  }
-};
+  const handleConfirm = async () => {
+    try {
+      setLoading(true);
+      setLoadingText("Confirming Reservation...");
+      await updateReservationStatus(
+        String(reservation.id),
+        { status: "confirmed" },
+        auth.token
+      );
+      dispatch(
+        updateReservationDataById({ ...reservation, status: "confirmed" })
+      );
+      toast.success("Reservation confirmed");
+      setConfirmDialogOpen(false);
+    } catch (error: any) {
+      toast.error(parseError(error) || "Failed to confirm reservation");
+    } finally {
+      setLoading(false);
+      setLoadingText("");
+    }
+  };
 
-const handleCancel = async () => {
-  try {
-    setLoading(true);
-    setLoadingText("Cancelling Reservation...");
-    await updateReservationStatus(String(reservation.id), { status: "cancelled" }, auth.token);
-    toast.success("Reservation cancelled");
-  } catch (error: any) {
-    toast.error(parseError(error) || "Failed to cancel reservation");
-  } finally {
-    setLoading(false);
-    setLoadingText("");
-  }
-};
+  const handleCancel = async () => {
+    // Validate reason
+    if (!reason.trim()) {
+      setReasonError("A cancellation reason is required.");
+      return;
+    }
+    setReasonError("");
+
+    try {
+      setLoading(true);
+      setLoadingText("Cancelling Reservation...");
+
+      await updateReservationStatus(
+        String(reservation.id),
+        { status: "cancelled", reason },
+        auth.token
+      );
+
+      dispatch(
+        updateReservationDataById({
+          ...reservation,
+          status: "cancelled",
+        })
+      );
+
+      toast.success("Reservation cancelled");
+      setCancelDialogOpen(false);
+    } catch (error: any) {
+      toast.error(parseError(error) || "Failed to cancel reservation");
+    } finally {
+      setLoading(false);
+      setLoadingText("");
+    }
+  };
 
   const handleComplete = async () => {
     if (!onCompleteReservation) return;
@@ -224,6 +259,22 @@ const handleCancel = async () => {
           {/* Actions Tab */}
           <TabsContent value="actions" className="space-y-6">
             {/* Pending => Confirm */}
+            {reservation.status === "cancelled" && (
+              <div className="mt-6 rounded-xl border border-gray-300 bg-gray-50 p-5 shadow-sm">
+                <div className="flex items-center space-x-3">
+                  <XCircle className="h-6 w-6 text-red-600" />
+                  <h4 className="text-lg font-semibold text-gray-800">
+                    Reservation Cancelled
+                  </h4>
+                </div>
+
+                <p className="mt-2 text-sm text-gray-600">
+                  This reservation has been cancelled. No further actions can be
+                  taken.
+                </p>
+              </div>
+            )}
+
             {reservation.status === "pending" && onConfirmReservation && (
               <div className="space-y-3 rounded-xl border border-green-200 bg-green-50 p-5 shadow-sm">
                 <h4 className="flex items-center text-lg font-semibold text-green-800">
@@ -242,104 +293,102 @@ const handleCancel = async () => {
               </div>
             )}
 
-            {/* Confirmed => Complete & Cancel */}
-            {reservation.status === "confirmed" && (
-              <div className="space-y-4">
-                {onCompleteReservation && (
-                  <div className="space-y-2 rounded-xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
-                    <h4 className="flex items-center text-lg font-semibold text-blue-800">
-                      <CheckCircle className="mr-2 h-5 w-5" /> Complete
-                      Reservation
-                    </h4>
-                    <p className="text-sm text-blue-700">
-                      Mark this reservation as completed after the party has
-                      finished.
-                    </p>
-                    <Button
-                      onClick={handleComplete}
-                      className="w-full bg-blue-600 font-semibold text-white shadow-md transition-all hover:bg-blue-700"
-                    >
-                      Complete
-                    </Button>
-                  </div>
-                )}
-              </div>
-            )}
-
             {/* Assign Table */}
-            {(
-              <div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-5 shadow-sm">
-                <h4 className="flex items-center text-lg font-semibold text-gray-800">
-                  Assign Table
-                </h4>
-                <Label htmlFor="table-select" className="text-sm">
-                  Select Table
-                </Label>
+            {reservation.status !== "cancelled" &&
+              reservation.status !== "completed" && (
+                <div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-5 shadow-sm">
+                  <h4 className="flex items-center text-lg font-semibold text-gray-800">
+                    Assign Table
+                  </h4>
+                  <Label htmlFor="table-select" className="text-sm">
+                    Select Table
+                  </Label>
 
-                {fetchLoading ? (
-                  <div className="py-2 text-sm text-gray-500">
-                    Loading tables...
-                  </div>
-                ) : fetchError ? (
-                  <div className="space-y-2">
-                    <div className="text-sm text-red-600">{fetchError}</div>
-                    <Button
-                      onClick={fetchAllData}
-                      className="bg-red-600 font-semibold text-white hover:bg-red-700"
-                    >
-                      Retry
-                    </Button>
-                  </div>
-                ) : allTables.length === 0 ? (
-                  <div className="py-2 text-sm text-gray-500">
-                    No tables available.
-                  </div>
-                ) : (
-                  <div className="flex space-x-2">
-                    <select
-                      id="table-select"
-                      value={selectedTable || ""}
-                      onChange={(e) => setSelectedTable(e.target.value)}
-                      className="flex-1 rounded-lg border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    >
-                      <option value="">-- Select Table --</option>
-                      {allTables
-                        .filter((x) => x.status !== "occupied")
-                        .map((table) => (
-                          <option key={table.id} value={table.id}>
-                            {table.table_number} ({table.max_party_size} ppl)
-                          </option>
-                        ))}
-                    </select>
-                    <Button
-                      onClick={() => setAssignDialogOpen(true)}
-                      disabled={!selectedTable}
-                      className="bg-indigo-600 font-semibold text-white shadow-md transition-all hover:bg-indigo-700"
-                    >
-                      Assign
-                    </Button>
-                  </div>
-                )}
+                  {fetchLoading ? (
+                    <div className="py-2 text-sm text-gray-500">
+                      Loading tables...
+                    </div>
+                  ) : fetchError ? (
+                    <div className="space-y-2">
+                      <div className="text-sm text-red-600">{fetchError}</div>
+                      <Button
+                        onClick={fetchAllData}
+                        className="bg-red-600 font-semibold text-white hover:bg-red-700"
+                      >
+                        Retry
+                      </Button>
+                    </div>
+                  ) : allTables.length === 0 ? (
+                    <div className="py-2 text-sm text-gray-500">
+                      No tables available.
+                    </div>
+                  ) : (
+                    <div className="flex space-x-2">
+                      <select
+                        id="table-select"
+                        value={selectedTable || ""}
+                        onChange={(e) => setSelectedTable(e.target.value)}
+                        className="flex-1 rounded-lg border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                      >
+                        <option value="">-- Select Table --</option>
+                        {allTables
+                          .filter((x) => x.status !== "occupied")
+                          .map((table) => (
+                            <option key={table.id} value={table.id}>
+                              {table.table_number} ({table.max_party_size} ppl)
+                            </option>
+                          ))}
+                      </select>
+                      <Button
+                        onClick={() => setAssignDialogOpen(true)}
+                        disabled={!selectedTable}
+                        className="bg-indigo-600 font-semibold text-white shadow-md transition-all hover:bg-indigo-700"
+                      >
+                        Assign
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+            {reservation.status == "confirmed" && (
+              <div className="space-y-2 rounded-xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
+                <h4 className="flex items-center text-lg font-semibold text-blue-800">
+                  <CheckCircle className="mr-2 h-5 w-5" /> Complete Reservation
+                </h4>
+                <p className="text-sm text-blue-700">
+                  Mark this reservation as completed after the party has
+                  finished.
+                </p>
+                <Button
+                  onClick={handleComplete}
+                  className="w-full bg-blue-600 font-semibold text-white shadow-md transition-all hover:bg-blue-700"
+                >
+                  Complete
+                </Button>
               </div>
             )}
-            
-                {reservation.status == 'confirmed' && (
-                  <div className="space-y-2 rounded-xl border border-red-100 bg-white text-center p-5 shadow-sm">
-                    <h4 className="flex justify-center items-center text-lg font-semibold text-red-800">
-                      <XCircle className="mr-2 h-5 w-5" /> Cancel Reservation
-                    </h4>
-                    <p className="text-sm text-red-700">
-                      Cancel this reservation if necessary. The customer will be
-                      notified immediately.
-                    </p>
-                    <Button
-                       onClick={() => setCancelDialogOpen(true)}
-                      className="w-full bg-red-600 font-semibold text-white shadow-md transition-all hover:bg-red-700"
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                )}
+            {(reservation.status === "confirmed" ||
+              reservation.status === "pending") && (
+              <>
+                {/* Divider */}
+                <div className="my-6 flex items-center">
+                  <div className="flex-grow border-t border-gray-200"></div>
+                  <span className="mx-3 text-sm font-medium text-gray-500">
+                    Cancel Reservation
+                  </span>
+                  <div className="flex-grow border-t border-gray-200"></div>
+                </div>
+
+                {/* Neutral Cancel Button */}
+                <Button
+                  onClick={() => setCancelDialogOpen(true)}
+                  className="w-full border border-gray-300 bg-gray-100 font-medium text-gray-800 shadow-sm hover:bg-gray-200"
+                >
+                  Cancel Reservation
+                </Button>
+              </>
+            )}
           </TabsContent>
         </div>
       </Tabs>
@@ -400,35 +449,59 @@ const handleCancel = async () => {
         </div>
       </GenericDialog>
 
-      {reservation.status === "confirmed" && (
-  <GenericDialog
-    open={cancelDialogOpen}
-    onOpenChange={setCancelDialogOpen}
-  >
-    <div className="space-y-4 p-5">
-      <h4 className="flex items-center text-lg font-semibold text-red-800">
-        <XCircle className="mr-2 h-5 w-5" /> Cancel Reservation
-      </h4>
-      <p className="text-sm text-red-700">
-        Are you sure you want to cancel this reservation? The customer will be notified immediately.
-      </p>
-      <div className="flex space-x-2">
-        <Button
-          onClick={handleCancel}
-          className="flex-1 bg-red-600 font-semibold text-white shadow-md transition-all hover:bg-red-700"
+      {
+        <GenericDialog
+          open={cancelDialogOpen}
+          onOpenChange={setCancelDialogOpen}
         >
-          Confirm Cancel
-        </Button>
-        <Button
-          onClick={() => setCancelDialogOpen(false)}
-          className="flex-1 bg-gray-200 font-semibold text-gray-800 hover:bg-gray-300"
-        >
-          Close
-        </Button>
-      </div>
-    </div>
-  </GenericDialog>
-)}
+          <div className="space-y-5 p-5">
+            <h4 className="flex items-center text-lg font-semibold text-red-800">
+              <XCircle className="mr-2 h-5 w-5" /> Cancel Reservation
+            </h4>
+
+            <p className="text-sm text-red-700">
+              Provide a reason for cancelling this reservation. The customer
+              will be notified immediately.
+            </p>
+
+            {/* Reason Textarea */}
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-gray-700">
+                Reason
+              </label>
+              <textarea
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                className={`w-full rounded-lg border p-3 text-sm outline-none focus:ring-2 ${
+                  reasonError
+                    ? "border-red-500 ring-red-200"
+                    : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-200"
+                }`}
+                rows={4}
+                placeholder="Enter reason for cancellation..."
+              />
+              {reasonError && (
+                <p className="text-xs text-red-600">{reasonError}</p>
+              )}
+            </div>
+
+            <div className="flex space-x-3">
+              <Button
+                onClick={handleCancel}
+                className="flex-1 bg-red-600 font-semibold text-white shadow-md hover:bg-red-700"
+              >
+                Confirm Cancel
+              </Button>
+              <Button
+                onClick={() => setCancelDialogOpen(false)}
+                className="flex-1 bg-gray-200 font-semibold text-gray-800 hover:bg-gray-300"
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </GenericDialog>
+      }
     </div>
   );
 };

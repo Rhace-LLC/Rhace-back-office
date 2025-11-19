@@ -210,7 +210,6 @@ const updateReservation = async (id: string, data: any, token?: string) => {
   return bookiesAxiosInstance(config);
 };
 
-
 // PATCH /orders/reservations/{id}/
 const patchReservation = async (id: string, data: any, token?: string) => {
   const config = getConfig(`/orders/reservations/${id}/`, "PATCH", token, data);

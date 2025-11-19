@@ -32,7 +32,7 @@ export const ManageReservation: React.FC = () => {
   const [error, setError] = useState("");
 
   const [filters, setFilters] = useState<any>({ searchTerm: "", status: "" });
-  console.log("SetFilters", setFilters)
+  console.log("SetFilters", setFilters);
 
   const reservationsState = useSelector((s: RootState) => s.reservations);
   const [dataDisposable, setDataDisposable] = useState<
@@ -115,7 +115,7 @@ export const ManageReservation: React.FC = () => {
     fetchAllReservationsWithFilters();
   };
 
-  console.log({onSearch})
+  console.log({ onSearch });
 
   return (
     <>
@@ -128,15 +128,13 @@ export const ManageReservation: React.FC = () => {
               </h3>
               <p>Manage reservations, assign tables and update statuses.</p>
             </div>
-            {
-              /*              
+            {/*              
             <ReservationFilters
               filters={filters}
               setFilters={setFilters}
               onSearch={onSearch}
             />
-              */
-            }
+              */}
 
             <ContentHOC
               loading={loading}
