@@ -1,7 +1,4 @@
-import {
-  getReservations,
-  Reservation,
-} from "@/api-services/order.service";
+import { getReservations, Reservation } from "@/api-services/order.service";
 import { parseError } from "@/api-services/utils/parseError";
 import { useAuth } from "@/contexts/AuthContext";
 import { updateReservationData } from "@/store/reservation.slice";
@@ -10,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ContentHOC } from "@/components/nocontent";
 import { RenderReservationTableData } from "./ReservationTable";
-import { ReservationFilters } from "./ReservationFilters";
+//import { ReservationFilters } from "./ReservationFilters";
 
 // ---------------------- Types ----------------------
 export type ReservationStatus =
@@ -35,6 +32,7 @@ export const ManageReservation: React.FC = () => {
   const [error, setError] = useState("");
 
   const [filters, setFilters] = useState<any>({ searchTerm: "", status: "" });
+  console.log("SetFilters", setFilters)
 
   const reservationsState = useSelector((s: RootState) => s.reservations);
   const [dataDisposable, setDataDisposable] = useState<
@@ -43,7 +41,6 @@ export const ManageReservation: React.FC = () => {
 
   const toShow = reservationsState.data[String(page)] ?? [];
   //const toShowWithFilters = dataDisposable[String(page)] ?? [];
-
 
   // ========== API CALLS ==========
   const fetchAllReservations = async () => {
@@ -73,7 +70,6 @@ export const ManageReservation: React.FC = () => {
         ...filters,
       });
       setDataDisposable((prev) => ({ ...prev, [String(page)]: res }));
-
     } catch (err) {
       console.error(err);
       setError(parseError(err) || "Failed to fetch reservations");
@@ -119,6 +115,8 @@ export const ManageReservation: React.FC = () => {
     fetchAllReservationsWithFilters();
   };
 
+  console.log({onSearch})
+
   return (
     <>
       <div className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
@@ -130,11 +128,15 @@ export const ManageReservation: React.FC = () => {
               </h3>
               <p>Manage reservations, assign tables and update statuses.</p>
             </div>
+            {
+              /*              
             <ReservationFilters
               filters={filters}
               setFilters={setFilters}
               onSearch={onSearch}
             />
+              */
+            }
 
             <ContentHOC
               loading={loading}
@@ -147,9 +149,7 @@ export const ManageReservation: React.FC = () => {
               errMessage={error || "Failed to load reservations."}
               actionFn={fetchAllReservations}
             >
-              <RenderReservationTableData
-                data={toShow}
-              />
+              <RenderReservationTableData data={toShow} />
             </ContentHOC>
           </div>
         </div>

@@ -1,22 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { parseError } from "@/api-services/utils/parseError";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { useAuth } from "@/contexts/AuthContext";
-import { getTables } from "@/api-services/menu.service";
 import GenericSheet from "@/components/generic_sheet_overlay";
 import { AddTable } from "./AddTable";
 import { TableCard } from "./TableCard";
-import { updateTableData } from "@/store/table.slice";
 import { ContentHOC } from "@/components/nocontent";
 import { Pagination } from "@/components/pagination";
+import { useTableData } from "./useTableData";
 
 export function TablesPage() {
-  //************************** STARTING OF THE FUNCTIONAL INDEX PAGE*/
-  const auth = useAuth();
-  const dispatch = useDispatch();
-
   const [addTableOpen, setAddTableOpen] = useState(false);
 
   const [totalItems, setTotalItems] = useState(0);
@@ -24,33 +17,16 @@ export function TablesPage() {
   const page_size = 8;
   const total_pages = Math.ceil(totalItems / page_size);
 
-  const [fetchLoading, setFetchLoading] = useState(false);
-  const [fetchError, setFetchError] = useState("");
-
   const dataStore = useSelector((state: RootState) => state.table);
   const allData = dataStore.data;
 
   // Normal Mode
   const toShow = useMemo(() => allData[String(page)] ?? [], [allData, page]);
 
-  // ========== API Calls ==========
-  const fetchAllData = async () => {
-    try {
-      setFetchLoading(true);
-      setFetchError("");
-      const res = await getTables(
-        auth.restaurants[0].id,
-        { page, page_size },
-        auth.token
-      );
-      dispatch(updateTableData({ key: String(page), data: res }));
-      //dispatch(updateInventoryTotal({ data_total: 69 }));
-    } catch (error) {
-      setFetchError(parseError(error) || "Failed to fetch inventory.");
-    } finally {
-      setFetchLoading(false);
-    }
-  };
+  const { fetchLoading, fetchError, fetchAllData } = useTableData({
+    page,
+    page_size,
+  });
 
   useEffect(() => setTotalItems(dataStore?.data_total || 0), [dataStore]);
 
