@@ -2,8 +2,60 @@
 
 import { getConfig } from "./utils/reqConfig";
 import { bookiesAxiosInstance } from "./utils/baseUrl";
+import { ReservationStatus } from "@/pages/reservations/re";
 
 // -------------------- Orders --------------------
+export interface Customer {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  role: string;
+  restaurant: string | null;
+  restaurant_name: string | null;
+  is_verified: boolean;
+}
+
+export interface Restaurant {
+  id: string;
+  name: string;
+  slug: string;
+  owner: string;
+  owner_name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  postal_code: string;
+  description: string;
+  logo: string | null;
+  cuisine_type: string;
+  subscription_plan: string;
+  is_active: boolean;
+  trial_ends_at: string;
+  subscription_ends_at: string | null;
+  access_url: string;
+  access_token_url: string;
+  is_subscription_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Reservation {
+  id: number;
+  order: any | null;
+  customer: Customer;
+  party_size: number;
+  date: string; // "YYYY-MM-DD"
+  time: string; // "HH:mm:ss"
+  restaurant: Restaurant;
+  status: ReservationStatus; // e.g., "pending", "confirmed", etc.
+}
+
+export type GetReservationsResponse = Reservation[];
 
 // GET /orders/
 const getOrders = async (token?: string, params?: any) => {
@@ -126,7 +178,10 @@ const sendDeliveryEmail = async (data: any, token?: string) => {
 // -------------------- Reservations --------------------
 
 // GET /orders/reservations/
-const getReservations = async (token?: string, params?: any): Promise<any> => {
+const getReservations = async (
+  token?: string,
+  params?: any
+): Promise<GetReservationsResponse> => {
   const config = getConfig(
     "/orders/reservations/",
     "GET",

@@ -16,8 +16,8 @@ import { useDispatch } from "react-redux";
 
 export type TableStatus = "free" | "occupied" | "needs_cleaning";
 const StatusLabelToValue: Record<string, TableStatus> = {
-  "Open": "free",
-  "Occupied": "occupied",
+  Open: "free",
+  Occupied: "occupied",
   "Needs Cleaning": "needs_cleaning",
 };
 const TableStatusLabels = ["Open", "Occupied", "Needs Cleaning"] as const;
@@ -27,8 +27,7 @@ const getStatusProps = (label: string) => {
     case "Open":
       return {
         icon: Table,
-        color:
-          "text-green-600 bg-green-50 border-green-200 hover:bg-green-100",
+        color: "text-green-600 bg-green-50 border-green-200 hover:bg-green-100",
         ring: "focus-within:ring-green-500",
       };
     case "Occupied":
@@ -40,8 +39,7 @@ const getStatusProps = (label: string) => {
     case "Needs Cleaning":
       return {
         icon: X,
-        color:
-          "text-amber-600 bg-amber-50 border-amber-200 hover:bg-amber-100",
+        color: "text-amber-600 bg-amber-50 border-amber-200 hover:bg-amber-100",
         ring: "focus-within:ring-amber-500",
       };
     default:
@@ -57,33 +55,33 @@ interface ViewTableProps {
   table: TableItem;
 }
 
-export const ViewTable: React.FC<ViewTableProps> = ({
-  table,
-}) => {
+export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
   const auth = useAuth();
   const dispatch = useDispatch();
   const { setLoading: setLoadingState, setLoadingText } = useLoading();
-  const r = auth.restaurants[0]
-  const [qrValue, setQrValue] = useState(`https://bookies-customer.onrender.com?tid=${table.id}&rid=${r.id}&r=${r.name}&tno=${table.table_number}`);
+  const r = auth.restaurants[0];
+  const [qrValue, setQrValue] = useState(
+    `https://bookies-customer.onrender.com?tid=${table.id}&rid=${r.id}&r=${r.name}&tno=${table.table_number}`
+  );
   const [loading, setLoading] = useState(false);
 
   // Dialog open controller
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
-const [selectedStatus, setSelectedStatus] = useState<keyof typeof StatusLabelToValue | "">("");
-  
-const handleUpdateTable = async () => {
-  
-  const backendValue = StatusLabelToValue[selectedStatus];
+  const [selectedStatus, setSelectedStatus] = useState<
+    keyof typeof StatusLabelToValue | ""
+  >("");
+
+  const handleUpdateTable = async () => {
+    const backendValue = StatusLabelToValue[selectedStatus];
     try {
       setLoadingState(true);
       setLoadingText("Updating...");
 
-      const body = {...table, status: backendValue }
+      const body = { ...table, status: backendValue };
 
-      if(body.status == "free"){
+      if (body.status == "free") {
         body.is_available = true;
-      }
-      else {
+      } else {
         body.is_available = false;
       }
 
@@ -209,8 +207,8 @@ const handleUpdateTable = async () => {
           value="qr"
           className="space-y-4 rounded-lg border border-gray-200 bg-white p-4"
         >
-          <h2 className="text-lg font-semibold text-center">Table QR Code</h2>
-          <p className="text-sm text-gray-600 text-center">
+          <h2 className="text-center text-lg font-semibold">Table QR Code</h2>
+          <p className="text-center text-sm text-gray-600">
             Paste this on dining table {table.table_number}.
           </p>
 
@@ -257,92 +255,92 @@ const handleUpdateTable = async () => {
       {/* ================================
           UPDATE TABLE STATUS - DIALOG
       ================================= */}
-<GenericDialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
-  <div className="space-y-6 p-2">
-    {/* Title */}
-    <div>
-      <h2 className="text-2xl font-semibold text-gray-900">
-        Change Table Status
-      </h2>
-      <p className="mt-1 text-sm text-gray-500">
-        Update the current state for Table {table?.table_number || "—"}.
-      </p>
-    </div>
+      <GenericDialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
+        <div className="space-y-6 p-2">
+          {/* Title */}
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Change Table Status
+            </h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Update the current state for Table {table?.table_number || "—"}.
+            </p>
+          </div>
 
-    {/* Status Options */}
-    <div className="space-y-3">
-      <p className="text-sm font-semibold text-gray-700">
-        Choose a new status:
-      </p>
+          {/* Status Options */}
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-gray-700">
+              Choose a new status:
+            </p>
 
-      <div className="grid grid-cols-2 gap-4">
-        {TableStatusLabels.map((label) => {
-          const { icon: Icon, color, ring } = getStatusProps(label);
-          const isSelected = selectedStatus === label;
+            <div className="grid grid-cols-2 gap-4">
+              {TableStatusLabels.map((label) => {
+                const { icon: Icon, color, ring } = getStatusProps(label);
+                const isSelected = selectedStatus === label;
 
-          return (
-            <label
-              key={label}
-              className={cn(
-                "group relative flex cursor-pointer flex-col items-start rounded-xl p-4 transition-all duration-200 border-2",
-                color,
-                isSelected
-                  ? `shadow-lg ${ring} ring-4 ring-offset-2`
-                  : "border-transparent hover:shadow-md"
-              )}
+                return (
+                  <label
+                    key={label}
+                    className={cn(
+                      "group relative flex cursor-pointer flex-col items-start rounded-xl border-2 p-4 transition-all duration-200",
+                      color,
+                      isSelected
+                        ? `shadow-lg ${ring} ring-4 ring-offset-2`
+                        : "border-transparent hover:shadow-md"
+                    )}
+                  >
+                    <input
+                      type="radio"
+                      name="tableStatus"
+                      value={label}
+                      checked={isSelected}
+                      onChange={() => setSelectedStatus(label)}
+                      className="pointer-events-none absolute opacity-0"
+                    />
+
+                    <div className="flex items-center space-x-3">
+                      <Icon className="h-5 w-5" />
+                      <span className="text-base font-semibold">{label}</span>
+                    </div>
+
+                    {isSelected && (
+                      <div className="absolute top-2 right-2 rounded-full bg-white p-1 shadow-sm">
+                        <Check className="h-4 w-4 text-gray-900" />
+                      </div>
+                    )}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="flex flex-col gap-3 pt-4">
+            <Button
+              className="h-12 w-full bg-indigo-600 text-base font-semibold shadow-md hover:bg-indigo-700"
+              onClick={() => {
+                if (!selectedStatus) {
+                  toast.error("Please select a status");
+                  return;
+                }
+
+                handleUpdateTable();
+              }}
             >
-              <input
-                type="radio"
-                name="tableStatus"
-                value={label}
-                checked={isSelected}
-                onChange={() => setSelectedStatus(label)}
-                className="pointer-events-none absolute opacity-0"
-              />
+              <RefreshCcw className="mr-2 h-4 w-4" />
+              Confirm Status Update
+            </Button>
 
-              <div className="flex items-center space-x-3">
-                <Icon className="h-5 w-5" />
-                <span className="text-base font-semibold">{label}</span>
-              </div>
-
-              {isSelected && (
-                <div className="absolute top-2 right-2 rounded-full bg-white p-1 shadow-sm">
-                  <Check className="h-4 w-4 text-gray-900" />
-                </div>
-              )}
-            </label>
-          );
-        })}
-      </div>
-    </div>
-
-    {/* Footer */}
-    <div className="flex flex-col gap-3 pt-4">
-      <Button
-        className="h-12 w-full bg-indigo-600 text-base font-semibold shadow-md hover:bg-indigo-700"
-        onClick={() => {
-          if (!selectedStatus) {
-            toast.error("Please select a status");
-            return;
-          }
-
-          handleUpdateTable();
-        }}
-      >
-        <RefreshCcw className="mr-2 h-4 w-4" />
-        Confirm Status Update
-      </Button>
-
-      <Button
-        variant="ghost"
-        className="w-full text-gray-600 hover:bg-gray-100"
-        onClick={() => setStatusDialogOpen(false)}
-      >
-        Cancel
-      </Button>
-    </div>
-  </div>
-</GenericDialog>
+            <Button
+              variant="ghost"
+              className="w-full text-gray-600 hover:bg-gray-100"
+              onClick={() => setStatusDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </GenericDialog>
     </div>
   );
 };

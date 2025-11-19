@@ -24,11 +24,11 @@ import { VerifyOtp } from "@/pages/auth/verifyaccount";
 import CategoryPage from "@/pages/category";
 import ForgotPassword from "@/pages/auth/forgotpassword";
 import ResetPassword from "@/pages/auth/resetpassword";
-import ManageReservation from "@/pages/reservations";
 import ManageInventoryPage from "@/pages/inventory";
 import ManageStaff from "@/pages/staffmanagement";
 import RestaurantProfilePage from "@/pages/myRestaurant";
 import AcceptInvite from "@/pages/AcceptInvite";
+import { ManageReservation } from "@/pages/reservations/re";
 
 export interface User {
   id: string;

@@ -16,7 +16,7 @@ interface TableCardProps {
   table: Table;
 }
 
-export const TableCard: React.FC<TableCardProps> = ({ table}) => {
+export const TableCard: React.FC<TableCardProps> = ({ table }) => {
   const [viewOpen, setViewOpen] = useState(false);
 
   const {

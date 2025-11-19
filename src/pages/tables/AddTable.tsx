@@ -22,7 +22,7 @@ export const AddTable: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    // Note: The original logic converts the value to a Number directly. 
+    // Note: The original logic converts the value to a Number directly.
     // This is preserved.
     setFormData({
       ...formData,
@@ -33,22 +33,22 @@ export const AddTable: React.FC = () => {
   const handleSubmit = async () => {
     // Basic validation
     if (formData.table_number <= 0) {
-        toast.error("Table Number must be greater than zero.");
-        return;
+      toast.error("Table Number must be greater than zero.");
+      return;
     }
     if (formData.max_party_size <= 0) {
-        toast.error("Max Party Size must be greater than zero.");
-        return;
+      toast.error("Max Party Size must be greater than zero.");
+      return;
     }
 
     setIsSubmitting(true);
     try {
       await createTable(
         auth.restaurants[0].id,
-        { 
-            ...formData, 
-            is_available: true, 
-            restaurant: auth.restaurants[0].id 
+        {
+          ...formData,
+          is_available: true,
+          restaurant: auth.restaurants[0].id,
         },
         auth.token
       );
@@ -61,26 +61,31 @@ export const AddTable: React.FC = () => {
       toast.error("Failed to add table");
       console.error(error);
     } finally {
-        setIsSubmitting(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
     // Updated container for modern, minimalist look: centered, shadow, rounded
     <div className="py-8">
-        
       {/* Title Section with Icon */}
-      <div className="flex items-center space-x-3 mb-6 pb-4 border-b">
+      <div className="mb-6 flex items-center space-x-3 border-b pb-4">
         <UtensilsCrossed className="h-6 w-6 text-indigo-600" />
-        <h2 className="text-xl font-bold text-gray-800">Add New Dining Table</h2>
+        <h2 className="text-xl font-bold text-gray-800">
+          Add New Dining Table
+        </h2>
       </div>
 
       {/* Form Fields - Grid Layout for a cleaner look */}
       <div className="grid grid-cols-2 gap-4">
-        
         {/* Table Number */}
         <div className="space-y-2">
-          <Label htmlFor="table_number" className="text-sm font-medium text-gray-700">Table Number</Label>
+          <Label
+            htmlFor="table_number"
+            className="text-sm font-medium text-gray-700"
+          >
+            Table Number
+          </Label>
           <Input
             id="table_number"
             name="table_number"
@@ -95,7 +100,12 @@ export const AddTable: React.FC = () => {
 
         {/* Max Party Size */}
         <div className="space-y-2">
-          <Label htmlFor="max_party_size" className="text-sm font-medium text-gray-700">Max Party Size</Label>
+          <Label
+            htmlFor="max_party_size"
+            className="text-sm font-medium text-gray-700"
+          >
+            Max Party Size
+          </Label>
           <Input
             id="max_party_size"
             name="max_party_size"
@@ -110,9 +120,9 @@ export const AddTable: React.FC = () => {
       </div>
 
       {/* Submit Button - Full width, primary color, modern styling */}
-      <Button 
-        onClick={handleSubmit} 
-        className="w-full mt-6 py-3 cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-base font-semibold transition-colors shadow-md"
+      <Button
+        onClick={handleSubmit}
+        className="mt-6 w-full cursor-pointer bg-indigo-600 py-3 text-base font-semibold shadow-md transition-colors hover:bg-indigo-700"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Adding Table..." : "Add Table"}

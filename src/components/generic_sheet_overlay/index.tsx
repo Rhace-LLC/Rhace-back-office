@@ -20,8 +20,8 @@ interface GenericSheetProps {
 const GenericSheet: React.FC<GenericSheetProps> = ({
   open,
   onOpenChange,
-  title = "Sheet Title",
-  subtitle = "Sheet subtitle goes here.",
+  title = "",
+  subtitle = "",
   children,
   footer,
 }) => {
@@ -31,6 +31,7 @@ const GenericSheet: React.FC<GenericSheetProps> = ({
         side="right"
         className={`w-full !max-w-[500px] overflow-y-auto p-4 pt-10`}
       >
+          {title && 
         <SheetHeader>
           {typeof title == "string" ? (
             <SheetTitle className="text-2xl tracking-tight">{title}</SheetTitle>
@@ -39,9 +40,10 @@ const GenericSheet: React.FC<GenericSheetProps> = ({
           )}
           {subtitle && <SheetDescription>{subtitle}</SheetDescription>}
         </SheetHeader>
+          }
 
         {/* Body */}
-        <div className="mt-5 mb-5 border-t border-b border-dashed border-gray-400">
+        <div className={` ${title && 'mt-5 mb-5 border-t border-b border-dashed border-gray-400'}`}>
           {children ?? (
             <div className="flex min-h-[220px] items-center justify-center">
               <span className="text-muted-foreground text-sm">

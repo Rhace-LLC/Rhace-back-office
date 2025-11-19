@@ -15,7 +15,7 @@ export const store = configureStore({
     category: categoryReducer,
     menu: menuReducer,
     // Add more slices here
-    reservation: reservationReducer,
+    reservations: reservationReducer,
     staff: staffReducer,
     inventory: inventoryReducer,
     table: tableReducer,
