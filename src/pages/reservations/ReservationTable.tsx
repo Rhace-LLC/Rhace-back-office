@@ -13,6 +13,7 @@ import { Users, Clock, Hash } from "lucide-react"; // Icons for minimalist heade
 import { Reservation } from "@/api-services/order.service";
 import GenericSheet from "@/components/generic_sheet_overlay";
 import { ReservationDetail } from "./ReservationDetails";
+import moment from "moment";
 
 // Assuming Reservation type is defined elsewhere
 // import { Reservation } from "@/api-services/order.service";
@@ -21,6 +22,31 @@ import { ReservationDetail } from "./ReservationDetails";
 interface RenderReservationTableDataProps {
   data: Reservation[];
 }
+
+const formatRelativeDate = (dateString: string) => {
+  const date = moment(dateString).startOf("day");
+  const today = moment().startOf("day");
+
+  const diff = date.diff(today, "days"); // future = positive, past = negative
+
+  // Today
+  if (diff === 0) return "Today";
+
+  // Tomorrow
+  if (diff === 1) return "Tomorrow";
+
+  // Yesterday
+  if (diff === -1) return "Yesterday";
+
+  // Future (in X days)
+  if (diff > 1 && diff <= 7) return `In ${diff} days`;
+
+  // Past (X days ago)
+  if (diff < -1 && diff >= -7) return `${Math.abs(diff)} days ago`;
+
+  // Fallback for anything beyond ±7 days
+  return date.format("MMM D");
+};
 
 // Helper to define modern badge styles based on status
 const getStatusBadgeProps = (status: Reservation["status"]) => {
@@ -97,16 +123,16 @@ export const RenderReservationTableData: React.FC<
               </TableCell>
             </TableRow>
           ) : (
-            data.map((r) => (
+            data.map((r, index) => (
               // Row with hover effect to indicate clickability
               <TableRow
-                key={r.id}
+                key={index}
                 onClick={() => setSelectedReservation(r)}
                 className="cursor-pointer transition-colors duration-150 hover:bg-indigo-50/50"
               >
                 {/* Reference ID */}
                 <TableCell className="font-mono text-xs text-gray-600">
-                  {r.id}
+                  {index + 1}
                 </TableCell>
 
                 {/* Customer Info */}
@@ -119,16 +145,15 @@ export const RenderReservationTableData: React.FC<
                   </div>
                 </TableCell>
 
-                {/* Date & Time (Combined) */}
                 <TableCell className="text-sm">
                   <div className="font-medium whitespace-nowrap text-gray-700">
-                    {r.time}
+                    {moment(r.time, "HH:mm:ss").format("hh:mm A")}
                   </div>
                   <div className="mt-0.5 text-xs text-gray-500">
-                    {new Date(r.date).toLocaleDateString(undefined, {
-                      month: "short",
-                      day: "numeric",
-                    })}
+                    {moment(r.date).format("MMM D")}
+                  </div>
+                  <div className="mt-0.5 text-xs text-gray-500">
+                    {formatRelativeDate(r.date)}
                   </div>
                 </TableCell>
 

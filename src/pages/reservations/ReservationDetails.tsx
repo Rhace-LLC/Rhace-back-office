@@ -27,7 +27,7 @@ import GenericDialog from "@/components/generic_sheet_overlay/alert";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLoading } from "@/contexts/LoadingContext";
 import { updateReservationDataById } from "@/store/reservation.slice";
-
+import moment from "moment";
 const getStatusColor = (status: ReservationStatus) => {
   switch (status) {
     case "confirmed":
@@ -41,22 +41,6 @@ const getStatusColor = (status: ReservationStatus) => {
       return "text-amber-700 bg-amber-100 border-amber-200";
   }
 };
-
-const DetailItem: React.FC<{
-  label: string;
-  value: string | number | undefined | null;
-  icon: React.ReactNode;
-}> = ({ label, value, icon }) => (
-  <div className="flex items-start space-x-3 overflow-hidden rounded-lg border bg-white p-3 shadow-sm">
-    <div className="flex-shrink-0 pt-1 text-gray-400">{icon}</div>
-    <div className="flex min-w-0 flex-col">
-      <span className="text-xs font-medium text-gray-500">{label}</span>
-      <span className="truncate text-sm font-semibold break-words text-gray-900">
-        {value || "—"}
-      </span>
-    </div>
-  </div>
-);
 
 interface ReservationDetailProps {
   reservation?: Reservation | null;
@@ -204,57 +188,91 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
           <TabsTrigger value="actions">Actions</TabsTrigger>
         </TabsList>
 
-        <div className="flex-grow overflow-y-auto pt-4 pr-2">
+        <div className="flex-grow overflow-y-auto">
           {/* Details Tab */}
+          <TabsContent value="details" className="space-y-8 bg-white">
 
-          <TabsContent value="details" className="space-y-6">
-            {/* Customer Info */}
-            {/* Booking Time */}
-            <section className="space-y-3">
-              <h3 className="flex items-center text-lg font-semibold text-gray-700">
-                <Calendar className="mr-2 h-4 w-4" /> Booking Time
+            {/* Booking Time Section */}
+            <section className="space-y-4 bg-white rounded-lg py-4">
+              <h3 className="flex items-center text-lg font-semibold text-gray-800">
+                <Calendar className="mr-2 h-5 w-5 text-indigo-600" /> Booking Time
               </h3>
-              <div className="grid grid-cols-2 gap-3">
-                <DetailItem
-                  label="Date"
-                  value={new Date(reservation.date).toLocaleDateString()}
-                  icon={<Calendar className="h-4 w-4" />}
-                />
-                <DetailItem
-                  label="Time"
-                  value={reservation.time}
-                  icon={<Clock className="h-4 w-4" />}
-                />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex items-center space-x-3">
+                  <Calendar className="h-5 w-5 text-indigo-500" />
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-500">Date</span>
+                    <span className="text-sm font-medium text-gray-900">
+                      {moment(reservation.date).format("MMM D, YYYY")}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <Clock className="h-5 w-5 text-indigo-500" />
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-500">Time</span>
+                    <span className="text-sm font-medium text-gray-900">
+                      {moment(reservation.time, "HH:mm:ss").format("hh:mm A")}
+                    </span>
+                  </div>
+                </div>
               </div>
             </section>
-            <section className="space-y-3">
-              <h3 className="flex items-center text-lg font-semibold text-gray-700">
-                <User className="mr-2 h-4 w-4" /> Customer Info
+
+            <div className="my-5 border border-gray-200" />
+
+            {/* Customer Info Section */}
+            <section className="space-y-4 bg-white rounded-lg py-4">
+              <h3 className="flex items-center text-lg font-semibold text-gray-800">
+                <User className="mr-2 h-5 w-5 text-indigo-600" /> Customer Info
               </h3>
-              <div className="grid grid-cols-2 gap-3">
-                <DetailItem
-                  label="Full Name"
-                  value={`${reservation.customer.first_name} ${reservation.customer.last_name}`}
-                  icon={<User className="h-4 w-4" />}
-                />
-                <DetailItem
-                  label="Party Size"
-                  value={reservation.party_size}
-                  icon={<Users className="h-4 w-4" />}
-                />
-                <DetailItem
-                  label="Phone"
-                  value={reservation.customer.phone}
-                  icon={<Phone className="h-4 w-4" />}
-                />
-                <DetailItem
-                  label="Email"
-                  value={reservation.customer.email}
-                  icon={<Mail className="h-4 w-4" />}
-                />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex items-center space-x-3">
+                  <User className="h-5 w-5 text-green-500" />
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-500">Full Name</span>
+                    <span className="text-sm font-medium text-gray-900">
+                      {reservation.customer.first_name} {reservation.customer.last_name}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <Users className="h-5 w-5 text-green-500" />
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-500">Party Size</span>
+                    <span className="text-sm font-medium text-gray-900">
+                      {reservation.party_size}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <Phone className="h-5 w-5 text-green-500" />
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-500">Phone</span>
+                    <span className="text-sm font-medium text-gray-900">
+                      {reservation.customer.phone || "—"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3 min-w-0">
+                  <Mail className="h-5 w-5 text-green-500" />
+                  <div className="flex flex-col truncate">
+                    <span className="text-xs text-gray-500">Email</span>
+                    <span className="text-sm font-medium text-gray-900 truncate">
+                      {reservation.customer.email || "—"}
+                    </span>
+                  </div>
+                </div>
               </div>
             </section>
           </TabsContent>
+
 
           {/* Actions Tab */}
           <TabsContent value="actions" className="space-y-6">
