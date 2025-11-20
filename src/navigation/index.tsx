@@ -24,8 +24,6 @@ import CategoryPage from "@/pages/category";
 import ForgotPassword from "@/pages/auth/forgotpassword";
 import ResetPassword from "@/pages/auth/resetpassword";
 import { Orders } from "@/pages/orders/Orders";
-
-export type UserRole = "waiter" | "kitchen" | "admin";
 import ManageInventoryPage from "@/pages/inventory";
 import ManageStaff from "@/pages/staffmanagement";
 import RestaurantProfilePage from "@/pages/myRestaurant";

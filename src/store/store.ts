@@ -11,7 +11,7 @@ import restaurantProfileReducer from "./restaurantProfile";
 
 export const store = configureStore({
   reducer: {
-    user: userReducer,
+    profile: userReducer,
     dashboard: dashboardReducer,
     category: categoryReducer,
     menu: menuReducer,

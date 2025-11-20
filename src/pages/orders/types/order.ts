@@ -41,14 +41,15 @@ export interface Order {
   created_at: string;
 }
 
-export enum OrderStatus {
-  RECEIVED = "received",
-  PREPARING = "preparing",
-  READY = "ready",
-  COMPLETED = "completed",
-  CANCELLED = "cancelled",
-  DELIVERED = "delivered",
-}
+// Union type alternative to enum
+export type OrderStatus =
+  | "received"
+  | "preparing"
+  | "ready"
+  | "completed"
+  | "cancelled"
+  | "delivered";
+
 
 export interface CreateOrderData {
   customer: string;

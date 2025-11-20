@@ -3,11 +3,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // ---------------- Types ----------------
 interface StaffState {
-  data: StaffMember[]; // now a flat array
+  data: StaffMember[] | null;
 }
 
 const initialState: StaffState = {
-  data: [],
+  data: null,
 };
 
 // ---------------- Helper ----------------
@@ -26,26 +26,39 @@ const staffSlice = createSlice({
   name: "staff",
   initialState,
   reducers: {
-    // Merge new staff into the list (avoid duplicates)
+    // Merge new staff list (ensure no duplicates)
     updateStaffData: (state, action: PayloadAction<StaffMember[]>) => {
-      state.data = uniqueBy([...state.data, ...action.payload], "id");
+      if (!state.data) {
+        // First load — set directly
+        state.data = action.payload;
+      } else {
+        // Merge then dedupe
+        state.data = uniqueBy([...state.data, ...action.payload], "id");
+      }
     },
 
     // Update a single staff member by id
     updateStaffDataById: (state, action: PayloadAction<StaffMember>) => {
-      state.data = state.data.map((item) =>
-        item.id === action.payload.id ? action.payload : item
+      if (!state.data) return;
+
+      state.data = state.data.map((member) =>
+        member.id === action.payload.id ? action.payload : member
       );
     },
 
-    // Remove a staff member by id
+    // Remove staff member
     removeStaffDataById: (state, action: PayloadAction<string>) => {
-      state.data = state.data.filter((item) => item.id !== action.payload);
+      if (!state.data) return;
+
+      state.data = state.data.filter(
+        (member) => member.id !== action.payload
+      );
     },
 
-    // Clear all staff data
+    // Reset staff state (choose null or [])
     clearStaffData: (state) => {
-      state.data = [];
+      state.data = null; // reset to null
+      // state.data = []; // or use [] if preferred
     },
   },
 });
