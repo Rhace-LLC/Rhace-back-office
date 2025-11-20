@@ -47,7 +47,7 @@ export enum OrderStatus {
   READY = "ready",
   COMPLETED = "completed",
   CANCELLED = "cancelled",
-  DELIVERED = "delivered"
+  DELIVERED = "delivered",
 }
 
 export interface CreateOrderData {

@@ -1,7 +1,7 @@
 // api-services/orderService.ts
 import { getConfig } from "./utils/reqConfig";
 import { bookiesAxiosInstance } from "./utils/baseUrl";
-import { Order, OrderStatus, UpdateOrderData } from "../pages/orders/types/order";
+import { Order, UpdateOrderData } from "../pages/orders/types/order";
 
 // ========== ORDER OPERATIONS ==========
 
@@ -9,21 +9,17 @@ import { Order, OrderStatus, UpdateOrderData } from "../pages/orders/types/order
 export const getAllOrders = async (token: string): Promise<Order[]> => {
   const config = getConfig("/orders/", "GET", token);
   const response = await bookiesAxiosInstance(config);
-  
-  console.log("🔧 OrderService - Full response:", response);
-  console.log("🔧 OrderService - response.data:", response.data);
-  console.log("🔧 OrderService - Is response.data array?", Array.isArray(response.data));
-  
+
   // ✅ FIX: Based on your logs, the data is coming as the response itself, not response.data
   // Your logs showed: "this is order (18) [{…}, {…}, {…}, ...]" - meaning response IS the array
   let ordersData = response.data;
-  
+
   // If response.data is not an array but response itself might be
   if (!Array.isArray(ordersData) && Array.isArray(response)) {
     console.log("✅ Using response directly as array");
     ordersData = response;
   }
-  
+
   // If we still don't have an array, try to extract from nested properties
   if (!Array.isArray(ordersData)) {
     if (ordersData && Array.isArray(ordersData.results)) {
@@ -37,13 +33,13 @@ export const getAllOrders = async (token: string): Promise<Order[]> => {
       ordersData = ordersData.orders;
     }
   }
-  
+
   // Final check - ensure we return an array
   if (Array.isArray(ordersData)) {
     console.log(`✅ Returning ${ordersData.length} orders`);
     return ordersData;
   }
-  
+
   console.warn("⚠️ No orders array found, returning empty array");
   return [];
 };
@@ -81,15 +77,10 @@ export const assignTableToOrder = async (
   tableId: string,
   token: string
 ) => {
-  const config = getConfig(
-    `/orders/${orderId}/assign-table/`,
-    "POST",
-    token,
-     { 
-      table_id: tableId,  
-      order_id: orderId   // ✅ Should be string, not array
-    }
-  );
+  const config = getConfig(`/orders/${orderId}/assign-table/`, "POST", token, {
+    table_id: tableId,
+    order_id: orderId, // ✅ Should be string, not array
+  });
   const response = await bookiesAxiosInstance(config);
   return response.data;
 };
@@ -100,15 +91,10 @@ export const assignWaiterToOrder = async (
   waiterId: string,
   token: string
 ) => {
-  const config = getConfig(
-    "/orders/assign-waiter/",
-    "POST",
-    token,
-    { 
-      order_id: orderId,
-      waiter_id: waiterId
-    }
-  );
+  const config = getConfig("/orders/assign-waiter/", "POST", token, {
+    order_id: orderId,
+    waiter_id: waiterId,
+  });
   const response = await bookiesAxiosInstance(config);
   return response.data;
 };

@@ -17,38 +17,38 @@ export interface Staff {
 export const getAllStaff = async (token: string): Promise<Staff[]> => {
   const config = getConfig("/auth/all-staff", "GET", token);
   const response = await bookiesAxiosInstance(config);
-  
+
   console.log("🔧 StaffService - Full response:", response);
   console.log("🔧 StaffService - response.data:", response.data);
-  
+
   let staffData = response.data;
-  
+
   // If response.data is undefined but response has data, use response
   if (!staffData && response) {
     staffData = response;
   }
-  
+
   // Handle the nested staff structure from your API response
   if (staffData && staffData.staff_by_role) {
     console.log("✅ Found staff_by_role structure");
     // Extract all staff from all roles and flatten into one array
     const allStaff: Staff[] = [];
-    
+
     Object.values(staffData.staff_by_role).forEach((roleGroup: any) => {
       if (roleGroup.staff && Array.isArray(roleGroup.staff)) {
         allStaff.push(...roleGroup.staff);
       }
     });
-    
+
     console.log(`✅ Extracted ${allStaff.length} staff members`);
     return allStaff;
   }
-  
+
   // If it's already an array, return it
   if (Array.isArray(staffData)) {
     return staffData;
   }
-  
+
   console.warn("⚠️ No staff array found, returning empty array");
   return [];
 };
@@ -57,18 +57,20 @@ export const getAllStaff = async (token: string): Promise<Staff[]> => {
 export const getActiveWaiters = async (token: string): Promise<Staff[]> => {
   const allStaff = await getAllStaff(token);
   console.log("🔧 All staff fetched:", allStaff.length);
-  
-  const activeWaiters = allStaff.filter(staff => 
-    staff.role === 'waiter' && staff.is_active
+
+  const activeWaiters = allStaff.filter(
+    (staff) => staff.role === "waiter" && staff.is_active
   );
-  
+
   console.log("✅ Active waiters:", activeWaiters.length);
   return activeWaiters;
 };
 
 // Get staff by role
-export const getStaffByRole = async (token: string, role: string): Promise<Staff[]> => {
+export const getStaffByRole = async (
+  token: string,
+  role: string
+): Promise<Staff[]> => {
   const allStaff = await getAllStaff(token);
-  return allStaff.filter(staff => staff.role === role && staff.is_active);
+  return allStaff.filter((staff) => staff.role === role && staff.is_active);
 };
-

@@ -7,6 +7,7 @@ import reservationReducer from "./reservation.slice";
 import staffReducer from "./staff.slice";
 import inventoryReducer from "./inventory.slice";
 import tableReducer from "./table.slice";
+import restaurantProfileReducer from "./restaurantProfile";
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     staff: staffReducer,
     inventory: inventoryReducer,
     table: tableReducer,
+    restaurantProfile: restaurantProfileReducer,
   },
   devTools: import.meta.env.MODE !== "production",
 });

@@ -1,13 +1,32 @@
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Order, OrderStatus } from "./types/order";
 import { Staff } from "../../api-services/staffService";
 import { Table } from "../../api-services/tableService";
 import { useState, useEffect } from "react";
-import { Clock, CheckCircle, Truck, ChefHat, Package, User, Table as TableIcon } from "lucide-react";
+import {
+  Clock,
+  CheckCircle,
+  Truck,
+  ChefHat,
+  Package,
+  User,
+  Table as TableIcon,
+} from "lucide-react";
 
 interface OrderDetailsSheetProps {
   order: Order | null;
@@ -40,7 +59,8 @@ const statusIcons: Record<OrderStatus, React.ReactNode> = {
 };
 
 const statusDescriptions: Record<OrderStatus, string> = {
-  [OrderStatus.RECEIVED]: "Order has been received and is waiting to be processed",
+  [OrderStatus.RECEIVED]:
+    "Order has been received and is waiting to be processed",
   [OrderStatus.PREPARING]: "Kitchen is currently preparing the order",
   [OrderStatus.READY]: "Order is ready for pickup or delivery",
   [OrderStatus.COMPLETED]: "Order has been completed successfully",
@@ -57,7 +77,7 @@ export function OrderDetailsSheet({
   onAssignTable,
   onAssignWaiter,
   staff,
-  tables
+  tables,
 }: OrderDetailsSheetProps) {
   const [selectedTable, setSelectedTable] = useState("");
   const [selectedWaiter, setSelectedWaiter] = useState("");
@@ -80,35 +100,33 @@ export function OrderDetailsSheet({
 
   // Safe data accessors
   const getItemsCount = () => order?.items?.length || 0;
-  const getCustomerName = () => order?.customer_name || 'N/A';
-  const getCustomerPhone = () => order?.customer_phone || 'N/A';
-  const getTotalPrice = () => order?.total_price ? parseFloat(order.total_price).toFixed(2) : '0.00';
-  const getOrderType = () => order?.order_type || 'unknown';
+  const getCustomerName = () => order?.customer_name || "N/A";
+  const getCustomerPhone = () => order?.customer_phone || "N/A";
+  const getTotalPrice = () =>
+    order?.total_price ? parseFloat(order.total_price).toFixed(2) : "0.00";
+  const getOrderType = () => order?.order_type || "unknown";
   const getCreatedAt = () => {
-    if (!order?.created_at) return 'N/A';
-    return new Date(order.created_at).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    if (!order?.created_at) return "N/A";
+    return new Date(order.created_at).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
-
-  
 
   // Get assigned waiter details
   const getAssignedWaiter = () => {
     if (!order.waiter) return null;
-    return staff.find(s => s.id === order.waiter);
+    return staff.find((s) => s.id === order.waiter);
   };
 
- 
   // Get assigned table details
   const getAssignedTable = () => {
     if (!order.table) return null;
-    return tables.find(t => t.id === order.table);
+    return tables.find((t) => t.id === order.table);
   };
 
   const handleStatusChange = (newStatus: OrderStatus) => {
@@ -143,21 +161,26 @@ export function OrderDetailsSheet({
     }
   };
 
-  const isEditable = order.status !== OrderStatus.COMPLETED && 
-                    order.status !== OrderStatus.CANCELLED &&
-                    order.status !== OrderStatus.DELIVERED;
+  const isEditable =
+    order.status !== OrderStatus.COMPLETED &&
+    order.status !== OrderStatus.CANCELLED &&
+    order.status !== OrderStatus.DELIVERED;
 
   const nextStatusOptions = {
     [OrderStatus.RECEIVED]: [OrderStatus.PREPARING, OrderStatus.CANCELLED],
     [OrderStatus.PREPARING]: [OrderStatus.READY, OrderStatus.CANCELLED],
-    [OrderStatus.READY]: [OrderStatus.COMPLETED, OrderStatus.DELIVERED, OrderStatus.CANCELLED],
+    [OrderStatus.READY]: [
+      OrderStatus.COMPLETED,
+      OrderStatus.DELIVERED,
+      OrderStatus.CANCELLED,
+    ],
     [OrderStatus.DELIVERED]: [OrderStatus.COMPLETED],
     [OrderStatus.COMPLETED]: [],
     [OrderStatus.CANCELLED]: [],
   };
 
   const availableStatusOptions = nextStatusOptions[order.status] || [];
-  const isDineInOrder = order.order_type === 'dine-in';
+  const isDineInOrder = order.order_type === "dine-in";
   const assignedWaiter = getAssignedWaiter();
   const assignedTable = getAssignedTable();
 
@@ -166,24 +189,30 @@ export function OrderDetailsSheet({
     if (availableStatusOptions.length === 0) return "No Actions";
     const nextStatus = availableStatusOptions[0];
     switch (nextStatus) {
-      case OrderStatus.PREPARING: return "Start Preparing";
-      case OrderStatus.READY: return "Mark Ready";
-      case OrderStatus.COMPLETED: return "Complete Order";
-      case OrderStatus.DELIVERED: return "Mark Delivered";
-      case OrderStatus.CANCELLED: return "Cancel Order";
-      default: return "Update";
+      case OrderStatus.PREPARING:
+        return "Start Preparing";
+      case OrderStatus.READY:
+        return "Mark Ready";
+      case OrderStatus.COMPLETED:
+        return "Complete Order";
+      case OrderStatus.DELIVERED:
+        return "Mark Delivered";
+      case OrderStatus.CANCELLED:
+        return "Cancel Order";
+      default:
+        return "Update";
     }
   };
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:max-w-lg flex flex-col">
-        <SheetHeader className="flex-shrink-0 pb-4 border-b">
+      <SheetContent className="flex w-full flex-col sm:max-w-lg">
+        <SheetHeader className="flex-shrink-0 border-b pb-4">
           <SheetTitle className="flex items-center justify-between">
             <span>Order #{order.id}</span>
-            <Badge 
-              variant="secondary" 
-              className={`${statusColors[order.status]} border font-medium flex items-center gap-1`}
+            <Badge
+              variant="secondary"
+              className={`${statusColors[order.status]} flex items-center gap-1 border font-medium`}
             >
               {statusIcons[order.status]}
               {order.status.toUpperCase()}
@@ -192,25 +221,31 @@ export function OrderDetailsSheet({
         </SheetHeader>
 
         {/* Scrollable content area */}
-        <div className="flex-1 overflow-y-auto py-6 space-y-6">
+        <div className="flex-1 space-y-6 overflow-y-auto py-6">
           {/* Customer Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <div className="w-1 h-5 bg-primary rounded-full" />
+            <h3 className="text-foreground flex items-center gap-2 text-lg font-semibold">
+              <div className="bg-primary h-5 w-1 rounded-full" />
               Customer Information
             </h3>
-            <div className="grid grid-cols-1 gap-4 p-4 bg-muted/30 rounded-lg border">
+            <div className="bg-muted/30 grid grid-cols-1 gap-4 rounded-lg border p-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Name</label>
+                <label className="text-muted-foreground text-sm font-medium">
+                  Name
+                </label>
                 <p className="text-base font-medium">{getCustomerName()}</p>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Phone</label>
+                <label className="text-muted-foreground text-sm font-medium">
+                  Phone
+                </label>
                 <p className="text-base">{getCustomerPhone()}</p>
               </div>
               {order.address && (
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-muted-foreground">Address</label>
+                  <label className="text-muted-foreground text-sm font-medium">
+                    Address
+                  </label>
                   <p className="text-base">{order.address}</p>
                 </div>
               )}
@@ -219,70 +254,84 @@ export function OrderDetailsSheet({
 
           {/* Order Details */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <div className="w-1 h-5 bg-primary rounded-full" />
+            <h3 className="text-foreground flex items-center gap-2 text-lg font-semibold">
+              <div className="bg-primary h-5 w-1 rounded-full" />
               Order Details
             </h3>
-            <div className="grid grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg border">
+            <div className="bg-muted/30 grid grid-cols-2 gap-4 rounded-lg border p-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Order Type</label>
+                <label className="text-muted-foreground text-sm font-medium">
+                  Order Type
+                </label>
                 <Badge variant="secondary" className="w-fit">
                   {getOrderType().toUpperCase()}
                 </Badge>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Total Amount</label>
+                <label className="text-muted-foreground text-sm font-medium">
+                  Total Amount
+                </label>
                 <p className="text-base font-medium">${getTotalPrice()}</p>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Items Count</label>
+                <label className="text-muted-foreground text-sm font-medium">
+                  Items Count
+                </label>
                 <p className="text-base">{getItemsCount()} items</p>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Created</label>
+                <label className="text-muted-foreground text-sm font-medium">
+                  Created
+                </label>
                 <p className="text-base text-sm">{getCreatedAt()}</p>
               </div>
-              
+
               {/* Current Assignments */}
-              <div className="space-y-2 col-span-2 border-t pt-3">
-                <label className="text-sm font-medium text-muted-foreground">Current Assignments</label>
+              <div className="col-span-2 space-y-2 border-t pt-3">
+                <label className="text-muted-foreground text-sm font-medium">
+                  Current Assignments
+                </label>
                 <div className="grid grid-cols-1 gap-3">
                   {/* Waiter Assignment */}
-                  <div className="flex items-center justify-between p-2 bg-background rounded border">
+                  <div className="bg-background flex items-center justify-between rounded border p-2">
                     <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-muted-foreground" />
+                      <User className="text-muted-foreground h-4 w-4" />
                       <div>
                         <p className="text-sm font-medium">Waiter</p>
-                        <p className="text-xs text-muted-foreground">
-                          {assignedWaiter ? 
-                            `${assignedWaiter.full_name || `${assignedWaiter.first_name} ${assignedWaiter.last_name}`}` : 
-                            'Not assigned'
-                          }
+                        <p className="text-muted-foreground text-xs">
+                          {assignedWaiter
+                            ? `${assignedWaiter.full_name || `${assignedWaiter.first_name} ${assignedWaiter.last_name}`}`
+                            : "Not assigned"}
                         </p>
                       </div>
                     </div>
-                    <Badge variant={assignedWaiter ? "default" : "outline"} className="text-xs">
-                      {assignedWaiter ? 'Assigned' : 'Pending'}
+                    <Badge
+                      variant={assignedWaiter ? "default" : "outline"}
+                      className="text-xs"
+                    >
+                      {assignedWaiter ? "Assigned" : "Pending"}
                     </Badge>
                   </div>
 
                   {/* Table Assignment - Only for dine-in */}
                   {isDineInOrder && (
-                    <div className="flex items-center justify-between p-2 bg-background rounded border">
+                    <div className="bg-background flex items-center justify-between rounded border p-2">
                       <div className="flex items-center gap-2">
-                        <TableIcon className="h-4 w-4 text-muted-foreground" />
+                        <TableIcon className="text-muted-foreground h-4 w-4" />
                         <div>
                           <p className="text-sm font-medium">Table</p>
-                          <p className="text-xs text-muted-foreground">
-                            {assignedTable ? 
-                              `Table ${assignedTable.table_number} (${assignedTable.max_party_size} seats)` : 
-                              'Not assigned'
-                            }
+                          <p className="text-muted-foreground text-xs">
+                            {assignedTable
+                              ? `Table ${assignedTable.table_number} (${assignedTable.max_party_size} seats)`
+                              : "Not assigned"}
                           </p>
                         </div>
                       </div>
-                      <Badge variant={assignedTable ? "default" : "outline"} className="text-xs">
-                        {assignedTable ? 'Assigned' : 'Pending'}
+                      <Badge
+                        variant={assignedTable ? "default" : "outline"}
+                        className="text-xs"
+                      >
+                        {assignedTable ? "Assigned" : "Pending"}
                       </Badge>
                     </div>
                   )}
@@ -293,30 +342,34 @@ export function OrderDetailsSheet({
 
           {/* Staff Assignment Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <div className="w-1 h-5 bg-primary rounded-full" />
+            <h3 className="text-foreground flex items-center gap-2 text-lg font-semibold">
+              <div className="bg-primary h-5 w-1 rounded-full" />
               Staff Assignment
             </h3>
-            
+
             {/* Waiter Assignment */}
-            <div className="p-4 bg-muted/30 rounded-lg border">
-              <div className="flex items-center justify-between mb-3">
+            <div className="bg-muted/30 rounded-lg border p-4">
+              <div className="mb-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-muted-foreground" />
+                  <User className="text-muted-foreground h-4 w-4" />
                   <span className="text-sm font-medium">Assigned Waiter</span>
                 </div>
-                <Badge variant={assignedWaiter ? "default" : "outline"} className="font-normal">
-                  {assignedWaiter ? 'Assigned' : 'Not assigned'}
+                <Badge
+                  variant={assignedWaiter ? "default" : "outline"}
+                  className="font-normal"
+                >
+                  {assignedWaiter ? "Assigned" : "Not assigned"}
                 </Badge>
               </div>
 
               {/* Current Waiter Info */}
               {assignedWaiter && (
-                <div className="mb-3 p-2 bg-background rounded border">
+                <div className="bg-background mb-3 rounded border p-2">
                   <p className="text-sm font-medium">
-                    {assignedWaiter.full_name || `${assignedWaiter.first_name} ${assignedWaiter.last_name}`}
+                    {assignedWaiter.full_name ||
+                      `${assignedWaiter.first_name} ${assignedWaiter.last_name}`}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-muted-foreground text-xs">
                     {assignedWaiter.phone} • {assignedWaiter.email}
                   </p>
                 </div>
@@ -324,12 +377,18 @@ export function OrderDetailsSheet({
 
               {/* Waiter Assignment Controls */}
               {isEditable && (
-                <div className="space-y-3 pt-3 border-t">
-                  <Label htmlFor="waiter-select" className="text-sm font-medium">
-                    {assignedWaiter ? 'Change Waiter' : 'Assign Waiter'}
+                <div className="space-y-3 border-t pt-3">
+                  <Label
+                    htmlFor="waiter-select"
+                    className="text-sm font-medium"
+                  >
+                    {assignedWaiter ? "Change Waiter" : "Assign Waiter"}
                   </Label>
                   <div className="flex gap-2">
-                    <Select value={selectedWaiter} onValueChange={setSelectedWaiter}>
+                    <Select
+                      value={selectedWaiter}
+                      onValueChange={setSelectedWaiter}
+                    >
                       <SelectTrigger className="flex-1">
                         <SelectValue placeholder="Select waiter" />
                       </SelectTrigger>
@@ -344,8 +403,13 @@ export function OrderDetailsSheet({
                               <div className="flex items-center gap-2">
                                 <User className="h-4 w-4" />
                                 <div>
-                                  <span>{waiter.full_name || `${waiter.first_name} ${waiter.last_name}`}</span>
-                                  <p className="text-xs text-muted-foreground">{waiter.phone}</p>
+                                  <span>
+                                    {waiter.full_name ||
+                                      `${waiter.first_name} ${waiter.last_name}`}
+                                  </span>
+                                  <p className="text-muted-foreground text-xs">
+                                    {waiter.phone}
+                                  </p>
                                 </div>
                               </div>
                             </SelectItem>
@@ -353,15 +417,15 @@ export function OrderDetailsSheet({
                         )}
                       </SelectContent>
                     </Select>
-                    <Button 
+                    <Button
                       onClick={handleAssignWaiter}
                       disabled={!selectedWaiter || staff.length === 0}
                       className="whitespace-nowrap"
                     >
-                      {assignedWaiter ? 'Change' : 'Assign'}
+                      {assignedWaiter ? "Change" : "Assign"}
                     </Button>
                   </div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-muted-foreground text-xs">
                     {staff.length} waiters available
                   </p>
                 </div>
@@ -372,43 +436,53 @@ export function OrderDetailsSheet({
           {/* Table Assignment for Dine-in Orders */}
           {isDineInOrder && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <div className="w-1 h-5 bg-primary rounded-full" />
+              <h3 className="text-foreground flex items-center gap-2 text-lg font-semibold">
+                <div className="bg-primary h-5 w-1 rounded-full" />
                 Table Information
               </h3>
-              
+
               {/* Table Assignment */}
-              <div className="p-4 bg-muted/30 rounded-lg border">
-                <div className="flex items-center justify-between mb-3">
+              <div className="bg-muted/30 rounded-lg border p-4">
+                <div className="mb-3 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <TableIcon className="h-4 w-4 text-muted-foreground" />
+                    <TableIcon className="text-muted-foreground h-4 w-4" />
                     <span className="text-sm font-medium">Assigned Table</span>
                   </div>
-                  <Badge variant={assignedTable ? "default" : "outline"} className="font-normal">
-                    {assignedTable ? 'Assigned' : 'Not assigned'}
+                  <Badge
+                    variant={assignedTable ? "default" : "outline"}
+                    className="font-normal"
+                  >
+                    {assignedTable ? "Assigned" : "Not assigned"}
                   </Badge>
                 </div>
 
                 {/* Current Table Info */}
                 {assignedTable && (
-                  <div className="mb-3 p-2 bg-background rounded border">
+                  <div className="bg-background mb-3 rounded border p-2">
                     <p className="text-sm font-medium">
                       Table {assignedTable.table_number}
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      {assignedTable.max_party_size} seats • {assignedTable.status || 'Available'}
+                    <p className="text-muted-foreground text-xs">
+                      {assignedTable.max_party_size} seats •{" "}
+                      {assignedTable.status || "Available"}
                     </p>
                   </div>
                 )}
 
                 {/* Table Assignment Controls */}
                 {isEditable && (
-                  <div className="space-y-3 pt-3 border-t">
-                    <Label htmlFor="table-select" className="text-sm font-medium">
-                      {assignedTable ? 'Change Table' : 'Assign Table'}
+                  <div className="space-y-3 border-t pt-3">
+                    <Label
+                      htmlFor="table-select"
+                      className="text-sm font-medium"
+                    >
+                      {assignedTable ? "Change Table" : "Assign Table"}
                     </Label>
                     <div className="flex gap-2">
-                      <Select value={selectedTable} onValueChange={setSelectedTable}>
+                      <Select
+                        value={selectedTable}
+                        onValueChange={setSelectedTable}
+                      >
                         <SelectTrigger className="flex-1">
                           <SelectValue placeholder="Select table" />
                         </SelectTrigger>
@@ -424,8 +498,9 @@ export function OrderDetailsSheet({
                                   <TableIcon className="h-4 w-4" />
                                   <div>
                                     <span>Table {table.table_number}</span>
-                                    <p className="text-xs text-muted-foreground">
-                                      {table.max_party_size} seats • {table.status || 'Available'}
+                                    <p className="text-muted-foreground text-xs">
+                                      {table.max_party_size} seats •{" "}
+                                      {table.status || "Available"}
                                     </p>
                                   </div>
                                 </div>
@@ -434,15 +509,15 @@ export function OrderDetailsSheet({
                           )}
                         </SelectContent>
                       </Select>
-                      <Button 
+                      <Button
                         onClick={handleAssignTable}
                         disabled={!selectedTable || tables.length === 0}
                         className="whitespace-nowrap"
                       >
-                        {assignedTable ? 'Change' : 'Assign'}
+                        {assignedTable ? "Change" : "Assign"}
                       </Button>
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-muted-foreground text-xs">
                       {tables.length} tables available
                     </p>
                   </div>
@@ -453,27 +528,29 @@ export function OrderDetailsSheet({
 
           {/* Status Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <div className="w-1 h-5 bg-primary rounded-full" />
+            <h3 className="text-foreground flex items-center gap-2 text-lg font-semibold">
+              <div className="bg-primary h-5 w-1 rounded-full" />
               Order Status
             </h3>
-            
+
             {/* Current Status Display */}
-            <div className="p-4 bg-muted/30 rounded-lg border space-y-3">
+            <div className="bg-muted/30 space-y-3 rounded-lg border p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className={`p-2 rounded-full ${statusColors[order.status]}`}>
+                  <div
+                    className={`rounded-full p-2 ${statusColors[order.status]}`}
+                  >
                     {statusIcons[order.status]}
                   </div>
                   <div>
-                    <p className="font-medium text-sm">Current Status</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-sm font-medium">Current Status</p>
+                    <p className="text-muted-foreground text-xs">
                       {statusDescriptions[order.status]}
                     </p>
                   </div>
                 </div>
-                <Badge 
-                  variant="secondary" 
+                <Badge
+                  variant="secondary"
                   className={`${statusColors[order.status]} border font-medium`}
                 >
                   {order.status.toUpperCase()}
@@ -482,21 +559,30 @@ export function OrderDetailsSheet({
 
               {/* Status Update Section */}
               {isEditable && availableStatusOptions.length > 0 && (
-                <div className="pt-3 border-t">
-                  <Label htmlFor="status-select" className="text-sm font-medium mb-2 block">
+                <div className="border-t pt-3">
+                  <Label
+                    htmlFor="status-select"
+                    className="mb-2 block text-sm font-medium"
+                  >
                     Update Status
                   </Label>
                   <div className="flex gap-2">
-                    <Select 
-                      value={selectedStatus} 
-                      onValueChange={(value: OrderStatus) => handleStatusChange(value)}
+                    <Select
+                      value={selectedStatus}
+                      onValueChange={(value: OrderStatus) =>
+                        handleStatusChange(value)
+                      }
                     >
                       <SelectTrigger className="flex-1">
                         <SelectValue placeholder="Select new status" />
                       </SelectTrigger>
                       <SelectContent>
                         {availableStatusOptions.map((status) => (
-                          <SelectItem key={status} value={status} className="flex items-center gap-2">
+                          <SelectItem
+                            key={status}
+                            value={status}
+                            className="flex items-center gap-2"
+                          >
                             <div className="flex items-center gap-2">
                               {statusIcons[status]}
                               <span>{status.toUpperCase()}</span>
@@ -505,7 +591,7 @@ export function OrderDetailsSheet({
                         ))}
                       </SelectContent>
                     </Select>
-                    <Button 
+                    <Button
                       onClick={handleQuickStatusUpdate}
                       variant="outline"
                       className="whitespace-nowrap"
@@ -514,8 +600,11 @@ export function OrderDetailsSheet({
                       {getQuickUpdateLabel()}
                     </Button>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Next available statuses: {availableStatusOptions.map(s => s.toUpperCase()).join(', ')}
+                  <p className="text-muted-foreground mt-2 text-xs">
+                    Next available statuses:{" "}
+                    {availableStatusOptions
+                      .map((s) => s.toUpperCase())
+                      .join(", ")}
                   </p>
                 </div>
               )}
@@ -525,13 +614,15 @@ export function OrderDetailsSheet({
           {/* Delay Reason */}
           {order.delay_reason && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <div className="w-1 h-5 bg-primary rounded-full" />
+              <h3 className="text-foreground flex items-center gap-2 text-lg font-semibold">
+                <div className="bg-primary h-5 w-1 rounded-full" />
                 Delay Information
               </h3>
-              <div className="p-4 bg-muted/30 rounded-lg border">
-                <label className="text-sm font-medium text-muted-foreground">Delay Reason</label>
-                <p className="text-sm text-muted-foreground mt-1">
+              <div className="bg-muted/30 rounded-lg border p-4">
+                <label className="text-muted-foreground text-sm font-medium">
+                  Delay Reason
+                </label>
+                <p className="text-muted-foreground mt-1 text-sm">
                   {order.delay_reason}
                 </p>
               </div>
@@ -541,9 +632,9 @@ export function OrderDetailsSheet({
 
         {/* Fixed actions at the bottom */}
         {isEditable && (
-          <div className="flex-shrink-0 flex gap-2 pt-4 border-t">
-            <Button 
-              variant="destructive" 
+          <div className="flex flex-shrink-0 gap-2 border-t pt-4">
+            <Button
+              variant="destructive"
               className="flex-1"
               onClick={handleCancel}
             >

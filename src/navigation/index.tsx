@@ -123,14 +123,7 @@ function NavigationContent() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/orders"
-              element={
-             
-                  <Orders />
-            
-              }
-            />
+            <Route path="/orders" element={<Orders />} />
             <Route
               path="/tables"
               element={
