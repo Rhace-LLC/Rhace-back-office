@@ -6,7 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { resetPassword } from "@/api-services/auth.service";
+import {
+  requestPasswordReset,
+  resetPassword,
+} from "@/api-services/auth.service";
+import { Link, useSearchParams } from "react-router-dom";
+import { OtpInput } from "@/components/OTP/otp";
+import { parseError } from "@/api-services/utils/parseError";
 
 export interface FormErrors {
   [key: string]: string;
@@ -14,14 +20,16 @@ export interface FormErrors {
 
 export default function ResetPassword() {
   const { setLoading, setLoadingText } = useLoading();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email") || "";
 
   const [step, setStep] = useState<"otp" | "reset">("otp");
   const [form, setForm] = useState({
-    email: "",
     otp: "",
     password: "",
     confirm_password: "",
   });
+  const [otp, setOtp] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -32,8 +40,7 @@ export default function ResetPassword() {
   const validateStep = () => {
     const errors: FormErrors = {};
     if (step === "otp") {
-      if (!form.email.trim()) errors.email = "Email is required";
-      if (!form.otp.trim()) errors.otp = "OTP is required";
+      if (otp.length === 0) errors.otp = "OTP is required";
     } else {
       if (!form.password.trim()) errors.password = "Password is required";
       if (!form.confirm_password.trim())
@@ -56,24 +63,54 @@ export default function ResetPassword() {
     try {
       setLoading(true);
       if (step === "otp") {
-        setLoadingText("Verifying OTP...");
-        await new Promise((resolve) => setTimeout(resolve, 1200)); // simulate success
-        toast.success("OTP verified!");
+        setLoadingText("Processing...");
+        await new Promise((resolve) => setTimeout(resolve, 700)); // simulate success
+        toast.success("Enter New Psssword");
         setStep("reset");
       } else {
         setLoadingText("Resetting password...");
         const payload = {
-          email: form.email,
-          otp: form.otp,
-          newPassword: form.password,
+          email,
+          otp: otp,
+          new_password: form.password,
+          confirm_password: form.confirm_password,
         };
         const response = await resetPassword(payload);
         console.log("Response", response);
         toast.success(response?.message || "Password reset successful!");
       }
     } catch (error) {
-      toast.error("Failed to reset password. Please try again.");
+      const errorMessage = parseError(error);
+      toast.error(
+        errorMessage || "Failed to reset password. Please try again."
+      );
+      setStep("otp");
     } finally {
+      setLoading(false);
+      setLoadingText("");
+    }
+  };
+
+  const passwordResetRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!email) {
+      toast.error("No Mail Found");
+      return;
+    }
+
+    try {
+      setLoadingText("Sending reset link...");
+      setLoading(true);
+
+      const response = await requestPasswordReset(email);
+
+      toast.success(response?.message || "Password reset link sent!");
+    } catch (error) {
+      toast.error("Failed to send reset link. Please try again.");
+    } finally {
+      setStep("otp");
+      setOtp("");
       setLoading(false);
       setLoadingText("");
     }
@@ -83,11 +120,11 @@ export default function ResetPassword() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="relative z-10 w-full max-w-lg space-y-10 rounded-[10px] bg-transparent p-8 py-[100px] shadow-sm">
         <div className="text-center">
-          <img src={RhaceLogo} alt="Rhace Logo" className="mx-auto w-[150px]" />
+          <img src={RhaceLogo} alt="Rhace Logo" className="mx-auto w-[100px]" />
         </div>
 
         <div className="text-center">
-          <h3 className="text-3xl font-bold text-gray-800">
+          <h3 className="text-2xl font-semibold text-gray-800">
             {step === "otp" ? "Verify OTP" : "Reset Password"}
           </h3>
           <p className="mt-2 font-medium text-gray-500">
@@ -101,32 +138,8 @@ export default function ResetPassword() {
           {step === "otp" ? (
             <>
               <div className="space-y-1">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="you@example.com"
-                  required
-                />
-                {errors.email && (
-                  <small className="text-red-500">{errors.email}</small>
-                )}
-              </div>
-
-              <div className="space-y-1">
-                <Label htmlFor="otp">OTP</Label>
-                <Input
-                  id="otp"
-                  name="otp"
-                  type="text"
-                  value={form.otp}
-                  onChange={handleChange}
-                  placeholder="Enter 6-digit OTP"
-                  required
-                />
+                <Label htmlFor="otp">Enter OTP</Label>
+                <OtpInput value={otp} onChange={setOtp} />
                 {errors.otp && (
                   <small className="text-red-500">{errors.otp}</small>
                 )}
@@ -206,6 +219,17 @@ export default function ResetPassword() {
             </>
           )}
         </form>
+        <p className="flex justify-between text-center text-sm text-gray-600">
+          <span
+            className="cursor-pointer font-medium"
+            onClick={passwordResetRequest}
+          >
+            Resend OTP
+          </span>
+          <Link to="/login" className="text-blue-600 hover:underline">
+            Back to Login
+          </Link>
+        </p>
       </div>
     </div>
   );

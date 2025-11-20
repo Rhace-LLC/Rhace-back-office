@@ -12,20 +12,21 @@ import {
 } from "../ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { LayoutDashboard, LogOut, Building2, Snowflake } from "lucide-react";
+import {
+  LayoutDashboard,
+  LogOut,
+  Building2,
+  Layers3,
+  Package,
+  Users,
+  CalendarDays,
+} from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, UserRole, UserRoleLabels } from "@/contexts/AuthContext";
 import { useState } from "react";
 import { LogoutDialog } from "./logoutdialog";
 
-import {
-  ShoppingCart,
-  Utensils,
-  ListOrdered,
-  BarChart3,
-  Bell,
-  User,
-} from "lucide-react";
+import { ShoppingCart, Utensils, ListOrdered, Bell, User } from "lucide-react";
 
 export interface MenuItem {
   title: string;
@@ -60,9 +61,15 @@ export function useRoleBasedMenu(): MenuItem[] {
     },
   ];
 
-  if (auth.isAdmin) {
+  if (auth.isAdmin || auth.isOwner) {
     return [
       ...baseMenu.slice(0, 2), // Dashboard, Orders
+
+      {
+        title: "Reservations",
+        url: "/reservations",
+        icon: CalendarDays,
+      },
       {
         title: "Tables",
         url: "/tables",
@@ -71,7 +78,12 @@ export function useRoleBasedMenu(): MenuItem[] {
       {
         title: "Category",
         url: "/category",
-        icon: Snowflake,
+        icon: Layers3,
+      },
+      {
+        title: "Inventory Management",
+        url: "/inventory",
+        icon: Package,
       },
       {
         title: "Menu Management",
@@ -79,10 +91,16 @@ export function useRoleBasedMenu(): MenuItem[] {
         icon: Utensils,
       },
       {
-        title: "Analytics",
-        url: "/analytics",
-        icon: BarChart3,
+        title: "Staff Management",
+        url: "/staff",
+        icon: Users,
       },
+      {
+        title: "Restaurant Profile",
+        url: "/myrestaurant",
+        icon: Users,
+      },
+
       ...baseMenu.slice(2), // Notifications, Profile
     ];
   }
@@ -94,6 +112,16 @@ export function useRoleBasedMenu(): MenuItem[] {
         title: "Tables",
         url: "/tables",
         icon: ListOrdered,
+      },
+      ...baseMenu.slice(2),
+    ];
+  }
+  if (auth.isInventoryMgr) {
+    return [
+      {
+        title: "Inventory Management",
+        url: "/inventory",
+        icon: Package,
       },
       ...baseMenu.slice(2),
     ];
@@ -158,7 +186,7 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
           <Avatar className="h-8 w-8">
             <AvatarImage src="" />
             <AvatarFallback className="bg-primary text-primary-foreground">
-              AD
+              <User className="h-4 w-4" />
             </AvatarFallback>
           </Avatar>
           <div>
@@ -166,7 +194,7 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
               {auth.email}
             </p>
             <p className="text-[15px] text-gray-500 capitalize">
-              {auth.accountType} Staff
+              {UserRoleLabels[auth.accountType as UserRole]}
             </p>
           </div>
         </div>

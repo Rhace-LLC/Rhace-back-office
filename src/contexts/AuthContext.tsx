@@ -1,14 +1,35 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { jwtDecode, JwtPayload } from "jwt-decode";
+import {
+  RestaurantDataLogin,
+  UserDataLogin,
+} from "@/api-services/auth.service";
+
+// ------------------ USER ROLE TYPE ------------------
+export type UserRole =
+  | "admin"
+  | "restaurant_owner"
+  | "waiter"
+  | "kitchen"
+  | "inventory_mgr"
+  | "driver"
+  | "customer"
+  | "unassigned";
+
+// ------------------ FRIENDLY LABELS ------------------
+export const UserRoleLabels: Record<UserRole, string> = {
+  admin: "Admin",
+  restaurant_owner: "Restaurant Owner",
+  waiter: "Waiter",
+  kitchen: "Kitchen",
+  inventory_mgr: "Inventory Manager",
+  driver: "Driver",
+  customer: "Customer",
+  unassigned: "Not Assigned",
+};
 
 export interface DecodedToken extends JwtPayload {
-  role:
-    | "admin"
-    | "waiter"
-    | "kitchen"
-    | "inventory_mgr"
-    | "driver"
-    | "customer";
+  role: UserRole;
   user_id: string;
   token_type: string;
   jti: string;
@@ -16,16 +37,26 @@ export interface DecodedToken extends JwtPayload {
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (token: string, email: string, accountType: string) => void;
+  login: (
+    token: string,
+    email: string,
+    accountType: UserRole,
+    profile: UserDataLogin,
+    restaurants: RestaurantDataLogin[]
+  ) => void;
   logout: () => void;
-  saveProfile: (profile: unknown) => void;
+  saveProfile: (profile: UserDataLogin) => void;
   email: string;
   token: string;
   accountType: string;
+  isOwner: boolean;
   isWaiter: boolean;
   isAdmin: boolean;
   isKitchen: boolean;
+  isInventoryMgr: boolean;
   loading: boolean;
+  user: UserDataLogin | null;
+  restaurants: RestaurantDataLogin[];
 }
 
 const defaultAuthContext: AuthContextType = {
@@ -39,7 +70,11 @@ const defaultAuthContext: AuthContextType = {
   isAdmin: false,
   isWaiter: false,
   isKitchen: false,
+  isOwner: false,
+  isInventoryMgr: false,
   loading: true,
+  user: null,
+  restaurants: [],
 };
 
 const AuthContext = createContext<AuthContextType>(defaultAuthContext);
@@ -93,18 +128,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
-  const [accountType, setAccountType] = useState("");
+  const [accountType, setAccountType] = useState<UserRole | "">("");
+  const [user, setUser] = useState<UserDataLogin | null>(null);
+  const [restaurants, setRestaurants] = useState<RestaurantDataLogin[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const isWaiter = accountType === "waiter";
   const isKitchen = accountType === "kitchen";
   const isAdmin = accountType === "admin";
+  const isOwner = accountType === "restaurant_owner";
+  const isInventoryMgr = accountType === "inventory_mgr";
 
+  // ------------------ RESTORE SESSION ------------------
   useEffect(() => {
     const restoreSession = () => {
       const storedToken = localStorage.getItem("access_token");
       const storedEmail = localStorage.getItem("user_email");
+      const storedProfile = localStorage.getItem("user_profile");
+      const storedRestaurants = localStorage.getItem("user_restaurants");
 
       if (storedToken && storedEmail) {
         try {
@@ -118,6 +160,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             setEmail(storedEmail);
             setAccountType(decoded.role);
             setIsAuthenticated(true);
+
+            if (storedProfile) setUser(JSON.parse(storedProfile));
+            if (storedRestaurants)
+              setRestaurants(JSON.parse(storedRestaurants));
           } else {
             localStorage.clear();
           }
@@ -127,30 +173,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       }
 
-      setLoading(false); // ✅ Finish restoring
+      setLoading(false);
     };
 
     restoreSession();
   }, []);
 
-  const login = (accessToken: string, email: string, accountType: string) => {
+  // ------------------ LOGIN ------------------
+  const login = (
+    accessToken: string,
+    email: string,
+    accountType: UserRole,
+    profile: UserDataLogin,
+    restaurants: RestaurantDataLogin[]
+  ) => {
     setToken(accessToken);
     setEmail(email);
     setAccountType(accountType);
+    setUser(profile);
+    setRestaurants(restaurants);
     setIsAuthenticated(true);
+
     localStorage.setItem("access_token", accessToken);
     localStorage.setItem("user_email", email);
+    localStorage.setItem("user_profile", JSON.stringify(profile));
+    localStorage.setItem("user_restaurants", JSON.stringify(restaurants));
   };
 
+  // ------------------ LOGOUT ------------------
   const logout = () => {
     setToken("");
     setEmail("");
     setAccountType("");
+    setUser(null);
+    setRestaurants([]);
     setIsAuthenticated(false);
     localStorage.clear();
   };
 
-  const saveProfile = (profile: unknown) => {
+  const saveProfile = (profile: UserDataLogin) => {
+    setUser(profile);
     localStorage.setItem("user_profile", JSON.stringify(profile));
   };
 
@@ -167,7 +229,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isAdmin,
         isKitchen,
         isWaiter,
+        isOwner,
+        isInventoryMgr,
         loading,
+        user,
+        restaurants,
       }}
     >
       {children}

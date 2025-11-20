@@ -50,7 +50,11 @@ export default function AddCategoryForm({ onSubmit }: AddCategoryFormProps) {
     try {
       setLoading(true);
 
-      const res = await createCategory(formData, auth.token);
+      const res = await createCategory(
+        auth.restaurants[0].id,
+        formData,
+        auth.token
+      );
       console.log("Response:", res);
       dispatch(appendCategoryToPage({ key: "1", item: res }));
 
