@@ -13,7 +13,6 @@ import {
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Login } from "@/pages/auth/login";
 import { Dashboard } from "@/pages/dashboard";
-import { Orders } from "@/pages/orders";
 import { TablesPage } from "@/pages/tables";
 import { MenuManagement } from "@/pages/menu";
 import { Notifications } from "@/pages/notification";
@@ -24,6 +23,9 @@ import { VerifyOtp } from "@/pages/auth/verifyaccount";
 import CategoryPage from "@/pages/category";
 import ForgotPassword from "@/pages/auth/forgotpassword";
 import ResetPassword from "@/pages/auth/resetpassword";
+import { Orders } from "@/pages/orders/Orders";
+
+export type UserRole = "waiter" | "kitchen" | "admin";
 import ManageInventoryPage from "@/pages/inventory";
 import ManageStaff from "@/pages/staffmanagement";
 import RestaurantProfilePage from "@/pages/myRestaurant";
@@ -124,9 +126,9 @@ function NavigationContent() {
             <Route
               path="/orders"
               element={
-                <ProtectedRoute>
+             
                   <Orders />
-                </ProtectedRoute>
+            
               }
             />
             <Route
