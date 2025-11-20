@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { parseError } from "@/api-services/utils/parseError";
 import {
+  assignTableToReservation,
   Reservation,
   updateReservationStatus,
 } from "@/api-services/order.service";
@@ -28,6 +29,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLoading } from "@/contexts/LoadingContext";
 import { updateReservationDataById } from "@/store/reservation.slice";
 import moment from "moment";
+
 const getStatusColor = (status: ReservationStatus) => {
   switch (status) {
     case "confirmed":
@@ -44,19 +46,12 @@ const getStatusColor = (status: ReservationStatus) => {
 
 interface ReservationDetailProps {
   reservation?: Reservation | null;
-  onAssignTable?: (reservationId: string, tableId: string) => void;
   onUpdateStatus?: (reservationId: string, status: ReservationStatus) => void;
-  onConfirmReservation?: (reservationId: string) => void;
-  onCancelReservation?: (reservationId: string) => void;
-  onCompleteReservation?: (reservationId: string) => void;
 }
-
 export const ReservationDetail: React.FC<ReservationDetailProps> = ({
   reservation,
-  onAssignTable,
-  onConfirmReservation,
-  onCompleteReservation,
 }) => {
+  console.log("RESERVATION", reservation);
   const auth = useAuth();
   const dispatch = useDispatch();
   const { setLoading, setLoadingText } = useLoading();
@@ -84,13 +79,25 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
   if (!reservation) return null;
 
   const handleAssignTable = async () => {
-    if (!onAssignTable || !selectedTable) return;
+    if (!selectedTable) {
+      toast.error("No Table Selected!");
+      return;
+    }
+
     try {
-      await onAssignTable(String(reservation.id), selectedTable);
+      setLoading(true);
+      setLoadingText("Assigning Table");
+      await assignTableToReservation(
+        { table_id: selectedTable, reservation_id: String(reservation.id) },
+        auth.token
+      );
       toast.success("Table assigned successfully");
       setAssignDialogOpen(false);
     } catch (error: any) {
       toast.error(parseError(error) || "Failed to assign table");
+    } finally {
+      setLoading(false);
+      setLoadingText("");
     }
   };
 
@@ -152,9 +159,12 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
   };
 
   const handleComplete = async () => {
-    if (!onCompleteReservation) return;
     try {
-      await onCompleteReservation(String(reservation.id));
+      await updateReservationStatus(
+        String(reservation.id),
+        { status: "completed" },
+        auth.token
+      );
       toast.success("Reservation marked as completed");
     } catch (error: any) {
       toast.error(parseError(error) || "Failed to complete reservation");
@@ -191,14 +201,14 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
         <div className="flex-grow overflow-y-auto">
           {/* Details Tab */}
           <TabsContent value="details" className="space-y-8 bg-white">
-
             {/* Booking Time Section */}
-            <section className="space-y-4 bg-white rounded-lg py-4">
+            <section className="space-y-4 rounded-lg bg-white py-4">
               <h3 className="flex items-center text-lg font-semibold text-gray-800">
-                <Calendar className="mr-2 h-5 w-5 text-indigo-600" /> Booking Time
+                <Calendar className="mr-2 h-5 w-5 text-indigo-600" /> Booking
+                Time
               </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="flex items-center space-x-3">
                   <Calendar className="h-5 w-5 text-indigo-500" />
                   <div className="flex flex-col">
@@ -224,18 +234,19 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
             <div className="my-5 border border-gray-200" />
 
             {/* Customer Info Section */}
-            <section className="space-y-4 bg-white rounded-lg py-4">
+            <section className="space-y-4 rounded-lg bg-white py-4">
               <h3 className="flex items-center text-lg font-semibold text-gray-800">
                 <User className="mr-2 h-5 w-5 text-indigo-600" /> Customer Info
               </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="flex items-center space-x-3">
                   <User className="h-5 w-5 text-green-500" />
                   <div className="flex flex-col">
                     <span className="text-xs text-gray-500">Full Name</span>
                     <span className="text-sm font-medium text-gray-900">
-                      {reservation.customer.first_name} {reservation.customer.last_name}
+                      {reservation.customer.first_name}{" "}
+                      {reservation.customer.last_name}
                     </span>
                   </div>
                 </div>
@@ -260,11 +271,11 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-3 min-w-0">
+                <div className="flex min-w-0 items-center space-x-3">
                   <Mail className="h-5 w-5 text-green-500" />
                   <div className="flex flex-col truncate">
                     <span className="text-xs text-gray-500">Email</span>
-                    <span className="text-sm font-medium text-gray-900 truncate">
+                    <span className="truncate text-sm font-medium text-gray-900">
                       {reservation.customer.email || "—"}
                     </span>
                   </div>
@@ -272,7 +283,6 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               </div>
             </section>
           </TabsContent>
-
 
           {/* Actions Tab */}
           <TabsContent value="actions" className="space-y-6">
@@ -293,7 +303,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               </div>
             )}
 
-            {reservation.status === "pending" && onConfirmReservation && (
+            {reservation.status === "pending" && (
               <div className="space-y-3 rounded-xl border border-green-200 bg-green-50 p-5 shadow-sm">
                 <h4 className="flex items-center text-lg font-semibold text-green-800">
                   <CheckCircle className="mr-2 h-5 w-5" /> Confirm Reservation

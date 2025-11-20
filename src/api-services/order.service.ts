@@ -263,7 +263,23 @@ const updateReservationDetails = async (
   );
   return bookiesAxiosInstance(config);
 };
+interface AssignTableData {
+  table_id: string;
+  reservation_id: string;
+}
 
+const assignTableToReservation = async (
+  data: AssignTableData,
+  token?: string
+) => {
+  const config = getConfig(
+    "/orders/reservations/assign-table",
+    "POST",
+    token,
+    data
+  );
+  return bookiesAxiosInstance(config);
+};
 // -------------------- Export All --------------------
 export {
   getOrders,
@@ -287,4 +303,5 @@ export {
   cancelReservation,
   updateReservationStatus,
   updateReservationDetails,
+  assignTableToReservation,
 };
