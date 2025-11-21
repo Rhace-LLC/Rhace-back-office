@@ -17,6 +17,7 @@ interface ViewCategoryProps {
 
 const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
   const auth = useAuth();
+  const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState({
     name: data.name,
@@ -25,7 +26,6 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
     imageFile: null as File | null,
   });
 
-  const dispatch = useDispatch();
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleChange = (
@@ -57,8 +57,12 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
     try {
       setLoading(true);
 
-      const res = await updateCategory(String(data.id), formData, auth.token);
-      console.log("Response:", res);
+      const res = await updateCategory(
+        auth.restaurants[0].id,
+        String(data.id),
+        formData,
+        auth.token
+      );
 
       dispatch(updateCategoryDataById(res));
 

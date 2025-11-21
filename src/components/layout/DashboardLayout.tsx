@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, UserRole, UserRoleLabels } from "@/contexts/AuthContext";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "../ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { Menu } from "lucide-react";
@@ -64,7 +64,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                         <img src={RhaceImg} className="w-[80px]" />
                       </span>
                       <span className="relative top-[1.5px] text-[15px] font-medium text-gray-600 capitalize italic">
-                        {auth.accountType}
+                        {UserRoleLabels[auth.accountType as UserRole]}
                       </span>
                     </div>
                   </div>
@@ -90,7 +90,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <img src={RhaceImg} className="w-[80px]" />
               </span>
               <span className="relative top-[1.5px] text-[15px] font-medium text-gray-600 capitalize italic">
-                {auth.accountType}
+                {UserRoleLabels[auth.accountType as UserRole]}
               </span>
             </div>
           </div>

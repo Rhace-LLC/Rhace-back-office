@@ -1,4 +1,4 @@
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, UserRole } from "@/contexts/AuthContext";
 import NotFound from "@/pages/404";
 import React, { useEffect } from "react";
 import {
@@ -26,6 +26,11 @@ import ResetPassword from "@/pages/auth/resetpassword";
 import { Orders } from "@/pages/orders/Orders";
 
 export type UserRole = "waiter" | "kitchen" | "admin";
+import ManageInventoryPage from "@/pages/inventory";
+import ManageStaff from "@/pages/staffmanagement";
+import RestaurantProfilePage from "@/pages/myRestaurant";
+import AcceptInvite from "@/pages/AcceptInvite";
+import { ManageReservation } from "@/pages/reservations/re";
 
 export interface User {
   id: string;
@@ -87,7 +92,10 @@ function NavigationContent() {
   const location = useLocation();
   // Redirect authenticated users from "/" to /dashboard
   useEffect(() => {
-    if (auth.isAuthenticated && location.pathname === "/login") {
+    if (
+      auth.isAuthenticated &&
+      (location.pathname === "/login" || location.pathname === "/")
+    ) {
       navigate("/dashboard");
     }
   }, [auth, location, navigate]);
@@ -104,6 +112,7 @@ function NavigationContent() {
             <Route path="/forgot-password" Component={ForgotPassword} />
             <Route path="/resetpassword" Component={ResetPassword} />
             <Route path="/verify-email" Component={VerifyOtp} />
+            <Route path="/accept-invite" Component={AcceptInvite} />
 
             {/* 🔒 Protected Routes */}
             <Route
@@ -125,23 +134,63 @@ function NavigationContent() {
             <Route
               path="/tables"
               element={
-                <ProtectedRoute allowedRoles={["admin", "waiter"]}>
+                <ProtectedRoute
+                  allowedRoles={["admin", "waiter", "restaurant_owner"]}
+                >
                   <TablesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reservations"
+              element={
+                <ProtectedRoute
+                  allowedRoles={["admin", "waiter", "restaurant_owner"]}
+                >
+                  <ManageReservation />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inventory"
+              element={
+                <ProtectedRoute
+                  allowedRoles={["admin", "inventory_mgr", "restaurant_owner"]}
+                >
+                  <ManageInventoryPage />
                 </ProtectedRoute>
               }
             />
             <Route
               path="/category"
               element={
-                <ProtectedRoute allowedRoles={["admin"]}>
+                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
                   <CategoryPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/staff"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
+                  <ManageStaff />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/myrestaurant"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
+                  <RestaurantProfilePage />
                 </ProtectedRoute>
               }
             />
             <Route
               path="/menu"
               element={
-                <ProtectedRoute allowedRoles={["admin", "kitchen"]}>
+                <ProtectedRoute
+                  allowedRoles={["admin", "kitchen", "restaurant_owner"]}
+                >
                   <MenuManagement />
                 </ProtectedRoute>
               }
@@ -165,7 +214,7 @@ function NavigationContent() {
             <Route
               path="/analytics"
               element={
-                <ProtectedRoute allowedRoles={["admin"]}>
+                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
                   <Analytics />
                 </ProtectedRoute>
               }
