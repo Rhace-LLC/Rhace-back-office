@@ -23,11 +23,7 @@ const statusColors: Record<OrderStatus, string> = {
   [OrderStatus.DELIVERED]: "bg-purple-100 text-purple-800 border-purple-200",
 };
 
-const orderTypeColors = {
-  "dine-in": "bg-blue-50 text-blue-700 border-blue-200",
-  "delivery": "bg-green-50 text-green-700 border-green-200",
-  "takeaway": "bg-orange-50 text-orange-700 border-orange-200",
-};
+
 
 export function OrdersTable({ orders, onOrderSelect, waiters, tables }: OrdersTableProps) {
   const formatDate = (dateString: string) => {
