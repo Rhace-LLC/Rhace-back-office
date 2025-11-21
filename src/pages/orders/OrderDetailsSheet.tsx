@@ -96,15 +96,12 @@ export function OrderDetailsSheet({
     });
   };
 
-  
-
   // Get assigned waiter details
   const getAssignedWaiter = () => {
     if (!order.waiter) return null;
     return staff.find(s => s.id === order.waiter);
   };
 
- 
   // Get assigned table details
   const getAssignedTable = () => {
     if (!order.table) return null;
@@ -232,7 +229,7 @@ export function OrderDetailsSheet({
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-muted-foreground">Total Amount</label>
-                <p className="text-base font-medium">${getTotalPrice()}</p>
+                <p className="text-base font-medium">₦{getTotalPrice()}</p>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-muted-foreground">Items Count</label>

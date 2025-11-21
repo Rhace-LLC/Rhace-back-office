@@ -23,8 +23,6 @@ const statusColors: Record<OrderStatus, string> = {
   [OrderStatus.DELIVERED]: "bg-purple-100 text-purple-800 border-purple-200",
 };
 
-
-
 export function OrdersTable({ orders, onOrderSelect, waiters, tables }: OrdersTableProps) {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -212,7 +210,7 @@ export function OrdersTable({ orders, onOrderSelect, waiters, tables }: OrdersTa
               </TableCell>
               <TableCell className="py-2.5">
                 <div className="text-sm font-semibold text-gray-900">
-                  ${getTotalPrice(order)}
+                  ₦{getTotalPrice(order)}
                 </div>
               </TableCell>
               <TableCell className="py-2.5">
