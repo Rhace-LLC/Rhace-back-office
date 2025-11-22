@@ -3,11 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Order, OrderStatus } from "./types/order";
+import { Order } from "./types/order";
 import { Staff } from "../../api-services/staffService";
 import { Table } from "../../api-services/tableService";
 import { useState, useEffect } from "react";
 import { Clock, CheckCircle, Truck, ChefHat, Package, User, Table as TableIcon } from "lucide-react";
+
+// Define OrderStatus locally since there's an import issue
+type OrderStatus = "received" | "preparing" | "ready" | "completed" | "cancelled" | "delivered";
 
 interface OrderDetailsSheetProps {
   order: Order | null;
@@ -21,31 +24,32 @@ interface OrderDetailsSheetProps {
   tables: Table[];
 }
 
+// Convert status to uppercase for display, but keep values lowercase
 const statusColors: Record<OrderStatus, string> = {
-  [OrderStatus.RECEIVED]: "bg-blue-100 text-blue-800 border-blue-200",
-  [OrderStatus.PREPARING]: "bg-yellow-100 text-yellow-800 border-yellow-200",
-  [OrderStatus.READY]: "bg-green-100 text-green-800 border-green-200",
-  [OrderStatus.COMPLETED]: "bg-gray-100 text-gray-800 border-gray-200",
-  [OrderStatus.CANCELLED]: "bg-red-100 text-red-800 border-red-200",
-  [OrderStatus.DELIVERED]: "bg-purple-100 text-purple-800 border-purple-200",
+  'received': "bg-blue-100 text-blue-800 border-blue-200",
+  'preparing': "bg-yellow-100 text-yellow-800 border-yellow-200",
+  'ready': "bg-green-100 text-green-800 border-green-200",
+  'completed': "bg-gray-100 text-gray-800 border-gray-200",
+  'cancelled': "bg-red-100 text-red-800 border-red-200",
+  'delivered': "bg-purple-100 text-purple-800 border-purple-200",
 };
 
 const statusIcons: Record<OrderStatus, React.ReactNode> = {
-  [OrderStatus.RECEIVED]: <Package className="h-4 w-4" />,
-  [OrderStatus.PREPARING]: <ChefHat className="h-4 w-4" />,
-  [OrderStatus.READY]: <Clock className="h-4 w-4" />,
-  [OrderStatus.COMPLETED]: <CheckCircle className="h-4 w-4" />,
-  [OrderStatus.CANCELLED]: <Clock className="h-4 w-4" />,
-  [OrderStatus.DELIVERED]: <Truck className="h-4 w-4" />,
+  'received': <Package className="h-4 w-4" />,
+  'preparing': <ChefHat className="h-4 w-4" />,
+  'ready': <Clock className="h-4 w-4" />,
+  'completed': <CheckCircle className="h-4 w-4" />,
+  'cancelled': <Clock className="h-4 w-4" />,
+  'delivered': <Truck className="h-4 w-4" />,
 };
 
 const statusDescriptions: Record<OrderStatus, string> = {
-  [OrderStatus.RECEIVED]: "Order has been received and is waiting to be processed",
-  [OrderStatus.PREPARING]: "Kitchen is currently preparing the order",
-  [OrderStatus.READY]: "Order is ready for pickup or delivery",
-  [OrderStatus.COMPLETED]: "Order has been completed successfully",
-  [OrderStatus.CANCELLED]: "Order has been cancelled",
-  [OrderStatus.DELIVERED]: "Order has been delivered to customer",
+  'received': "Order has been received and is waiting to be processed",
+  'preparing': "Kitchen is currently preparing the order",
+  'ready': "Order is ready for pickup or delivery",
+  'completed': "Order has been completed successfully",
+  'cancelled': "Order has been cancelled",
+  'delivered': "Order has been delivered to customer",
 };
 
 export function OrderDetailsSheet({
@@ -66,7 +70,7 @@ export function OrderDetailsSheet({
   // Initialize when order changes
   useEffect(() => {
     if (order) {
-      setSelectedStatus(order.status);
+      setSelectedStatus(order.status as OrderStatus);
       if (order.waiter) {
         setSelectedWaiter(order.waiter);
       }
@@ -114,7 +118,7 @@ export function OrderDetailsSheet({
   };
 
   const handleQuickStatusUpdate = () => {
-    const availableStatusOptions = nextStatusOptions[order.status] || [];
+    const availableStatusOptions = nextStatusOptions[order.status as OrderStatus] || [];
     if (availableStatusOptions.length > 0) {
       const nextStatus = availableStatusOptions[0];
       setSelectedStatus(nextStatus);
@@ -140,20 +144,20 @@ export function OrderDetailsSheet({
     }
   };
 
-  const isEditable = order.status !== OrderStatus.COMPLETED && 
-                    order.status !== OrderStatus.CANCELLED &&
-                    order.status !== OrderStatus.DELIVERED;
+  const isEditable = order.status !== 'completed' && 
+                    order.status !== 'cancelled' &&
+                    order.status !== 'delivered';
 
-  const nextStatusOptions = {
-    [OrderStatus.RECEIVED]: [OrderStatus.PREPARING, OrderStatus.CANCELLED],
-    [OrderStatus.PREPARING]: [OrderStatus.READY, OrderStatus.CANCELLED],
-    [OrderStatus.READY]: [OrderStatus.COMPLETED, OrderStatus.DELIVERED, OrderStatus.CANCELLED],
-    [OrderStatus.DELIVERED]: [OrderStatus.COMPLETED],
-    [OrderStatus.COMPLETED]: [],
-    [OrderStatus.CANCELLED]: [],
+  const nextStatusOptions: Record<OrderStatus, OrderStatus[]> = {
+    'received': ['preparing', 'cancelled'],
+    'preparing': ['ready', 'cancelled'],
+    'ready': ['completed', 'delivered', 'cancelled'],
+    'delivered': ['completed'],
+    'completed': [],
+    'cancelled': [],
   };
 
-  const availableStatusOptions = nextStatusOptions[order.status] || [];
+  const availableStatusOptions = nextStatusOptions[order.status as OrderStatus] || [];
   const isDineInOrder = order.order_type === 'dine-in';
   const assignedWaiter = getAssignedWaiter();
   const assignedTable = getAssignedTable();
@@ -163,13 +167,18 @@ export function OrderDetailsSheet({
     if (availableStatusOptions.length === 0) return "No Actions";
     const nextStatus = availableStatusOptions[0];
     switch (nextStatus) {
-      case OrderStatus.PREPARING: return "Start Preparing";
-      case OrderStatus.READY: return "Mark Ready";
-      case OrderStatus.COMPLETED: return "Complete Order";
-      case OrderStatus.DELIVERED: return "Mark Delivered";
-      case OrderStatus.CANCELLED: return "Cancel Order";
+      case 'preparing': return "Start Preparing";
+      case 'ready': return "Mark Ready";
+      case 'completed': return "Complete Order";
+      case 'delivered': return "Mark Delivered";
+      case 'cancelled': return "Cancel Order";
       default: return "Update";
     }
+  };
+
+  // Helper function to format status for display
+  const formatStatusForDisplay = (status: string) => {
+    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
   };
 
   return (
@@ -180,10 +189,10 @@ export function OrderDetailsSheet({
             <span>Order #{order.id}</span>
             <Badge 
               variant="secondary" 
-              className={`${statusColors[order.status]} border font-medium flex items-center gap-1`}
+              className={`${statusColors[order.status as OrderStatus]} border font-medium flex items-center gap-1`}
             >
-              {statusIcons[order.status]}
-              {order.status.toUpperCase()}
+              {statusIcons[order.status as OrderStatus]}
+              {formatStatusForDisplay(order.status)}
             </Badge>
           </SheetTitle>
         </SheetHeader>
@@ -459,21 +468,21 @@ export function OrderDetailsSheet({
             <div className="p-4 bg-muted/30 rounded-lg border space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className={`p-2 rounded-full ${statusColors[order.status]}`}>
-                    {statusIcons[order.status]}
+                  <div className={`p-2 rounded-full ${statusColors[order.status as OrderStatus]}`}>
+                    {statusIcons[order.status as OrderStatus]}
                   </div>
                   <div>
                     <p className="font-medium text-sm">Current Status</p>
                     <p className="text-xs text-muted-foreground">
-                      {statusDescriptions[order.status]}
+                      {statusDescriptions[order.status as OrderStatus]}
                     </p>
                   </div>
                 </div>
                 <Badge 
                   variant="secondary" 
-                  className={`${statusColors[order.status]} border font-medium`}
+                  className={`${statusColors[order.status as OrderStatus]} border font-medium`}
                 >
-                  {order.status.toUpperCase()}
+                  {formatStatusForDisplay(order.status)}
                 </Badge>
               </div>
 
@@ -496,7 +505,7 @@ export function OrderDetailsSheet({
                           <SelectItem key={status} value={status} className="flex items-center gap-2">
                             <div className="flex items-center gap-2">
                               {statusIcons[status]}
-                              <span>{status.toUpperCase()}</span>
+                              <span>{formatStatusForDisplay(status)}</span>
                             </div>
                           </SelectItem>
                         ))}
@@ -512,7 +521,7 @@ export function OrderDetailsSheet({
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
-                    Next available statuses: {availableStatusOptions.map(s => s.toUpperCase()).join(', ')}
+                    Next available statuses: {availableStatusOptions.map(s => formatStatusForDisplay(s)).join(', ')}
                   </p>
                 </div>
               )}

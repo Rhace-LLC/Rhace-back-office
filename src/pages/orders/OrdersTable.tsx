@@ -3,9 +3,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Eye, Clock, Truck, User, Table as TableIcon } from "lucide-react";
-import { Order, OrderStatus } from "./types/order";
+import type { Order } from "./types/order";
 import { Staff } from "../../api-services/staffService";
 import { Table as TableType } from "../../api-services/tableService";
+
+// Define OrderStatus locally to avoid import issues
+type OrderStatus = "received" | "preparing" | "ready" | "completed" | "cancelled" | "delivered";
 
 interface OrdersTableProps {
   orders: Order[];
@@ -15,12 +18,12 @@ interface OrdersTableProps {
 }
 
 const statusColors: Record<OrderStatus, string> = {
-  [OrderStatus.RECEIVED]: "bg-blue-100 text-blue-800 border-blue-200",
-  [OrderStatus.PREPARING]: "bg-yellow-100 text-yellow-800 border-yellow-200",
-  [OrderStatus.READY]: "bg-green-100 text-green-800 border-green-200",
-  [OrderStatus.COMPLETED]: "bg-gray-100 text-gray-800 border-gray-200",
-  [OrderStatus.CANCELLED]: "bg-red-100 text-red-800 border-red-200",
-  [OrderStatus.DELIVERED]: "bg-purple-100 text-purple-800 border-purple-200",
+  received: "bg-blue-100 text-blue-800 border-blue-200",
+  preparing: "bg-yellow-100 text-yellow-800 border-yellow-200",
+  ready: "bg-green-100 text-green-800 border-green-200",
+  completed: "bg-gray-100 text-gray-800 border-gray-200",
+  cancelled: "bg-red-100 text-red-800 border-red-200",
+  delivered: "bg-purple-100 text-purple-800 border-purple-200",
 };
 
 export function OrdersTable({ orders, onOrderSelect, waiters, tables }: OrdersTableProps) {
@@ -35,11 +38,11 @@ export function OrdersTable({ orders, onOrderSelect, waiters, tables }: OrdersTa
 
   const getStatusIcon = (status: OrderStatus) => {
     switch (status) {
-      case OrderStatus.RECEIVED:
-      case OrderStatus.PREPARING:
+      case 'received':
+      case 'preparing':
         return <Clock className="h-3 w-3 mr-1" />;
-      case OrderStatus.READY:
-      case OrderStatus.DELIVERED:
+      case 'ready':
+      case 'delivered':
         return <Truck className="h-3 w-3 mr-1" />;
       default:
         return null;
@@ -164,9 +167,9 @@ export function OrdersTable({ orders, onOrderSelect, waiters, tables }: OrdersTa
               <TableCell className="py-2.5">
                 <Badge 
                   variant="outline" 
-                  className={`${statusColors[order.status]} flex items-center w-fit text-xs px-1.5 py-0 h-5 border font-normal`}
+                  className={`${statusColors[order.status as OrderStatus]} flex items-center w-fit text-xs px-1.5 py-0 h-5 border font-normal`}
                 >
-                  {getStatusIcon(order.status)}
+                  {getStatusIcon(order.status as OrderStatus)}
                   <span className="truncate max-w-[80px]">
                     {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                   </span>

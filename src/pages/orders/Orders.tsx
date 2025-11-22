@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Filter, RefreshCw } from "lucide-react";
-import { Order, OrderStatus, UpdateOrderData } from "./types/order";
+import { Order, UpdateOrderData } from "./types/order";
 import { OrdersStats } from "./OrdersStats";
 import { OrdersTable } from "./OrdersTable";
 import { OrderDetailsSheet } from "./OrderDetailsSheet";
@@ -18,14 +18,17 @@ import {
 import { getActiveWaiters, Staff } from "../../api-services/staffService";
 import { getAvailableTables, Table } from "../../api-services/tableService";
 
+// Define OrderStatus locally since there's an import issue
+type OrderStatus = "received" | "preparing" | "ready" | "completed" | "cancelled" | "delivered";
+
 const statusOptions = [
   "All",
-  OrderStatus.RECEIVED,
-  OrderStatus.PREPARING,
-  OrderStatus.READY,
-  OrderStatus.COMPLETED,
-  OrderStatus.CANCELLED,
-  OrderStatus.DELIVERED
+  "received",
+  "preparing",
+  "ready",
+  "completed",
+  "cancelled",
+  "delivered"
 ];
 
 // ============== CACHE SETUP ==============
@@ -266,9 +269,9 @@ export function Orders() {
       setError(null);
       if (!token) throw new Error("Authentication token not found");
 
-      const cancelData: UpdateOrderData = { status: OrderStatus.CANCELLED };
+      const cancelData: UpdateOrderData = { status: "cancelled" as OrderStatus };
       await cancelOrder(orderId, cancelData, token);
-      await handleStatusChange(orderId, OrderStatus.CANCELLED);
+      await handleStatusChange(orderId, "cancelled");
       
     } catch (err) {
       console.error(`❌ Error cancelling order ${orderId}:`, err);
