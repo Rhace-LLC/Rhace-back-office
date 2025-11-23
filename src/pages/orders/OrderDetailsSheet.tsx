@@ -283,7 +283,7 @@ export function OrderDetailsSheet({
                 <label className="text-muted-foreground text-sm font-medium">
                   Created
                 </label>
-                <p className="text-base text-sm">{getCreatedAt()}</p>
+                <p className="text-sm">{getCreatedAt()}</p>
               </div>
 
               {/* Current Assignments */}

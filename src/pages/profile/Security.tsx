@@ -15,7 +15,7 @@ import { patchPassword } from "@/api-services/auth.service";
 import { useAuth } from "@/contexts/AuthContext";
 
 const SecuritySection: React.FC = () => {
-    const auth = useAuth();
+  const auth = useAuth();
   const [showPasswordForm, setShowPasswordForm] = useState(false);
 
   const [passwordForm, setPasswordForm] = useState({
@@ -35,7 +35,7 @@ const SecuritySection: React.FC = () => {
       return;
     }
 
-    await patchPassword(auth.token, passwordForm)
+    await patchPassword(auth.token, passwordForm);
 
     // Replace with API call later
     toast.success("Password changed successfully");
@@ -125,7 +125,10 @@ const SecuritySection: React.FC = () => {
                 Update Password
               </Button>
 
-              <Button variant="outline" onClick={() => setShowPasswordForm(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setShowPasswordForm(false)}
+              >
                 Cancel
               </Button>
             </div>

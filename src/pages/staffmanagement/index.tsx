@@ -54,8 +54,7 @@ const ManageStaff: React.FC = () => {
     }
   };
 
-
-  useEffect(() => {    
+  useEffect(() => {
     if (!allData) fetchAllStaffs();
   }, []);
 
@@ -111,7 +110,10 @@ const ManageStaff: React.FC = () => {
           errMessage={fetchError || "Failed to load Staffs."}
           actionFn={fetchAllStaffs}
         >
-          <RenderEmployeeTable data={toShow || []} onRowClick={handleStaffClick} />
+          <RenderEmployeeTable
+            data={toShow || []}
+            onRowClick={handleStaffClick}
+          />
         </ContentHOC>
       </div>
 

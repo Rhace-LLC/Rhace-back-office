@@ -50,9 +50,7 @@ const staffSlice = createSlice({
     removeStaffDataById: (state, action: PayloadAction<string>) => {
       if (!state.data) return;
 
-      state.data = state.data.filter(
-        (member) => member.id !== action.payload
-      );
+      state.data = state.data.filter((member) => member.id !== action.payload);
     },
 
     // Reset staff state (choose null or [])

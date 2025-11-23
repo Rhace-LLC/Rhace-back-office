@@ -58,7 +58,7 @@ export function MenuManagement() {
 
   // Fetch data on mount or page change
   useEffect(() => {
-    if(toShow.length == 0) fetchAllData();
+    if (toShow.length == 0) fetchAllData();
   }, [page]);
 
   // Toggle availability handler

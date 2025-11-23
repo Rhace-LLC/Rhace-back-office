@@ -22,17 +22,15 @@ export default function ViewMyRestaurant({
     fallback = "Not yet added"
   ) => value ?? fallback;
 
-// Keep 24-hour format "HH:mm" as is, but validate/fix formatting
-const formatTime12 = (time24: string) => {
-  if (!time24) return "";
-  const [hourStr, minute] = time24.split(":");
-  let hour = parseInt(hourStr, 10);
-  const ampm = hour >= 12 ? "PM" : "AM";
-  hour = hour % 12 || 12; // convert 0 -> 12, 13 -> 1, etc.
-  return `${hour}:${minute} ${ampm}`;
-};
-
-
+  // Keep 24-hour format "HH:mm" as is, but validate/fix formatting
+  const formatTime12 = (time24: string) => {
+    if (!time24) return "";
+    const [hourStr, minute] = time24.split(":");
+    let hour = parseInt(hourStr, 10);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12; // convert 0 -> 12, 13 -> 1, etc.
+    return `${hour}:${minute} ${ampm}`;
+  };
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
@@ -153,35 +151,32 @@ const formatTime12 = (time24: string) => {
             </div>
           </div>
 
-
-{/* Opening Hours */}
-<div className="mt-8 border-t border-gray-100 pt-6">
-  <h3 className="text-lg font-semibold text-gray-700">
-    Operating Hours
-  </h3>
-  <div className="mt-4 grid grid-cols-2 gap-3 text-sm md:grid-cols-4 lg:grid-cols-5">
-    {(profile.opening_hours && profile.opening_hours.length > 0
-      ? profile.opening_hours
-      : [{ day: "Not yet added", open_time: "", close_time: "" }]
-    ).map((h, i) => (
-      <div
-        key={i}
-        className="rounded-lg border bg-gray-50/50 p-3 shadow-sm transition-shadow hover:shadow-md"
-      >
-        <div className="font-semibold text-gray-800">
-          {h.day || "Not yet added"}
-        </div>
-        <div className="mt-1 text-xs text-gray-500">
-          {h.open_time && h.close_time
-            ? `${formatTime12(h.open_time)} - ${formatTime12(h.close_time)}`
-            : "Not yet added"}
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-
-
+          {/* Opening Hours */}
+          <div className="mt-8 border-t border-gray-100 pt-6">
+            <h3 className="text-lg font-semibold text-gray-700">
+              Operating Hours
+            </h3>
+            <div className="mt-4 grid grid-cols-2 gap-3 text-sm md:grid-cols-4 lg:grid-cols-5">
+              {(profile.opening_hours && profile.opening_hours.length > 0
+                ? profile.opening_hours
+                : [{ day: "Not yet added", open_time: "", close_time: "" }]
+              ).map((h, i) => (
+                <div
+                  key={i}
+                  className="rounded-lg border bg-gray-50/50 p-3 shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <div className="font-semibold text-gray-800">
+                    {h.day || "Not yet added"}
+                  </div>
+                  <div className="mt-1 text-xs text-gray-500">
+                    {h.open_time && h.close_time
+                      ? `${formatTime12(h.open_time)} - ${formatTime12(h.close_time)}`
+                      : "Not yet added"}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
         {/* Right Column: Contact Info (1/3 width on desktop) */}

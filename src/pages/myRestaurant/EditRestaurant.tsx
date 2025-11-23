@@ -3,7 +3,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { X, Calendar, Clock } from "lucide-react"; // Added useful icons
-import { OpeningHour, RestaurantProfile } from "@/api-services/restaurantProfile";
+import {
+  OpeningHour,
+  RestaurantProfile,
+} from "@/api-services/restaurantProfile";
 
 interface Props {
   profile: RestaurantProfile;
@@ -48,9 +51,13 @@ export default function EditRestaurantProfile({
     if (!file) return;
 
     // Clean up previous blob URL if it exists (good practice)
-    if (type === "logo" && logoPreview && logoPreview.startsWith('blob:')) {
+    if (type === "logo" && logoPreview && logoPreview.startsWith("blob:")) {
       URL.revokeObjectURL(logoPreview);
-    } else if (type === "cover" && coverPreview && coverPreview.startsWith('blob:')) {
+    } else if (
+      type === "cover" &&
+      coverPreview &&
+      coverPreview.startsWith("blob:")
+    ) {
       URL.revokeObjectURL(coverPreview);
     }
 
@@ -98,183 +105,223 @@ export default function EditRestaurantProfile({
     onSave(form);
   };
 
-// Memoized FormField to prevent losing focus
-const FormField = memo(
-  ({
-    label,
-    children,
-    description,
-  }: {
-    label: string;
-    children: React.ReactNode;
-    description?: string;
-  }) => (
-    <div className="space-y-1">
-      <label className="text-sm font-semibold text-gray-800 tracking-wide">{label}</label>
-      {description && <p className="text-xs text-gray-500 mb-2">{description}</p>}
-      {children}
-    </div>
-  )
-);
+  // Memoized FormField to prevent losing focus
+  const FormField = memo(
+    ({
+      label,
+      children,
+      description,
+    }: {
+      label: string;
+      children: React.ReactNode;
+      description?: string;
+    }) => (
+      <div className="space-y-1">
+        <label className="text-sm font-semibold tracking-wide text-gray-800">
+          {label}
+        </label>
+        {description && (
+          <p className="mb-2 text-xs text-gray-500">{description}</p>
+        )}
+        {children}
+      </div>
+    )
+  );
   // --------------------------------------------------------
 
   return (
     <div className="space-y-8">
       {/* HEADER */}
       <div className="flex items-center justify-between border-b pb-4">
-        <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
+        <h2 className="text-3xl font-bold tracking-tight text-gray-900">
           Edit Restaurant Profile
         </h2>
-        <Button variant="outline" onClick={() => onEdit(false)} className="px-6">
+        <Button
+          variant="outline"
+          onClick={() => onEdit(false)}
+          className="px-6"
+        >
           Cancel
         </Button>
       </div>
 
+      {/* --- SECTION: BASIC INFORMATION --- */}
+      <section className="space-y-6 rounded-xl border border-gray-100 bg-white p-6 shadow-lg md:p-8">
+        <h3 className="text-xl font-bold text-gray-800">Basic Details</h3>
+        <p className="text-sm text-gray-500">
+          Provide the fundamental information about your restaurant.
+        </p>
 
-{/* --- SECTION: BASIC INFORMATION --- */}
-<section className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100 space-y-6">
-  <h3 className="text-xl font-bold text-gray-800">Basic Details</h3>
-  <p className="text-sm text-gray-500">Provide the fundamental information about your restaurant.</p>
+        {/* Restaurant Name */}
+        <div className="space-y-1">
+          <label className="text-sm font-semibold tracking-wide text-gray-800">
+            Restaurant Name
+          </label>
+          <Input
+            className="h-11 border-gray-300 transition-colors duration-150 focus:border-indigo-500 focus:ring-indigo-500"
+            value={form.name}
+            onChange={(e) => updateField("name", e.target.value)}
+          />
+        </div>
 
-  {/* Restaurant Name */}
-  <div className="space-y-1">
-    <label className="text-sm font-semibold text-gray-800 tracking-wide">Restaurant Name</label>
-    <Input
-      className="h-11 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 transition-colors duration-150"
-      value={form.name}
-      onChange={(e) => updateField("name", e.target.value)}
-    />
-  </div>
+        {/* Slogan */}
+        <div className="space-y-1">
+          <label className="text-sm font-semibold tracking-wide text-gray-800">
+            Slogan
+          </label>
+          <p className="mb-2 text-xs text-gray-500">
+            A short, catchy phrase for marketing.
+          </p>
+          <Input
+            className="h-11 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+            value={form.slogan ?? ""}
+            onChange={(e) => updateField("slogan", e.target.value)}
+          />
+        </div>
 
-  {/* Slogan */}
-  <div className="space-y-1">
-    <label className="text-sm font-semibold text-gray-800 tracking-wide">Slogan</label>
-    <p className="text-xs text-gray-500 mb-2">A short, catchy phrase for marketing.</p>
-    <Input
-      className="h-11 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-      value={form.slogan ?? ""}
-      onChange={(e) => updateField("slogan", e.target.value)}
-    />
-  </div>
+        {/* Description */}
+        <div className="space-y-1">
+          <label className="text-sm font-semibold tracking-wide text-gray-800">
+            Description
+          </label>
+          <p className="mb-2 text-xs text-gray-500">
+            A detailed overview of your restaurant, cuisine, and atmosphere.
+          </p>
+          <Textarea
+            className="h-[120px] border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+            value={form.description ?? ""}
+            onChange={(e) => updateField("description", e.target.value)}
+          />
+        </div>
+      </section>
 
-  {/* Description */}
-  <div className="space-y-1">
-    <label className="text-sm font-semibold text-gray-800 tracking-wide">Description</label>
-    <p className="text-xs text-gray-500 mb-2">A detailed overview of your restaurant, cuisine, and atmosphere.</p>
-    <Textarea
-      className="h-[120px] border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-      value={form.description ?? ""}
-      onChange={(e) => updateField("description", e.target.value)}
-    />
-  </div>
-</section>
+      {/* --- SECTION: LOCATION & CONTACT --- */}
+      <section className="space-y-6 rounded-xl border border-gray-100 bg-white p-6 shadow-lg md:p-8">
+        <h3 className="text-xl font-bold text-gray-800">Location & Contact</h3>
+        <p className="text-sm text-gray-500">
+          Ensure your customers can easily find and reach you.
+        </p>
 
-{/* --- SECTION: LOCATION & CONTACT --- */}
-<section className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100 space-y-6">
-  <h3 className="text-xl font-bold text-gray-800">Location & Contact</h3>
-  <p className="text-sm text-gray-500">Ensure your customers can easily find and reach you.</p>
+        {/* Full Address */}
+        <div className="space-y-1">
+          <label className="text-sm font-semibold tracking-wide text-gray-800">
+            Full Address
+          </label>
+          <Input
+            className="h-11"
+            value={form.address}
+            onChange={(e) => updateField("address", e.target.value)}
+            placeholder="Street address, building name, etc."
+          />
+        </div>
 
-  {/* Full Address */}
-  <div className="space-y-1">
-    <label className="text-sm font-semibold text-gray-800 tracking-wide">Full Address</label>
-    <Input
-      className="h-11"
-      value={form.address}
-      onChange={(e) => updateField("address", e.target.value)}
-      placeholder="Street address, building name, etc."
-    />
-  </div>
+        {/* City / State / Country */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="space-y-1">
+            <label className="text-sm font-semibold tracking-wide text-gray-800">
+              City
+            </label>
+            <Input
+              className="h-11"
+              value={form.city}
+              onChange={(e) => updateField("city", e.target.value)}
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-semibold tracking-wide text-gray-800">
+              State/Province
+            </label>
+            <Input
+              className="h-11"
+              value={form.state}
+              onChange={(e) => updateField("state", e.target.value)}
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-semibold tracking-wide text-gray-800">
+              Country
+            </label>
+            <Input
+              className="h-11"
+              value={form.country}
+              onChange={(e) => updateField("country", e.target.value)}
+            />
+          </div>
+        </div>
 
-  {/* City / State / Country */}
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div className="space-y-1">
-      <label className="text-sm font-semibold text-gray-800 tracking-wide">City</label>
-      <Input
-        className="h-11"
-        value={form.city}
-        onChange={(e) => updateField("city", e.target.value)}
-      />
-    </div>
-    <div className="space-y-1">
-      <label className="text-sm font-semibold text-gray-800 tracking-wide">State/Province</label>
-      <Input
-        className="h-11"
-        value={form.state}
-        onChange={(e) => updateField("state", e.target.value)}
-      />
-    </div>
-    <div className="space-y-1">
-      <label className="text-sm font-semibold text-gray-800 tracking-wide">Country</label>
-      <Input
-        className="h-11"
-        value={form.country}
-        onChange={(e) => updateField("country", e.target.value)}
-      />
-    </div>
-  </div>
-
-  {/* Email / Phone */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div className="space-y-1">
-      <label className="text-sm font-semibold text-gray-800 tracking-wide">Email Address</label>
-      <Input
-        className="h-11"
-        value={form.email}
-        onChange={(e) => updateField("email", e.target.value)}
-        type="email"
-      />
-    </div>
-    <div className="space-y-1">
-      <label className="text-sm font-semibold text-gray-800 tracking-wide">Phone Number</label>
-      <Input
-        className="h-11"
-        value={form.phone}
-        onChange={(e) => updateField("phone", e.target.value)}
-        type="tel"
-      />
-    </div>
-  </div>
-</section>
-
+        {/* Email / Phone */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="space-y-1">
+            <label className="text-sm font-semibold tracking-wide text-gray-800">
+              Email Address
+            </label>
+            <Input
+              className="h-11"
+              value={form.email}
+              onChange={(e) => updateField("email", e.target.value)}
+              type="email"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-semibold tracking-wide text-gray-800">
+              Phone Number
+            </label>
+            <Input
+              className="h-11"
+              value={form.phone}
+              onChange={(e) => updateField("phone", e.target.value)}
+              type="tel"
+            />
+          </div>
+        </div>
+      </section>
 
       {/* --- SECTION: BRANDING & MEDIA --- */}
-      <section className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100 space-y-6">
+      <section className="space-y-6 rounded-xl border border-gray-100 bg-white p-6 shadow-lg md:p-8">
         <h3 className="text-xl font-bold text-gray-800">Branding & Media</h3>
-        <p className="text-sm text-gray-500">Upload high-quality images to attract visitors.</p>
+        <p className="text-sm text-gray-500">
+          Upload high-quality images to attract visitors.
+        </p>
 
         {/* LOGO UPLOAD */}
-        <FormField label="Restaurant Logo" description="Recommended: Square aspect ratio, minimum 256x256 pixels.">
+        <FormField
+          label="Restaurant Logo"
+          description="Recommended: Square aspect ratio, minimum 256x256 pixels."
+        >
           <div className="flex items-center gap-4">
             {logoPreview && (
               <img
                 src={logoPreview}
                 alt="Logo Preview"
-                className="h-24 w-24 rounded-xl border-4 border-white shadow-md object-cover flex-shrink-0"
+                className="h-24 w-24 flex-shrink-0 rounded-xl border-4 border-white object-cover shadow-md"
               />
             )}
             <Input
               type="file"
               accept="image/*"
-              className="h-12 cursor-pointer p-2 file:text-sm file:font-medium file:bg-gray-100 file:rounded-md file:border-0"
+              className="h-12 cursor-pointer p-2 file:rounded-md file:border-0 file:bg-gray-100 file:text-sm file:font-medium"
               onChange={(e) => handleImageUpload(e, "logo")}
             />
           </div>
         </FormField>
 
         {/* COVER UPLOAD */}
-        <FormField label="Cover Image" description="Recommended: Wide aspect ratio (16:9), minimum 1280x720 pixels.">
+        <FormField
+          label="Cover Image"
+          description="Recommended: Wide aspect ratio (16:9), minimum 1280x720 pixels."
+        >
           <div className="space-y-3">
             {coverPreview && (
               <img
                 src={coverPreview}
                 alt="Cover Preview"
-                className="h-48 w-full rounded-xl border shadow-md object-cover"
+                className="h-48 w-full rounded-xl border object-cover shadow-md"
               />
             )}
             <Input
               type="file"
               accept="image/*"
-              className="h-12 cursor-pointer p-2 file:text-sm file:font-medium file:bg-gray-100 file:rounded-md file:border-0"
+              className="h-12 cursor-pointer p-2 file:rounded-md file:border-0 file:bg-gray-100 file:text-sm file:font-medium"
               onChange={(e) => handleImageUpload(e, "cover")}
             />
           </div>
@@ -282,7 +329,7 @@ const FormField = memo(
       </section>
 
       {/* --- SECTION: TAGS --- */}
-      <section className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100 space-y-6">
+      <section className="space-y-6 rounded-xl border border-gray-100 bg-white p-6 shadow-lg md:p-8">
         <h3 className="text-xl font-bold text-gray-800">Tags & Categories</h3>
         <FormField
           label="Tags"
@@ -306,12 +353,12 @@ const FormField = memo(
             <div
               key={tag}
               // Enhanced pill styling with indigo theme and transition
-              className="flex items-center gap-1 rounded-full bg-indigo-50 text-indigo-700 px-3 py-1 text-sm font-medium transition duration-200 hover:bg-indigo-100 cursor-default"
+              className="flex cursor-default items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 transition duration-200 hover:bg-indigo-100"
             >
               <span>{tag}</span>
               <X
                 size={12}
-                className="cursor-pointer text-indigo-500 hover:text-indigo-700 transition"
+                className="cursor-pointer text-indigo-500 transition hover:text-indigo-700"
                 onClick={() => updateTag(tag)}
               />
             </div>
@@ -320,11 +367,12 @@ const FormField = memo(
       </section>
 
       {/* --- SECTION: OPENING HOURS --- */}
-      <section className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100 space-y-6">
+      <section className="space-y-6 rounded-xl border border-gray-100 bg-white p-6 shadow-lg md:p-8">
         <h3 className="text-xl font-bold text-gray-800">Operating Hours</h3>
         <p className="text-sm text-gray-500">
-          <Calendar size={16} className="inline-block mr-2 text-gray-500" />
-          Select the days your restaurant is open, then specify the operating times for each.
+          <Calendar size={16} className="mr-2 inline-block text-gray-500" />
+          Select the days your restaurant is open, then specify the operating
+          times for each.
         </p>
 
         {/* Capsule Day Selector - Modernized Blue */}
@@ -344,21 +392,23 @@ const FormField = memo(
                     updated = updated.filter((h) => h.day !== day);
                   } else {
                     // Add the day with blank fields, preserving order (important for display
-                    
+
                     if (!isActive) {
-                        updated.push({
-                            day,
-                            open_time: "",
-                            close_time: "",
-                        });
+                      updated.push({
+                        day,
+                        open_time: "",
+                        close_time: "",
+                      });
                     }
                     // Sort updated array by DAYS index to keep them in order
-                    updated.sort((a, b) => DAYS.indexOf(a.day) - DAYS.indexOf(b.day));
+                    updated.sort(
+                      (a, b) => DAYS.indexOf(a.day) - DAYS.indexOf(b.day)
+                    );
                   }
 
                   updateField("opening_hours", updated);
                 }}
-                className={`rounded-full border px-4 py-1.5 text-sm font-medium transition duration-200 shadow-sm ${
+                className={`rounded-full border px-4 py-1.5 text-sm font-medium shadow-sm transition duration-200 ${
                   isActive
                     ? "border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700"
                     : "border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -375,36 +425,44 @@ const FormField = memo(
           {(form.opening_hours ?? []).map((hour, idx) => (
             <div
               key={hour.day}
-              className="flex flex-col md:flex-row gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-inner"
+              className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-inner md:flex-row"
             >
-              <p className="font-semibold w-full md:w-1/4 flex-shrink-0 text-gray-800 self-center">{hour.day}</p>
+              <p className="w-full flex-shrink-0 self-center font-semibold text-gray-800 md:w-1/4">
+                {hour.day}
+              </p>
 
-              <div className="flex-1 space-y-2 md:space-y-0 md:flex md:gap-4">
-                  <div className="relative flex-1">
-                    <Clock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <Input
-                      className="h-11 pl-10 bg-white"
-                      placeholder="Open Time (e.g. 09:00)"
-                      value={hour.open_time}
-                      onChange={(e) =>
-                        updateOpeningHour(idx, "open_time", e.target.value)
-                      }
-                      type="time" // Use HTML5 time input for better mobile experience
-                    />
-                  </div>
+              <div className="flex-1 space-y-2 md:flex md:gap-4 md:space-y-0">
+                <div className="relative flex-1">
+                  <Clock
+                    size={16}
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
+                  />
+                  <Input
+                    className="h-11 bg-white pl-10"
+                    placeholder="Open Time (e.g. 09:00)"
+                    value={hour.open_time}
+                    onChange={(e) =>
+                      updateOpeningHour(idx, "open_time", e.target.value)
+                    }
+                    type="time" // Use HTML5 time input for better mobile experience
+                  />
+                </div>
 
-                  <div className="relative flex-1">
-                    <Clock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <Input
-                      className="h-11 pl-10 bg-white"
-                      placeholder="Close Time (e.g. 22:00)"
-                      value={hour.close_time}
-                      onChange={(e) =>
-                        updateOpeningHour(idx, "close_time", e.target.value)
-                      }
-                      type="time" // Use HTML5 time input
-                    />
-                  </div>
+                <div className="relative flex-1">
+                  <Clock
+                    size={16}
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
+                  />
+                  <Input
+                    className="h-11 bg-white pl-10"
+                    placeholder="Close Time (e.g. 22:00)"
+                    value={hour.close_time}
+                    onChange={(e) =>
+                      updateOpeningHour(idx, "close_time", e.target.value)
+                    }
+                    type="time" // Use HTML5 time input
+                  />
+                </div>
               </div>
             </div>
           ))}
@@ -412,9 +470,9 @@ const FormField = memo(
       </section>
 
       {/* SAVE BUTTON */}
-      <div className="pt-6 border-t">
+      <div className="border-t pt-6">
         <Button
-          className="h-12 w-full text-base font-semibold bg-indigo-600 hover:bg-indigo-700 transition duration-200 rounded-lg shadow-lg"
+          className="h-12 w-full rounded-lg bg-indigo-600 text-base font-semibold shadow-lg transition duration-200 hover:bg-indigo-700"
           onClick={handleSave}
         >
           Save Changes

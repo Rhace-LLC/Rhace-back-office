@@ -12,15 +12,16 @@ interface ViewProfileProps {
 const ViewProfile: React.FC<ViewProfileProps> = ({ profile, onEdit }) => {
   return (
     <Card className="w-full rounded-2xl shadow-sm">
-      <CardContent className="p-6 space-y-4">
-
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-gray-800">Profile Details</h2>
-          <Button 
-            onClick={() => onEdit(true)} 
+      <CardContent className="space-y-4 p-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-gray-800">
+            Profile Details
+          </h2>
+          <Button
+            onClick={() => onEdit(true)}
             className="flex items-center gap-2"
           >
-            <Pencil className="w-4 h-4" />
+            <Pencil className="h-4 w-4" />
             Edit Profile
           </Button>
         </div>
@@ -50,7 +51,6 @@ const ViewProfile: React.FC<ViewProfileProps> = ({ profile, onEdit }) => {
             <p className="text-sm text-gray-500">Role</p>
             <p className="font-medium capitalize">{profile.role}</p>
           </div>
-
         </div>
       </CardContent>
     </Card>

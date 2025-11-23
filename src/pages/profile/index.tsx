@@ -10,7 +10,7 @@ export const Profile = () => {
   const [editing, setEditing] = useState(false);
 
   return (
-    <div className="px-6 mt-3 space-y-10">
+    <div className="mt-3 space-y-10 px-6">
       <ContentHOC
         loading={loading}
         error={!!error}

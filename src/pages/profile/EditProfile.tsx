@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { updateProfile as apiUpdateProfile, UserProfile } from "@/api-services/auth.service";
+import {
+  updateProfile as apiUpdateProfile,
+  UserProfile,
+} from "@/api-services/auth.service";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
@@ -14,7 +17,7 @@ interface EditProfileProps {
 }
 
 const EditProfile: React.FC<EditProfileProps> = ({ profile, onEdit }) => {
-    const dispatch= useDispatch()
+  const dispatch = useDispatch();
   const auth = useAuth();
   const [loading, setLoading] = useState(false);
 
@@ -37,12 +40,10 @@ const EditProfile: React.FC<EditProfileProps> = ({ profile, onEdit }) => {
       setLoading(true);
 
       const response = await apiUpdateProfile(auth.token, form);
-      dispatch(setProfile(response.data))
-      
+      dispatch(setProfile(response.data));
 
-        toast.success("Profile updated successfully");
-        onEdit(false);
-
+      toast.success("Profile updated successfully");
+      onEdit(false);
     } catch (err: any) {
       toast.error(err?.message || "An error occurred");
     } finally {
@@ -52,12 +53,12 @@ const EditProfile: React.FC<EditProfileProps> = ({ profile, onEdit }) => {
 
   return (
     <Card className="w-full rounded-2xl shadow-sm">
-      <CardContent className="p-6 space-y-6">
+      <CardContent className="space-y-6 p-6">
         <h2 className="text-xl font-semibold text-gray-800">Edit Profile</h2>
 
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <p className="text-sm text-gray-600 mb-1">First Name</p>
+            <p className="mb-1 text-sm text-gray-600">First Name</p>
             <Input
               name="first_name"
               value={form.first_name}
@@ -66,7 +67,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ profile, onEdit }) => {
           </div>
 
           <div>
-            <p className="text-sm text-gray-600 mb-1">Last Name</p>
+            <p className="mb-1 text-sm text-gray-600">Last Name</p>
             <Input
               name="last_name"
               value={form.last_name}
@@ -75,7 +76,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ profile, onEdit }) => {
           </div>
 
           <div>
-            <p className="text-sm text-gray-600 mb-1">Phone</p>
+            <p className="mb-1 text-sm text-gray-600">Phone</p>
             <Input name="phone" value={form.phone} onChange={handleChange} />
           </div>
         </div>

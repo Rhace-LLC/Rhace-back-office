@@ -4,7 +4,11 @@ import ViewMyRestaurant from "./ViewRestaurant";
 import { useEffect, useState } from "react";
 import EditRestaurantProfile from "./EditRestaurant";
 import { useLoading } from "@/contexts/LoadingContext";
-import { patchRestaurantProfile, RestaurantProfile, updateRestaurantProfile } from "@/api-services/restaurantProfile";
+import {
+  patchRestaurantProfile,
+  RestaurantProfile,
+  updateRestaurantProfile,
+} from "@/api-services/restaurantProfile";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { parseError } from "@/api-services/utils/parseError";
@@ -12,9 +16,9 @@ import { useDispatch } from "react-redux";
 import { updateProfile } from "@/store/restaurantProfile";
 
 export default function RestaurantProfilePage() {
-  const dispatch = useDispatch()
-  const auth = useAuth()
-  const {setLoading,setLoadingText} = useLoading()
+  const dispatch = useDispatch();
+  const auth = useAuth();
+  const { setLoading, setLoadingText } = useLoading();
   const { profile, loading, error, fetchProfile } = useRestaurantProfile();
   const [editMode, setEditMode] = useState(false);
   console.log("profile", profile);
@@ -25,53 +29,63 @@ export default function RestaurantProfilePage() {
     }
   }, [profile]);
 
-const handleSaveUpdate = async (data: RestaurantProfile) => {
-  try {
-    setLoading(true);
-    setLoadingText("Updating restaurant profile...");
+  const handleSaveUpdate = async (data: RestaurantProfile) => {
+    try {
+      setLoading(true);
+      setLoadingText("Updating restaurant profile...");
 
-    // ---------- 1. Update basic profile (JSON) ----------
-    const { logo, cover_image, ...profileData } = data; // exclude images
-    let update1 = await updateRestaurantProfile(String(profile?.id), profileData, auth.token);
-    dispatch(updateProfile(update1))
+      // ---------- 1. Update basic profile (JSON) ----------
+      const { logo, cover_image, ...profileData } = data; // exclude images
+      let update1 = await updateRestaurantProfile(
+        String(profile?.id),
+        profileData,
+        auth.token
+      );
+      dispatch(updateProfile(update1));
 
-    // ---------- 2. Update images (FormData) ----------
-    if (logo || cover_image) {
-      setLoadingText("Uploading images...");
+      // ---------- 2. Update images (FormData) ----------
+      if (logo || cover_image) {
+        setLoadingText("Uploading images...");
 
-      const formData = new FormData();
+        const formData = new FormData();
 
-      const appendImage = async (field: "logo" | "cover_image", value: any) => {
-        if (!value) return;
+        const appendImage = async (
+          field: "logo" | "cover_image",
+          value: any
+        ) => {
+          if (!value) return;
 
-        if (value instanceof File) {
-          formData.append(field, value);
-        } else if (typeof value === "string" && value.startsWith("data:")) {
-          // Convert base64 → Blob
-          const res = await fetch(value);
-          const blob = await res.blob();
-          formData.append(field, blob, `${field}.png`);
-        }
-      };
+          if (value instanceof File) {
+            formData.append(field, value);
+          } else if (typeof value === "string" && value.startsWith("data:")) {
+            // Convert base64 → Blob
+            const res = await fetch(value);
+            const blob = await res.blob();
+            formData.append(field, blob, `${field}.png`);
+          }
+        };
 
-      await appendImage("logo", logo);
-      await appendImage("cover_image", cover_image);
+        await appendImage("logo", logo);
+        await appendImage("cover_image", cover_image);
 
-      // Call the API again with FormData
-      let update1 = await patchRestaurantProfile(String(profile?.id), formData, auth.token);
-          dispatch(updateProfile(update1))
+        // Call the API again with FormData
+        let update1 = await patchRestaurantProfile(
+          String(profile?.id),
+          formData,
+          auth.token
+        );
+        dispatch(updateProfile(update1));
+      }
+      setEditMode(false);
+      toast.success("Restaurant profile updated successfully!");
+    } catch (error) {
+      const errMsg = parseError(error);
+      toast.error(errMsg || "Failed to update profile.");
+    } finally {
+      setLoading(false);
+      setLoadingText("");
     }
-setEditMode(false)
-    toast.success("Restaurant profile updated successfully!");
-  } catch (error) {
-    const errMsg = parseError(error);
-    toast.error(errMsg || "Failed to update profile.");
-  } finally {
-    setLoading(false);
-    setLoadingText("");
-  }
-}
-
+  };
 
   return (
     <div className="px-4">
@@ -99,11 +113,11 @@ setEditMode(false)
             onEdit={(edit) => setEditMode(edit)}
             profile={profile}
             onSave={(data) => {
-              handleSaveUpdate(data)
+              handleSaveUpdate(data);
             }}
           />
         )}
       </ContentHOC>
     </div>
-  )
+  );
 }

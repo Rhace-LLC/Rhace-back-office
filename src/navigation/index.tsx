@@ -29,6 +29,7 @@ import ManageStaff from "@/pages/staffmanagement";
 import RestaurantProfilePage from "@/pages/myRestaurant";
 import AcceptInvite from "@/pages/AcceptInvite";
 import { ManageReservation } from "@/pages/reservations/re";
+import BillingPage from "@/pages/subscription";
 
 export interface User {
   id: string;
@@ -183,6 +184,14 @@ function NavigationContent() {
                   allowedRoles={["admin", "kitchen", "restaurant_owner"]}
                 >
                   <MenuManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/billings-and-subscriptions"
+              element={
+                <ProtectedRoute allowedRoles={["restaurant_owner"]}>
+                  <BillingPage />
                 </ProtectedRoute>
               }
             />

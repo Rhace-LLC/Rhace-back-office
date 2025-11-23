@@ -67,6 +67,7 @@ export const updateRestaurantProfile = async (
 /**
  * Partial update of a restaurant profile
  */
+
 export const patchRestaurantProfile = async (
   id: string,
   data: FormData,

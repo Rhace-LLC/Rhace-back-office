@@ -100,6 +100,11 @@ export function useRoleBasedMenu(): MenuItem[] {
         url: "/myrestaurant",
         icon: Users,
       },
+      {
+        title: "Billings & Subscriptions",
+        url: "/billings-and-subscriptions",
+        icon: Users,
+      },
 
       ...baseMenu.slice(2), // Notifications, Profile
     ];
