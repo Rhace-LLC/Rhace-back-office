@@ -1,4 +1,5 @@
-import { Table } from "@/store/table.slice";
+import { Table } from "@/api-services/tableService";
+
 
 // === Shared Interfaces ===
 export interface RevenueItem {

@@ -1,5 +1,5 @@
 import { InventoryItem } from "@/store/inventory.slice";
-import { Table } from "@/store/table.slice";
+import { Table } from "../tableService";
 
 export interface RegisterRestaurantResponse {
   detail: string;
