@@ -1,251 +1,323 @@
 // components/Orders.tsx
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Filter, RefreshCw } from "lucide-react";
-import { Order, OrderStatus, UpdateOrderData } from "./types/order";
+import { Order, UpdateOrderData } from "./types/order";
 import { OrdersStats } from "./OrdersStats";
 import { OrdersTable } from "./OrdersTable";
 import { OrderDetailsSheet } from "./OrderDetailsSheet";
-import { useAuth } from "../../contexts/AuthContext";
-import {
-  getAllOrders,
-  updateOrderStatus,
+import { useAuth } from "../../contexts/AuthContext"; 
+import { 
+  getAllOrders, 
+  updateOrderStatus, 
   cancelOrder,
   assignTableToOrder,
-  assignWaiterToOrder,
+  assignWaiterToOrder 
 } from "../../api-services/orderService";
 import { getActiveWaiters, Staff } from "../../api-services/staffService";
 import { getAvailableTables, Table } from "../../api-services/tableService";
 
+// Define OrderStatus locally since there's an import issue
+type OrderStatus = "received" | "preparing" | "ready" | "completed" | "cancelled" | "delivered";
+
 const statusOptions = [
   "All",
-  OrderStatus.RECEIVED,
-  OrderStatus.PREPARING,
-  OrderStatus.READY,
-  OrderStatus.COMPLETED,
-  OrderStatus.CANCELLED,
-  OrderStatus.DELIVERED,
+  "received",
+  "preparing",
+  "ready",
+  "completed",
+  "cancelled",
+  "delivered"
 ];
 
-export function Orders() {
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [waiters, setWaiters] = useState<Staff[]>([]);
-  const [tables, setTables] = useState<Table[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
+// ============== CACHE SETUP ==============
+const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes
 
+interface OrdersCache {
+  orders: Order[];
+  waiters: Staff[];
+  tables: Table[];
+  lastFetched: number;
+}
+
+let ordersCache: OrdersCache | null = null;
+
+const isCacheValid = (): boolean => {
+  if (!ordersCache) return false;
+  return Date.now() - ordersCache.lastFetched < CACHE_DURATION;
+};
+// =========================================
+
+export function Orders() {
   const auth = useAuth();
   const token = auth?.token;
 
+  // Initialize state from cache if available
+  const [orders, setOrders] = useState<Order[]>(() => ordersCache?.orders ?? []);
+  const [waiters, setWaiters] = useState<Staff[]>(() => ordersCache?.waiters ?? []);
+  const [tables, setTables] = useState<Table[]>(() => ordersCache?.tables ?? []);
+  const [loading, setLoading] = useState(() => !isCacheValid());
+  
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<number>(() => ordersCache?.lastFetched ?? Date.now());
+
   // Get restaurant ID from the first order
   const restaurantId = orders[0]?.restaurant?.id;
-
-  // Fetch orders and waiters
-  useEffect(() => {
-    if (token) {
-      fetchOrders();
-      fetchWaiters();
-    }
-  }, [token]);
-
-  // Fetch tables when restaurantId is available
-  useEffect(() => {
-    if (token && restaurantId) {
-      fetchTables();
-    }
-  }, [token, restaurantId]);
 
   const filteredOrders = (orders || []).filter(
     (order) => statusFilter === "All" || order.status === statusFilter
   );
 
-  // GET /orders/
-  const fetchOrders = async () => {
+  // Background refresh (no loading state)
+  const backgroundRefresh = async () => {
+    if (!token) return;
+    
     try {
-      setLoading(true);
-      setError(null);
-
-      if (!token) {
-        setOrders([]);
-        return;
+      console.log("🔄 Orders - Background refresh...");
+      const [ordersData, waitersData] = await Promise.all([
+        getAllOrders(token),
+        getActiveWaiters(token)
+      ]);
+      
+      setOrders(ordersData || []);
+      setWaiters(waitersData || []);
+      
+      // Fetch tables if we have restaurantId
+      const restId = ordersData?.[0]?.restaurant?.id;
+      let tablesData: Table[] = [];
+      if (restId) {
+        tablesData = await getAvailableTables(token, restId);
+        setTables(tablesData || []);
       }
-
-      const data = await getAllOrders(token);
-      setOrders(data || []);
+      
+      // Update cache
+      ordersCache = {
+        orders: ordersData || [],
+        waiters: waitersData || [],
+        tables: tablesData,
+        lastFetched: Date.now()
+      };
+      setLastUpdated(Date.now());
+      
+      console.log("✅ Orders - Background refresh complete");
     } catch (err) {
-      console.error("Error fetching orders:", err);
-      setError(err instanceof Error ? err.message : "Failed to fetch orders");
-      setOrders([]);
+      console.error("❌ Orders - Background refresh failed:", err);
+    }
+  };
+
+  // Main fetch with cache support
+  const fetchOrders = async (forceRefresh = false) => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    // Use cache if valid and not forcing refresh
+    if (!forceRefresh && isCacheValid() && ordersCache) {
+      console.log("🔔 Orders - Using cached data");
+      setOrders(ordersCache.orders);
+      setWaiters(ordersCache.waiters);
+      setTables(ordersCache.tables);
+      setLoading(false);
+      
+      // Background refresh if cache is getting stale
+      const cacheAge = Date.now() - ordersCache.lastFetched;
+      if (cacheAge > CACHE_DURATION / 2) {
+        backgroundRefresh();
+      }
+      return;
+    }
+
+    // Only show loading if no cached data
+    if (!ordersCache) {
+      setLoading(true);
+    }
+
+    try {
+      setError(null);
+      console.log("🔧 Orders - Fetching fresh data...");
+      
+      const [ordersData, waitersData] = await Promise.all([
+        getAllOrders(token),
+        getActiveWaiters(token)
+      ]);
+      
+      setOrders(ordersData || []);
+      setWaiters(waitersData || []);
+      
+      // Update cache
+      ordersCache = {
+        orders: ordersData || [],
+        waiters: waitersData || [],
+        tables: ordersCache?.tables || [],
+        lastFetched: Date.now()
+      };
+      setLastUpdated(Date.now());
+      
+      console.log("✅ Orders fetched:", ordersData?.length || 0);
+      console.log("✅ Waiters fetched:", waitersData?.length || 0);
+      
+    } catch (err) {
+      console.error("❌ Error fetching orders:", err);
+      
+      // Use cached data on error if available
+      if (ordersCache && !forceRefresh) {
+        console.log("🔔 Orders - Using cached data due to error");
+        setOrders(ordersCache.orders);
+        setWaiters(ordersCache.waiters);
+        setTables(ordersCache.tables);
+      } else {
+        setError(err instanceof Error ? err.message : 'Failed to fetch orders');
+        setOrders([]);
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
   };
 
-  // GET only active waiters
-  const fetchWaiters = async () => {
-    try {
-      if (!token) return;
-
-      console.log(
-        "🔧 Fetching waiters with token:",
-        token ? "Present" : "Missing"
-      );
-      const waitersData = await getActiveWaiters(token);
-      setWaiters(waitersData || []);
-      console.log(
-        "✅ Waiters fetched:",
-        waitersData?.length || 0,
-        "active waiters"
-      );
-    } catch (err) {
-      console.error("❌ Error fetching waiters:", err);
-      setWaiters([]);
-    }
-  };
-
-  // GET /menu/restaurant/{restaurant_id}/tables/
+  // Fetch tables when restaurantId becomes available
   const fetchTables = async () => {
+    if (!token || !restaurantId) return;
+    
     try {
-      if (!token || !restaurantId) {
-        console.log("❌ Cannot fetch tables - missing token or restaurantId");
-        console.log("Token:", token ? "Present" : "Missing");
-        console.log("Restaurant ID:", restaurantId);
-        return;
-      }
-
       console.log("🔧 Fetching tables for restaurant:", restaurantId);
       const tablesData = await getAvailableTables(token, restaurantId);
       setTables(tablesData || []);
-      console.log(
-        "✅ Tables fetched:",
-        tablesData?.length || 0,
-        "available tables"
-      );
+      
+      // Update cache
+      if (ordersCache) {
+        ordersCache.tables = tablesData || [];
+      }
+      
+      console.log("✅ Tables fetched:", tablesData?.length || 0);
     } catch (err) {
       console.error("❌ Error fetching tables:", err);
       setTables([]);
     }
   };
 
+  // Initial load
+  useEffect(() => {
+    if (token) {
+      fetchOrders();
+    }
+  }, [token]);
+
+  // Fetch tables when restaurantId is available
+  useEffect(() => {
+    if (token && restaurantId && (!ordersCache?.tables?.length)) {
+      fetchTables();
+    }
+  }, [token, restaurantId]);
+
+  // Background refresh interval
+  useEffect(() => {
+    if (!token) return;
+    
+    const interval = setInterval(backgroundRefresh, 30000);
+    return () => clearInterval(interval);
+  }, [token]);
+
   const handleRefresh = () => {
     setRefreshing(true);
-    fetchOrders();
-    fetchWaiters();
+    fetchOrders(true);
     if (restaurantId) {
       fetchTables();
     }
   };
 
-  // POST /orders/{order_id}/update-status/
-  const handleStatusChange = async (
-    orderId: string,
-    newStatus: OrderStatus
-  ) => {
+  // Helper to update cache after mutations
+  const updateCache = (newOrders: Order[]) => {
+    if (ordersCache) {
+      ordersCache.orders = newOrders;
+    }
+  };
+
+  const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
     try {
       setError(null);
-
       if (!token) throw new Error("Authentication token not found");
 
       // Optimistic update
-      setOrders((prevOrders) =>
-        (prevOrders || []).map((order) =>
-          order.id === orderId ? { ...order, status: newStatus } : order
-        )
+      const updatedOrders = (orders || []).map(order =>
+        order.id === orderId ? { ...order, status: newStatus } : order
       );
-
-      if (selectedOrder && selectedOrder.id === orderId) {
+      setOrders(updatedOrders);
+      updateCache(updatedOrders);
+      
+      if (selectedOrder?.id === orderId) {
         setSelectedOrder({ ...selectedOrder, status: newStatus });
       }
 
-      // API call
       const updateData: UpdateOrderData = { status: newStatus };
       await updateOrderStatus(orderId, updateData, token);
+      
     } catch (err) {
       console.error(`❌ Error updating status for order ${orderId}:`, err);
-      setError(err instanceof Error ? err.message : "Failed to update status");
-      await fetchOrders();
+      setError(err instanceof Error ? err.message : 'Failed to update status');
+      await fetchOrders(true);
     }
   };
 
-  // POST /orders/{order_id}/cancel/
   const handleCancelOrder = async (orderId: string) => {
     try {
       setError(null);
-
       if (!token) throw new Error("Authentication token not found");
 
-      const cancelData: UpdateOrderData = { status: OrderStatus.CANCELLED };
+      const cancelData: UpdateOrderData = { status: "cancelled" as OrderStatus };
       await cancelOrder(orderId, cancelData, token);
-      await handleStatusChange(orderId, OrderStatus.CANCELLED);
+      await handleStatusChange(orderId, "cancelled");
+      
     } catch (err) {
       console.error(`❌ Error cancelling order ${orderId}:`, err);
-      setError(err instanceof Error ? err.message : "Failed to cancel order");
+      setError(err instanceof Error ? err.message : 'Failed to cancel order');
     }
   };
 
-  // POST /orders/{order_id}/assign-table/
   const handleAssignTable = async (orderId: string, tableId: string) => {
     try {
       setError(null);
-
       if (!token) throw new Error("Authentication token not found");
 
       await assignTableToOrder(orderId, tableId, token);
-      await fetchOrders(); // Refresh to get updated assignments
-      await fetchTables(); // Refresh tables as one just got assigned
+      await fetchOrders(true);
+      await fetchTables();
+      
     } catch (err) {
       console.error(`❌ Error assigning table to order ${orderId}:`, err);
-      setError(err instanceof Error ? err.message : "Failed to assign table");
+      setError(err instanceof Error ? err.message : 'Failed to assign table');
     }
   };
 
-  // POST /orders/assign-waiter/
   const handleAssignWaiter = async (orderId: string, waiterId: string) => {
     try {
       setError(null);
-
       if (!token) throw new Error("Authentication token not found");
 
       await assignWaiterToOrder(orderId, waiterId, token);
-      await fetchOrders(); // Refresh to get updated assignments
+      await fetchOrders(true);
+      
     } catch (err) {
       console.error(`❌ Error assigning waiter to order ${orderId}:`, err);
-      setError(err instanceof Error ? err.message : "Failed to assign waiter");
+      setError(err instanceof Error ? err.message : 'Failed to assign waiter');
     }
   };
 
-  const handleOrderSelect = (order: Order) => {
-    setSelectedOrder(order);
-  };
+  const handleOrderSelect = (order: Order) => setSelectedOrder(order);
+  const handleCloseSheet = () => setSelectedOrder(null);
 
-  const handleCloseSheet = () => {
-    setSelectedOrder(null);
-  };
-
-  // Loading State
-  if (loading && !orders.length) {
+  // Only show loading if no cached data exists
+  if (loading && !ordersCache) {
     return (
       <div className="mt-15 space-y-6 p-5 md:mt-0">
-        <div className="flex h-64 items-center justify-center">
+        <div className="flex items-center justify-center h-64">
           <div className="flex flex-col items-center gap-2">
-            <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
             <div className="text-lg text-gray-600">Loading orders...</div>
           </div>
         </div>
@@ -255,28 +327,26 @@ export function Orders() {
 
   return (
     <div className="mt-15 space-y-6 p-5 md:mt-0">
-      {/* Error Display */}
       {error && (
-        <div className="relative rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
           <strong className="font-bold">Error: </strong>
           <span className="block sm:inline">{error}</span>
-          <button
-            onClick={() => setError(null)}
-            className="absolute top-0 right-0 bottom-0 px-4 py-3"
-          >
+          <button onClick={() => setError(null)} className="absolute top-0 bottom-0 right-0 px-4 py-3">
             <span className="text-xl">&times;</span>
           </button>
         </div>
       )}
 
-      {/* Header */}
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-medium tracking-tight">
-            Orders Management
-          </h1>
+          <h1 className="text-2xl font-medium tracking-tight">Orders Management</h1>
           <p className="text-muted-foreground">
             Manage restaurant orders and track order status
+            {ordersCache && (
+              <span className="text-xs text-gray-500 ml-2">
+                • Updated {Math.round((Date.now() - lastUpdated) / 1000)}s ago
+              </span>
+            )}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -295,60 +365,43 @@ export function Orders() {
               </SelectContent>
             </Select>
           </div>
-          <button
+          <button 
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center gap-2 rounded bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700 disabled:bg-blue-400"
+            className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-400 text-sm"
           >
-            <RefreshCw
-              className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
-            />
+            <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
             Refresh
           </button>
         </div>
       </div>
 
-      {/* Statistics */}
       <OrdersStats orders={orders} />
 
-      {/* Orders Table */}
       <Card>
         <CardHeader>
           <CardTitle>All Orders ({filteredOrders.length})</CardTitle>
           <CardDescription>
-            {orders.length === 0
-              ? "No orders found"
-              : "Click on any order to view details and update status"}
+            {orders.length === 0 ? "No orders found" : "Click on any order to view details and update status"}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {filteredOrders.length === 0 ? (
-            <div className="py-8 text-center">
-              <div className="text-lg text-gray-500">No orders found</div>
-              <div className="mt-2 text-sm text-gray-400">
-                {orders.length === 0
-                  ? "No orders in the system"
-                  : `No orders match the "${statusFilter}" filter`}
+            <div className="text-center py-8">
+              <div className="text-gray-500 text-lg">No orders found</div>
+              <div className="text-gray-400 text-sm mt-2">
+                {orders.length === 0 ? "No orders in the system" : `No orders match the "${statusFilter}" filter`}
               </div>
-              <button
-                onClick={handleRefresh}
-                className="mt-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-              >
+              <button onClick={handleRefresh} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                 Refresh Orders
               </button>
             </div>
           ) : (
-            <OrdersTable
-              orders={filteredOrders}
-              onOrderSelect={handleOrderSelect}
-              waiters={waiters}
-              tables={tables}
-            />
+            <OrdersTable orders={filteredOrders} onOrderSelect={handleOrderSelect} waiters={waiters} tables={tables} />
           )}
         </CardContent>
       </Card>
 
-      {/* Order Details Sheet */}
       <OrderDetailsSheet
         order={selectedOrder}
         isOpen={!!selectedOrder}
