@@ -3,6 +3,7 @@
 import { getConfig } from "./utils/reqConfig";
 import { bookiesAxiosInstance } from "./utils/baseUrl";
 import { ReservationStatus } from "@/pages/reservations/re";
+import { Table } from "./tableService";
 
 // -------------------- Orders --------------------
 export interface Customer {
@@ -53,6 +54,7 @@ export interface Reservation {
   time: string; // "HH:mm:ss"
   restaurant: Restaurant;
   status: ReservationStatus; // e.g., "pending", "confirmed", etc.
+  table: Table | null;
 }
 
 export type GetReservationsResponse = Reservation[];

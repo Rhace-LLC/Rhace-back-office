@@ -23,12 +23,12 @@ import { ReservationStatus } from "./re";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useTableData } from "../tables/useTableData";
-import { Table } from "@/store/table.slice";
 import GenericDialog from "@/components/generic_sheet_overlay/alert";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLoading } from "@/contexts/LoadingContext";
 import { updateReservationDataById } from "@/store/reservation.slice";
 import moment from "moment";
+import { Table } from "@/api-services/tableService";
 
 const getStatusColor = (status: ReservationStatus) => {
   switch (status) {
@@ -76,6 +76,10 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
+  const tables = useSelector((state: RootState)=>{
+    return state.table.data["1"]
+  })
+
   if (!reservation) return null;
 
   const handleAssignTable = async () => {
@@ -91,6 +95,10 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
         { table_id: selectedTable, reservation_id: String(reservation.id) },
         auth.token
       );
+      const tableData = tables.find(x=> x.id == selectedTable)
+      if(tableData){        
+      dispatch(updateReservationDataById({...reservation, table: tableData}))
+      }
       toast.success("Table assigned successfully");
       setAssignDialogOpen(false);
     } catch (error: any) {
@@ -99,7 +107,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
       setLoading(false);
       setLoadingText("");
     }
-  };
+  }
+
 
   const handleConfirm = async () => {
     try {
@@ -303,6 +312,19 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               </div>
             )}
 
+{reservation.status !== "cancelled" &&
+  reservation.status !== "completed" &&
+  reservation.table && (
+    <div className="mt-4 p-3 border rounded-md bg-gray-50">
+      <p className="font-semibold text-gray-700 mb-1">Assigned Table</p>
+
+      <div className="text-sm text-gray-600 space-y-1">
+        <p>Table Number: {reservation.table.table_number}</p>
+        <p>Max Party Size: {reservation.table.max_party_size}</p>
+      </div>
+    </div>
+  )
+}
             {reservation.status === "pending" && (
               <div className="space-y-3 rounded-xl border border-green-200 bg-green-50 p-5 shadow-sm">
                 <h4 className="flex items-center text-lg font-semibold text-green-800">
@@ -323,7 +345,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
 
             {/* Assign Table */}
             {reservation.status !== "cancelled" &&
-              reservation.status !== "completed" && (
+              reservation.status !== "completed" && !reservation.table && (
                 <div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-5 shadow-sm">
                   <h4 className="flex items-center text-lg font-semibold text-gray-800">
                     Assign Table
@@ -378,6 +400,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                   )}
                 </div>
               )}
+
+
 
             {reservation.status == "confirmed" && (
               <div className="space-y-2 rounded-xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
