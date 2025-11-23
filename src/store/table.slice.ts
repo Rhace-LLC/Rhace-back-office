@@ -12,7 +12,6 @@ export function uniqueBy<T, K extends keyof T>(items: T[], key: K): T[] {
   });
 }
 
-
 export interface TableSummary {
   total_available: number;
   total_unavailable: number;

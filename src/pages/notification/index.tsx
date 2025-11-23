@@ -33,7 +33,7 @@ import {
 } from "../../api-services/notificationService";
 
 // Define notification types to fix the circular reference
-export type NotificationType = 
+export type NotificationType =
   | "new_order"
   | "table_assigned"
   | "low_inventory"
@@ -88,7 +88,9 @@ const mapPriority = (apiPriority: string): NotificationItem["priority"] => {
 };
 
 // Get icon and color based on notification type
-const getNotificationIcon = (type: NotificationType): { icon: LucideIcon; color: string } => {
+const getNotificationIcon = (
+  type: NotificationType
+): { icon: LucideIcon; color: string } => {
   switch (type) {
     case "new_order":
       return { icon: UtensilsCrossed, color: "text-blue-600" };
@@ -131,7 +133,7 @@ let backgroundFetchInProgress = false;
 export function Notifications() {
   const auth = useAuth();
   const token = auth?.token;
-  
+
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [filter, setFilter] = useState<"all" | "unread" | "high">("all");
   const [loading, setLoading] = useState(true);
@@ -140,7 +142,7 @@ export function Notifications() {
   const [lastUpdated, setLastUpdated] = useState<number>(Date.now());
   const [unreadCount, setUnreadCount] = useState(0);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
-  console.log("initialLoadComplete",initialLoadComplete)
+  console.log("initialLoadComplete", initialLoadComplete);
 
   // Check if cache is valid
   const isCacheValid = (): boolean => {
@@ -155,41 +157,43 @@ export function Notifications() {
     try {
       backgroundFetchInProgress = true;
       console.log("🔔 Notifications - Background refreshing...");
-      
+
       const response = await getAllNotifications(token);
       const notificationsData = response.results || [];
-      
-      const mappedNotifications: NotificationItem[] = notificationsData.map((apiNotif: Notification) => {
-        const type = mapNotificationType(apiNotif.notification_type);
-        const { icon, color } = getNotificationIcon(type);
-        
-        return {
-          id: apiNotif.id,
-          type,
-          title: apiNotif.title,
-          message: apiNotif.message,
-          timestamp: apiNotif.time_ago,
-          read: apiNotif.is_read,
-          priority: mapPriority(apiNotif.priority),
-          icon,
-          color,
-        };
-      });
 
-      const newUnreadCount = mappedNotifications.filter(n => !n.read).length;
+      const mappedNotifications: NotificationItem[] = notificationsData.map(
+        (apiNotif: Notification) => {
+          const type = mapNotificationType(apiNotif.notification_type);
+          const { icon, color } = getNotificationIcon(type);
+
+          return {
+            id: apiNotif.id,
+            type,
+            title: apiNotif.title,
+            message: apiNotif.message,
+            timestamp: apiNotif.time_ago,
+            read: apiNotif.is_read,
+            priority: mapPriority(apiNotif.priority),
+            icon,
+            color,
+          };
+        }
+      );
+
+      const newUnreadCount = mappedNotifications.filter((n) => !n.read).length;
 
       // Update cache
       notificationsCache = {
         data: mappedNotifications,
         lastFetched: Date.now(),
-        unreadCount: newUnreadCount
+        unreadCount: newUnreadCount,
       };
 
       // Only update state if component is mounted and user might be viewing
       setNotifications(mappedNotifications);
       setUnreadCount(newUnreadCount);
       setLastUpdated(Date.now());
-      
+
       console.log("🔔 Notifications - Background refresh completed");
     } catch (error) {
       console.error("🔔 Notifications - Background refresh failed:", error);
@@ -214,10 +218,11 @@ export function Notifications() {
       setUnreadCount(notificationsCache.unreadCount);
       setLoading(false);
       setInitialLoadComplete(true);
-      
+
       // Still refresh in background if cache is getting stale
       const cacheAge = Date.now() - notificationsCache.lastFetched;
-      if (cacheAge > CACHE_DURATION / 2) { // Refresh if cache is older than half duration
+      if (cacheAge > CACHE_DURATION / 2) {
+        // Refresh if cache is older than half duration
         backgroundRefresh();
       }
       return;
@@ -230,43 +235,48 @@ export function Notifications() {
 
     try {
       console.log("🔔 Notifications - Fetching notifications...");
-      
+
       const response = await getAllNotifications(token);
       const notificationsData = response.results || [];
-      
-      const mappedNotifications: NotificationItem[] = notificationsData.map((apiNotif: Notification) => {
-        const type = mapNotificationType(apiNotif.notification_type);
-        const { icon, color } = getNotificationIcon(type);
-        
-        return {
-          id: apiNotif.id,
-          type,
-          title: apiNotif.title,
-          message: apiNotif.message,
-          timestamp: apiNotif.time_ago,
-          read: apiNotif.is_read,
-          priority: mapPriority(apiNotif.priority),
-          icon,
-          color,
-        };
-      });
 
-      const newUnreadCount = mappedNotifications.filter(n => !n.read).length;
+      const mappedNotifications: NotificationItem[] = notificationsData.map(
+        (apiNotif: Notification) => {
+          const type = mapNotificationType(apiNotif.notification_type);
+          const { icon, color } = getNotificationIcon(type);
+
+          return {
+            id: apiNotif.id,
+            type,
+            title: apiNotif.title,
+            message: apiNotif.message,
+            timestamp: apiNotif.time_ago,
+            read: apiNotif.is_read,
+            priority: mapPriority(apiNotif.priority),
+            icon,
+            color,
+          };
+        }
+      );
+
+      const newUnreadCount = mappedNotifications.filter((n) => !n.read).length;
 
       // Update cache
       notificationsCache = {
         data: mappedNotifications,
         lastFetched: Date.now(),
-        unreadCount: newUnreadCount
+        unreadCount: newUnreadCount,
       };
 
-      console.log("🔔 Notifications - Mapped notifications:", mappedNotifications);
+      console.log(
+        "🔔 Notifications - Mapped notifications:",
+        mappedNotifications
+      );
       setNotifications(mappedNotifications);
       setUnreadCount(newUnreadCount);
       setLastUpdated(Date.now());
     } catch (error) {
       console.error("🔔 Notifications - Error fetching notifications:", error);
-      
+
       // If we have cached data, use it even on error
       if (notificationsCache && !forceRefresh) {
         console.log("🔔 Notifications - Using cached data due to error");
@@ -293,7 +303,7 @@ export function Notifications() {
   // Fetch unread count separately if needed
   const fetchUnreadCount = async () => {
     if (!token) return;
-    
+
     try {
       const count = await getUnreadCount(token);
       console.log("🔔 Notifications - Unread count:", count);
@@ -327,33 +337,36 @@ export function Notifications() {
     if (!token) return;
 
     try {
-      setProcessing(prev => [...prev, id]);
+      setProcessing((prev) => [...prev, id]);
       console.log("🔔 Notifications - Marking as read:", id);
-      
-      await markNotificationsAsRead({ notification_ids: [id], mark_all: false }, token);
-      
+
+      await markNotificationsAsRead(
+        { notification_ids: [id], mark_all: false },
+        token
+      );
+
       // Update local state immediately
-      const updatedNotifications = notifications.map(notif => 
+      const updatedNotifications = notifications.map((notif) =>
         notif.id === id ? { ...notif, read: true } : notif
       );
-      
-      const newUnreadCount = updatedNotifications.filter(n => !n.read).length;
-      
+
+      const newUnreadCount = updatedNotifications.filter((n) => !n.read).length;
+
       setNotifications(updatedNotifications);
       setUnreadCount(newUnreadCount);
-      
+
       // Update cache
       if (notificationsCache) {
         notificationsCache.data = updatedNotifications;
         notificationsCache.unreadCount = newUnreadCount;
       }
-      
+
       toast.success("Notification marked as read");
     } catch (error) {
       console.error("🔔 Notifications - Error marking as read:", error);
       toast.error("Failed to mark notification as read");
     } finally {
-      setProcessing(prev => prev.filter(pid => pid !== id));
+      setProcessing((prev) => prev.filter((pid) => pid !== id));
     }
   };
 
@@ -362,20 +375,26 @@ export function Notifications() {
 
     try {
       console.log("🔔 Notifications - Marking all as read");
-      
-      await markNotificationsAsRead({ notification_ids: [], mark_all: true }, token);
-      
+
+      await markNotificationsAsRead(
+        { notification_ids: [], mark_all: true },
+        token
+      );
+
       // Update local state immediately
-      const updatedNotifications = notifications.map(notif => ({ ...notif, read: true }));
+      const updatedNotifications = notifications.map((notif) => ({
+        ...notif,
+        read: true,
+      }));
       setNotifications(updatedNotifications);
       setUnreadCount(0);
-      
+
       // Update cache
       if (notificationsCache) {
         notificationsCache.data = updatedNotifications;
         notificationsCache.unreadCount = 0;
       }
-      
+
       toast.success("All notifications marked as read");
     } catch (error) {
       console.error("🔔 Notifications - Error marking all as read:", error);
@@ -387,30 +406,32 @@ export function Notifications() {
     if (!token) return;
 
     try {
-      setProcessing(prev => [...prev, id]);
+      setProcessing((prev) => [...prev, id]);
       console.log("🔔 Notifications - Deleting notification:", id);
-      
+
       await deleteNotification(id, token);
-      
+
       // Update local state immediately
-      const updatedNotifications = notifications.filter(notif => notif.id !== id);
-      const newUnreadCount = updatedNotifications.filter(n => !n.read).length;
-      
+      const updatedNotifications = notifications.filter(
+        (notif) => notif.id !== id
+      );
+      const newUnreadCount = updatedNotifications.filter((n) => !n.read).length;
+
       setNotifications(updatedNotifications);
       setUnreadCount(newUnreadCount);
-      
+
       // Update cache
       if (notificationsCache) {
         notificationsCache.data = updatedNotifications;
         notificationsCache.unreadCount = newUnreadCount;
       }
-      
+
       toast.success("Notification cleared");
     } catch (error) {
       console.error("🔔 Notifications - Error deleting notification:", error);
       toast.error("Failed to clear notification");
     } finally {
-      setProcessing(prev => prev.filter(pid => pid !== id));
+      setProcessing((prev) => prev.filter((pid) => pid !== id));
     }
   };
 
@@ -419,33 +440,40 @@ export function Notifications() {
 
     try {
       console.log("🔔 Notifications - Clearing all read notifications");
-      
+
       // Get all read notification IDs
-      const readIds = notifications.filter(notif => notif.read).map(notif => notif.id);
-      
+      const readIds = notifications
+        .filter((notif) => notif.read)
+        .map((notif) => notif.id);
+
       if (readIds.length === 0) {
         toast.info("No read notifications to clear");
         return;
       }
 
       // Delete each read notification
-      const deletePromises = readIds.map(id => deleteNotification(id, token));
+      const deletePromises = readIds.map((id) => deleteNotification(id, token));
       await Promise.all(deletePromises);
-      
+
       // Update local state immediately
-      const updatedNotifications = notifications.filter(notif => !notif.read);
+      const updatedNotifications = notifications.filter((notif) => !notif.read);
       setNotifications(updatedNotifications);
-      setUnreadCount(updatedNotifications.filter(n => !n.read).length);
-      
+      setUnreadCount(updatedNotifications.filter((n) => !n.read).length);
+
       // Update cache
       if (notificationsCache) {
         notificationsCache.data = updatedNotifications;
-        notificationsCache.unreadCount = updatedNotifications.filter(n => !n.read).length;
+        notificationsCache.unreadCount = updatedNotifications.filter(
+          (n) => !n.read
+        ).length;
       }
-      
+
       toast.success("All read notifications cleared");
     } catch (error) {
-      console.error("🔔 Notifications - Error clearing read notifications:", error);
+      console.error(
+        "🔔 Notifications - Error clearing read notifications:",
+        error
+      );
       toast.error("Failed to clear read notifications");
     }
   };
@@ -457,21 +485,24 @@ export function Notifications() {
     try {
       console.log("🔔 Notifications - Clearing ALL notifications");
       await clearAllNotifications(token);
-      
+
       // Update local state immediately
       setNotifications([]);
       setUnreadCount(0);
-      
+
       // Update cache
       notificationsCache = {
         data: [],
         lastFetched: Date.now(),
-        unreadCount: 0
+        unreadCount: 0,
       };
-      
+
       toast.success("All notifications cleared");
     } catch (error) {
-      console.error("🔔 Notifications - Error clearing all notifications:", error);
+      console.error(
+        "🔔 Notifications - Error clearing all notifications:",
+        error
+      );
       toast.error("Failed to clear all notifications");
     }
   };
@@ -487,8 +518,8 @@ export function Notifications() {
   ).length;
 
   // Show loading only on initial load when no cache exists
-if (loading && !notificationsCache) {
-      return (
+  if (loading && !notificationsCache) {
+    return (
       <div className="mt-15 flex items-center justify-center p-5 md:mt-0">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
@@ -506,7 +537,7 @@ if (loading && !notificationsCache) {
           <p className="text-muted-foreground">
             Stay updated with restaurant activities and alerts
             {notificationsCache && (
-              <span className="text-xs text-gray-500 ml-2">
+              <span className="ml-2 text-xs text-gray-500">
                 • Updated {Math.round((Date.now() - lastUpdated) / 1000)}s ago
                 {refreshing && " (refreshing...)"}
               </span>
@@ -538,9 +569,9 @@ if (loading && !notificationsCache) {
           <Button variant="outline" size="sm" onClick={clearAllRead}>
             Clear Read
           </Button>
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             onClick={clearAllNotificationsHandler}
             disabled={notifications.length === 0}
           >
@@ -649,7 +680,7 @@ if (loading && !notificationsCache) {
               filteredNotifications.map((notification) => {
                 const IconComponent = notification.icon;
                 const isProcessing = processing.includes(notification.id);
-                
+
                 return (
                   <div
                     key={notification.id}

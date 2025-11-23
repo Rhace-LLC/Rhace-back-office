@@ -145,8 +145,7 @@ export default function BillingPage() {
     }
   };
 
-  const handleRenew =  async () => {
-    
+  const handleRenew = async () => {
     try {
       setLoading(true);
       setLoadingText("Initializing Subscription Renewal...");
@@ -185,7 +184,10 @@ export default function BillingPage() {
         >
           {/* Here we render subscription and billing informations as well as transaction history.*/}
           {details && (
-            <SubscriptionDetails onRenew={handleRenew} details={details}></SubscriptionDetails>
+            <SubscriptionDetails
+              onRenew={handleRenew}
+              details={details}
+            ></SubscriptionDetails>
           )}
         </ContentHOC>
       )}
