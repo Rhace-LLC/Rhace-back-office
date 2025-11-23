@@ -246,7 +246,7 @@ export function OrderDetailsSheet({
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-muted-foreground">Created</label>
-                <p className="text-base text-sm">{getCreatedAt()}</p>
+                <p className="text-base">{getCreatedAt()}</p>
               </div>
               
               {/* Current Assignments */}

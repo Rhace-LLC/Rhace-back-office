@@ -140,6 +140,7 @@ export function Notifications() {
   const [lastUpdated, setLastUpdated] = useState<number>(Date.now());
   const [unreadCount, setUnreadCount] = useState(0);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+  console.log("initialLoadComplete",initialLoadComplete)
 
   // Check if cache is valid
   const isCacheValid = (): boolean => {
