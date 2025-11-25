@@ -11,7 +11,6 @@ import { useAuth } from "../../contexts/AuthContext";
 import { 
   getAllOrders, 
   updateOrderStatus, 
-  cancelOrder,
   assignTableToOrder,
   assignWaiterToOrder 
 } from "../../api-services/orderService";
@@ -52,6 +51,7 @@ const isCacheValid = (): boolean => {
 export function Orders() {
   const auth = useAuth();
   const token = auth?.token;
+  const { isWaiter } = useAuth();
 
   // Initialize state from cache if available
   const [orders, setOrders] = useState<Order[]>(() => ordersCache?.orders ?? []);
@@ -78,9 +78,11 @@ export function Orders() {
     
     try {
       console.log("🔄 Orders - Background refresh...");
+      
+      // Only fetch waiters if user is NOT a waiter
       const [ordersData, waitersData] = await Promise.all([
         getAllOrders(token),
-        getActiveWaiters(token)
+        !isWaiter ? getActiveWaiters(token) : Promise.resolve([]) // Only fetch if not waiter
       ]);
       
       setOrders(ordersData || []);
@@ -141,9 +143,10 @@ export function Orders() {
       setError(null);
       console.log("🔧 Orders - Fetching fresh data...");
       
+      // Conditionally fetch waiters based on user role
       const [ordersData, waitersData] = await Promise.all([
         getAllOrders(token),
-        getActiveWaiters(token)
+        !isWaiter ? getActiveWaiters(token) : Promise.resolve([]) // Only fetch if not waiter
       ]);
       
       setOrders(ordersData || []);
@@ -261,21 +264,6 @@ export function Orders() {
       console.error(`❌ Error updating status for order ${orderId}:`, err);
       setError(err instanceof Error ? err.message : 'Failed to update status');
       await fetchOrders(true);
-    }
-  };
-
-  const handleCancelOrder = async (orderId: string) => {
-    try {
-      setError(null);
-      if (!token) throw new Error("Authentication token not found");
-
-      const cancelData: UpdateOrderData = { status: "cancelled" as OrderStatus };
-      await cancelOrder(orderId, cancelData, token);
-      await handleStatusChange(orderId, "cancelled");
-      
-    } catch (err) {
-      console.error(`❌ Error cancelling order ${orderId}:`, err);
-      setError(err instanceof Error ? err.message : 'Failed to cancel order');
     }
   };
 
@@ -407,7 +395,6 @@ export function Orders() {
         isOpen={!!selectedOrder}
         onClose={handleCloseSheet}
         onStatusChange={handleStatusChange}
-        onCancelOrder={handleCancelOrder}
         onAssignTable={handleAssignTable}
         onAssignWaiter={handleAssignWaiter}
         staff={waiters}

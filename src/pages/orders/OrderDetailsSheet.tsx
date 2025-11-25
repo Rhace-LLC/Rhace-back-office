@@ -8,6 +8,8 @@ import { Staff } from "../../api-services/staffService";
 import { Table } from "../../api-services/tableService";
 import { useState, useEffect } from "react";
 import { Clock, CheckCircle, Truck, ChefHat, Package, User, Table as TableIcon } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 // Define OrderStatus locally since there's an import issue
 type OrderStatus = "received" | "preparing" | "ready" | "completed" | "cancelled" | "delivered";
@@ -17,7 +19,6 @@ interface OrderDetailsSheetProps {
   isOpen: boolean;
   onClose: () => void;
   onStatusChange: (orderId: string, status: OrderStatus) => void;
-  onCancelOrder: (orderId: string) => void;
   onAssignTable: (orderId: string, tableId: string) => void;
   onAssignWaiter: (orderId: string, waiterId: string) => void;
   staff: Staff[];
@@ -57,12 +58,12 @@ export function OrderDetailsSheet({
   isOpen,
   onClose,
   onStatusChange,
-  onCancelOrder,
   onAssignTable,
   onAssignWaiter,
   staff,
   tables
 }: OrderDetailsSheetProps) {
+  const { isWaiter } = useAuth();
   const [selectedTable, setSelectedTable] = useState("");
   const [selectedWaiter, setSelectedWaiter] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | "">("");
@@ -113,21 +114,33 @@ export function OrderDetailsSheet({
   };
 
   const handleStatusChange = (newStatus: OrderStatus) => {
+    // Check if user is authorized to update status
+    if (!isWaiter) {
+      toast.error("Access Denied", {
+        description: "Only waiters can update order status"
+      });
+      return;
+    }
+
     setSelectedStatus(newStatus);
     onStatusChange(order.id, newStatus);
   };
 
   const handleQuickStatusUpdate = () => {
-    const availableStatusOptions = nextStatusOptions[order.status as OrderStatus] || [];
+    // Check if user is authorized to update status
+    if (!isWaiter) {
+      toast.error("Access Denied", {
+        description: "Only waiters can update order status"
+      });
+      return;
+    }
+
+    const availableStatusOptions = getAvailableStatusOptions();
     if (availableStatusOptions.length > 0) {
       const nextStatus = availableStatusOptions[0];
       setSelectedStatus(nextStatus);
       onStatusChange(order.id, nextStatus);
     }
-  };
-
-  const handleCancel = () => {
-    onCancelOrder(order.id);
   };
 
   const handleAssignTable = () => {
@@ -145,19 +158,34 @@ export function OrderDetailsSheet({
   };
 
   const isEditable = order.status !== 'completed' && 
-                    order.status !== 'cancelled' &&
-                    order.status !== 'delivered';
+                    order.status !== 'cancelled';
 
-  const nextStatusOptions: Record<OrderStatus, OrderStatus[]> = {
-    'received': ['preparing', 'cancelled'],
-    'preparing': ['ready', 'cancelled'],
-    'ready': ['completed', 'delivered', 'cancelled'],
-    'delivered': ['completed'],
-    'completed': [],
-    'cancelled': [],
+  // FIXED: Only show valid status options based on the error message
+  const getAvailableStatusOptions = (): OrderStatus[] => {
+    const currentStatus = order.status as OrderStatus;
+    
+    // Based on the error message: "Options are ['received', 'preparing', 'ready', 'cancelled', 'completed']"
+    const validStatuses: OrderStatus[] = ['received', 'preparing', 'ready', 'cancelled', 'completed'];
+    
+    switch (currentStatus) {
+      case 'received':
+        return ['preparing', 'cancelled'];
+      case 'preparing':
+        return ['ready', 'cancelled'];
+      case 'ready':
+        return ['completed'];
+      case 'completed':
+        return [];
+      case 'cancelled':
+        return [];
+      case 'delivered':
+        return ['completed'];
+      default:
+        return validStatuses.filter(status => status !== currentStatus);
+    }
   };
 
-  const availableStatusOptions = nextStatusOptions[order.status as OrderStatus] || [];
+  const availableStatusOptions = getAvailableStatusOptions();
   const isDineInOrder = order.order_type === 'dine-in';
   const assignedWaiter = getAssignedWaiter();
   const assignedTable = getAssignedTable();
@@ -170,7 +198,6 @@ export function OrderDetailsSheet({
       case 'preparing': return "Start Preparing";
       case 'ready': return "Mark Ready";
       case 'completed': return "Complete Order";
-      case 'delivered': return "Mark Delivered";
       case 'cancelled': return "Cancel Order";
       default: return "Update";
     }
@@ -297,83 +324,85 @@ export function OrderDetailsSheet({
             </div>
           </div>
 
-          {/* Staff Assignment Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <div className="w-1 h-5 bg-primary rounded-full" />
-              Staff Assignment
-            </h3>
-            
-            {/* Waiter Assignment */}
-            <div className="p-4 bg-muted/30 rounded-lg border">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">Assigned Waiter</span>
-                </div>
-                <Badge variant={assignedWaiter ? "default" : "outline"} className="font-normal">
-                  {assignedWaiter ? 'Assigned' : 'Not assigned'}
-                </Badge>
-              </div>
-
-              {/* Current Waiter Info */}
-              {assignedWaiter && (
-                <div className="mb-3 p-2 bg-background rounded border">
-                  <p className="text-sm font-medium">
-                    {assignedWaiter.full_name || `${assignedWaiter.first_name} ${assignedWaiter.last_name}`}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {assignedWaiter.phone} • {assignedWaiter.email}
-                  </p>
-                </div>
-              )}
-
-              {/* Waiter Assignment Controls */}
-              {isEditable && (
-                <div className="space-y-3 pt-3 border-t">
-                  <Label htmlFor="waiter-select" className="text-sm font-medium">
-                    {assignedWaiter ? 'Change Waiter' : 'Assign Waiter'}
-                  </Label>
-                  <div className="flex gap-2">
-                    <Select value={selectedWaiter} onValueChange={setSelectedWaiter}>
-                      <SelectTrigger className="flex-1">
-                        <SelectValue placeholder="Select waiter" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {staff.length === 0 ? (
-                          <SelectItem value="none" disabled>
-                            No waiters available
-                          </SelectItem>
-                        ) : (
-                          staff.map((waiter) => (
-                            <SelectItem key={waiter.id} value={waiter.id}>
-                              <div className="flex items-center gap-2">
-                                <User className="h-4 w-4" />
-                                <div>
-                                  <span>{waiter.full_name || `${waiter.first_name} ${waiter.last_name}`}</span>
-                                  <p className="text-xs text-muted-foreground">{waiter.phone}</p>
-                                </div>
-                              </div>
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
-                    <Button 
-                      onClick={handleAssignWaiter}
-                      disabled={!selectedWaiter || staff.length === 0}
-                      className="whitespace-nowrap"
-                    >
-                      {assignedWaiter ? 'Change' : 'Assign'}
-                    </Button>
+          {/* Staff Assignment Section - Only show if user is not waiter AND staff list is available */}
+          {!isWaiter && staff.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <div className="w-1 h-5 bg-primary rounded-full" />
+                Staff Assignment
+              </h3>
+              
+              {/* Waiter Assignment */}
+              <div className="p-4 bg-muted/30 rounded-lg border">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <User className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-medium">Assigned Waiter</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    {staff.length} waiters available
-                  </p>
+                  <Badge variant={assignedWaiter ? "default" : "outline"} className="font-normal">
+                    {assignedWaiter ? 'Assigned' : 'Not assigned'}
+                  </Badge>
                 </div>
-              )}
+
+                {/* Current Waiter Info */}
+                {assignedWaiter && (
+                  <div className="mb-3 p-2 bg-background rounded border">
+                    <p className="text-sm font-medium">
+                      {assignedWaiter.full_name || `${assignedWaiter.first_name} ${assignedWaiter.last_name}`}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {assignedWaiter.phone} • {assignedWaiter.email}
+                    </p>
+                  </div>
+                )}
+
+                {/* Waiter Assignment Controls */}
+                {isEditable && (
+                  <div className="space-y-3 pt-3 border-t">
+                    <Label htmlFor="waiter-select" className="text-sm font-medium">
+                      {assignedWaiter ? 'Change Waiter' : 'Assign Waiter'}
+                    </Label>
+                    <div className="flex gap-2">
+                      <Select value={selectedWaiter} onValueChange={setSelectedWaiter}>
+                        <SelectTrigger className="flex-1">
+                          <SelectValue placeholder="Select waiter" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {staff.length === 0 ? (
+                            <SelectItem value="none" disabled>
+                              No waiters available
+                            </SelectItem>
+                          ) : (
+                            staff.map((waiter) => (
+                              <SelectItem key={waiter.id} value={waiter.id}>
+                                <div className="flex items-center gap-2">
+                                  <User className="h-4 w-4" />
+                                  <div>
+                                    <span>{waiter.full_name || `${waiter.first_name} ${waiter.last_name}`}</span>
+                                    <p className="text-xs text-muted-foreground">{waiter.phone}</p>
+                                  </div>
+                                </div>
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <Button 
+                        onClick={handleAssignWaiter}
+                        disabled={!selectedWaiter || staff.length === 0}
+                        className="whitespace-nowrap"
+                      >
+                        {assignedWaiter ? 'Change' : 'Assign'}
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {staff.length} waiters available
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Table Assignment for Dine-in Orders */}
           {isDineInOrder && (
@@ -489,13 +518,21 @@ export function OrderDetailsSheet({
               {/* Status Update Section */}
               {isEditable && availableStatusOptions.length > 0 && (
                 <div className="pt-3 border-t">
-                  <Label htmlFor="status-select" className="text-sm font-medium mb-2 block">
-                    Update Status
-                  </Label>
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor="status-select" className="text-sm font-medium">
+                      Update Status
+                    </Label>
+                    {!isWaiter && (
+                      <Badge variant="outline" className="text-xs">
+                        Waiter Only
+                      </Badge>
+                    )}
+                  </div>
                   <div className="flex gap-2">
                     <Select 
                       value={selectedStatus} 
                       onValueChange={(value: OrderStatus) => handleStatusChange(value)}
+                      disabled={!isWaiter}
                     >
                       <SelectTrigger className="flex-1">
                         <SelectValue placeholder="Select new status" />
@@ -515,7 +552,7 @@ export function OrderDetailsSheet({
                       onClick={handleQuickStatusUpdate}
                       variant="outline"
                       className="whitespace-nowrap"
-                      disabled={availableStatusOptions.length === 0}
+                      disabled={availableStatusOptions.length === 0 || !isWaiter}
                     >
                       {getQuickUpdateLabel()}
                     </Button>
@@ -523,6 +560,11 @@ export function OrderDetailsSheet({
                   <p className="text-xs text-muted-foreground mt-2">
                     Next available statuses: {availableStatusOptions.map(s => formatStatusForDisplay(s)).join(', ')}
                   </p>
+                  {!isWaiter && (
+                    <p className="text-xs text-amber-600 mt-1">
+                      Only waiters can update order status
+                    </p>
+                  )}
                 </div>
               )}
             </div>
@@ -544,19 +586,6 @@ export function OrderDetailsSheet({
             </div>
           )}
         </div>
-
-        {/* Fixed actions at the bottom */}
-        {isEditable && (
-          <div className="flex-shrink-0 flex gap-2 pt-4 border-t">
-            <Button 
-              variant="destructive" 
-              className="flex-1"
-              onClick={handleCancel}
-            >
-              Cancel Order
-            </Button>
-          </div>
-        )}
       </SheetContent>
     </Sheet>
   );

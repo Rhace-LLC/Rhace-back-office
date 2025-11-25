@@ -35,6 +35,7 @@ export const getAllOrders = async (token: string): Promise<Order[]> => {
   return [];
 };
 
+/*only waiter can update*/
 export const updateOrderStatus = async (
   orderId: string,
   data: UpdateOrderData,
