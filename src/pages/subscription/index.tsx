@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "@/contexts/AuthContext";
 import { RootState } from "@/store/store";
+
 import {
   getSubscriptionDetails,
   getSubscriptionPlans,
@@ -11,11 +12,13 @@ import {
   initiateSubscriptionPayment,
   SubscriptionPlan,
 } from "@/api-services/subscriptiions.service";
+
 import {
   setSubscriptionDetails,
   setSubscriptionPlans,
   setSubscriptionStatus,
 } from "@/store/subscriptions.slice";
+
 import { parseError } from "@/api-services/utils/parseError";
 import { toast } from "sonner";
 import { ContentHOC } from "@/components/nocontent";
@@ -59,7 +62,7 @@ export default function BillingPage() {
       dispatch(setSubscriptionDetails(res));
     } catch (err) {
       let message = parseError(err);
-      if (message == "No subscription found") {
+      if (message == "No Subscription Found") {
         setIsSubscription(false);
       }
       toast.info(
@@ -68,7 +71,7 @@ export default function BillingPage() {
     } finally {
       setDataLoading(false);
     }
-  };
+  }
 
   const fetchStatus = async () => {
     try {
@@ -155,8 +158,6 @@ export default function BillingPage() {
       setPaystackUrl(res.authorization_url);
       setPaystackRef(res.metadata.paystack_full_response.reference);
       setOpenPaystackDialog(true);
-
-      // You can handle success here, e.g., toast success or redirect
       toast.success("Subscription renewal initialized successfully!");
     } catch (error: any) {
       const message = parseError(error);

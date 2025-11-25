@@ -30,6 +30,7 @@ import RestaurantProfilePage from "@/pages/myRestaurant";
 import AcceptInvite from "@/pages/AcceptInvite";
 import { ManageReservation } from "@/pages/reservations/re";
 import BillingPage from "@/pages/subscription";
+import { WalletAndAccount } from "@/pages/wallet&account";
 
 export interface User {
   id: string;
@@ -192,6 +193,14 @@ function NavigationContent() {
               element={
                 <ProtectedRoute allowedRoles={["restaurant_owner"]}>
                   <BillingPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/wallet-and-account"
+              element={
+                <ProtectedRoute allowedRoles={["restaurant_owner"]}>
+                  <WalletAndAccount />
                 </ProtectedRoute>
               }
             />

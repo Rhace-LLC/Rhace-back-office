@@ -1,6 +1,5 @@
 import { Table } from "@/api-services/tableService";
 
-
 // === Shared Interfaces ===
 export interface RevenueItem {
   name: string; // e.g., "Mon", "Tue", etc.

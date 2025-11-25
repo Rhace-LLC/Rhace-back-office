@@ -9,6 +9,7 @@ import inventoryReducer from "./inventory.slice";
 import tableReducer from "./table.slice";
 import restaurantProfileReducer from "./restaurantProfile";
 import subscriptionReducer from "./subscriptions.slice";
+import subAccountReducer from "./subaccount.slice"
 
 export const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ export const store = configureStore({
     table: tableReducer,
     restaurantProfile: restaurantProfileReducer,
     subscriptions: subscriptionReducer,
+    subaccount: subAccountReducer
   },
   devTools: import.meta.env.MODE !== "production",
 });

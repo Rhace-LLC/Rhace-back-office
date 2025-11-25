@@ -37,8 +37,6 @@ export const PaystackCheckoutDialog: React.FC<PaystackCheckoutDialogProps> = ({
   const auth = useAuth();
 
   const handleVerifyPayment = async () => {
-    if (!plan) return;
-
     setVerifying(true);
     try {
       await verifySubscriptionPayment(
