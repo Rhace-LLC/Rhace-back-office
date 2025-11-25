@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactElement } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TrendingUp, TrendingDown, Minus, RefreshCw,  AlertCircle, Users, Coffee, CreditCard, Utensils, Target, Clock, BarChart3 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -44,6 +44,67 @@ const isCacheValid = (): boolean => {
 };
 // =========================================
 
+// Format Naira with k notation for large numbers
+const formatNaira = (amount: number): string => {
+  if (amount >= 1000000) {
+    return `₦${(amount / 1000000).toFixed(1)}M`;
+  } else if (amount >= 1000) {
+    return `₦${(amount / 1000).toFixed(1)}k`;
+  }
+  
+  return new Intl.NumberFormat('en-NG', { 
+    style: 'currency', 
+    currency: 'NGN',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(amount);
+};
+
+// Format regular numbers with k notation
+const formatCount = (count: number): string => {
+  if (count >= 1000000) {
+    return `${(count / 1000000).toFixed(1)}M`;
+  } else if (count >= 1000) {
+    return `${(count / 1000).toFixed(1)}k`;
+  }
+  return count.toString();
+};
+
+interface StatCard {
+  title: string;
+  value: string;
+  change: number;
+  trend: "up" | "down" | "stable";
+  period: string;
+  icon: ReactElement;
+  hasData: boolean;
+}
+
+interface OrderTypeData {
+  name: string;
+  value: number;
+  count: number;
+  [key: string]: any;
+}
+
+interface WeeklyRevenueData {
+  day: string;
+  date: string;
+  revenue: number;
+}
+
+// Recharts tooltip props interface
+interface TooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    payload: any;
+    value: number;
+    name: string;
+    dataKey: string;
+  }>;
+  label?: string;
+}
+
 export const AdminDashboard = () => {
   const auth = useAuth();
   const token = auth?.token;
@@ -55,16 +116,6 @@ export const AdminDashboard = () => {
   const [error, setError] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<number>(() => dashboardCache?.lastFetched ?? Date.now());
-
-  // Format Naira
-  const formatNaira = (amount: number) => {
-    return new Intl.NumberFormat('en-NG', { 
-      style: 'currency', 
-      currency: 'NGN',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(amount);
-  };
 
   // Get trend icon
   const getTrendIcon = (trend: string) => {
@@ -102,7 +153,7 @@ export const AdminDashboard = () => {
   };
 
   // Transform order type breakdown for Pie chart
-  const getOrderTypeData = () => {
+  const getOrderTypeData = (): OrderTypeData[] => {
     if (!dashboardStats.order_type_breakdown || dashboardStats.order_type_breakdown.length === 0) {
       return [];
     }
@@ -115,7 +166,7 @@ export const AdminDashboard = () => {
   };
 
   // Background refresh (no loading state)
-  const backgroundRefresh = async () => {
+  const backgroundRefresh = async (): Promise<void> => {
     if (!token) return;
     
     try {
@@ -157,7 +208,7 @@ export const AdminDashboard = () => {
   };
 
   // Main fetch with cache support
-  const fetchDashboardData = async (forceRefresh = false) => {
+  const fetchDashboardData = async (forceRefresh = false): Promise<void> => {
     if (!token) {
       setError("Please log in to view dashboard");
       setLoading(false);
@@ -249,7 +300,7 @@ export const AdminDashboard = () => {
     }
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = (): void => {
     setRefreshing(true);
     fetchDashboardData(true);
   };
@@ -271,10 +322,10 @@ export const AdminDashboard = () => {
   }, [token]);
 
   // Stats cards data - Updated to match actual API response
-  const stats = [
+  const stats: StatCard[] = [
     {
       title: "Active Orders",
-      value: dashboardData.active_orders?.count || 0,
+      value: formatCount(dashboardData.active_orders?.count || 0),
       change: dashboardData.active_orders?.change || 0,
       trend: dashboardData.active_orders?.trend || "stable",
       period: dashboardData.active_orders?.period || "No data",
@@ -294,16 +345,16 @@ export const AdminDashboard = () => {
       title: "Table Occupancy",
       value: `${dashboardData.table_occupancy?.percentage || 0}%`,
       change: 0,
-      trend: "stable" as const,
+      trend: "stable",
       period: `${dashboardData.table_occupancy?.occupied || 0}/${dashboardData.table_occupancy?.total || 0} tables`,
       icon: <Utensils className="h-4 w-4 text-muted-foreground" />,
       hasData: hasData(dashboardData.table_occupancy?.percentage) && dashboardData.table_occupancy.percentage > 0
     },
     {
       title: "Active Staff",
-      value: dashboardData.staff_active?.count || 0,
+      value: formatCount(dashboardData.staff_active?.count || 0),
       change: 0,
-      trend: "stable" as const,
+      trend: "stable",
       period: dashboardData.staff_active?.coverage || "No data",
       icon: <Users className="h-4 w-4 text-muted-foreground" />,
       hasData: hasData(dashboardData.staff_active?.count) && dashboardData.staff_active.count > 0
@@ -312,16 +363,16 @@ export const AdminDashboard = () => {
       title: "Avg Order Value",
       value: formatNaira(dashboardStats.average_order_value || 0),
       change: 0,
-      trend: "stable" as const,
+      trend: "stable",
       period: "per order",
       icon: <Target className="h-4 w-4 text-muted-foreground" />,
       hasData: hasData(dashboardStats.average_order_value) && dashboardStats.average_order_value > 0
     },
     {
       title: "Total Orders Today",
-      value: getOrderTypeData().reduce((total, type) => total + (type.count || 0), 0) || 0,
+      value: formatCount(getOrderTypeData().reduce((total, type) => total + (type.count || 0), 0) || 0),
       change: 0,
-      trend: "stable" as const,
+      trend: "stable",
       period: "all order types",
       icon: <BarChart3 className="h-4 w-4 text-muted-foreground" />,
       hasData: hasData(dashboardStats.order_type_breakdown) && dashboardStats.order_type_breakdown.length > 0
@@ -329,7 +380,7 @@ export const AdminDashboard = () => {
   ];
 
   // Generate empty weekly revenue data for chart
-  const getWeeklyRevenueData = () => {
+  const getWeeklyRevenueData = (): WeeklyRevenueData[] => {
     if (dashboardData.weekly_revenue && dashboardData.weekly_revenue.length > 0) {
       return dashboardData.weekly_revenue;
     }
@@ -342,6 +393,38 @@ export const AdminDashboard = () => {
       revenue: 0
     }));
   };
+
+  // Custom tooltip for bar chart
+    const renderBarTooltip = (props: any) => {
+      const { active, payload, label } = props as any;
+      if (active && payload && payload.length) {
+        return (
+          <div className="bg-white p-3 border border-gray-300 rounded shadow-sm">
+            <p className="font-medium">{`Day: ${label}`}</p>
+            <p className="text-blue-600">
+              {`Revenue: ₦${(payload && payload[0] && payload[0].value) ? payload[0].value.toLocaleString() : 0}`}
+            </p>
+          </div>
+        );
+      }
+      return null;
+    };
+
+  // Custom tooltip for pie chart
+    const renderPieTooltip = (props: any) => {
+      const { active, payload } = props as any;
+      if (active && payload && payload.length) {
+        return (
+          <div className="bg-white p-3 border border-gray-300 rounded shadow-sm">
+            <p className="font-medium">{payload[0].name}</p>
+            <p className="text-blue-600">
+              {`${payload[0].value} orders`}
+            </p>
+          </div>
+        );
+      }
+      return null;
+    };
 
   if (loading && !dashboardCache) {
     return (
@@ -475,13 +558,7 @@ export const AdminDashboard = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="day" />
               <YAxis tickFormatter={(value) => `₦${value}`} />
-              <Tooltip 
-                formatter={(value: unknown) => {
-                  const numValue = typeof value === 'number' ? value : 0;
-                  return [`₦${numValue.toLocaleString()}`, "Revenue"];
-                }}
-                labelFormatter={(label) => `Day: ${label}`}
-              />
+              <Tooltip content={renderBarTooltip} />
               <Bar 
                 dataKey="revenue" 
                 fill={hasData(dashboardData.weekly_revenue) ? "#2563eb" : "#9ca3af"} 
@@ -505,7 +582,7 @@ export const AdminDashboard = () => {
             <CardTitle>Order Types</CardTitle>
             <CardDescription>
               {hasData(dashboardStats.order_type_breakdown)
-                ? `Breakdown of ${getOrderTypeData().reduce((total, type) => total + (type.count || 0), 0)} total orders` 
+                ? `Breakdown of ${formatCount(getOrderTypeData().reduce((total, type) => total + (type.count || 0), 0))} total orders` 
                 : "No order type data available"
               }
             </CardDescription>
@@ -523,20 +600,15 @@ export const AdminDashboard = () => {
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
-                      label={(props: any) => {
-                        const name = props?.name ?? "";
-                        const percent = typeof props?.percent === "number" ? props.percent : 0;
-                        return `${name} ${(percent * 100).toFixed(0)}%`;
-                      }}
+                      label={(props: { name: string; percent: number }) => `${props.name} ${(props.percent * 100).toFixed(0)}%`}
                     >
                       {getOrderTypeData().map((_, index) => (
                         <Cell key={`cell-${index}`} fill={['#0088FE', '#00C49F', '#FFBB28', '#FF8042'][index % 4]} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value: number, name: string) => [`${value} orders`, name]} />
+                    <Tooltip content={renderPieTooltip} />
                   </PieChart>
                 </ResponsiveContainer>
-              
               </div>
             ) : (
               <div className="text-center py-8 text-muted-foreground">
@@ -564,7 +636,7 @@ export const AdminDashboard = () => {
                 {dashboardStats.peak_hours.map((hour, index) => (
                   <div key={index} className="flex justify-between items-center p-3 border rounded-lg">
                     <span className="font-medium">{formatHour(hour.hour)}</span>
-                    <Badge variant="secondary">{hour.order_count} orders</Badge>
+                    <Badge variant="secondary">{formatCount(hour.order_count)} orders</Badge>
                   </div>
                 ))}
               </div>
@@ -710,7 +782,7 @@ export const AdminDashboard = () => {
                     <p className="text-sm text-muted-foreground capitalize">{staff.role}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold">{staff.orders} orders</p>
+                    <p className="font-bold">{formatCount(staff.orders)} orders</p>
                     <p className="text-sm text-muted-foreground">Rating: {staff.performance}/5</p>
                   </div>
                 </div>
