@@ -2,6 +2,16 @@
 import { getConfig } from "./utils/reqConfig";
 import { bookiesAxiosInstance } from "./utils/baseUrl";
 
+export interface Restaurant {
+  id: string;
+  name: string;
+  // Add other properties that might be needed
+  address?: string;
+  phone?: string;
+  email?: string;
+}
+
+
 export interface Table {
   id: string;
   restaurant_name: string;
