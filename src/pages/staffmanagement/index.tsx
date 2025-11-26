@@ -54,14 +54,8 @@ const ManageStaff: React.FC = () => {
     }
   };
 
-  // ---------------- Effects ----------------
   useEffect(() => {
-    const pageData = allData;
-    if (pageData.length === 0) fetchAllStaffs();
-  }, [allData]);
-
-  useEffect(() => {
-    fetchAllStaffs();
+    if (!allData) fetchAllStaffs();
   }, []);
 
   useEffect(() => {
@@ -108,7 +102,7 @@ const ManageStaff: React.FC = () => {
         <ContentHOC
           loading={fetchLoading}
           error={!!fetchError}
-          noContent={toShow.length === 0}
+          noContent={toShow?.length === 0 || !toShow}
           loadingText="Fetching Staffs. Please Wait."
           noContentMessage="No Staffs found."
           noContentBtnText="Reload Staffs"
@@ -116,7 +110,10 @@ const ManageStaff: React.FC = () => {
           errMessage={fetchError || "Failed to load Staffs."}
           actionFn={fetchAllStaffs}
         >
-          <RenderEmployeeTable data={toShow} onRowClick={handleStaffClick} />
+          <RenderEmployeeTable
+            data={toShow || []}
+            onRowClick={handleStaffClick}
+          />
         </ContentHOC>
       </div>
 

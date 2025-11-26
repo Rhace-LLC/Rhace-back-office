@@ -31,7 +31,9 @@ export function TablesPage() {
   useEffect(() => setTotalItems(dataStore?.data_total || 0), [dataStore]);
 
   useEffect(() => {
-    fetchAllData();
+    if (!toShow || toShow.length === 0) {
+      fetchAllData();
+    }
   }, []);
 
   return (

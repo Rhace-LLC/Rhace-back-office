@@ -10,7 +10,7 @@ import {
 import clsx from "clsx";
 import GenericSheet from "@/components/generic_sheet_overlay";
 import { ViewTable } from "./ViewTable";
-import { Table } from "@/store/table.slice";
+import { Table } from "@/api-services/tableService";
 
 interface TableCardProps {
   table: Table;

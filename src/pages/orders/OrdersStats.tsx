@@ -33,15 +33,24 @@ const formatCount = (count: number): string => {
 
 export function OrdersStats({ orders = [] }: OrdersStatsProps) {
   const safeOrders = orders || [];
-  
+
   const stats = {
     total: safeOrders.length,
-    received: safeOrders.filter(o => String(o.status || '').toLowerCase() === 'received').length,
-    preparing: safeOrders.filter(o => String(o.status || '').toLowerCase() === 'preparing').length,
-    ready: safeOrders.filter(o => String(o.status || '').toLowerCase() === 'ready').length,
-    totalRevenue: safeOrders.reduce((sum, order) => sum + parseFloat(order.total_price || '0'), 0),
-    dineIn: safeOrders.filter(o => o.order_type === 'dine-in').length,
-    delivery: safeOrders.filter(o => o.order_type === 'delivery').length,
+    received: safeOrders.filter(
+      (o) => String(o.status || "").toLowerCase() === "received"
+    ).length,
+    preparing: safeOrders.filter(
+      (o) => String(o.status || "").toLowerCase() === "preparing"
+    ).length,
+    ready: safeOrders.filter(
+      (o) => String(o.status || "").toLowerCase() === "ready"
+    ).length,
+    totalRevenue: safeOrders.reduce(
+      (sum, order) => sum + parseFloat(order.total_price || "0"),
+      0
+    ),
+    dineIn: safeOrders.filter((o) => o.order_type === "dine-in").length,
+    delivery: safeOrders.filter((o) => o.order_type === "delivery").length,
   };
 
   return (
@@ -49,33 +58,39 @@ export function OrdersStats({ orders = [] }: OrdersStatsProps) {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-          <Package className="h-4 w-4 text-muted-foreground" />
+          <Package className="text-muted-foreground h-4 w-4" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{formatCount(stats.total)}</div>
-          <p className="text-xs text-muted-foreground">All time orders</p>
+          <p className="text-muted-foreground text-xs">All time orders</p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Revenue</CardTitle>
-          <DollarSign className="h-4 w-4 text-muted-foreground" />
+          <DollarSign className="text-muted-foreground h-4 w-4" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{formatRevenue(stats.totalRevenue)}</div>
-          <p className="text-xs text-muted-foreground">Total revenue</p>
+          <div className="text-2xl font-bold">
+            {formatRevenue(stats.totalRevenue)}
+          </div>
+          <p className="text-muted-foreground text-xs">Total revenue</p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">In Progress</CardTitle>
-          <Clock className="h-4 w-4 text-muted-foreground" />
+          <Clock className="text-muted-foreground h-4 w-4" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{formatCount(stats.received + stats.preparing)}</div>
-          <p className="text-xs text-muted-foreground">Orders being processed</p>
+          <div className="text-2xl font-bold">
+            {formatCount(stats.received + stats.preparing)}
+          </div>
+          <p className="text-muted-foreground text-xs">
+            Orders being processed
+          </p>
         </CardContent>
       </Card>
 
@@ -88,7 +103,9 @@ export function OrdersStats({ orders = [] }: OrdersStatsProps) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{formatCount(stats.ready)}</div>
-          <p className="text-xs text-muted-foreground">Ready for pickup/delivery</p>
+          <p className="text-muted-foreground text-xs">
+            Ready for pickup/delivery
+          </p>
         </CardContent>
       </Card>
     </div>

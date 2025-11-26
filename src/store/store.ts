@@ -7,10 +7,13 @@ import reservationReducer from "./reservation.slice";
 import staffReducer from "./staff.slice";
 import inventoryReducer from "./inventory.slice";
 import tableReducer from "./table.slice";
+import restaurantProfileReducer from "./restaurantProfile";
+import subscriptionReducer from "./subscriptions.slice";
+import subAccountReducer from "./subaccount.slice"
 
 export const store = configureStore({
   reducer: {
-    user: userReducer,
+    profile: userReducer,
     dashboard: dashboardReducer,
     category: categoryReducer,
     menu: menuReducer,
@@ -19,6 +22,9 @@ export const store = configureStore({
     staff: staffReducer,
     inventory: inventoryReducer,
     table: tableReducer,
+    restaurantProfile: restaurantProfileReducer,
+    subscriptions: subscriptionReducer,
+    subaccount: subAccountReducer
   },
   devTools: import.meta.env.MODE !== "production",
 });

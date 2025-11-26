@@ -204,13 +204,7 @@ export const RenderReservationTableData: React.FC<
           }}
           title={""}
         >
-          <ReservationDetail
-            reservation={selectedReservation}
-            // Retain the original placeholder functions
-            onAssignTable={() => {}}
-            onUpdateStatus={() => {}}
-            onConfirmReservation={() => {}}
-          />
+          <ReservationDetail reservation={selectedReservation} />
         </GenericSheet>
       )}
     </div>

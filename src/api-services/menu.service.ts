@@ -2,7 +2,7 @@
 import { getConfig } from "./utils/reqConfig";
 import { bookiesAxiosInstance } from "./utils/baseUrl";
 import { CategoryData } from "@/store/category.slice";
-import { Table } from "@/store/table.slice";
+import { Table } from "./tableService";
 export interface GetMenuItemsResponse extends Array<MenuItem> {}
 
 export interface MenuItem {

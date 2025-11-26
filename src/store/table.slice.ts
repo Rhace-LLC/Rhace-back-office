@@ -1,3 +1,4 @@
+import { Table } from "@/api-services/tableService";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // ---------------- Helper ----------------
@@ -9,20 +10,6 @@ export function uniqueBy<T, K extends keyof T>(items: T[], key: K): T[] {
     seen.add(val);
     return true;
   });
-}
-
-// ---------------- Types ----------------
-export interface Table {
-  id: string;
-  restaurant_name: string;
-  table_number: string;
-  qr_code_image: string;
-  max_party_size: number;
-  is_available: boolean;
-  created: string; // ISO datetime
-  updated: string; // ISO datetime
-  status: string; // e.g., "free", "occupied", etc.
-  restaurant: string; // restaurant ID
 }
 
 export interface TableSummary {

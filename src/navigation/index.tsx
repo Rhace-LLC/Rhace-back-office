@@ -24,13 +24,13 @@ import CategoryPage from "@/pages/category";
 import ForgotPassword from "@/pages/auth/forgotpassword";
 import ResetPassword from "@/pages/auth/resetpassword";
 import { Orders } from "@/pages/orders/Orders";
-
-export type UserRole = "waiter" | "kitchen" | "admin";
 import ManageInventoryPage from "@/pages/inventory";
 import ManageStaff from "@/pages/staffmanagement";
 import RestaurantProfilePage from "@/pages/myRestaurant";
 import AcceptInvite from "@/pages/AcceptInvite";
 import { ManageReservation } from "@/pages/reservations/re";
+import BillingPage from "@/pages/subscription";
+import { WalletAndAccount } from "@/pages/wallet&account";
 
 export interface User {
   id: string;
@@ -123,14 +123,7 @@ function NavigationContent() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/orders"
-              element={
-             
-                  <Orders />
-            
-              }
-            />
+            <Route path="/orders" element={<Orders />} />
             <Route
               path="/tables"
               element={
@@ -192,6 +185,22 @@ function NavigationContent() {
                   allowedRoles={["admin", "kitchen", "restaurant_owner"]}
                 >
                   <MenuManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/billings-and-subscriptions"
+              element={
+                <ProtectedRoute allowedRoles={["restaurant_owner"]}>
+                  <BillingPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/wallet-and-account"
+              element={
+                <ProtectedRoute allowedRoles={["restaurant_owner"]}>
+                  <WalletAndAccount />
                 </ProtectedRoute>
               }
             />

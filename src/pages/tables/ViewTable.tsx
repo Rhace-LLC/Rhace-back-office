@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { QrCode, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Table as TableItem, updateTableDataById } from "@/store/table.slice";
+import { updateTableDataById } from "@/store/table.slice";
 import QRCode from "react-qr-code";
 import { useAuth } from "@/contexts/AuthContext";
 import GenericDialog from "@/components/generic_sheet_overlay/alert";
+import { Table as TableItem } from "@/api-services/tableService";
 
 import { RefreshCcw, Table, X, Check, Utensils } from "lucide-react";
 import { useLoading } from "@/contexts/LoadingContext";

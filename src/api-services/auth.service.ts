@@ -299,6 +299,94 @@ const verifyOtp = async (data: VerifyOtpBody): Promise<any> => {
 // ---------------------------
 // 📘 Export All
 // ---------------------------
+
+// ----- Profile Response -----
+export interface UserProfile {
+  id: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  email: string;
+  role: "admin" | "customer" | "restaurant"; // adjust if needed
+  restaurant: string | null;
+  restaurant_name: string | null;
+  is_verified: boolean;
+  is_active: boolean;
+}
+
+// ----- Update Profile Body (PUT / PATCH) -----
+export interface UpdateProfileBody {
+  first_name?: string;
+  last_name?: string;
+  phone?: string;
+  restaurant?: string | null;
+}
+
+// ----- Change Password Body -----
+export interface ChangePasswordBody {
+  old_password: string;
+  new_password: string;
+  confirm_password: string;
+}
+
+/**
+ * ============================
+ * Service Functions
+ * ============================
+ */
+
+// 🔹 GET /auth/profile/
+export const getProfile = async (token: string): Promise<UserProfile> => {
+  const config = getConfig(`/auth/profile/`, "GET", token);
+  return bookiesAxiosInstance(config);
+};
+
+// 🔹 PUT /auth/profile/
+export const updateProfile = async (
+  token: string,
+  data: UpdateProfileBody
+): Promise<{ message: string; data: UserProfile }> => {
+  const config = getConfig(`/auth/profile/`, "PUT", token, data);
+  return bookiesAxiosInstance(config);
+};
+
+// 🔹 PATCH /auth/profile/
+export const patchProfile = async (
+  token: string,
+  data: UpdateProfileBody
+): Promise<UserProfile> => {
+  const config = getConfig(`/auth/profile/`, "PATCH", token, data);
+  return bookiesAxiosInstance(config);
+};
+
+// 🔹 PUT /auth/profile/change-password/
+export const changePassword = async (
+  token: string,
+  data: ChangePasswordBody
+): Promise<any> => {
+  const config = getConfig(
+    `/auth/profile/change-password/`,
+    "PUT",
+    token,
+    data
+  );
+  return bookiesAxiosInstance(config);
+};
+
+// 🔹 PATCH /auth/profile/change-password/
+export const patchPassword = async (
+  token: string,
+  data: ChangePasswordBody
+): Promise<any> => {
+  const config = getConfig(
+    `/auth/profile/change-password/`,
+    "PATCH",
+    token,
+    data
+  );
+  return bookiesAxiosInstance(config);
+};
+
 export {
   login,
   logout,
