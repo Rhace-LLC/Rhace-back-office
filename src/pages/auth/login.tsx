@@ -66,6 +66,7 @@ export function Login() {
         response.role,
         response.user,
         restaurants,
+        false,
         false
       );
 
