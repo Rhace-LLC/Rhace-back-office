@@ -56,11 +56,6 @@ export function TablesPage() {
         </button>
       </div>
 
-      {/*
-        <TableStats tables={tables} occupiedTables={occupiedTables} totalRevenue={totalRevenue} />
-       
-        
-        */}
       <ContentHOC
         loading={fetchLoading}
         error={!!fetchError}

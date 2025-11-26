@@ -16,7 +16,6 @@ export type UserRole =
   | "customer"
   | "unassigned";
 
-// ------------------ FRIENDLY LABELS ------------------
 export const UserRoleLabels: Record<UserRole, string> = {
   admin: "Admin",
   restaurant_owner: "Restaurant Owner",
@@ -42,21 +41,33 @@ interface AuthContextType {
     email: string,
     accountType: UserRole,
     profile: UserDataLogin,
-    restaurants: RestaurantDataLogin[]
+    restaurants: RestaurantDataLogin[],
+    hasPayoutAccount: boolean,
+    hasSubscribed: boolean
   ) => void;
   logout: () => void;
   saveProfile: (profile: UserDataLogin) => void;
+
   email: string;
   token: string;
   accountType: string;
+
   isOwner: boolean;
   isWaiter: boolean;
   isAdmin: boolean;
   isKitchen: boolean;
   isInventoryMgr: boolean;
+
   loading: boolean;
+
   user: UserDataLogin | null;
   restaurants: RestaurantDataLogin[];
+
+  hasPayoutAccount: boolean;
+  setHasPayoutAccount: (v: boolean) => void;
+
+  hasSubscribed: boolean;
+  setHasSubscribed: (v: boolean) => void;
 }
 
 const defaultAuthContext: AuthContextType = {
@@ -75,54 +86,30 @@ const defaultAuthContext: AuthContextType = {
   loading: true,
   user: null,
   restaurants: [],
+  hasPayoutAccount: false,
+  setHasPayoutAccount: () => {},
+  hasSubscribed: false,
+  setHasSubscribed: () => {},
 };
 
 const AuthContext = createContext<AuthContextType>(defaultAuthContext);
-
 export const useAuth = () => useContext(AuthContext);
 
-interface TokenExpiryInfo {
-  expired: boolean;
-  hours: number;
-  days: number;
-  totalLifetimeHours: number;
-  totalLifetimeDays: number;
-  remainingSeconds: number;
-}
+// ------------------ TOKEN EXPIRY ------------------
+export const tokenExpiresIn = (exp: number) => {
+  const now = Math.floor(Date.now() / 1000);
+  const oneDay = 86400;
+  const adjustedExp = exp - oneDay;
+  const diff = adjustedExp - now;
 
-export const tokenExpiresIn = (iat: number, exp: number): TokenExpiryInfo => {
-  const nowInSeconds = Math.floor(Date.now() / 1000);
-  const oneDayInSeconds = 24 * 60 * 60;
-  const adjustedExp = exp - oneDayInSeconds;
-  const diffInSeconds = adjustedExp - nowInSeconds;
-  const totalLifetimeSeconds = exp - iat;
-  const totalLifetimeHours = Math.floor(totalLifetimeSeconds / 3600);
-  const totalLifetimeDays = Math.floor(totalLifetimeSeconds / (3600 * 24));
-
-  if (diffInSeconds <= 0) {
-    return {
-      expired: true,
-      hours: 0,
-      days: 0,
-      totalLifetimeHours,
-      totalLifetimeDays,
-      remainingSeconds: 0,
-    };
+  if (diff <= 0) {
+    return { expired: true };
   }
 
-  const hours = Math.floor(diffInSeconds / 3600);
-  const days = Math.floor(diffInSeconds / (3600 * 24));
-
-  return {
-    expired: false,
-    hours,
-    days,
-    totalLifetimeHours,
-    totalLifetimeDays,
-    remainingSeconds: diffInSeconds,
-  };
+  return { expired: false };
 };
 
+// ------------------ PROVIDER ------------------
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -134,49 +121,71 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const [hasPayoutAccount, _setHasPayoutAccount] = useState(false);
+  const [hasSubscribed, _setHasSubscribed] = useState(false);
+
+  // Role shortcuts
+  const isOwner = accountType === "restaurant_owner";
   const isWaiter = accountType === "waiter";
   const isKitchen = accountType === "kitchen";
   const isAdmin = accountType === "admin";
-  const isOwner = accountType === "restaurant_owner";
   const isInventoryMgr = accountType === "inventory_mgr";
+
+  // Persist helper
+  const persist = (key: string, value: any) =>
+    localStorage.setItem(key, String(value));
+
+  // ------------------ LOCALSTORAGE UPDATE WRAPPERS ------------------
+  const setHasPayoutAccount = (value: boolean) => {
+    _setHasPayoutAccount(value);
+    persist("has_payout_account", value);
+  };
+
+  const setHasSubscribed = (value: boolean) => {
+    _setHasSubscribed(value);
+    persist("has_subscribed", value);
+  };
 
   // ------------------ RESTORE SESSION ------------------
   useEffect(() => {
-    const restoreSession = () => {
-      const storedToken = localStorage.getItem("access_token");
-      const storedEmail = localStorage.getItem("user_email");
-      const storedProfile = localStorage.getItem("user_profile");
-      const storedRestaurants = localStorage.getItem("user_restaurants");
+    const storedToken = localStorage.getItem("access_token");
+    const storedEmail = localStorage.getItem("user_email");
+    const storedProfile = localStorage.getItem("user_profile");
+    const storedRestaurants = localStorage.getItem("user_restaurants");
 
-      if (storedToken && storedEmail) {
-        try {
-          const decoded = jwtDecode<DecodedToken>(storedToken);
-          const tokenStatus = tokenExpiresIn(
-            decoded.iat ?? 0,
-            decoded.exp ?? 0
-          );
-          if (!tokenStatus.expired) {
-            setToken(storedToken);
-            setEmail(storedEmail);
-            setAccountType(decoded.role);
-            setIsAuthenticated(true);
+    const storedHasPayout = localStorage.getItem("has_payout_account");
+    const storedHasSubscribed = localStorage.getItem("has_subscribed");
 
-            if (storedProfile) setUser(JSON.parse(storedProfile));
-            if (storedRestaurants)
-              setRestaurants(JSON.parse(storedRestaurants));
-          } else {
-            localStorage.clear();
-          }
-        } catch (error) {
-          console.error("Token decode error:", error);
+    if (storedToken && storedEmail) {
+      try {
+        const decoded = jwtDecode<DecodedToken>(storedToken);
+        const tokenStatus = tokenExpiresIn(decoded.exp ?? 0);
+
+        if (!tokenStatus.expired) {
+          setToken(storedToken);
+          setEmail(storedEmail);
+          setAccountType(decoded.role);
+          setIsAuthenticated(true);
+
+          if (storedProfile) setUser(JSON.parse(storedProfile));
+          if (storedRestaurants)
+            setRestaurants(JSON.parse(storedRestaurants));
+
+          if (storedHasPayout)
+            _setHasPayoutAccount(storedHasPayout === "true");
+
+          if (storedHasSubscribed)
+            _setHasSubscribed(storedHasSubscribed === "true");
+        } else {
           localStorage.clear();
         }
+      } catch (err) {
+        console.error("Token decode failed:", err);
+        localStorage.clear();
       }
+    }
 
-      setLoading(false);
-    };
-
-    restoreSession();
+    setLoading(false);
   }, []);
 
   // ------------------ LOGIN ------------------
@@ -185,19 +194,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     email: string,
     accountType: UserRole,
     profile: UserDataLogin,
-    restaurants: RestaurantDataLogin[]
+    restaurants: RestaurantDataLogin[],
+    hasPayoutAccount: boolean,
+    hasSubscribed: boolean
   ) => {
     setToken(accessToken);
     setEmail(email);
     setAccountType(accountType);
     setUser(profile);
     setRestaurants(restaurants);
+    _setHasPayoutAccount(hasPayoutAccount);
+    _setHasSubscribed(hasSubscribed);
+
     setIsAuthenticated(true);
 
-    localStorage.setItem("access_token", accessToken);
-    localStorage.setItem("user_email", email);
+    persist("access_token", accessToken);
+    persist("user_email", email);
     localStorage.setItem("user_profile", JSON.stringify(profile));
     localStorage.setItem("user_restaurants", JSON.stringify(restaurants));
+    persist("has_payout_account", hasPayoutAccount);
+    persist("has_subscribed", hasSubscribed);
   };
 
   // ------------------ LOGOUT ------------------
@@ -207,7 +223,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setAccountType("");
     setUser(null);
     setRestaurants([]);
+    _setHasPayoutAccount(false);
+    _setHasSubscribed(false);
     setIsAuthenticated(false);
+
     localStorage.clear();
   };
 
@@ -216,6 +235,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.setItem("user_profile", JSON.stringify(profile));
   };
 
+  // ------------------ PROVIDE CONTEXT ------------------
   return (
     <AuthContext.Provider
       value={{
@@ -234,6 +254,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         loading,
         user,
         restaurants,
+        hasPayoutAccount,
+        setHasPayoutAccount,
+        hasSubscribed,
+        setHasSubscribed,
       }}
     >
       {children}

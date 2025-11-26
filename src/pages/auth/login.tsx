@@ -56,13 +56,17 @@ export function Login() {
 
       console.log("Response:", response);
 
-      // Save auth info
+      const restaurants =
+        response.restaurants ??
+        (response.restaurant ? [response.restaurant] : []);
+
       auth.login(
         response.tokens.access,
         email,
         response.role,
         response.user,
-        response.restaurants
+        restaurants,
+        false
       );
 
       toast.success("Login successful!");

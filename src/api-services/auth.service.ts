@@ -22,7 +22,8 @@ export interface LoginResponse {
   };
   role: UserRole;
   user: UserDataLogin;
-  restaurants: RestaurantDataLogin[];
+  restaurants?: RestaurantDataLogin[];
+  restaurant?: RestaurantDataLogin
 }
 
 export interface UserDataLogin {
@@ -31,13 +32,19 @@ export interface UserDataLogin {
   first_name: string;
   last_name: string;
 }
+
 export interface RestaurantDataLogin {
   id: string;
   name: string;
   slug: string;
   access_url: string;
   is_active: boolean;
-  subscription_plan: string;
+  has_subaccount: boolean;
+  subaccount_verified: boolean;
+  is_subscribed: boolean;
+  subscription_status: string | null;
+  subscription_plan: string | null;
+  next_billing_date: string | null; // ISO date string from your backend
 }
 
 // 🔹 Logout

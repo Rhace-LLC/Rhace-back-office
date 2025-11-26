@@ -90,6 +90,8 @@ export const WalletAndAccount = () => {
     if (!subaccount) fetchSubAccount();
   }, []);
 
+  console.log("Sub account", subaccount)
+
   /* ============================================================
         FETCH BANKS
   ============================================================ */
@@ -181,6 +183,7 @@ const handleWithdraw = async () => {
       });
 
       fetchSubAccount();
+      auth.setHasPayoutAccount(true)
     } catch (err: any) {
       toast.error(parseError(err));
     } finally {
