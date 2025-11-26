@@ -8,6 +8,7 @@ import { TrendingUp, TrendingDown, Minus, RefreshCw,  AlertCircle, Users, Coffee
 import { useAuth } from "@/contexts/AuthContext";
 import { getDashboardData, getDashboardStats, DashboardData, DashboardStats } from "../../api-services/dashboardService";
 
+
 // Empty data structure
 const emptyData: DashboardData = {
   active_orders: { count: 0, change: 0, period: "No data available", trend: "stable" },
@@ -93,17 +94,6 @@ interface WeeklyRevenueData {
   revenue: number;
 }
 
-// Recharts tooltip props interface
-interface TooltipProps {
-  active?: boolean;
-  payload?: Array<{
-    payload: any;
-    value: number;
-    name: string;
-    dataKey: string;
-  }>;
-  label?: string;
-}
 
 export const AdminDashboard = () => {
   const auth = useAuth();
@@ -593,19 +583,19 @@ export const AdminDashboard = () => {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={getOrderTypeData()}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                      label={(props: { name: string; percent: number }) => `${props.name} ${(props.percent * 100).toFixed(0)}%`}
-                    >
-                      {getOrderTypeData().map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={['#0088FE', '#00C49F', '#FFBB28', '#FF8042'][index % 4]} />
-                      ))}
-                    </Pie>
+  data={getOrderTypeData()}
+  cx="50%"
+  cy="50%"
+  labelLine={false}
+  outerRadius={80}
+  fill="#8884d8"
+  dataKey="value"
+  label={({ name, percent }: any) => `${name} ${(percent * 100).toFixed(0)}%`}
+>
+  {getOrderTypeData().map((_, index) => (
+    <Cell key={`cell-${index}`} fill={['#0088FE', '#00C49F', '#FFBB28', '#FF8042'][index % 4]} />
+  ))}
+</Pie>
                     <Tooltip content={renderPieTooltip} />
                   </PieChart>
                 </ResponsiveContainer>
