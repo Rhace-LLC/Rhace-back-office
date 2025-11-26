@@ -66,8 +66,8 @@ export function Login() {
         response.role,
         response.user,
         restaurants,
-        false,
-        false
+        true,
+        true
       );
 
       toast.success("Login successful!");
