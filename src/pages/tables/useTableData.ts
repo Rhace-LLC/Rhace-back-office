@@ -19,7 +19,7 @@ export const useTableData = ({
   const [fetchLoading, setFetchLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
 
-  console.log("fetchError", fetchError)
+  console.log("fetchError", fetchError);
 
   const fetchAllData = useCallback(async () => {
     try {

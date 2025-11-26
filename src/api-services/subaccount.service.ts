@@ -37,7 +37,7 @@ export interface CreateSubaccountResponse {
 
 // 🔹 POST /subaccount/withdraw/
 export interface WithdrawRequest {
-  amount: string;        // API returns string, keeping consistent
+  amount: string; // API returns string, keeping consistent
   bank_code: string;
   reason: string;
 }
@@ -105,10 +105,10 @@ export interface SubaccountDetails {
   account_name: string;
   settlement_bank: string;
   account_number: string;
-  percentage_charge: string;   // still string from API
+  percentage_charge: string; // still string from API
   is_active: boolean;
   is_verified: boolean;
-  available_balance: string;   // numeric string
+  available_balance: string; // numeric string
   created_at: string;
   updated_at: string;
 }
@@ -132,7 +132,9 @@ export const getSubaccountBalance = async (token: string): Promise<any> => {
 };
 
 // 🔸 Get Banks List
-export const getSubaccountBanks = async (token: string): Promise<GetBanksResponse> => {
+export const getSubaccountBanks = async (
+  token: string
+): Promise<GetBanksResponse> => {
   const config = getConfig(`/subaccount/banks/`, "GET", token);
   return bookiesAxiosInstance(config);
 };

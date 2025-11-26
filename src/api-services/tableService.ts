@@ -11,7 +11,6 @@ export interface Restaurant {
   email?: string;
 }
 
-
 export interface Table {
   id: string;
   restaurant_name: string;

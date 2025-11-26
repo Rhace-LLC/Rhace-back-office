@@ -23,7 +23,7 @@ export interface LoginResponse {
   role: UserRole;
   user: UserDataLogin;
   restaurants?: RestaurantDataLogin[];
-  restaurant?: RestaurantDataLogin
+  restaurant?: RestaurantDataLogin;
 }
 
 export interface UserDataLogin {

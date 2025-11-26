@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { InventoryItem } from "@/store/inventory.slice";
+import { InventoryItem, updateInventoryDataById } from "@/store/inventory.slice";
 import { toast } from "sonner";
+import { updateInventoryItem } from "@/api-services/inventory.service";
+import { useAuth } from "@/contexts/AuthContext";
+import { useDispatch } from "react-redux";
 
 interface ViewInventoryItemProps {
   item: InventoryItem;
@@ -14,6 +17,8 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
   item,
   onUpdate,
 }) => {
+  const auth = useAuth();
+  const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [editableItem, setEditableItem] = useState(item);
   const [isSaving, setIsSaving] = useState(false);
@@ -33,16 +38,30 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
   };
 
   const handleUpdate = async () => {
-    if (!onUpdate) {
-      console.warn("No update handler passed.");
-      return;
-    }
-
     setIsSaving(true);
     try {
-      await editableItem;
+      const payload = {
+        name: editableItem.name,
+        unit: editableItem.unit,
+        threshold: editableItem.threshold,
+        is_allergen: editableItem.is_allergen,
+        restaurant: item.restaurant, // Make sure editableItem has restaurant UUID
+      };
+
+      const response = await updateInventoryItem(
+        String(item.id),
+        payload,
+        auth.token
+      );
+
+      dispatch(updateInventoryDataById(response))
+
       toast.success("Item updated successfully");
+
       setIsEditing(false);
+
+      // Trigger optional callback to update parent state
+      if (onUpdate) await onUpdate(response);
     } catch (e) {
       toast.error("Failed to update item");
       console.error(e);
@@ -58,10 +77,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
         <h2 className="text-lg font-semibold text-gray-800">Inventory Item</h2>
 
         {!isEditing ? (
-          <Button
-            className="hidden cursor-pointer"
-            onClick={() => setIsEditing(true)}
-          >
+          <Button className="cursor-pointer" onClick={() => setIsEditing(true)}>
             Edit
           </Button>
         ) : (

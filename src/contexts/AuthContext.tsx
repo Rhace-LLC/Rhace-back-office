@@ -168,11 +168,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setIsAuthenticated(true);
 
           if (storedProfile) setUser(JSON.parse(storedProfile));
-          if (storedRestaurants)
-            setRestaurants(JSON.parse(storedRestaurants));
+          if (storedRestaurants) setRestaurants(JSON.parse(storedRestaurants));
 
-          if (storedHasPayout)
-            _setHasPayoutAccount(storedHasPayout === "true");
+          if (storedHasPayout) _setHasPayoutAccount(storedHasPayout === "true");
 
           if (storedHasSubscribed)
             _setHasSubscribed(storedHasSubscribed === "true");

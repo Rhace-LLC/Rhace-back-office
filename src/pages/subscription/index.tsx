@@ -71,7 +71,7 @@ export default function BillingPage() {
     } finally {
       setDataLoading(false);
     }
-  }
+  };
 
   const fetchStatus = async () => {
     try {
@@ -79,7 +79,7 @@ export default function BillingPage() {
       setError("");
       const res = await getSubscriptionStatus(auth.token);
       dispatch(setSubscriptionStatus(res));
-      auth.setHasSubscribed(true)
+      auth.setHasSubscribed(true);
     } catch (err) {
       let message = parseError(err);
       if (message == "No subscription found") {

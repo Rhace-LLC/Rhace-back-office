@@ -96,7 +96,6 @@ function ProtectedRoute({
   return <>{children}</>;
 }
 
-
 function Navigation(): React.JSX.Element {
   return (
     <Router>
@@ -112,7 +111,7 @@ function NavigationContent() {
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  console.log("auth",auth)
+  console.log("auth", auth);
 
   useEffect(() => {
     if (
@@ -121,7 +120,6 @@ function NavigationContent() {
     ) {
       navigate("/dashboard");
     }
-
   }, [auth, location, navigate]);
 
   return (

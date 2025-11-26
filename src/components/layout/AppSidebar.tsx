@@ -110,7 +110,6 @@ export function useRoleBasedMenu(): MenuItem[] {
         url: "/wallet-and-account",
         icon: Users,
       },
-      
 
       ...baseMenu.slice(2), // Notifications, Profile
     ];
