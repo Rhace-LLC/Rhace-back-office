@@ -70,6 +70,7 @@ const isCacheValid = (): boolean => {
 export function Orders() {
   const auth = useAuth();
   const token = auth?.token;
+  const { isWaiter } = useAuth();
 
   // Initialize state from cache if available
   const [orders, setOrders] = useState<Order[]>(
@@ -104,6 +105,8 @@ export function Orders() {
 
     try {
       console.log("🔄 Orders - Background refresh...");
+      
+      // Only fetch waiters if user is NOT a waiter
       const [ordersData, waitersData] = await Promise.all([
         getAllOrders(token),
         getActiveWaiters(token),
@@ -452,7 +455,6 @@ export function Orders() {
         isOpen={!!selectedOrder}
         onClose={handleCloseSheet}
         onStatusChange={handleStatusChange}
-        onCancelOrder={handleCancelOrder}
         onAssignTable={handleAssignTable}
         onAssignWaiter={handleAssignWaiter}
         staff={waiters}

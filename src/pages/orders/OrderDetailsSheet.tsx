@@ -42,7 +42,6 @@ interface OrderDetailsSheetProps {
   isOpen: boolean;
   onClose: () => void;
   onStatusChange: (orderId: string, status: OrderStatus) => void;
-  onCancelOrder: (orderId: string) => void;
   onAssignTable: (orderId: string, tableId: string) => void;
   onAssignWaiter: (orderId: string, waiterId: string) => void;
   staff: Staff[];
@@ -82,12 +81,12 @@ export function OrderDetailsSheet({
   isOpen,
   onClose,
   onStatusChange,
-  onCancelOrder,
   onAssignTable,
   onAssignWaiter,
   staff,
   tables,
 }: OrderDetailsSheetProps) {
+  const { isWaiter } = useAuth();
   const [selectedTable, setSelectedTable] = useState("");
   const [selectedWaiter, setSelectedWaiter] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | "">("");
@@ -139,6 +138,14 @@ export function OrderDetailsSheet({
   };
 
   const handleStatusChange = (newStatus: OrderStatus) => {
+    // Check if user is authorized to update status
+    if (!isWaiter) {
+      toast.error("Access Denied", {
+        description: "Only waiters can update order status"
+      });
+      return;
+    }
+
     setSelectedStatus(newStatus);
     onStatusChange(order.id, newStatus);
   };
@@ -151,10 +158,6 @@ export function OrderDetailsSheet({
       setSelectedStatus(nextStatus);
       onStatusChange(order.id, nextStatus);
     }
-  };
-
-  const handleCancel = () => {
-    onCancelOrder(order.id);
   };
 
   const handleAssignTable = () => {
@@ -443,7 +446,7 @@ export function OrderDetailsSheet({
                 </div>
               )}
             </div>
-          </div>
+          )}
 
           {/* Table Assignment for Dine-in Orders */}
           {isDineInOrder && (
@@ -607,7 +610,7 @@ export function OrderDetailsSheet({
                       onClick={handleQuickStatusUpdate}
                       variant="outline"
                       className="whitespace-nowrap"
-                      disabled={availableStatusOptions.length === 0}
+                      disabled={availableStatusOptions.length === 0 || !isWaiter}
                     >
                       {getQuickUpdateLabel()}
                     </Button>
@@ -618,6 +621,11 @@ export function OrderDetailsSheet({
                       .map((s) => formatStatusForDisplay(s))
                       .join(", ")}
                   </p>
+                  {!isWaiter && (
+                    <p className="text-xs text-amber-600 mt-1">
+                      Only waiters can update order status
+                    </p>
+                  )}
                 </div>
               )}
             </div>
