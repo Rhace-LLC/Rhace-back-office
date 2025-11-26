@@ -58,7 +58,9 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
   const dataStore = useSelector((state: RootState) => state.table);
   const [reasonError, setReasonError] = useState("");
   const [reason, setReason] = useState("");
-  const allTables: Table[] = Object.values(dataStore.data).flat();
+  let allTables: Table[] = Object.values(dataStore.data).flat();
+  allTables = allTables.filter(x=> x.is_available)
+
   const { fetchAllData, fetchLoading, fetchError } = useTableData({
     page: 1,
     page_size: 10,
