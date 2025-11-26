@@ -40,7 +40,9 @@ import { useLoading } from "@/contexts/LoadingContext";
 export const WalletAndAccount = () => {
   const dispatch = useDispatch();
   const auth = useAuth();
+
   const subaccount = useSelector((state: RootState) => state.subaccount.data);
+
   const {setLoading,setLoadingText} = useLoading()
 
   const [loading, setLoadingState] = useState(false);
@@ -56,6 +58,7 @@ export const WalletAndAccount = () => {
     bank_code: "",
     bank_name: "",
   });
+  
   const [creating, setCreating] = useState(false);
 
   // BANK LIST
@@ -234,34 +237,34 @@ const handleWithdraw = async () => {
               </div>
             )}
 
-{!banksLoading && !banksError && (
-  <Select
-    onValueChange={(val) => {
-      const bank = banks.find((b) => b.code === val);
-      setCreateData((prev) => ({
-        ...prev,
-        bank_code: bank.code,
-        bank_name: bank.name,
-      }));
-    }}
-  >
-    <SelectTrigger>
-      <SelectValue placeholder="Select bank" />
-    </SelectTrigger>
+            {!banksLoading && !banksError && (
+              <Select
+                onValueChange={(val) => {
+                  const bank = banks.find((b) => b.code === val);
+                  setCreateData((prev) => ({
+                    ...prev,
+                    bank_code: bank.code,
+                    bank_name: bank.name,
+                  }));
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select bank" />
+                </SelectTrigger>
 
-    <SelectContent className="max-h-64 p-0">
-      <ScrollArea className="h-64">
-        <div className="p-1">
-          {banks.map((b) => (
-            <SelectItem key={b.id} value={b.code}>
-              {b.name}
-            </SelectItem>
-          ))}
-        </div>
-      </ScrollArea>
-    </SelectContent>
-  </Select>
-)}
+                <SelectContent className="max-h-64 p-0">
+                  <ScrollArea className="h-64">
+                    <div className="p-1">
+                      {banks.map((b) => (
+                        <SelectItem key={b.id} value={b.code}>
+                          {b.name}
+                        </SelectItem>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </SelectContent>
+              </Select>
+            )}
 
           </div>
 
