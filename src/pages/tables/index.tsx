@@ -8,6 +8,8 @@ import { TableCard } from "./TableCard";
 import { ContentHOC } from "@/components/nocontent";
 import { Pagination } from "@/components/pagination";
 import { useTableData } from "./useTableData";
+import { Button } from "@/components/ui/button";
+import { RefreshCcw } from "lucide-react";
 
 export function TablesPage() {
   const [addTableOpen, setAddTableOpen] = useState(false);
@@ -47,13 +49,22 @@ export function TablesPage() {
             Click on any table to view details and manage assignments
           </p>
         </div>
-
-        <button
-          className="cursor-pointer rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200"
-          onClick={() => setAddTableOpen(true)} // or whatever opens your AddTable modal/sheet
-        >
-          + Add Table
-        </button>
+        <div className="flex items-center justify-between gap-4">
+          <button
+            className="cursor-pointer rounded-md bg-blue-100 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200"
+            onClick={() => setAddTableOpen(true)} // or whatever opens your AddTable modal/sheet
+          >
+            + Add Table
+          </button>
+          <Button
+            className="w-max cursor-pointer bg-blue-600 px-4 text-white"
+            variant="outline"
+            size="icon"
+            onClick={fetchAllData}
+          >
+            <RefreshCcw className="h-4 w-4" /> Refresh
+          </Button>
+        </div>
       </div>
 
       <ContentHOC

@@ -59,30 +59,27 @@ export function Login() {
       const restaurants =
         response.restaurants ??
         (response.restaurant ? [response.restaurant] : []);
-        if(response.role == "restaurant_owner"){
-      auth.login(
-        response.tokens.access,
-        email,
-        response.role,
-        response.user,
-        restaurants,
-        restaurants[0].has_subaccount,
-        restaurants[0].is_subscribed
-      );
-        }
-        else {
-                auth.login(
-        response.tokens.access,
-        email,
-        response.role,
-        response.user,
-        restaurants,
-        true,
-        true
-      );
-        }
-
-
+      if (response.role == "restaurant_owner") {
+        auth.login(
+          response.tokens.access,
+          email,
+          response.role,
+          response.user,
+          restaurants,
+          restaurants[0].has_subaccount,
+          restaurants[0].is_subscribed
+        );
+      } else {
+        auth.login(
+          response.tokens.access,
+          email,
+          response.role,
+          response.user,
+          restaurants,
+          true,
+          true
+        );
+      }
 
       toast.success("Login successful!");
       navigate("/dashboard"); // or your desired route

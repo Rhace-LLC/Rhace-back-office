@@ -13,10 +13,13 @@ import { Key, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { patchPassword } from "@/api-services/auth.service";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLoading } from "@/contexts/LoadingContext";
+import { parseError } from "@/api-services/utils/parseError";
 
 const SecuritySection: React.FC = () => {
   const auth = useAuth();
   const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const { setLoading, setLoadingText } = useLoading();
 
   const [passwordForm, setPasswordForm] = useState({
     old_password: "",
@@ -41,16 +44,27 @@ const SecuritySection: React.FC = () => {
       return;
     }
 
-    await patchPassword(auth.token, passwordForm);
+    try {
+      setLoading(true);
+      setLoadingText("Updating Password");
 
-    toast.success("Password changed successfully");
+      await patchPassword(auth.token, passwordForm);
 
-    setPasswordForm({
-      old_password: "",
-      new_password: "",
-      confirm_password: "",
-    });
-    setShowPasswordForm(false);
+      toast.success("Password changed successfully");
+
+      setPasswordForm({
+        old_password: "",
+        new_password: "",
+        confirm_password: "",
+      });
+      setShowPasswordForm(false);
+    } catch (error: any) {
+      const errMsg = parseError(error);
+      toast.error(errMsg || "Failed to update password");
+    } finally {
+      setLoading(false);
+      setLoadingText("");
+    }
   };
 
   const toggleShowPassword = (field: keyof typeof showPassword) => {
@@ -78,13 +92,13 @@ const SecuritySection: React.FC = () => {
       />
       <button
         type="button"
-        className="absolute right-2 top-[32px] -translate-y-1/2"
+        className="absolute top-[32px] right-2 -translate-y-1/2"
         onClick={() => toggleShowPassword(id)}
       >
         {showPassword[id] ? (
-          <EyeOff className="h-4 w-4 text-gray-500 relative top-2" />
+          <EyeOff className="relative top-2 h-4 w-4 text-gray-500" />
         ) : (
-          <Eye className="h-4 w-4 text-gray-500 relative top-2" />
+          <Eye className="relative top-2 h-4 w-4 text-gray-500" />
         )}
       </button>
     </div>
@@ -113,9 +127,21 @@ const SecuritySection: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {renderPasswordInput("old_password", "Current Password", "Enter current password")}
-            {renderPasswordInput("new_password", "New Password", "Enter new password")}
-            {renderPasswordInput("confirm_password", "Confirm New Password", "Confirm new password")}
+            {renderPasswordInput(
+              "old_password",
+              "Current Password",
+              "Enter current password"
+            )}
+            {renderPasswordInput(
+              "new_password",
+              "New Password",
+              "Enter new password"
+            )}
+            {renderPasswordInput(
+              "confirm_password",
+              "Confirm New Password",
+              "Confirm new password"
+            )}
 
             <div className="flex gap-2">
               <Button onClick={handleChangePassword} className="bg-[#2542e3]">

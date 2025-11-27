@@ -17,7 +17,8 @@ import GenericSheet from "@/components/generic_sheet_overlay";
 import { AddInventoryItem } from "./AddInventoryItem";
 import { ViewInventoryItem } from "./ViewInventoryItem";
 import { useInventory } from "./useInventory";
-import { Book } from "lucide-react";
+import { Book, RefreshCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const ManageInventoryPage: React.FC = () => {
   const auth = useAuth();
@@ -131,23 +132,26 @@ const ManageInventoryPage: React.FC = () => {
             Track and manage your inventory items.
           </p>
         </div>
-        <button
-          className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium hover:bg-gray-200"
-          onClick={() => {
-            setSelectedItem(null);
-            setAddInventoryOpen(true);
-          }}
-        >
-          + Add Inventory Item
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium hover:bg-gray-200"
+            onClick={() => {
+              setSelectedItem(null);
+              setAddInventoryOpen(true);
+            }}
+          >
+            + Add Inventory Item
+          </button>
+          <Button
+            className="w-max cursor-pointer bg-blue-600 px-4 text-white"
+            variant="outline"
+            size="icon"
+            onClick={fetchAllData}
+          >
+            <RefreshCcw className="h-4 w-4" /> Refresh
+          </Button>
+        </div>
       </div>
-
-      {/* Filters 
-      <InventoryFilters
-        filters={filters}
-        setFilters={setFilters}
-        onSearch={() => fetchDataWithFiltersAndSearch()}
-      />*/}
 
       {/* Inventory Table */}
       {viewState === "normal" ? (

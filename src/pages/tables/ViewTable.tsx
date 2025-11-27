@@ -14,6 +14,7 @@ import { useLoading } from "@/contexts/LoadingContext";
 import { updateTable } from "@/api-services/menu.service";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
+import { Input } from "@/components/ui/input";
 
 export type TableStatus = "free" | "occupied" | "needs_cleaning";
 const StatusLabelToValue: Record<string, TableStatus> = {
@@ -61,12 +62,20 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
   const dispatch = useDispatch();
   const { setLoading: setLoadingState, setLoadingText } = useLoading();
   const r = auth.restaurants[0];
+
   const [qrValue, setQrValue] = useState(
     `https://bookies-customer.onrender.com?tid=${table.id}&rid=${r.id}&r=${r.name}&tno=${table.table_number}`
   );
+
   const [loading, setLoading] = useState(false);
 
+  // Edit table required states
+  const [tableInfoDialogOpen, setTableInfoDialogOpen] = useState(false);
+  const [editTableNumber, setEditTableNumber] = useState(table.table_number);
+  const [editMaxSeats, setEditMaxSeats] = useState(table.max_party_size);
+
   // Dialog open controller
+
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<
     keyof typeof StatusLabelToValue | ""
@@ -116,6 +125,53 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
     }
   };
 
+  const handleUpdateTableInfo = async () => {
+    try {
+      setLoadingState(true);
+      setLoadingText("Updating...");
+
+      const body = {
+        ...table,
+        table_number: editTableNumber,
+        max_party_size: editMaxSeats,
+      };
+
+      if (body.status == "free") {
+        body.is_available = true;
+      } else {
+        body.is_available = false;
+      }
+
+      // Make the request
+      const res = await updateTable(
+        auth.restaurants[0].id,
+        table.id,
+        body,
+        auth.token
+      );
+
+      dispatch(updateTableDataById(res));
+
+      // Success toast
+      toast.success("Table status updated successfully");
+
+      // Close dialog
+      setTableInfoDialogOpen(false);
+
+      // Optional: Refresh table lis
+    } catch (error: any) {
+      console.error("Update table error:", error);
+
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to update table status. Please try again."
+      );
+    } finally {
+      setLoadingState(false);
+      setLoadingText("");
+    }
+  };
+
   return (
     <div className="space-y-4 pt-5">
       <Tabs defaultValue="overview" className="w-full space-y-4">
@@ -127,61 +183,54 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
             _QR Code
           </TabsTrigger>
         </TabsList>
-
         {/* --- OVERVIEW TAB --- */}
-        <TabsContent value="overview" className="rounded-lg bg-white">
+        <TabsContent value="overview">
           <div className="grid grid-cols-2 gap-4">
             {/* Seats */}
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase">
+            <div className="rounded-xl border border-indigo-100 bg-indigo-50/50 p-4 shadow-sm">
+              <p className="text-xs font-medium tracking-wide text-indigo-600 uppercase">
                 Available Seats
               </p>
-              <p className="mt-1 text-xl font-bold text-gray-900">
+              <p className="mt-1 text-[18px] font-semibold text-gray-900">
                 {table.max_party_size}
               </p>
             </div>
 
             {/* Table Number */}
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase">
+            <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-4 shadow-sm">
+              <p className="text-xs font-medium tracking-wide text-blue-600 uppercase">
                 Table Number
               </p>
-              <p className="mt-1 text-xl font-bold text-gray-900">
+              <p className="mt-1 text-[18px] font-semibold text-gray-900">
                 {table.table_number}
               </p>
             </div>
 
             {/* Current Status */}
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase">
+            <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4 shadow-sm">
+              <p className="text-xs font-medium tracking-wide text-emerald-600 uppercase">
                 Current Status
               </p>
-              <p className="mt-1 text-xl font-bold text-gray-900 capitalize">
+              <p className="mt-1 text-[18px] font-semibold text-gray-900 capitalize">
                 {table.status}
-              </p>
-            </div>
-
-            {/* Assigned Waiter */}
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase">
-                Assigned Waiter
-              </p>
-              <p className="mt-1 text-xl font-bold text-gray-900">
-                {"Unassigned"}
               </p>
             </div>
           </div>
 
           {/* Actions */}
-          <div className="grid grid-cols-2 gap-2 pt-4">
+          <div className="grid grid-cols-2 gap-3 space-y-2 pt-5">
             <Button
-              className="w-full"
-              variant="secondary"
-              onClick={() => {
-                setStatusDialogOpen(true);
-              }}
+              className="h-12 w-full cursor-pointer rounded-[10px] bg-indigo-600 text-white transition hover:bg-indigo-700"
+              onClick={() => setStatusDialogOpen(true)}
             >
               Update Table Status
+            </Button>
+
+            <Button
+              className="h-12 w-full cursor-pointer rounded-[10px] bg-blue-600 text-white transition hover:bg-blue-700"
+              onClick={() => setTableInfoDialogOpen(true)}
+            >
+              Update Table Info
             </Button>
           </div>
         </TabsContent>
@@ -336,6 +385,88 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
               variant="ghost"
               className="w-full text-gray-600 hover:bg-gray-100"
               onClick={() => setStatusDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </GenericDialog>
+      {/* ================================
+    UPDATE TABLE INFO - DIALOG
+================================== */}
+      <GenericDialog
+        open={tableInfoDialogOpen}
+        onOpenChange={setTableInfoDialogOpen}
+      >
+        <div className="space-y-6 p-2">
+          {/* Title */}
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Update Table Info
+            </h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Modify the table number or available seats for this table.
+            </p>
+          </div>
+
+          {/* Input Fields */}
+          <div className="space-y-4">
+            {/* Table Number */}
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-gray-700">
+                Table Number
+              </label>
+              <Input
+                className="h-11 rounded-lg"
+                value={editTableNumber}
+                onChange={(e) => setEditTableNumber(e.target.value)}
+                placeholder="Enter table number"
+              />
+            </div>
+
+            {/* Maximum Seats */}
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-gray-700">
+                Available Seats
+              </label>
+              <Input
+                type="number"
+                className="h-11 rounded-lg"
+                value={String(editMaxSeats)}
+                onChange={(e) => setEditMaxSeats(Number(e.target.value))}
+                placeholder="Enter max seats"
+              />
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="flex flex-col gap-3 pt-4">
+            <Button
+              className="h-12 w-full bg-blue-600 text-base font-semibold shadow-md hover:bg-blue-700"
+              onClick={() => {
+                if (!editTableNumber || Number(editTableNumber) <= 0) {
+                  toast.error("Table number must be a valid positive number");
+                  return;
+                }
+
+                if (!editMaxSeats || Number(editMaxSeats) <= 0) {
+                  toast.error(
+                    "Available seats must be a valid positive number"
+                  );
+                  return;
+                }
+
+                handleUpdateTableInfo();
+              }}
+            >
+              <RefreshCcw className="mr-2 h-4 w-4" />
+              Save Changes
+            </Button>
+
+            <Button
+              variant="ghost"
+              className="w-full text-gray-600 hover:bg-gray-100"
+              onClick={() => setTableInfoDialogOpen(false)}
             >
               Cancel
             </Button>

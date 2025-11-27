@@ -1,11 +1,12 @@
 // src/services/utils/baseUrl.ts
 import axios, { AxiosError, AxiosResponse } from "axios";
 
-export const bookies_baseurl: string =
-  "https://bookies-backend-jdv3.onrender.com";
+//export const bookies_baseurl: string = "https://bookies-backend-jdv3.onrender.com";
+
+const bookies_baseurl_temporary = "https://bookies-backend-jl3n.onrender.com";
 
 export const bookiesAxiosInstance = axios.create({
-  baseURL: bookies_baseurl,
+  baseURL: bookies_baseurl_temporary,
 });
 
 // --- Interceptors ---
