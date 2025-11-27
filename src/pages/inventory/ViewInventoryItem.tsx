@@ -75,8 +75,6 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
 
       dispatch(updateInventoryDataById(response));
       toast.success("Item info updated successfully");
-      setIsEditingInfo(false);
-
       if (onUpdate) await onUpdate(response);
     } catch (e) {
       console.error(e);
@@ -104,7 +102,6 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
         updateInventoryDataById({ ...item, quantity: editableItem.quantity })
       );
       toast.success("Quantity updated successfully");
-      setIsEditingQuantity(false);
 
       if (onUpdate) await onUpdate(item);
     } catch (e) {
