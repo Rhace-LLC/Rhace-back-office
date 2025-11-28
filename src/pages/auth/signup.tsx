@@ -10,13 +10,10 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { parseError } from "@/api-services/utils/parseError";
 import {
-  registerEmployee,
-  RegisterEmployeeBody,
   registerRestaurant,
 } from "@/api-services/auth.service";
 import { Eye, EyeOff } from "lucide-react";
@@ -187,10 +184,6 @@ export function SignUp() {
   const [showOwnerConfirmPassword, setShowOwnerConfirmPassword] =
     useState(false);
 
-  const [showEmployeePassword, setShowEmployeePassword] = useState(false);
-  const [showEmployeeConfirmPassword, setShowEmployeeConfirmPassword] =
-    useState(false);
-
   // Owner signup form
   const [ownerForm, setOwnerForm] = useState<SignUpData>({
     restaurant_name: "",
@@ -211,16 +204,6 @@ export function SignUp() {
     confirm_password: "",
   });
 
-  // Employee signup form
-  const [employeeForm, setEmployeeForm] = useState<EmployeeSignUpData>({
-    email: "",
-    first_name: "",
-    last_name: "",
-    phone: "",
-    password: "",
-    confirm_password: "",
-    role: "unassigned",
-  });
 
   const [countries] = useState(Country.getAllCountries());
   const [states, setStates] = useState<any[]>([]);
@@ -251,51 +234,11 @@ export function SignUp() {
     }
   };
 
-  const handleEmployeeChange = (
-    field: keyof EmployeeSignUpData,
-    value: string
-  ) => {
-    setEmployeeForm((prev) => ({ ...prev, [field]: value }));
-    setErrors(() => ({}));
-  };
-
   const handleOwnerChange = (field: keyof SignUpData, value: string) => {
     setOwnerForm((prev) => ({ ...prev, [field]: value }));
     setErrors(() => ({}));
   };
 
-  const handleEmployeeSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const { valid, errors } = validateEmployeeSignupForm(employeeForm);
-    setErrors(errors);
-
-    if (!valid) {
-      return;
-    }
-
-    const payload: RegisterEmployeeBody = {
-      email: employeeForm.email,
-      first_name: employeeForm.first_name,
-      last_name: employeeForm.last_name,
-      phone: employeeForm.phone,
-      password: employeeForm.password,
-      confirm_password: employeeForm.confirm_password,
-      role: employeeForm.role,
-    };
-
-    setLoading(true);
-    try {
-      const response = await registerEmployee(payload);
-      console.log("Response:", response);
-      toast.success("Employee account created successfully!");
-      navigate(`/verify-email?email=${employeeForm.email}`);
-    } catch (error: any) {
-      const message = parseError(error) || "Something went wrong!";
-      toast.error(message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleOwnerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -352,21 +295,14 @@ export function SignUp() {
             />
           </div>
           <CardTitle className="text-2xl font-semibold text-gray-800">
-            Create Account
+            Restaurant Registration
           </CardTitle>
           <CardDescription>
-            Register your restaurant or join as an employee
+            Register your restaurant, fill in the details below
           </CardDescription>
         </CardHeader>
 
         <CardContent>
-          <Tabs defaultValue="owner" className="w-full">
-            <TabsList className="grid w-full grid-cols-1">
-              <TabsTrigger value="owner">Restaurant Registration</TabsTrigger>
-            </TabsList>
-
-            {/* ---------------- RESTAURANT OWNER ---------------- */}
-            <TabsContent value="owner">
               <form onSubmit={handleOwnerSubmit} className="mt-4 space-y-3">
                 <div>
                   <Label>Restaurant Name</Label>
@@ -633,141 +569,7 @@ export function SignUp() {
                   {loading ? "Registering..." : "Register Restaurant"}
                 </Button>
               </form>
-            </TabsContent>
 
-            {/* ---------------- EMPLOYEE ---------------- */}
-            <TabsContent value="employee">
-              <form onSubmit={handleEmployeeSubmit} className="mt-4 space-y-3">
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <Label>First Name</Label>
-                    <Input
-                      value={employeeForm.first_name}
-                      onChange={(e) =>
-                        handleEmployeeChange("first_name", e.target.value)
-                      }
-                    />
-                    {errors.first_name && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.first_name}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Last Name</Label>
-                    <Input
-                      value={employeeForm.last_name}
-                      onChange={(e) =>
-                        handleEmployeeChange("last_name", e.target.value)
-                      }
-                    />
-                    {errors.last_name && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.last_name}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <Label>Email</Label>
-                  <Input
-                    type="email"
-                    value={employeeForm.email}
-                    onChange={(e) =>
-                      handleEmployeeChange("email", e.target.value)
-                    }
-                  />
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label>Phone</Label>
-                  <Input
-                    type="tel"
-                    value={employeeForm.phone}
-                    onChange={(e) =>
-                      handleEmployeeChange("phone", e.target.value)
-                    }
-                  />
-                  {errors.phone && (
-                    <p className="mt-1 text-sm text-red-500">{errors.phone}</p>
-                  )}
-                </div>
-
-                <div className="relative">
-                  <Label>Password</Label>
-                  <Input
-                    type={showEmployeePassword ? "text" : "password"}
-                    value={employeeForm.password}
-                    onChange={(e) =>
-                      handleEmployeeChange("password", e.target.value)
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setShowEmployeePassword(!showEmployeePassword)
-                    }
-                    className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
-                  >
-                    {showEmployeePassword ? (
-                      <EyeOff size={18} />
-                    ) : (
-                      <Eye size={18} />
-                    )}
-                  </button>
-                  {errors.password && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.password}
-                    </p>
-                  )}
-                </div>
-
-                <div className="relative">
-                  <Label>Confirm Password</Label>
-                  <Input
-                    type={showEmployeeConfirmPassword ? "text" : "password"}
-                    value={employeeForm.confirm_password}
-                    onChange={(e) =>
-                      handleEmployeeChange("confirm_password", e.target.value)
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setShowEmployeeConfirmPassword(
-                        !showEmployeeConfirmPassword
-                      )
-                    }
-                    className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
-                  >
-                    {showEmployeeConfirmPassword ? (
-                      <EyeOff size={18} />
-                    ) : (
-                      <Eye size={18} />
-                    )}
-                  </button>
-                  {errors.confirm_password && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.confirm_password}
-                    </p>
-                  )}
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full"
-                  style={{ backgroundColor: "#2542e3" }}
-                >
-                  {loading ? "Creating account..." : "Sign Up"}
-                </Button>
-              </form>
-            </TabsContent>
-          </Tabs>
 
           <p className="text-muted-foreground mt-5 text-center text-sm">
             Already have an account?{" "}
