@@ -10,7 +10,7 @@ import {
   requestPasswordReset,
   resetPassword,
 } from "@/api-services/auth.service";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { OtpInput } from "@/components/OTP/otp";
 import { parseError } from "@/api-services/utils/parseError";
 
@@ -19,6 +19,7 @@ export interface FormErrors {
 }
 
 export default function ResetPassword() {
+  const navigate = useNavigate()
   const { setLoading, setLoadingText } = useLoading();
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email") || "";
@@ -64,8 +65,8 @@ export default function ResetPassword() {
       setLoading(true);
       if (step === "otp") {
         setLoadingText("Processing...");
-        await new Promise((resolve) => setTimeout(resolve, 700)); // simulate success
-        toast.success("Enter New Psssword");
+        await new Promise((resolve) => setTimeout(resolve, 300)); // simulate success
+        toast.success("Enter New Password");
         setStep("reset");
       } else {
         setLoadingText("Resetting password...");
@@ -78,13 +79,13 @@ export default function ResetPassword() {
         const response = await resetPassword(payload);
         console.log("Response", response);
         toast.success(response?.message || "Password reset successful!");
+        navigate('/login')
       }
     } catch (error) {
       const errorMessage = parseError(error);
       toast.error(
         errorMessage || "Failed to reset password. Please try again."
       );
-      setStep("otp");
     } finally {
       setLoading(false);
       setLoadingText("");
