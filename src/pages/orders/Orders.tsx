@@ -17,7 +17,6 @@ import {
 import { getActiveWaiters, Staff } from "../../api-services/staffService";
 import { getAvailableTables, Table } from "../../api-services/tableService";
 
-// Define OrderStatus locally since there's an import issue
 type OrderStatus = "received" | "preparing" | "ready" | "completed" | "cancelled" | "delivered";
 
 const statusOptions = [
@@ -38,6 +37,7 @@ interface OrdersCache {
   waiters: Staff[];
   tables: Table[];
   lastFetched: number;
+  restaurantId?: string;
 }
 
 let ordersCache: OrdersCache | null = null;
@@ -51,9 +51,8 @@ const isCacheValid = (): boolean => {
 export function Orders() {
   const auth = useAuth();
   const token = auth?.token;
-  const { isWaiter } = useAuth();
+  const { isWaiter, isOwner, restaurants } = useAuth();
 
-  // Initialize state from cache if available
   const [orders, setOrders] = useState<Order[]>(() => ordersCache?.orders ?? []);
   const [waiters, setWaiters] = useState<Staff[]>(() => ordersCache?.waiters ?? []);
   const [tables, setTables] = useState<Table[]>(() => ordersCache?.tables ?? []);
@@ -64,44 +63,83 @@ export function Orders() {
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<number>(() => ordersCache?.lastFetched ?? Date.now());
+  const [tablesFetched, setTablesFetched] = useState(false);
 
-  // Get restaurant ID from the first order
-  const restaurantId = orders[0]?.restaurant?.id;
+  // ✅ FIX: Get restaurant ID from auth context, not from orders
+  const restaurantId = restaurants?.[0]?.id;
+
+  // DEBUG: Log restaurant ID
+  useEffect(() => {
+    console.log("🔍 DEBUG - Restaurants from auth:", restaurants);
+    console.log("🔍 DEBUG - Restaurant ID from auth:", restaurantId);
+    console.log("🔍 DEBUG - Orders array:", orders);
+    console.log("🔍 DEBUG - Tables fetched flag:", tablesFetched);
+    console.log("🔍 DEBUG - Current tables:", tables);
+  }, [restaurants, restaurantId, orders, tablesFetched, tables]);
 
   const filteredOrders = (orders || []).filter(
     (order) => statusFilter === "All" || order.status === statusFilter
   );
 
+  // Fetch tables function
+  const fetchTables = async (restId: string, force = false) => {
+    if (!token) return;
+    
+    // Skip if already fetched and not forcing
+    if (tablesFetched && !force) {
+      console.log("⏭️ Tables already fetched, skipping...");
+      return;
+    }
+    
+    try {
+      console.log("🔧 Fetching tables for restaurant:", restId);
+      const tablesData = await getAvailableTables(token, restId);
+      
+      console.log("✅ Tables fetched:", tablesData?.length || 0);
+      console.log("📋 Tables data:", tablesData);
+      
+      setTables(tablesData || []);
+      setTablesFetched(true);
+      
+      // Update cache
+      if (ordersCache) {
+        ordersCache.tables = tablesData || [];
+        ordersCache.restaurantId = restId;
+      }
+      
+    } catch (err) {
+      console.error("❌ Error fetching tables:", err);
+      setTables([]);
+    }
+  };
+
   // Background refresh (no loading state)
   const backgroundRefresh = async () => {
-    if (!token) return;
+    if (!token || !restaurantId) return;
     
     try {
       console.log("🔄 Orders - Background refresh...");
       
-      // Only fetch waiters if user is NOT a waiter
       const [ordersData, waitersData] = await Promise.all([
         getAllOrders(token),
-        !isWaiter ? getActiveWaiters(token) : Promise.resolve([]) // Only fetch if not waiter
+        !isWaiter ? getActiveWaiters(token) : Promise.resolve([])
       ]);
       
       setOrders(ordersData || []);
       setWaiters(waitersData || []);
       
-      // Fetch tables if we have restaurantId
-      const restId = ordersData?.[0]?.restaurant?.id;
-      let tablesData: Table[] = [];
-      if (restId) {
-        tablesData = await getAvailableTables(token, restId);
-        setTables(tablesData || []);
+      // Fetch tables using restaurantId from auth
+      if (restaurantId) {
+        await fetchTables(restaurantId, true);
       }
       
       // Update cache
       ordersCache = {
         orders: ordersData || [],
         waiters: waitersData || [],
-        tables: tablesData,
-        lastFetched: Date.now()
+        tables: tables,
+        lastFetched: Date.now(),
+        restaurantId: restaurantId
       };
       setLastUpdated(Date.now());
       
@@ -134,7 +172,6 @@ export function Orders() {
       return;
     }
 
-    // Only show loading if no cached data
     if (!ordersCache) {
       setLoading(true);
     }
@@ -143,31 +180,49 @@ export function Orders() {
       setError(null);
       console.log("🔧 Orders - Fetching fresh data...");
       
-      // Conditionally fetch waiters based on user role
       const [ordersData, waitersData] = await Promise.all([
         getAllOrders(token),
-        !isWaiter ? getActiveWaiters(token) : Promise.resolve([]) // Only fetch if not waiter
+        !isWaiter ? getActiveWaiters(token) : Promise.resolve([])
       ]);
       
       setOrders(ordersData || []);
       setWaiters(waitersData || []);
       
+      // ✅ FIX: Use restaurant ID from auth context
+      console.log("🏪 Restaurant ID from auth:", restaurantId);
+      
+      if (restaurantId) {
+        // Force fetch tables on initial load or refresh
+        await fetchTables(restaurantId, forceRefresh);
+      }
+      
       // Update cache
       ordersCache = {
         orders: ordersData || [],
         waiters: waitersData || [],
-        tables: ordersCache?.tables || [],
-        lastFetched: Date.now()
+        tables: tables,
+        lastFetched: Date.now(),
+        restaurantId: restaurantId
       };
       setLastUpdated(Date.now());
       
       console.log("✅ Orders fetched:", ordersData?.length || 0);
       console.log("✅ Waiters fetched:", waitersData?.length || 0);
       
+      // DEBUG: Check order structure
+      if (ordersData && ordersData.length > 0) {
+        console.log("📦 First order structure:", JSON.stringify(ordersData[0], null, 2));
+        console.log("📦 Restaurant field:", ordersData[0].restaurant);
+        console.log("📦 All possible restaurant fields:", {
+          restaurant: ordersData[0].restaurant,
+          restaurant_id: (ordersData[0] as any).restaurant_id,
+          restaurantId: (ordersData[0] as any).restaurantId,
+        });
+      }
+      
     } catch (err) {
       console.error("❌ Error fetching orders:", err);
       
-      // Use cached data on error if available
       if (ordersCache && !forceRefresh) {
         console.log("🔔 Orders - Using cached data due to error");
         setOrders(ordersCache.orders);
@@ -183,40 +238,35 @@ export function Orders() {
     }
   };
 
-  // Fetch tables when restaurantId becomes available
-  const fetchTables = async () => {
-    if (!token || !restaurantId) return;
-    
-    try {
-      console.log("🔧 Fetching tables for restaurant:", restaurantId);
-      const tablesData = await getAvailableTables(token, restaurantId);
-      setTables(tablesData || []);
-      
-      // Update cache
-      if (ordersCache) {
-        ordersCache.tables = tablesData || [];
-      }
-      
-      console.log("✅ Tables fetched:", tablesData?.length || 0);
-    } catch (err) {
-      console.error("❌ Error fetching tables:", err);
-      setTables([]);
-    }
-  };
-
   // Initial load
   useEffect(() => {
+    console.log("🚀 Initial load effect triggered");
+    console.log("   - Token:", !!token);
+    console.log("   - Restaurant ID:", restaurantId);
+    
     if (token) {
       fetchOrders();
     }
   }, [token]);
 
-  // Fetch tables when restaurantId is available
+  // Fetch tables when restaurantId becomes available (only if not already fetched)
   useEffect(() => {
-    if (token && restaurantId && (!ordersCache?.tables?.length)) {
-      fetchTables();
+    console.log("🎯 Tables Effect Triggered!");
+    console.log("   - Token:", !!token);
+    console.log("   - Restaurant ID:", restaurantId);
+    console.log("   - Tables Fetched:", tablesFetched);
+    console.log("   - Should Fetch:", token && restaurantId && !tablesFetched);
+    
+    if (token && restaurantId && !tablesFetched) {
+      console.log("🎯 ✅ All conditions met - Fetching tables...");
+      fetchTables(restaurantId);
+    } else {
+      console.log("🎯 ❌ Conditions not met for fetching tables");
+      if (!token) console.log("   - Missing token");
+      if (!restaurantId) console.log("   - Missing restaurantId");
+      if (tablesFetched) console.log("   - Already fetched");
     }
-  }, [token, restaurantId]);
+  }, [token, restaurantId, tablesFetched]);
 
   // Background refresh interval
   useEffect(() => {
@@ -228,10 +278,8 @@ export function Orders() {
 
   const handleRefresh = () => {
     setRefreshing(true);
+    setTablesFetched(false); // Reset to force refetch
     fetchOrders(true);
-    if (restaurantId) {
-      fetchTables();
-    }
   };
 
   // Helper to update cache after mutations
@@ -246,7 +294,6 @@ export function Orders() {
       setError(null);
       if (!token) throw new Error("Authentication token not found");
 
-      // Optimistic update
       const updatedOrders = (orders || []).map(order =>
         order.id === orderId ? { ...order, status: newStatus } : order
       );
@@ -274,7 +321,9 @@ export function Orders() {
 
       await assignTableToOrder(orderId, tableId, token);
       await fetchOrders(true);
-      await fetchTables();
+      if (restaurantId) {
+        await fetchTables(restaurantId, true);
+      }
       
     } catch (err) {
       console.error(`❌ Error assigning table to order ${orderId}:`, err);
@@ -299,7 +348,6 @@ export function Orders() {
   const handleOrderSelect = (order: Order) => setSelectedOrder(order);
   const handleCloseSheet = () => setSelectedOrder(null);
 
-  // Only show loading if no cached data exists
   if (loading && !ordersCache) {
     return (
       <div className="mt-15 space-y-6 p-5 md:mt-0">
@@ -335,6 +383,9 @@ export function Orders() {
                 • Updated {Math.round((Date.now() - lastUpdated) / 1000)}s ago
               </span>
             )}
+            <span className="text-xs text-gray-500 ml-2">
+              • Tables: {tables.length} • Waiters: {waiters.length}
+            </span>
           </p>
         </div>
         <div className="flex items-center gap-3">
