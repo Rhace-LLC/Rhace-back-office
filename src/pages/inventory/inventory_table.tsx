@@ -65,7 +65,7 @@ const RenderInventoryTableData: React.FC<Props> = ({ data, onView }) => {
                   item.is_allergen ? "text-red-500" : "text-gray-600"
                 }`}
               >
-                {item.is_allergen ? "Allergen" : "—"}
+                {item.is_allergen ? "Yes" : "No"}
               </span>
             </TableCell>
 

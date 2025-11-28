@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ContentHOC } from "@/components/nocontent";
 import { RenderReservationTableData } from "./ReservationTable";
+import { Button } from "@/components/ui/button";
+import { RefreshCcw } from "lucide-react";
 //import { ReservationFilters } from "./ReservationFilters";
 
 // ---------------------- Types ----------------------
@@ -122,19 +124,23 @@ export const ManageReservation: React.FC = () => {
       <div className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
         <div className="mx-auto space-y-6">
           <div className="space-y-6">
-            <div>
-              <h3 className="text-2xl font-medium tracking-tight">
-                Reservations
-              </h3>
-              <p>Manage reservations, assign tables and update statuses.</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-2xl font-medium tracking-tight">
+                  Reservations
+                </h3>
+                <p>Manage reservations, assign tables and update statuses.</p>
+              </div>
+
+              <Button
+                className="w-max cursor-pointer bg-blue-600 px-4 text-white"
+                variant="outline"
+                size="icon"
+                onClick={fetchAllReservations}
+              >
+                <RefreshCcw className="h-4 w-4" /> Refresh
+              </Button>
             </div>
-            {/*              
-            <ReservationFilters
-              filters={filters}
-              setFilters={setFilters}
-              onSearch={onSearch}
-            />
-              */}
 
             <ContentHOC
               loading={loading}

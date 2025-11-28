@@ -40,8 +40,10 @@ import { useLoading } from "@/contexts/LoadingContext";
 export const WalletAndAccount = () => {
   const dispatch = useDispatch();
   const auth = useAuth();
+
   const subaccount = useSelector((state: RootState) => state.subaccount.data);
-  const {setLoading,setLoadingText} = useLoading()
+
+  const { setLoading, setLoadingText } = useLoading();
 
   const [loading, setLoadingState] = useState(false);
   const [error, setError] = useState("");
@@ -56,6 +58,7 @@ export const WalletAndAccount = () => {
     bank_code: "",
     bank_name: "",
   });
+
   const [creating, setCreating] = useState(false);
 
   // BANK LIST
@@ -87,6 +90,8 @@ export const WalletAndAccount = () => {
     if (!subaccount) fetchSubAccount();
   }, []);
 
+  console.log("Sub account", subaccount);
+
   /* ============================================================
         FETCH BANKS
   ============================================================ */
@@ -114,48 +119,47 @@ export const WalletAndAccount = () => {
   /* ============================================================
         HANDLE WITHDRAW
   ============================================================ */
-const handleWithdraw = async () => {
-  try {
-    setLoading(true)
-    setLoadingText("Initiating Withdrawal....")
-    // 1. Fetch banks first
-    if(banks.length == 0){        
-      await fetchBanks()
+  const handleWithdraw = async () => {
+    try {
+      setLoading(true);
+      setLoadingText("Initiating Withdrawal....");
+      // 1. Fetch banks first
+      if (banks.length == 0) {
+        await fetchBanks();
+      }
+
+      // 2. Match bank name from subaccount settlement bank
+      const matchedBank = banks.find(
+        (b) =>
+          b.name.toLowerCase() === subaccount?.settlement_bank.toLowerCase()
+      );
+
+      if (!matchedBank) {
+        toast.error("Unable to detect bank code for withdrawal.");
+        return;
+      }
+
+      // 3. Build payload with correct bank code
+      const payload = {
+        amount: withdrawalAmount,
+        bank_code: matchedBank.code, // ✔ correct bank code
+        reason: "Withdrawal",
+      };
+
+      // 4. Process withdrawal
+      await withdrawFromSubaccount(auth.token, payload);
+
+      toast.success("Withdrawal Request Submitted Successfully!");
+
+      setWithdrawalAmount("");
+      setWithdrawalModal(false);
+    } catch (err: any) {
+      toast.error(parseError(err));
+    } finally {
+      setLoading(false);
+      setLoadingText("");
     }
-
-    // 2. Match bank name from subaccount settlement bank
-    const matchedBank = banks.find(
-      (b) => b.name.toLowerCase() === subaccount?.settlement_bank.toLowerCase()
-    );
-
-    if (!matchedBank) {
-      toast.error("Unable to detect bank code for withdrawal.");
-      return;
-    }
-
-    // 3. Build payload with correct bank code
-    const payload = {
-      amount: withdrawalAmount,
-      bank_code: matchedBank.code, // ✔ correct bank code
-      reason: "Withdrawal",
-    };
-
-    // 4. Process withdrawal
-    await withdrawFromSubaccount(auth.token, payload);
-
-    toast.success("Withdrawal Request Submitted Successfully!");
-
-    setWithdrawalAmount("");
-    setWithdrawalModal(false);
-  } catch (err: any) {
-    toast.error(parseError(err));
-  }
-  finally {
-    
-    setLoading(false)
-    setLoadingText("")
-  }
-};
+  };
 
   const isValidAmount =
     Number(withdrawalAmount) >= 1000 && withdrawalAmount.trim() !== "";
@@ -178,6 +182,7 @@ const handleWithdraw = async () => {
       });
 
       fetchSubAccount();
+      auth.setHasPayoutAccount(true);
     } catch (err: any) {
       toast.error(parseError(err));
     } finally {
@@ -199,7 +204,7 @@ const handleWithdraw = async () => {
             CREATE SUBACCOUNT FLOW
       ============================================================ */}
       {error === "No subaccount found for this restaurant" && (
-        <div className="space-y-4 p-6 border rounded-lg shadow bg-white">
+        <div className="space-y-4 rounded-lg border bg-white p-6 shadow">
           <h2 className="text-lg font-semibold">Link Your Payout Account</h2>
 
           {/* ---- ACCOUNT NUMBER ---- */}
@@ -227,47 +232,46 @@ const handleWithdraw = async () => {
 
             {banksError && (
               <div className="space-y-2">
-                <p className="text-red-500 text-sm">{banksError}</p>
+                <p className="text-sm text-red-500">{banksError}</p>
                 <Button size="sm" onClick={fetchBanks}>
                   Retry
                 </Button>
               </div>
             )}
 
-{!banksLoading && !banksError && (
-  <Select
-    onValueChange={(val) => {
-      const bank = banks.find((b) => b.code === val);
-      setCreateData((prev) => ({
-        ...prev,
-        bank_code: bank.code,
-        bank_name: bank.name,
-      }));
-    }}
-  >
-    <SelectTrigger>
-      <SelectValue placeholder="Select bank" />
-    </SelectTrigger>
+            {!banksLoading && !banksError && (
+              <Select
+                onValueChange={(val) => {
+                  const bank = banks.find((b) => b.code === val);
+                  setCreateData((prev) => ({
+                    ...prev,
+                    bank_code: bank.code,
+                    bank_name: bank.name,
+                  }));
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select bank" />
+                </SelectTrigger>
 
-    <SelectContent className="max-h-64 p-0">
-      <ScrollArea className="h-64">
-        <div className="p-1">
-          {banks.map((b) => (
-            <SelectItem key={b.id} value={b.code}>
-              {b.name}
-            </SelectItem>
-          ))}
-        </div>
-      </ScrollArea>
-    </SelectContent>
-  </Select>
-)}
-
+                <SelectContent className="max-h-64 p-0">
+                  <ScrollArea className="h-64">
+                    <div className="p-1">
+                      {banks.map((b) => (
+                        <SelectItem key={b.id} value={b.code}>
+                          {b.name}
+                        </SelectItem>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </SelectContent>
+              </Select>
+            )}
           </div>
 
           {/* ---- SUBMIT ---- */}
           <Button
-            className="w-full mt-4"
+            className="mt-4 w-full"
             disabled={!canSubmitCreate || creating}
             onClick={handleCreateSubaccount}
           >
@@ -291,10 +295,10 @@ const handleWithdraw = async () => {
           errMessage={error}
           actionFn={fetchSubAccount}
         >
-          <div className="p-4 space-y-4">
+          <div className="space-y-4 p-4">
             <h2 className="text-xl font-semibold">Wallet & Sub Account</h2>
 
-            <div className="rounded-lg border p-4 space-y-3 bg-white shadow-sm">
+            <div className="space-y-3 rounded-lg border bg-white p-4 shadow-sm">
               <p>
                 <strong>Account Name:</strong> {subaccount?.account_name}
               </p>
@@ -328,7 +332,7 @@ const handleWithdraw = async () => {
                 <DialogTitle>Withdraw Funds</DialogTitle>
               </DialogHeader>
 
-              <div className="space-y-3 mt-4">
+              <div className="mt-4 space-y-3">
                 <label className="text-sm font-medium">Amount (₦)</label>
                 <Input
                   type="number"
@@ -342,7 +346,7 @@ const handleWithdraw = async () => {
                 <Button
                   disabled={!isValidAmount}
                   onClick={handleWithdraw}
-                  className="w-full mt-4"
+                  className="mt-4 w-full"
                 >
                   Proceed
                 </Button>

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button"; // Import Button for a better action look
-import { Users, Clock, Hash } from "lucide-react"; // Icons for minimalist headers
+import { Users, Clock, Hash, Table2 } from "lucide-react"; // Icons for minimalist headers
 import { Reservation } from "@/api-services/order.service";
 import GenericSheet from "@/components/generic_sheet_overlay";
 import { ReservationDetail } from "./ReservationDetails";
@@ -86,7 +86,7 @@ const getStatusBadgeProps = (status: Reservation["status"]) => {
 export const RenderReservationTableData: React.FC<
   RenderReservationTableDataProps
 > = ({ data }) => {
-  const [selectedReservation, setSelectedReservation] = useState<Reservation>();
+  const [selectedReservation, setSelectedReservation] = useState<number>();
 
   return (
     // Outer div for context and potential container styling
@@ -102,6 +102,9 @@ export const RenderReservationTableData: React.FC<
             </TableHead>
             <TableHead className="text-xs font-semibold tracking-wider whitespace-nowrap text-gray-500 uppercase">
               <Clock className="mr-1 inline h-3 w-3" /> Time
+            </TableHead>
+            <TableHead className="text-xs font-semibold tracking-wider whitespace-nowrap text-gray-500 uppercase">
+              <Table2 className="mr-1 inline h-3 w-3" /> Table
             </TableHead>
             <TableHead className="text-xs font-semibold tracking-wider text-gray-500 uppercase">
               <Users className="mr-1 inline h-3 w-3" /> Guests
@@ -127,7 +130,7 @@ export const RenderReservationTableData: React.FC<
               // Row with hover effect to indicate clickability
               <TableRow
                 key={index}
-                onClick={() => setSelectedReservation(r)}
+                onClick={() => setSelectedReservation(r.id)}
                 className="cursor-pointer transition-colors duration-150 hover:bg-indigo-50/50"
               >
                 {/* Reference ID */}
@@ -157,6 +160,10 @@ export const RenderReservationTableData: React.FC<
                   </div>
                 </TableCell>
 
+                <TableCell>
+                  {r?.table ? `Table ${r.table.table_number}` : "Unassigned"}
+                </TableCell>
+
                 {/* Party Size */}
                 <TableCell className="text-center font-semibold text-gray-700">
                   {r.party_size}
@@ -182,7 +189,7 @@ export const RenderReservationTableData: React.FC<
                     // Stop propagation to prevent row click from triggering twice
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedReservation(r);
+                      setSelectedReservation(r.id);
                     }}
                     className="text-xs font-medium hover:bg-gray-100"
                   >
@@ -204,7 +211,7 @@ export const RenderReservationTableData: React.FC<
           }}
           title={""}
         >
-          <ReservationDetail reservation={selectedReservation} />
+          <ReservationDetail reservationId={selectedReservation} />
         </GenericSheet>
       )}
     </div>

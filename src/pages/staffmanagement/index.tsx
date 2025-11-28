@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { LucideUserPlus } from "lucide-react";
+import { LucideUserPlus, RefreshCcw } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { parseError } from "@/api-services/utils/parseError";
@@ -90,6 +90,15 @@ const ManageStaff: React.FC = () => {
             >
               <LucideUserPlus className="h-4 w-4" />
               Invite New Staff
+            </Button>
+
+            <Button
+              className="w-max cursor-pointer bg-blue-600 px-4 text-white"
+              variant="outline"
+              size="icon"
+              onClick={fetchAllStaffs}
+            >
+              <RefreshCcw className="h-4 w-4" /> Refresh
             </Button>
           </div>
         </div>
