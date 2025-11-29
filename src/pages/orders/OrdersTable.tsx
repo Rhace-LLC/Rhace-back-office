@@ -113,11 +113,22 @@ export function OrdersTable({
     return name.length > 12 ? name.substring(0, 12) + "..." : name;
   };
 
-  // Get assigned table info
+  // Get assigned table info - FIXED: Show table info even if not available
   const getAssignedTableInfo = (order: Order) => {
     if (!order.table || order.order_type !== "dine-in") return "N/A";
     const table = tables.find((t) => t.id === order.table);
-    return table ? `Table ${table.table_number}` : "Unknown table";
+    if (!table) return "Unknown table";
+    
+    return `Table ${table.table_number} (${table.max_party_size} seats)`;
+  };
+
+  // Get table availability status
+  const getTableAvailabilityStatus = (order: Order) => {
+    if (!order.table || order.order_type !== "dine-in") return null;
+    const table = tables.find((t) => t.id === order.table);
+    if (!table) return null;
+    
+    return table.is_available ? "available" : "occupied";
   };
 
   // Check if waiter is assigned
@@ -125,7 +136,7 @@ export function OrdersTable({
     return !!order.waiter && waiters.some((w) => w.id === order.waiter);
   };
 
-  // Check if table is assigned (for dine-in only)
+  // FIXED: Check if table is assigned (regardless of availability)
   const hasTableAssigned = (order: Order) => {
     return (
       order.order_type === "dine-in" &&
@@ -248,9 +259,23 @@ export function OrdersTable({
                   {hasTableAssigned(order) ? (
                     <>
                       <TableIcon className="h-3.5 w-3.5 text-green-500" />
-                      <span className="text-sm text-gray-700">
-                        {getAssignedTableInfo(order)}
-                      </span>
+                      <div className="flex flex-col">
+                        <span className="text-sm text-gray-700">
+                          {getAssignedTableInfo(order)}
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <Badge 
+                            variant="outline" 
+                            className={`text-xs px-1 py-0 ${
+                              getTableAvailabilityStatus(order) === 'available' 
+                                ? 'bg-green-50 text-green-700 border-green-200' 
+                                : 'bg-amber-50 text-amber-700 border-amber-200'
+                            }`}
+                          >
+                            {getTableAvailabilityStatus(order) === 'available' ? 'Available' : 'Occupied'}
+                          </Badge>
+                        </div>
+                      </div>
                     </>
                   ) : order.order_type === "dine-in" ? (
                     <>
