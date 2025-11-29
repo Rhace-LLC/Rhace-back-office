@@ -51,7 +51,7 @@ const isCacheValid = (): boolean => {
 export function Orders() {
   const auth = useAuth();
   const token = auth?.token;
-  const { isWaiter, isOwner, restaurants } = useAuth();
+  const { isWaiter, restaurants } = useAuth();
 
   const [orders, setOrders] = useState<Order[]>(() => ordersCache?.orders ?? []);
   const [waiters, setWaiters] = useState<Staff[]>(() => ordersCache?.waiters ?? []);
