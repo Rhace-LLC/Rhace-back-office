@@ -69,19 +69,19 @@ const RenderEmployeeTable: React.FC<Props> = ({ data, onRowClick }) => {
   return (
     <div className="">
       {/* Modern Scroll Wrapper */}
-    <div className="w-full overflow-x-auto">
-      <table className="min-w-full border-collapse text-sm">
-        {/* Sticky Header */}
-        <thead className="sticky top-0 z-10 border-b bg-gray-50">
-          <tr className="text-gray-700">
-            <th className="p-3 font-medium">Name</th>
-            <th className="p-3 font-medium">Email</th>
-            <th className="p-3 font-medium">Phone</th>
-            <th className="p-3 font-medium">Role</th>
-            <th className="p-3 font-medium">Status</th>
-            <th className="p-3 text-center font-medium">Action</th>
-          </tr>
-        </thead>
+      <div className="w-full overflow-x-auto">
+        <table className="min-w-full border-collapse text-sm">
+          {/* Sticky Header */}
+          <thead className="sticky top-0 z-10 border-b bg-gray-50">
+            <tr className="text-gray-700">
+              <th className="p-3 font-medium">Name</th>
+              <th className="p-3 font-medium">Email</th>
+              <th className="p-3 font-medium">Phone</th>
+              <th className="p-3 font-medium">Role</th>
+              <th className="p-3 font-medium">Status</th>
+              <th className="p-3 text-center font-medium">Action</th>
+            </tr>
+          </thead>
 
           <tbody>
             {data.length === 0 ? (

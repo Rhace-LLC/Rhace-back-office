@@ -171,7 +171,10 @@ export default function BillingPage() {
 
   return (
     <div className="mx-auto px-5 py-10">
-      <h1 className="mb-6 text-3xl font-semibold">Billing & Subscription</h1>
+      <h1 className="text-2xl font-bold tracking-tight">
+        Billing & Subscription
+      </h1>
+      <div className="py-2" />
       {isSubscription && (
         <ContentHOC
           loading={loading}

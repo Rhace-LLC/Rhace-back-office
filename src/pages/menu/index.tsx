@@ -84,17 +84,15 @@ export function MenuManagement() {
   return (
     <div className="space-y-6 p-5">
       {/* Header */}
-      <div className="sm:flex justify-between gap-4 sm:flex-row">
+      <div className="justify-between gap-4 sm:flex sm:flex-row">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            Menu Management
-          </h1>
+          <h1 className="text-2xl font-bold tracking-tight">Menu Management</h1>
           <p className="text-sm text-gray-500">
             Manage dishes, availability, and menu items
           </p>
         </div>
         <Button
-          className="flex mt-4 sm:mt-0 items-center gap-2 bg-blue-600 hover:bg-blue-700"
+          className="mt-4 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 sm:mt-0"
           onClick={() => setAddDishOpen(true)}
         >
           <Plus className="h-4 w-4" /> Add Dish
