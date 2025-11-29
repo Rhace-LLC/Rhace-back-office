@@ -127,7 +127,7 @@ const ManageInventoryPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-medium">Manage Inventory</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Manage Inventory</h1>
           <p className="text-gray-600 dark:text-gray-400">
             Track and manage your inventory items.
           </p>

@@ -70,11 +70,6 @@ export function Orders() {
 
   // DEBUG: Log restaurant ID
   useEffect(() => {
-    console.log("🔍 DEBUG - Restaurants from auth:", restaurants);
-    console.log("🔍 DEBUG - Restaurant ID from auth:", restaurantId);
-    console.log("🔍 DEBUG - Orders array:", orders);
-    console.log("🔍 DEBUG - Tables fetched flag:", tablesFetched);
-    console.log("🔍 DEBUG - Current tables:", tables);
   }, [restaurants, restaurantId, orders, tablesFetched, tables]);
 
   const filteredOrders = (orders || []).filter(
@@ -362,7 +357,7 @@ export function Orders() {
   }
 
   return (
-    <div className="mt-15 space-y-6 p-5 md:mt-0">
+    <div className="space-y-6 p-5 md:mt-0">
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
           <strong className="font-bold">Error: </strong>

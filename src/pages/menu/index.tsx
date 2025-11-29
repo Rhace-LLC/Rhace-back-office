@@ -84,9 +84,9 @@ export function MenuManagement() {
   return (
     <div className="space-y-6 p-5">
       {/* Header */}
-      <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+      <div className="sm:flex justify-between gap-4 sm:flex-row">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
+          <h1 className="text-2xl font-bold tracking-tight">
             Menu Management
           </h1>
           <p className="text-sm text-gray-500">
@@ -94,7 +94,7 @@ export function MenuManagement() {
           </p>
         </div>
         <Button
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+          className="flex mt-4 sm:mt-0 items-center gap-2 bg-blue-600 hover:bg-blue-700"
           onClick={() => setAddDishOpen(true)}
         >
           <Plus className="h-4 w-4" /> Add Dish
