@@ -77,7 +77,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </div>
 
       {/* Mobile Sidebar */}
-      <div className="relative block md:hidden">
+      <div className="relative block md:hidden pt-15">
         {/* Fixed Menu Icon */}
         {auth.isAuthenticated && (
           <div className="bg-sidebar text-sidebar-foreground border-sidebar-border fixed top-0 right-0 left-0 z-10 flex items-center justify-between border-b px-4 py-3">
