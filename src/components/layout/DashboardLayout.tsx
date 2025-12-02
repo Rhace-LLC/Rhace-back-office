@@ -46,7 +46,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
             <SidebarInset
               className={`flex flex-1 flex-col transition-all duration-300 ${
-                sidebarOpen ? "md:ml-64 ml-0" : "ml-0"
+                sidebarOpen ? "ml-0 md:ml-64" : "ml-0"
               }`}
             >
               <div className="flex flex-1 flex-col gap-4">

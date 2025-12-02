@@ -121,7 +121,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
           {!isEditingInfo && (
             <Button onClick={() => setIsEditingInfo(true)}>Edit Info</Button>
           )}
-          {!isEditingQuantity && (
+          {!isEditingQuantity && auth.isInventoryMgr && (
             <Button onClick={() => setIsEditingQuantity(true)}>
               Edit Quantity
             </Button>
@@ -214,7 +214,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
             <Input
               type="number"
               name="quantity"
-              value={editableItem.quantity}
+              value={String(editableItem.quantity)}
               onChange={handleChange}
               className="h-10"
             />
