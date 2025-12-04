@@ -9,21 +9,26 @@ import { UtensilsCrossed } from "lucide-react";
 
 interface CreateTableRequest {
   max_party_size: number;
-  table_number: number;
+  table_number: string;
 }
 
 export const AddTable: React.FC = () => {
   const auth = useAuth();
   const [formData, setFormData] = useState<CreateTableRequest>({
     max_party_size: 0,
-    table_number: 0,
+    table_number: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false); // Added for button state
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
     // Note: The original logic converts the value to a Number directly.
     // This is preserved.
+    // Limit to max 3 characters
+    if (value.length > 3) {
+      value = value.slice(0, 3);
+    }
+
     setFormData({
       ...formData,
       [name]: Number(value),
@@ -32,8 +37,8 @@ export const AddTable: React.FC = () => {
 
   const handleSubmit = async () => {
     // Basic validation
-    if (formData.table_number <= 0) {
-      toast.error("Table Number must be greater than zero.");
+    if (formData.table_number.length == 0) {
+      toast.error("Table Number must be greater than one character.");
       return;
     }
     if (formData.max_party_size <= 0) {
@@ -55,7 +60,7 @@ export const AddTable: React.FC = () => {
       toast.success(`Table ${formData.table_number} added successfully`);
       setFormData({
         max_party_size: 0,
-        table_number: 0,
+        table_number: "",
       });
     } catch (error: any) {
       toast.error("Failed to add table");

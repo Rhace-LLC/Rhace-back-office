@@ -44,6 +44,7 @@ export default function BillingPage() {
   const dataStore = useSelector((state: RootState) => state.subscriptions);
   const details = dataStore.details;
   const plans = dataStore.plans;
+const [statusChecked, setStatusChecked] = useState(false);
 
   //const status = dataStore.status;
   //const history = dataStore.paymentHistory;
@@ -80,6 +81,7 @@ export default function BillingPage() {
       const res = await getSubscriptionStatus(auth.token);
       dispatch(setSubscriptionStatus(res));
       auth.setHasSubscribed(true);
+      fetchAllData()
     } catch (err) {
       let message = parseError(err);
       if (message == "No subscription found") {
@@ -106,10 +108,11 @@ export default function BillingPage() {
     }
   };
 
-  useEffect(() => {
-    fetchAllData();
-    fetchStatus();
-  }, []);
+useEffect(() => {
+  if (!statusChecked) {
+    fetchStatus().finally(() => setStatusChecked(true));
+  }
+}, [statusChecked]);
 
   useEffect(() => {
     if (!isSubscription) {
@@ -171,7 +174,10 @@ export default function BillingPage() {
 
   return (
     <div className="mx-auto px-5 py-10">
-      <h1 className="mb-6 text-3xl font-semibold">Billing & Subscription</h1>
+      <h1 className="text-2xl font-bold tracking-tight">
+        Billing & Subscription
+      </h1>
+      <div className="py-2" />
       {isSubscription && (
         <ContentHOC
           loading={loading}

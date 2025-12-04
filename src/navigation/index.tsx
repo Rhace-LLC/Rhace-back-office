@@ -124,7 +124,7 @@ function NavigationContent() {
 
   return (
     <div className="min-h-screen">
-      <main className="flex">
+      <main className="">
         <section id="mainpage" className="flex-1">
           <Routes>
             {/* Public Routes */}

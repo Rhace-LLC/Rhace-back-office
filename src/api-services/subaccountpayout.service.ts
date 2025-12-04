@@ -110,6 +110,15 @@ export const createSubAccount = async (
   return bookiesAxiosInstance(config);
 };
 
+/** POST — Create a subaccount */
+export const updateSubAccount = async (
+  payload: CreateSubAccountDTO,
+  token?: string
+): Promise<CreateSubAccountResponse> => {
+  const config = getConfig(`/subaccount/subaccount/update/`, "PUT", token, payload);
+  return bookiesAxiosInstance(config);
+};
+
 /** POST — Withdraw from subaccount */
 export const withdrawFromSubAccount = async (
   payload: WithdrawDTO,

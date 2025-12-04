@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 // <-- adjust import path
 import { parseError } from "@/api-services/utils/parseError";
 import { Loader2Icon, CheckCircle, AlertCircle } from "lucide-react";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { acceptInvite } from "@/api-services/auth.service";
 
 export default function AcceptInvite() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const inviteToken = searchParams.get("inviteToken");
 
@@ -72,10 +73,21 @@ export default function AcceptInvite() {
           <p className="font-medium text-gray-700">
             Invite accepted successfully! You may now log in.
           </p>
-          <p className="text-sm text-gray-600 text-center">
-            Shortly, you will receive an email containing your temporary login credentials.
-            Please make sure to change your password after you log in.
+          <p className="text-center text-sm text-gray-600">
+            Shortly, you will receive an email containing your temporary login
+            credentials. Please make sure to change your password after you log
+            in.
           </p>
+          <div className="mt-5">
+            <Button
+              onClick={() => {
+                navigate("/login");
+              }}
+              className="mx-auto w-max rounded-[10px] bg-blue-500 px-10 py-2"
+            >
+              Proceed to Login
+            </Button>
+          </div>
         </div>
       )}
     </div>

@@ -39,17 +39,17 @@ export function TablesPage() {
   }, []);
 
   return (
-    <div className="mt-15 space-y-6 p-5 md:mt-0">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-5 md:mt-0">
+      <div className="items-center justify-between sm:flex">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-bold tracking-tight">
             Restaurant Floor Layout
           </h1>
           <p className="text-muted-foreground text-sm">
             Click on any table to view details and manage assignments
           </p>
         </div>
-        <div className="flex items-center justify-between gap-4">
+        <div className="mt-5 flex items-center gap-4 sm:mt-0">
           <button
             className="cursor-pointer rounded-md bg-blue-100 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200"
             onClick={() => setAddTableOpen(true)} // or whatever opens your AddTable modal/sheet

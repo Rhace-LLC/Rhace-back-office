@@ -419,7 +419,14 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
               <Input
                 className="h-11 rounded-lg"
                 value={editTableNumber}
-                onChange={(e) => setEditTableNumber(e.target.value)}
+                onChange={(e) => {
+                  let { value } = e.target;
+
+                  if (value.length > 3) {
+                    value = value.slice(0, 3);
+                  }
+                  setEditTableNumber(value);
+                }}
                 placeholder="Enter table number"
               />
             </div>

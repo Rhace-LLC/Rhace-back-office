@@ -27,6 +27,7 @@ import { useState } from "react";
 import { LogoutDialog } from "./logoutdialog";
 
 import { ShoppingCart, Utensils, ListOrdered, Bell, User } from "lucide-react";
+import { useLogout } from ".";
 
 export interface MenuItem {
   title: string;
@@ -167,6 +168,7 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const currentRoute = location.pathname;
+  const {logout} = useLogout()
 
   const menuItems = useRoleBasedMenu();
   console.log("isOpen", isOpen, "menuItems", menuItems);
@@ -278,9 +280,9 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
         isOpen={logoutOpen}
         onOpenChange={setLogoutOpen}
         onConfirm={() => {
-          console.log("Logging out...");
-          auth.logout();
-          // your logout logic here
+
+          logout()
+          
         }}
       />
     </Sidebar>
