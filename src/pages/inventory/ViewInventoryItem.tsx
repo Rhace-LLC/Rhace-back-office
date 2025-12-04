@@ -96,10 +96,10 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
         recorded_by: auth.user?.id || "",
       };
 
-      await createInventoryTransaction(payload, auth.token);
+      const response = await createInventoryTransaction(payload, auth.token);
 
       dispatch(
-        updateInventoryDataById({ ...item, quantity: editableItem.quantity })
+        updateInventoryDataById({ ...item, quantity: response.item.quantity })
       );
       toast.success("Quantity updated successfully");
 
