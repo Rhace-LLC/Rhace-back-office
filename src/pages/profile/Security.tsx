@@ -9,19 +9,28 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Key } from "lucide-react";
+import { Key, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { patchPassword } from "@/api-services/auth.service";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLoading } from "@/contexts/LoadingContext";
+import { parseError } from "@/api-services/utils/parseError";
 
 const SecuritySection: React.FC = () => {
   const auth = useAuth();
   const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const { setLoading, setLoadingText } = useLoading();
 
   const [passwordForm, setPasswordForm] = useState({
     old_password: "",
     new_password: "",
     confirm_password: "",
+  });
+
+  const [showPassword, setShowPassword] = useState({
+    old_password: false,
+    new_password: false,
+    confirm_password: false,
   });
 
   const handleChangePassword = async () => {
@@ -35,19 +44,65 @@ const SecuritySection: React.FC = () => {
       return;
     }
 
-    await patchPassword(auth.token, passwordForm);
+    try {
+      setLoading(true);
+      setLoadingText("Updating Password");
 
-    // Replace with API call later
-    toast.success("Password changed successfully");
+      await patchPassword(auth.token, passwordForm);
 
-    setPasswordForm({
-      old_password: "",
-      new_password: "",
-      confirm_password: "",
-    });
+      toast.success("Password changed successfully");
 
-    setShowPasswordForm(false);
+      setPasswordForm({
+        old_password: "",
+        new_password: "",
+        confirm_password: "",
+      });
+      setShowPasswordForm(false);
+    } catch (error: any) {
+      const errMsg = parseError(error);
+      toast.error(errMsg || "Failed to update password");
+    } finally {
+      setLoading(false);
+      setLoadingText("");
+    }
   };
+
+  const toggleShowPassword = (field: keyof typeof showPassword) => {
+    setShowPassword((prev) => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
+  };
+
+  const renderPasswordInput = (
+    id: keyof typeof passwordForm,
+    label: string,
+    placeholder: string
+  ) => (
+    <div className="relative">
+      <Label htmlFor={id}>{label}</Label>
+      <Input
+        id={id}
+        type={showPassword[id] ? "text" : "password"}
+        value={passwordForm[id]}
+        onChange={(e) =>
+          setPasswordForm((prev) => ({ ...prev, [id]: e.target.value }))
+        }
+        placeholder={placeholder}
+      />
+      <button
+        type="button"
+        className="absolute top-[32px] right-2 -translate-y-1/2"
+        onClick={() => toggleShowPassword(id)}
+      >
+        {showPassword[id] ? (
+          <EyeOff className="relative top-2 h-4 w-4 text-gray-500" />
+        ) : (
+          <Eye className="relative top-2 h-4 w-4 text-gray-500" />
+        )}
+      </button>
+    </div>
+  );
 
   return (
     <Card>
@@ -72,53 +127,21 @@ const SecuritySection: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="old_password">Current Password</Label>
-              <Input
-                id="old_password"
-                type="password"
-                value={passwordForm.old_password}
-                onChange={(e) =>
-                  setPasswordForm((prev) => ({
-                    ...prev,
-                    old_password: e.target.value,
-                  }))
-                }
-                placeholder="Enter current password"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="new_password">New Password</Label>
-              <Input
-                id="new_password"
-                type="password"
-                value={passwordForm.new_password}
-                onChange={(e) =>
-                  setPasswordForm((prev) => ({
-                    ...prev,
-                    new_password: e.target.value,
-                  }))
-                }
-                placeholder="Enter new password"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="confirm_password">Confirm New Password</Label>
-              <Input
-                id="confirm_password"
-                type="password"
-                value={passwordForm.confirm_password}
-                onChange={(e) =>
-                  setPasswordForm((prev) => ({
-                    ...prev,
-                    confirm_password: e.target.value,
-                  }))
-                }
-                placeholder="Confirm new password"
-              />
-            </div>
+            {renderPasswordInput(
+              "old_password",
+              "Current Password",
+              "Enter current password"
+            )}
+            {renderPasswordInput(
+              "new_password",
+              "New Password",
+              "Enter new password"
+            )}
+            {renderPasswordInput(
+              "confirm_password",
+              "Confirm New Password",
+              "Confirm new password"
+            )}
 
             <div className="flex gap-2">
               <Button onClick={handleChangePassword} className="bg-[#2542e3]">

@@ -49,21 +49,23 @@ export interface DashboardStats {
 }
 
 // GET /dashboard/dashboard/ - Get main dashboard data
-export const getDashboardData = async (token: string): Promise<DashboardData> => {
+export const getDashboardData = async (
+  token: string
+): Promise<DashboardData> => {
   try {
     console.log("🔍 Fetching dashboard data...");
-    
+
     if (!token) {
       throw new Error("No token provided");
     }
 
     const config = getConfig("/dashboard/dashboard/", "GET", token);
     console.log("📡 Request URL:", config.url);
-    
+
     const response = await bookiesAxiosInstance(config);
-    
+
     console.log("✅ Dashboard API Response:", response);
-    
+
     // Check if response exists
     if (!response) {
       console.warn("⚠️ No response received from dashboard API");
@@ -72,10 +74,9 @@ export const getDashboardData = async (token: string): Promise<DashboardData> =>
 
     const responseData = response.data || response;
     console.log("📊 Response data:", responseData);
-    
+
     // Return whatever data we get, even if empty
     return responseData;
-    
   } catch (error: any) {
     console.error("❌ Dashboard API Error:", error.message);
     throw error;
@@ -83,21 +84,23 @@ export const getDashboardData = async (token: string): Promise<DashboardData> =>
 };
 
 // GET /dashboard/dashboard/stats/ - Get dashboard stats
-export const getDashboardStats = async (token: string): Promise<DashboardStats> => {
+export const getDashboardStats = async (
+  token: string
+): Promise<DashboardStats> => {
   try {
     console.log("🔍 Fetching dashboard stats...");
-    
+
     if (!token) {
       throw new Error("No token provided");
     }
 
     const config = getConfig("/dashboard/dashboard/stats/", "GET", token);
     console.log("📡 Stats Request URL:", config.url);
-    
+
     const response = await bookiesAxiosInstance(config);
-    
+
     console.log("✅ Stats API Response:", response);
-    
+
     // Check if response exists
     if (!response) {
       console.warn("⚠️ No response received from stats API");
@@ -106,10 +109,9 @@ export const getDashboardStats = async (token: string): Promise<DashboardStats> 
 
     const responseData = response.data || response;
     console.log("📈 Response data:", responseData);
-    
+
     // Return whatever data we get, even if empty
     return responseData;
-    
   } catch (error: any) {
     console.error("❌ Dashboard stats API Error:", error.message);
     throw error;

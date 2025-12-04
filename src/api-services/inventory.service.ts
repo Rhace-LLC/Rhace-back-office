@@ -126,10 +126,33 @@ const createInventoryTransaction = async (
  * EXPORTS
  * ==============================
  */
+
+const updateInventoryItem = async (
+  id: string,
+  data: {
+    name?: string;
+    is_allergen?: boolean;
+    unit?: string;
+    threshold?: number;
+    restaurant?: string;
+  },
+  token?: string
+): Promise<InventoryItem> => {
+  const config = getConfig(
+    `/inventory/items/${id}/`, // matches PUT /inventory/items/{id}/
+    "PUT",
+    token,
+    data
+  );
+
+  return await bookiesAxiosInstance(config);
+};
+
 export {
   getInventoryItems,
   createInventoryItem,
   deleteInventoryItem,
   getInventoryTransactions,
   createInventoryTransaction,
+  updateInventoryItem,
 };

@@ -396,8 +396,8 @@ export default function EditRestaurantProfile({
                     if (!isActive) {
                       updated.push({
                         day,
-                        open_time: "",
-                        close_time: "",
+                        open_time: "07:00",
+                        close_time: "20:00",
                       });
                     }
                     // Sort updated array by DAYS index to keep them in order

@@ -1,5 +1,5 @@
 import { SubaccountResponse } from "@/api-services/subaccount.service";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // -----------------------------------------------------
 // STATE TYPE

@@ -72,6 +72,10 @@ export default function AcceptInvite() {
           <p className="font-medium text-gray-700">
             Invite accepted successfully! You may now log in.
           </p>
+          <p className="text-sm text-gray-600 text-center">
+            Shortly, you will receive an email containing your temporary login credentials.
+            Please make sure to change your password after you log in.
+          </p>
         </div>
       )}
     </div>

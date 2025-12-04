@@ -21,7 +21,6 @@ export default function RestaurantProfilePage() {
   const { setLoading, setLoadingText } = useLoading();
   const { profile, loading, error, fetchProfile } = useRestaurantProfile();
   const [editMode, setEditMode] = useState(false);
-  console.log("profile", profile);
 
   useEffect(() => {
     if (!profile) {
@@ -34,13 +33,37 @@ export default function RestaurantProfilePage() {
       setLoading(true);
       setLoadingText("Updating restaurant profile...");
 
+      // ---------- 0. Sort opening_hours ----------
+      const weekOrder: Record<string, number> = {
+        monday: 1,
+        tuesday: 2,
+        wednesday: 3,
+        thursday: 4,
+        friday: 5,
+        saturday: 6,
+        sunday: 7,
+      };
+
+      const sortedOpeningHours = data.opening_hours
+        ? [...data.opening_hours].sort(
+            (a, b) =>
+              (weekOrder[a.day.toLowerCase()] || 99) -
+              (weekOrder[b.day.toLowerCase()] || 99)
+          )
+        : null;
+
       // ---------- 1. Update basic profile (JSON) ----------
-      const { logo, cover_image, ...profileData } = data; // exclude images
+      const { logo, cover_image, ...profileData } = {
+        ...data,
+        opening_hours: sortedOpeningHours,
+      }; // replace opening_hours with sorted array
+
       let update1 = await updateRestaurantProfile(
         String(profile?.id),
         profileData,
         auth.token
       );
+
       dispatch(updateProfile(update1));
 
       // ---------- 2. Update images (FormData) ----------

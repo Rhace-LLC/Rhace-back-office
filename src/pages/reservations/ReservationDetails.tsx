@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { parseError } from "@/api-services/utils/parseError";
 import {
   assignTableToReservation,
-  Reservation,
   updateReservationStatus,
 } from "@/api-services/order.service";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -45,20 +44,27 @@ const getStatusColor = (status: ReservationStatus) => {
 };
 
 interface ReservationDetailProps {
-  reservation?: Reservation | null;
+  reservationId?: number;
   onUpdateStatus?: (reservationId: string, status: ReservationStatus) => void;
 }
 export const ReservationDetail: React.FC<ReservationDetailProps> = ({
-  reservation,
+  reservationId,
 }) => {
-  console.log("RESERVATION", reservation);
   const auth = useAuth();
   const dispatch = useDispatch();
   const { setLoading, setLoadingText } = useLoading();
+
+  const reservationsState = useSelector((s: RootState) => s.reservations);
+  const reservation = reservationsState.data["1"].find(
+    (x) => x.id == reservationId
+  );
   const dataStore = useSelector((state: RootState) => state.table);
   const [reasonError, setReasonError] = useState("");
   const [reason, setReason] = useState("");
-  const allTables: Table[] = Object.values(dataStore.data).flat();
+
+  let allTables: Table[] = Object.values(dataStore.data).flat();
+  allTables = allTables.filter((x) => x.is_available);
+
   const { fetchAllData, fetchLoading, fetchError } = useTableData({
     page: 1,
     page_size: 10,
@@ -79,6 +85,12 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
   const tables = useSelector((state: RootState) => {
     return state.table.data["1"];
   });
+
+  const [activeTab, setActiveTab] = useState(
+    reservation?.status === "completed" ? "details" : "details"
+  );
+
+  const isCompleted = reservation?.status === "completed";
 
   if (!reservation) return null;
 
@@ -170,14 +182,29 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
 
   const handleComplete = async () => {
     try {
+      setLoading(true);
+      setLoadingText("Completing Reservation...");
+
       await updateReservationStatus(
         String(reservation.id),
         { status: "completed" },
         auth.token
       );
+
+      dispatch(
+        updateReservationDataById({
+          ...reservation,
+          status: "completed",
+        })
+      );
+      setActiveTab("details");
+
       toast.success("Reservation marked as completed");
     } catch (error: any) {
       toast.error(parseError(error) || "Failed to complete reservation");
+    } finally {
+      setLoading(false);
+      setLoadingText("");
     }
   };
 
@@ -202,10 +229,19 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
       </header>
 
       {/* Tabs */}
-      <Tabs defaultValue="details" className="flex flex-grow flex-col">
-        <TabsList className="grid grid-cols-2 rounded-md bg-gray-100">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="flex flex-grow flex-col"
+      >
+        <TabsList
+          className={`rounded-md bg-gray-100 ${
+            isCompleted ? "grid grid-cols-1" : "grid grid-cols-2"
+          }`}
+        >
           <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="actions">Actions</TabsTrigger>
+
+          {!isCompleted && <TabsTrigger value="actions">Actions</TabsTrigger>}
         </TabsList>
 
         <div className="flex-grow overflow-y-auto">

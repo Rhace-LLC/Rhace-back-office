@@ -59,6 +59,7 @@ function ProtectedRoute({
   allowedRoles?: UserRole[];
 }) {
   const auth = useAuth();
+  const location = useLocation();
 
   if (auth.loading) {
     return <div className="p-8 text-center">Loading Session...</div>;
@@ -68,6 +69,26 @@ function ProtectedRoute({
     return <Navigate to="/login" replace />;
   }
 
+  // 🔹 FIRST: Force payout account setup
+  if (
+    auth.isOwner &&
+    !auth.hasPayoutAccount &&
+    location.pathname !== "/wallet-and-account"
+  ) {
+    return <Navigate to="/wallet-and-account" replace />;
+  }
+
+  // 🔹 SECOND: Force subscription if payout is set but not subscribed
+  if (
+    auth.isOwner &&
+    auth.hasPayoutAccount &&
+    !auth.hasSubscribed &&
+    location.pathname !== "/billings-and-subscriptions"
+  ) {
+    return <Navigate to="/billings-and-subscriptions" replace />;
+  }
+
+  // 🔹 THIRD: Role validation
   if (allowedRoles && !allowedRoles.includes(auth.accountType as UserRole)) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -90,7 +111,8 @@ function NavigationContent() {
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  // Redirect authenticated users from "/" to /dashboard
+  console.log("auth", auth);
+
   useEffect(() => {
     if (
       auth.isAuthenticated &&

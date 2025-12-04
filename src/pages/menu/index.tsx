@@ -116,6 +116,9 @@ export function MenuManagement() {
         <Table className="w-full border-collapse text-sm">
           <TableHeader>
             <TableRow className="bg-gray-50">
+              <TableHead className="w-14 font-medium text-gray-600">
+                Image
+              </TableHead>
               <TableHead className="font-medium text-gray-600">Dish</TableHead>
               <TableHead className="font-medium text-gray-600">Price</TableHead>
               <TableHead className="font-medium text-gray-600">
@@ -126,12 +129,22 @@ export function MenuManagement() {
               </TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody>
             {toShow.map((dish) => (
               <TableRow
                 key={dish.id}
                 className="cursor-pointer transition hover:bg-gray-50"
               >
+                {/* Image Column */}
+                <TableCell className="py-2">
+                  <img
+                    src={dish.image_url || "/placeholder-dish.png"}
+                    alt={dish.name}
+                    className="h-12 w-12 rounded-lg border object-cover"
+                  />
+                </TableCell>
+
                 {/* Dish Info */}
                 <TableCell className="font-medium text-gray-900">
                   <div>{dish.name}</div>
