@@ -76,12 +76,22 @@ interface MenuItem {
   is_special: boolean;
 }
 
-interface OrderItem {
+// Define the two possible item formats
+interface OrderItemWithMenuItem {
   id: number;
   menu_item: MenuItem;
   quantity: number;
   price: string;
 }
+
+interface OrderItemSimple {
+  id: number;
+  menu_item_name: string;
+  quantity: number;
+  price: string;
+}
+
+type OrderItem = OrderItemWithMenuItem | OrderItemSimple;
 
 interface OrderDetailsSheetProps {
   order: Order | null;
@@ -140,22 +150,24 @@ export function OrderDetailsSheet({
   // Filter tables to only show available ones (is_available: true)
   const availableTables = tables.filter((table) => table.is_available === true);
 
-  // Safe item accessor
+  // Safe item accessor that handles both formats
   const getSafeItems = (order: Order | null): OrderItem[] => {
     if (!order) return [];
     if (!Array.isArray(order.items)) return [];
-
-    // Filter and cast items that have the proper structure
-    return order.items.filter(
-      (item) => typeof item === "object" && item !== null && "menu_item" in item
-    ) as OrderItem[];
+    
+    // Return all items as-is, the component will handle both formats
+    return order.items.filter(item => item !== null && typeof item === 'object') as OrderItem[];
   };
 
-  // Debug: Check what data we're receiving
-  console.log("OrderDetailsSheet - Order:", order);
-  console.log("OrderDetailsSheet - Tables:", tables);
-  console.log("OrderDetailsSheet - Available Tables:", availableTables);
-  console.log("OrderDetailsSheet - Staff:", staff);
+  // Helper function to check if item has full menu_item object
+  const hasFullMenuItem = (item: OrderItem): item is OrderItemWithMenuItem => {
+    return 'menu_item' in item && item.menu_item !== null;
+  };
+
+  // Helper function to check if item has simple format
+  const hasSimpleItem = (item: OrderItem): item is OrderItemSimple => {
+    return 'menu_item_name' in item;
+  };
 
   // Initialize when order changes
   useEffect(() => {
@@ -200,8 +212,7 @@ export function OrderDetailsSheet({
   // Get assigned table details
   const getAssignedTable = () => {
     if (!order.table) return null;
-    const table = tables.find((t) => t.id === order.table);
-    console.log("Looking for table:", order.table, "Found:", table);
+    const table = tables.find(t => t.id === order.table);
     return table;
   };
 
@@ -325,6 +336,119 @@ export function OrderDetailsSheet({
     return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
   };
 
+  // Render individual item based on its format
+  const renderOrderItem = (item: OrderItem, index: number) => {
+    // Handle the API response format (simple format)
+    if (hasSimpleItem(item)) {
+      return (
+        <div key={item.id || index} className="p-4 bg-muted/30 rounded-lg border">
+          <div className="flex justify-between items-start mb-3">
+            <div className="flex-1">
+              <h4 className="font-semibold text-foreground">
+                {item.menu_item_name || 'Unknown Item'}
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                Quantity: {item.quantity} × ₦{parseFloat(item.price || '0').toFixed(2)}
+              </p>
+              <p className="text-sm font-medium mt-1">
+                Subtotal: ₦{(parseFloat(item.price || '0') * item.quantity).toFixed(2)}
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    // Handle the expected format with menu_item object
+    if (hasFullMenuItem(item)) {
+      return (
+        <div key={item.id || index} className="p-4 bg-muted/30 rounded-lg border">
+          {/* Item Header */}
+          <div className="flex justify-between items-start mb-3">
+            <div className="flex-1">
+              <h4 className="font-semibold text-foreground">
+                {item.menu_item?.name || 'Unknown Item'}
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                Quantity: {item.quantity} × ₦{parseFloat(item.price || '0').toFixed(2)}
+              </p>
+              <p className="text-sm font-medium mt-1">
+                Subtotal: ₦{(parseFloat(item.price || '0') * item.quantity).toFixed(2)}
+              </p>
+            </div>
+            {item.menu_item?.image_url && (
+              <img 
+                src={item.menu_item.image_url} 
+                alt={item.menu_item.name}
+                className="w-16 h-16 rounded-lg object-cover"
+              />
+            )}
+          </div>
+
+          {/* Description */}
+          {item.menu_item?.description && (
+            <div className="mb-3">
+              <p className="text-sm text-muted-foreground">
+                {item.menu_item.description}
+              </p>
+            </div>
+          )}
+
+          {/* Ingredients */}
+          {item.menu_item?.display_ingredients && item.menu_item.display_ingredients.length > 0 && (
+            <div className="mb-3">
+              <div className="flex items-center gap-2 mb-2">
+                <Utensils className="h-4 w-4 text-green-600" />
+                <Label className="text-sm font-medium">Ingredients</Label>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {item.menu_item.display_ingredients.map((ingredient: string, idx: number) => (
+                  <Badge key={idx} variant="secondary" className="text-xs">
+                    {ingredient}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Allergens */}
+          {item.menu_item?.allergens && item.menu_item.allergens.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <AlertTriangle className="h-4 w-4 text-amber-600" />
+                <Label className="text-sm font-medium text-amber-600">Allergens</Label>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {item.menu_item.allergens.map((allergen: string, idx: number) => (
+                  <Badge key={idx} variant="outline" className="text-xs border-amber-200 bg-amber-50 text-amber-700">
+                    {allergen}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Preparation Time */}
+          {item.menu_item?.prep_time && (
+            <div className="mt-3 pt-3 border-t">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Clock className="h-3 w-3" />
+                <span>Prep time: {item.menu_item.prep_time}</span>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+    
+    // Fallback for unknown format
+    return (
+      <div key={index} className="p-4 bg-muted/30 rounded-lg border">
+        <p className="text-sm text-muted-foreground">Unknown item format</p>
+      </div>
+    );
+  };
+
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent className="flex w-full flex-col sm:max-w-lg">
@@ -380,109 +504,13 @@ export function OrderDetailsSheet({
               Order Items ({getItemsCount()})
             </h3>
             <div className="space-y-3">
-              {getSafeItems(order).map((item, index) => (
-                <div
-                  key={item.id || index}
-                  className="bg-muted/30 rounded-lg border p-4"
-                >
-                  {/* Item Header */}
-                  <div className="mb-3 flex items-start justify-between">
-                    <div className="flex-1">
-                      <h4 className="text-foreground font-semibold">
-                        {item.menu_item?.name || "Unknown Item"}
-                      </h4>
-                      <p className="text-muted-foreground text-sm">
-                        Quantity: {item.quantity} × ₦
-                        {parseFloat(item.price || "0").toFixed(2)}
-                      </p>
-                      <p className="mt-1 text-sm font-medium">
-                        Subtotal: ₦
-                        {(
-                          parseFloat(item.price || "0") * item.quantity
-                        ).toFixed(2)}
-                      </p>
-                    </div>
-                    {item.menu_item?.image_url && (
-                      <img
-                        src={item.menu_item.image_url}
-                        alt={item.menu_item.name}
-                        className="h-16 w-16 rounded-lg object-cover"
-                      />
-                    )}
-                  </div>
-
-                  {/* Description */}
-                  {item.menu_item?.description && (
-                    <div className="mb-3">
-                      <p className="text-muted-foreground text-sm">
-                        {item.menu_item.description}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Ingredients */}
-                  {item.menu_item?.display_ingredients &&
-                    item.menu_item.display_ingredients.length > 0 && (
-                      <div className="mb-3">
-                        <div className="mb-2 flex items-center gap-2">
-                          <Utensils className="h-4 w-4 text-green-600" />
-                          <Label className="text-sm font-medium">
-                            Ingredients
-                          </Label>
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          {item.menu_item.display_ingredients.map(
-                            (ingredient: string, idx: number) => (
-                              <Badge
-                                key={idx}
-                                variant="secondary"
-                                className="text-xs"
-                              >
-                                {ingredient}
-                              </Badge>
-                            )
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                  {/* Allergens */}
-                  {item.menu_item?.allergens &&
-                    item.menu_item.allergens.length > 0 && (
-                      <div>
-                        <div className="mb-2 flex items-center gap-2">
-                          <AlertTriangle className="h-4 w-4 text-amber-600" />
-                          <Label className="text-sm font-medium text-amber-600">
-                            Allergens
-                          </Label>
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          {item.menu_item.allergens.map(
-                            (allergen: string, idx: number) => (
-                              <Badge
-                                key={idx}
-                                variant="outline"
-                                className="border-amber-200 bg-amber-50 text-xs text-amber-700"
-                              >
-                                {allergen}
-                              </Badge>
-                            )
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                  {/* Preparation Time */}
-                  {item.menu_item?.prep_time && (
-                    <div className="mt-3 border-t pt-3">
-                      <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                        <Clock className="h-3 w-3" />
-                        <span>Prep time: {item.menu_item.prep_time}</span>
-                      </div>
-                    </div>
-                  )}
+              {getSafeItems(order).length === 0 ? (
+                <div className="p-4 text-center text-muted-foreground bg-muted/30 rounded-lg border">
+                  No items in this order
                 </div>
-              ))}
+              ) : (
+                getSafeItems(order).map((item, index) => renderOrderItem(item, index))
+              )}
             </div>
           </div>
 
