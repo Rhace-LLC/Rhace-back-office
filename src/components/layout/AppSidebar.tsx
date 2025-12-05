@@ -145,6 +145,11 @@ export function useRoleBasedMenu(): MenuItem[] {
         url: "/dashboard",
         icon: LayoutDashboard,
       },
+    {
+      title: "Orders",
+      url: "/orders",
+      icon: ShoppingCart,
+    },
       {
         title: "Menu Management",
         url: "/menu",
