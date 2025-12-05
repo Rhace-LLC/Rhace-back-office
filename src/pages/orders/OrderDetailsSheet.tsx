@@ -29,6 +29,7 @@ import {
   Table as TableIcon,
   AlertTriangle,
   Utensils,
+  Bell,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -132,6 +133,37 @@ const statusDescriptions: Record<OrderStatus, string> = {
   delivered: "Order has been delivered to customer",
 };
 
+// Show notification when an action is completed
+const showActionNotification = (action: string, orderId: string, newStatus?: string) => {
+  let description = `Order #${orderId} has been updated successfully.`;
+  
+  if (newStatus) {
+    description = `Order #${orderId} status changed to ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1).toLowerCase()}.`;
+    
+    // Special notifications for certain statuses
+    switch (newStatus) {
+      case "ready":
+        description = `Order #${orderId} is now READY for serving!`;
+        break;
+      case "delivered":
+        description = `Order #${orderId} has been DELIVERED to customer.`;
+        break;
+      case "completed":
+        description = `Order #${orderId} has been COMPLETED successfully.`;
+        break;
+      case "cancelled":
+        description = `Order #${orderId} has been CANCELLED.`;
+        break;
+    }
+  }
+  
+  toast.success(`${action} Completed`, {
+    description,
+    icon: <Bell className="h-4 w-4" />,
+    duration: 3000,
+  });
+};
+
 export function OrderDetailsSheet({
   order,
   isOpen,
@@ -142,13 +174,22 @@ export function OrderDetailsSheet({
   staff,
   tables,
 }: OrderDetailsSheetProps) {
-  const { isWaiter, isOwner } = useAuth();
+  const { isWaiter, isOwner, isKitchen } = useAuth();
   const [selectedTable, setSelectedTable] = useState<string>("");
   const [selectedWaiter, setSelectedWaiter] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | "">("");
 
+  // Filter staff to only show active waiters
+  const waiters = staff.filter((staffMember) => 
+    staffMember.role === "waiter" && staffMember.is_active === true
+  );
+
   // Filter tables to only show available ones (is_available: true)
   const availableTables = tables.filter((table) => table.is_available === true);
+
+  // Check order type
+  const isDeliveryTakeaway = order?.order_type === "delivery" || order?.order_type === "takeaway";
+  const isDineIn = order?.order_type === "dine-in";
 
   // Safe item accessor that handles both formats
   const getSafeItems = (order: Order | null): OrderItem[] => {
@@ -217,32 +258,67 @@ export function OrderDetailsSheet({
   };
 
   const handleStatusChange = (newStatus: OrderStatus) => {
-    // Only waiters can update status
-    if (!isWaiter) {
+    const currentStatus = order.status as OrderStatus;
+    
+    // Check if the transition is allowed based on user role
+    let canChange = false;
+    let errorMessage = "";
+    
+    if (isKitchen) {
+      // Kitchen staff permissions
+      if (currentStatus === "received" && newStatus === "preparing") canChange = true;
+      if (currentStatus === "preparing" && newStatus === "ready") canChange = true;
+      if (newStatus === "cancelled" && (currentStatus === "received" || currentStatus === "preparing")) canChange = true;
+      
+      if (!canChange) {
+        errorMessage = `Kitchen staff can only change from "received" to "preparing" or "preparing" to "ready" or cancel during preparation`;
+      }
+    }
+    
+    if (isWaiter) {
+      // Waiter permissions
+      if (currentStatus === "ready" && newStatus === "completed" && !isDeliveryTakeaway) canChange = true;
+      if (currentStatus === "ready" && newStatus === "delivered" && isDeliveryTakeaway) canChange = true;
+      if (currentStatus === "delivered" && newStatus === "completed" && isDeliveryTakeaway) canChange = true;
+      if (newStatus === "cancelled") canChange = true; // Waiters can cancel any order
+      
+      if (!canChange) {
+        if (isDeliveryTakeaway) {
+          errorMessage = `Waiters can only change from "ready" to "delivered" or "delivered" to "completed" for delivery/takeaway orders`;
+        } else {
+          errorMessage = `Waiters can only change from "ready" to "completed" for dine-in orders`;
+        }
+      }
+    }
+    
+    if (isOwner) {
+      // Owners can do anything
+      canChange = true;
+    }
+    
+    if (!canChange) {
       toast.error("Access Denied", {
-        description: "Only waiters can update order status",
+        description: errorMessage || `You don't have permission to change status from ${currentStatus} to ${newStatus}`,
       });
       return;
     }
 
     setSelectedStatus(newStatus);
     onStatusChange(order.id, newStatus);
+    
+    // Show notification
+    showActionNotification("Status update", order.id, newStatus);
   };
 
   const handleQuickStatusUpdate = () => {
-    // Only waiters can update status
-    if (!isWaiter) {
-      toast.error("Access Denied", {
-        description: "Only waiters can update order status",
-      });
-      return;
-    }
-
     const availableStatusOptions = getAvailableStatusOptions();
     if (availableStatusOptions.length > 0) {
       const nextStatus = availableStatusOptions[0];
       setSelectedStatus(nextStatus);
       onStatusChange(order.id, nextStatus);
+      
+      // Show notification
+      showActionNotification("Status update", order.id, nextStatus);
     }
   };
 
@@ -258,14 +334,17 @@ export function OrderDetailsSheet({
     if (selectedTable) {
       onAssignTable(order.id, selectedTable);
       setSelectedTable("");
+      
+      // Show notification
+      showActionNotification("Table assigned", order.id);
     }
   };
 
   const handleAssignWaiter = () => {
-    // Only restaurant owners can assign waiters
-    if (!isOwner) {
+    // Kitchen staff and owners can assign waiters
+    if (!isKitchen && !isOwner) {
       toast.error("Access Denied", {
-        description: "Only restaurant owners can assign waiters",
+        description: "Only kitchen staff and owners can assign waiters",
       });
       return;
     }
@@ -273,6 +352,9 @@ export function OrderDetailsSheet({
     if (selectedWaiter) {
       onAssignWaiter(order.id, selectedWaiter);
       setSelectedWaiter("");
+      
+      // Show notification
+      showActionNotification("Waiter assigned", order.id);
     }
   };
 
@@ -282,34 +364,59 @@ export function OrderDetailsSheet({
   const getAvailableStatusOptions = (): OrderStatus[] => {
     const currentStatus = order.status as OrderStatus;
 
-    const validStatuses: OrderStatus[] = [
-      "received",
-      "preparing",
-      "ready",
-      "cancelled",
-      "completed",
-    ];
-
     switch (currentStatus) {
       case "received":
-        return ["preparing", "cancelled"];
+        // Kitchen can change to preparing, anyone can cancel
+        if (isKitchen || isOwner) return ["preparing", "cancelled"];
+        if (isWaiter) return ["cancelled"];
+        return [];
+      
       case "preparing":
-        return ["ready", "cancelled"];
+        // Kitchen can change to ready or cancel
+        if (isKitchen || isOwner) return ["ready", "cancelled"];
+        if (isWaiter) return ["cancelled"];
+        return [];
+      
       case "ready":
-        return ["completed"];
-      case "completed":
-        return [];
-      case "cancelled":
-        return [];
+        const readyOptions: OrderStatus[] = ["cancelled"];
+        
+        // Waiters/owners can mark as delivered or completed based on order type
+        if (isWaiter || isOwner) {
+          if (isDeliveryTakeaway) {
+            readyOptions.push("delivered");
+          } else {
+            // For dine-in and other order types
+            readyOptions.push("completed");
+          }
+        }
+        
+        // Kitchen can also cancel at this stage
+        if (isKitchen) {
+          if (!readyOptions.includes("cancelled")) {
+            readyOptions.push("cancelled");
+          }
+        }
+        
+        return readyOptions;
+      
       case "delivered":
-        return ["completed"];
+        // Only for delivery/takeaway orders
+        const deliveredOptions: OrderStatus[] = ["cancelled"];
+        if (isWaiter || isOwner) deliveredOptions.push("completed");
+        return deliveredOptions;
+      
+      case "completed":
+        return []; // No changes allowed after completion
+      
+      case "cancelled":
+        return []; // No changes allowed after cancellation
+      
       default:
-        return validStatuses.filter((status) => status !== currentStatus);
+        return [];
     }
   };
 
   const availableStatusOptions = getAvailableStatusOptions();
-  const isDineInOrder = order.order_type === "dine-in";
   const assignedWaiter = getAssignedWaiter();
   const assignedTable = getAssignedTable();
 
@@ -322,6 +429,8 @@ export function OrderDetailsSheet({
         return "Start Preparing";
       case "ready":
         return "Mark Ready";
+      case "delivered":
+        return "Mark Delivered";
       case "completed":
         return "Complete Order";
       case "cancelled":
@@ -334,6 +443,14 @@ export function OrderDetailsSheet({
   // Helper function to format status for display
   const formatStatusForDisplay = (status: string) => {
     return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+  };
+
+  // Get user role badge
+  const getUserRoleBadge = () => {
+    if (isKitchen) return <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800 border-orange-200">Kitchen</Badge>;
+    if (isWaiter) return <Badge variant="secondary" className="ml-2 bg-blue-100 text-blue-800 border-blue-200">Waiter</Badge>;
+    if (isOwner) return <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 border-green-200">Owner</Badge>;
+    return null;
   };
 
   // Render individual item based on its format
@@ -454,7 +571,10 @@ export function OrderDetailsSheet({
       <SheetContent className="flex w-full flex-col sm:max-w-lg">
         <SheetHeader className="flex-shrink-0 border-b pb-4">
           <SheetTitle className="flex items-center justify-between">
-            <span>Order #{order.id}</span>
+            <div className="flex items-center">
+              <span>Order #{order.id}</span>
+              {getUserRoleBadge()}
+            </div>
             <Badge
               variant="secondary"
               className={`${statusColors[order.status as OrderStatus]} flex items-center gap-1 border font-medium`}
@@ -562,7 +682,7 @@ export function OrderDetailsSheet({
                         <p className="text-sm font-medium">Waiter</p>
                         <p className="text-muted-foreground text-xs">
                           {assignedWaiter
-                            ? `${assignedWaiter.full_name || `${assignedWaiter.first_name} ${assignedWaiter.last_name}`}`
+                            ? `${assignedWaiter.full_name}`
                             : "Not assigned"}
                         </p>
                       </div>
@@ -576,7 +696,7 @@ export function OrderDetailsSheet({
                   </div>
 
                   {/* Table Assignment - Only for dine-in */}
-                  {isDineInOrder && (
+                  {isDineIn && (
                     <div className="bg-background flex items-center justify-between rounded border p-2">
                       <div className="flex items-center gap-2">
                         <TableIcon className="text-muted-foreground h-4 w-4" />
@@ -602,12 +722,12 @@ export function OrderDetailsSheet({
             </div>
           </div>
 
-          {/* Staff Assignment Section - Only show if user is restaurant owner AND staff list is available */}
-          {isOwner && staff.length > 0 && (
+          {/* Waiter Assignment Section - Kitchen staff and owners can assign */}
+          {(isKitchen || isOwner) && waiters.length > 0 && (
             <div className="space-y-4">
               <h3 className="text-foreground flex items-center gap-2 text-lg font-semibold">
                 <div className="bg-primary h-5 w-1 rounded-full" />
-                Staff Assignment
+                Waiter Assignment
               </h3>
 
               {/* Waiter Assignment */}
@@ -629,8 +749,7 @@ export function OrderDetailsSheet({
                 {assignedWaiter && (
                   <div className="bg-background mb-3 rounded border p-2">
                     <p className="text-sm font-medium">
-                      {assignedWaiter.full_name ||
-                        `${assignedWaiter.first_name} ${assignedWaiter.last_name}`}
+                      {assignedWaiter.full_name}
                     </p>
                     <p className="text-muted-foreground text-xs">
                       {assignedWaiter.phone} • {assignedWaiter.email}
@@ -656,19 +775,18 @@ export function OrderDetailsSheet({
                           <SelectValue placeholder="Select waiter" />
                         </SelectTrigger>
                         <SelectContent>
-                          {staff.length === 0 ? (
+                          {waiters.length === 0 ? (
                             <SelectItem value="none" disabled>
                               No waiters available
                             </SelectItem>
                           ) : (
-                            staff.map((waiter) => (
+                            waiters.map((waiter) => (
                               <SelectItem key={waiter.id} value={waiter.id}>
                                 <div className="flex items-center gap-2">
                                   <User className="h-4 w-4" />
                                   <div>
                                     <span>
-                                      {waiter.full_name ||
-                                        `${waiter.first_name} ${waiter.last_name}`}
+                                      {waiter.full_name}
                                     </span>
                                     <p className="text-muted-foreground text-xs">
                                       {waiter.phone}
@@ -682,14 +800,14 @@ export function OrderDetailsSheet({
                       </Select>
                       <Button
                         onClick={handleAssignWaiter}
-                        disabled={!selectedWaiter || staff.length === 0}
+                        disabled={!selectedWaiter || waiters.length === 0}
                         className="whitespace-nowrap"
                       >
                         {assignedWaiter ? "Change" : "Assign"}
                       </Button>
                     </div>
                     <p className="text-muted-foreground text-xs">
-                      {staff.length} waiters available
+                      {waiters.length} waiters available
                     </p>
                   </div>
                 )}
@@ -698,7 +816,7 @@ export function OrderDetailsSheet({
           )}
 
           {/* Table Assignment for Dine-in Orders - Only for restaurant owners */}
-          {isDineInOrder && isOwner && (
+          {isDineIn && isOwner && (
             <div className="space-y-4">
               <h3 className="text-foreground flex items-center gap-2 text-lg font-semibold">
                 <div className="bg-primary h-5 w-1 rounded-full" />
@@ -837,11 +955,11 @@ export function OrderDetailsSheet({
                     >
                       Update Status
                     </Label>
-                    {!isWaiter && (
-                      <Badge variant="outline" className="text-xs">
-                        Waiter Only
-                      </Badge>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {isKitchen && <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">Kitchen Access</Badge>}
+                      {isWaiter && <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">Waiter Access</Badge>}
+                      {isOwner && <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">Owner Access</Badge>}
+                    </div>
                   </div>
                   <div className="flex gap-2">
                     <Select
@@ -849,7 +967,7 @@ export function OrderDetailsSheet({
                       onValueChange={(value: OrderStatus) =>
                         handleStatusChange(value)
                       }
-                      disabled={!isWaiter}
+                      disabled={availableStatusOptions.length === 0}
                     >
                       <SelectTrigger className="flex-1">
                         <SelectValue placeholder="Select new status" />
@@ -873,9 +991,7 @@ export function OrderDetailsSheet({
                       onClick={handleQuickStatusUpdate}
                       variant="outline"
                       className="whitespace-nowrap"
-                      disabled={
-                        availableStatusOptions.length === 0 || !isWaiter
-                      }
+                      disabled={availableStatusOptions.length === 0}
                     >
                       {getQuickUpdateLabel()}
                     </Button>
@@ -886,11 +1002,6 @@ export function OrderDetailsSheet({
                       .map((s) => formatStatusForDisplay(s))
                       .join(", ")}
                   </p>
-                  {!isWaiter && (
-                    <p className="mt-1 text-xs text-amber-600">
-                      Only waiters can update order status
-                    </p>
-                  )}
                 </div>
               )}
             </div>

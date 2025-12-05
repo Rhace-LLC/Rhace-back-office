@@ -11,6 +11,7 @@ export interface Staff {
   role: string;
   phone: string;
   is_active: boolean;
+  
 }
 
 // api-services/staffService.ts
