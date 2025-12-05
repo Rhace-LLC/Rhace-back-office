@@ -13,9 +13,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { parseError } from "@/api-services/utils/parseError";
-import {
-  registerRestaurant,
-} from "@/api-services/auth.service";
+import { registerRestaurant } from "@/api-services/auth.service";
 import { Eye, EyeOff } from "lucide-react";
 import RhaceImage from "../../assets/Rhace-10.png";
 import { Country, State, City } from "country-state-city";
@@ -204,7 +202,6 @@ export function SignUp() {
     confirm_password: "",
   });
 
-
   const [countries] = useState(Country.getAllCountries());
   const [states, setStates] = useState<any[]>([]);
   const [cities, setCities] = useState<any[]>([]); // 👈 added city state
@@ -238,7 +235,6 @@ export function SignUp() {
     setOwnerForm((prev) => ({ ...prev, [field]: value }));
     setErrors(() => ({}));
   };
-
 
   const handleOwnerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -303,273 +299,254 @@ export function SignUp() {
         </CardHeader>
 
         <CardContent>
-              <form onSubmit={handleOwnerSubmit} className="mt-4 space-y-3">
-                <div>
-                  <Label>Restaurant Name</Label>
-                  <Input
-                    value={ownerForm.restaurant_name}
-                    onChange={(e) =>
-                      handleOwnerChange("restaurant_name", e.target.value)
-                    }
-                  />
-                  {errors.restaurant_name && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.restaurant_name}
-                    </p>
-                  )}
-                </div>
+          <form onSubmit={handleOwnerSubmit} className="mt-4 space-y-3">
+            <div>
+              <Label>Restaurant Name</Label>
+              <Input
+                value={ownerForm.restaurant_name}
+                onChange={(e) =>
+                  handleOwnerChange("restaurant_name", e.target.value)
+                }
+              />
+              {errors.restaurant_name && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.restaurant_name}
+                </p>
+              )}
+            </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>Restaurant Email</Label>
-                    <Input
-                      type="email"
-                      value={ownerForm.restaurant_email}
-                      onChange={(e) =>
-                        handleOwnerChange("restaurant_email", e.target.value)
-                      }
-                    />
-                    {errors.restaurant_email && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.restaurant_email}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Restaurant Phone</Label>
-                    <Input
-                      type="tel"
-                      value={ownerForm.restaurant_phone}
-                      onChange={(e) =>
-                        handleOwnerChange("restaurant_phone", e.target.value)
-                      }
-                    />
-                    {errors.restaurant_phone && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.restaurant_phone}
-                      </p>
-                    )}
-                  </div>
-                </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Restaurant Email</Label>
+                <Input
+                  type="email"
+                  value={ownerForm.restaurant_email}
+                  onChange={(e) =>
+                    handleOwnerChange("restaurant_email", e.target.value)
+                  }
+                />
+                {errors.restaurant_email && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.restaurant_email}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Label>Restaurant Phone</Label>
+                <Input
+                  type="tel"
+                  value={ownerForm.restaurant_phone}
+                  onChange={(e) =>
+                    handleOwnerChange("restaurant_phone", e.target.value)
+                  }
+                />
+                {errors.restaurant_phone && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.restaurant_phone}
+                  </p>
+                )}
+              </div>
+            </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>Owner First Name</Label>
-                    <Input
-                      value={ownerForm.owner_first_name}
-                      onChange={(e) =>
-                        handleOwnerChange("owner_first_name", e.target.value)
-                      }
-                    />
-                    {errors.owner_first_name && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.owner_first_name}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Owner Last Name</Label>
-                    <Input
-                      value={ownerForm.owner_last_name}
-                      onChange={(e) =>
-                        handleOwnerChange("owner_last_name", e.target.value)
-                      }
-                    />
-                    {errors.owner_last_name && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.owner_last_name}
-                      </p>
-                    )}
-                  </div>
-                </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Owner First Name</Label>
+                <Input
+                  value={ownerForm.owner_first_name}
+                  onChange={(e) =>
+                    handleOwnerChange("owner_first_name", e.target.value)
+                  }
+                />
+                {errors.owner_first_name && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.owner_first_name}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Label>Owner Last Name</Label>
+                <Input
+                  value={ownerForm.owner_last_name}
+                  onChange={(e) =>
+                    handleOwnerChange("owner_last_name", e.target.value)
+                  }
+                />
+                {errors.owner_last_name && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.owner_last_name}
+                  </p>
+                )}
+              </div>
+            </div>
 
-                {/* ---------------- OWNER CONTACT ---------------- */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>Owner Email</Label>
-                    <Input
-                      type="email"
-                      value={ownerForm.owner_email}
-                      onChange={(e) =>
-                        handleOwnerChange("owner_email", e.target.value)
-                      }
-                    />
-                    {errors.owner_email && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.owner_email}
-                      </p>
-                    )}
-                  </div>
+            {/* ---------------- OWNER CONTACT ---------------- */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Owner Email</Label>
+                <Input
+                  type="email"
+                  value={ownerForm.owner_email}
+                  onChange={(e) =>
+                    handleOwnerChange("owner_email", e.target.value)
+                  }
+                />
+                {errors.owner_email && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.owner_email}
+                  </p>
+                )}
+              </div>
 
-                  <div>
-                    <Label>Owner Phone</Label>
-                    <Input
-                      type="tel"
-                      value={ownerForm.owner_phone}
-                      onChange={(e) =>
-                        handleOwnerChange("owner_phone", e.target.value)
-                      }
-                    />
-                    {errors.owner_phone && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.owner_phone}
-                      </p>
-                    )}
-                  </div>
-                </div>
+              <div>
+                <Label>Owner Phone</Label>
+                <Input
+                  type="tel"
+                  value={ownerForm.owner_phone}
+                  onChange={(e) =>
+                    handleOwnerChange("owner_phone", e.target.value)
+                  }
+                />
+                {errors.owner_phone && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.owner_phone}
+                  </p>
+                )}
+              </div>
+            </div>
 
-                {/* ---------------- ADDRESS INFO ---------------- */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>Address</Label>
-                    <Input
-                      value={ownerForm.address}
-                      onChange={(e) =>
-                        handleOwnerChange("address", e.target.value)
-                      }
-                    />
-                    {errors.address && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.address}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Country</Label>
-                    <select
-                      className="w-full rounded border border-gray-300 p-2"
-                      value={ownerForm.country}
-                      onChange={(e) => handleCountryChange(e.target.value)}
-                    >
-                      <option value="">Select Country</option>
-                      {countries.map((country) => (
-                        <option key={country.isoCode} value={country.name}>
-                          {country.name}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.country && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.country}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* ---------------- COUNTRY & STATE ---------------- */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>State</Label>
-                    <select
-                      className="w-full rounded border border-gray-300 p-2"
-                      value={ownerForm.state}
-                      onChange={(e) => handleStateChange(e.target.value)}
-                      disabled={!ownerForm.country}
-                    >
-                      <option value="">Select State</option>
-                      {states.map((state) => (
-                        <option key={state.isoCode} value={state.name}>
-                          {state.name}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.state && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.state}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* City */}
-                  <div>
-                    <Label>City</Label>
-                    <select
-                      className="mt-1 w-full rounded-md border p-2"
-                      value={ownerForm.city}
-                      onChange={(e) =>
-                        handleOwnerChange("city", e.target.value)
-                      }
-                      disabled={!ownerForm.state}
-                    >
-                      <option value="">Select City</option>
-                      {cities.map((city) => (
-                        <option key={city.name} value={city.name}>
-                          {city.name}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.city && (
-                      <p className="mt-1 text-sm text-red-500">{errors.city}</p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="relative">
-                  <Label>Password</Label>
-                  <Input
-                    type={showOwnerPassword ? "text" : "password"}
-                    value={ownerForm.password}
-                    onChange={(e) =>
-                      handleOwnerChange("password", e.target.value)
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowOwnerPassword(!showOwnerPassword)}
-                    className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
-                  >
-                    {showOwnerPassword ? (
-                      <EyeOff size={18} />
-                    ) : (
-                      <Eye size={18} />
-                    )}
-                  </button>
-                  {errors.password && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.password}
-                    </p>
-                  )}
-                </div>
-
-                <div className="relative">
-                  <Label>Confirm Password</Label>
-                  <Input
-                    type={showOwnerConfirmPassword ? "text" : "password"}
-                    value={ownerForm.confirm_password}
-                    onChange={(e) =>
-                      handleOwnerChange("confirm_password", e.target.value)
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setShowOwnerConfirmPassword(!showOwnerConfirmPassword)
-                    }
-                    className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
-                  >
-                    {showOwnerConfirmPassword ? (
-                      <EyeOff size={18} />
-                    ) : (
-                      <Eye size={18} />
-                    )}
-                  </button>
-                  {errors.confirm_password && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.confirm_password}
-                    </p>
-                  )}
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full"
-                  style={{ backgroundColor: "#2542e3" }}
+            {/* ---------------- ADDRESS INFO ---------------- */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Address</Label>
+                <Input
+                  value={ownerForm.address}
+                  onChange={(e) => handleOwnerChange("address", e.target.value)}
+                />
+                {errors.address && (
+                  <p className="mt-1 text-sm text-red-500">{errors.address}</p>
+                )}
+              </div>
+              <div>
+                <Label>Country</Label>
+                <select
+                  className="w-full rounded border border-gray-300 p-2"
+                  value={ownerForm.country}
+                  onChange={(e) => handleCountryChange(e.target.value)}
                 >
-                  {loading ? "Registering..." : "Register Restaurant"}
-                </Button>
-              </form>
+                  <option value="">Select Country</option>
+                  {countries.map((country) => (
+                    <option key={country.isoCode} value={country.name}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.country && (
+                  <p className="mt-1 text-sm text-red-500">{errors.country}</p>
+                )}
+              </div>
+            </div>
 
+            {/* ---------------- COUNTRY & STATE ---------------- */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>State</Label>
+                <select
+                  className="w-full rounded border border-gray-300 p-2"
+                  value={ownerForm.state}
+                  onChange={(e) => handleStateChange(e.target.value)}
+                  disabled={!ownerForm.country}
+                >
+                  <option value="">Select State</option>
+                  {states.map((state) => (
+                    <option key={state.isoCode} value={state.name}>
+                      {state.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.state && (
+                  <p className="mt-1 text-sm text-red-500">{errors.state}</p>
+                )}
+              </div>
+
+              {/* City */}
+              <div>
+                <Label>City</Label>
+                <select
+                  className="mt-1 w-full rounded-md border p-2"
+                  value={ownerForm.city}
+                  onChange={(e) => handleOwnerChange("city", e.target.value)}
+                  disabled={!ownerForm.state}
+                >
+                  <option value="">Select City</option>
+                  {cities.map((city) => (
+                    <option key={city.name} value={city.name}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.city && (
+                  <p className="mt-1 text-sm text-red-500">{errors.city}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="relative">
+              <Label>Password</Label>
+              <Input
+                type={showOwnerPassword ? "text" : "password"}
+                value={ownerForm.password}
+                onChange={(e) => handleOwnerChange("password", e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={() => setShowOwnerPassword(!showOwnerPassword)}
+                className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
+              >
+                {showOwnerPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+              )}
+            </div>
+
+            <div className="relative">
+              <Label>Confirm Password</Label>
+              <Input
+                type={showOwnerConfirmPassword ? "text" : "password"}
+                value={ownerForm.confirm_password}
+                onChange={(e) =>
+                  handleOwnerChange("confirm_password", e.target.value)
+                }
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  setShowOwnerConfirmPassword(!showOwnerConfirmPassword)
+                }
+                className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
+              >
+                {showOwnerConfirmPassword ? (
+                  <EyeOff size={18} />
+                ) : (
+                  <Eye size={18} />
+                )}
+              </button>
+              {errors.confirm_password && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.confirm_password}
+                </p>
+              )}
+            </div>
+
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full"
+              style={{ backgroundColor: "#2542e3" }}
+            >
+              {loading ? "Registering..." : "Register Restaurant"}
+            </Button>
+          </form>
 
           <p className="text-muted-foreground mt-5 text-center text-sm">
             Already have an account?{" "}

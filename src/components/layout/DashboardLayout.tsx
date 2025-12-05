@@ -46,7 +46,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
             <SidebarInset
               className={`flex flex-1 flex-col transition-all duration-300 ${
-                sidebarOpen ? "ml-64" : "ml-0"
+                sidebarOpen ? "ml-0 md:ml-64" : "ml-0"
               }`}
             >
               <div className="flex flex-1 flex-col gap-4">
@@ -77,7 +77,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </div>
 
       {/* Mobile Sidebar */}
-      <div className="relative block md:hidden">
+      <div className="relative block pt-15 md:hidden">
         {/* Fixed Menu Icon */}
         {auth.isAuthenticated && (
           <div className="bg-sidebar text-sidebar-foreground border-sidebar-border fixed top-0 right-0 left-0 z-10 flex items-center justify-between border-b px-4 py-3">

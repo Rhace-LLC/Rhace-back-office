@@ -96,10 +96,10 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
         recorded_by: auth.user?.id || "",
       };
 
-      await createInventoryTransaction(payload, auth.token);
+      const response = await createInventoryTransaction(payload, auth.token);
 
       dispatch(
-        updateInventoryDataById({ ...item, quantity: editableItem.quantity })
+        updateInventoryDataById({ ...item, quantity: response.item.quantity })
       );
       toast.success("Quantity updated successfully");
 
@@ -121,7 +121,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
           {!isEditingInfo && (
             <Button onClick={() => setIsEditingInfo(true)}>Edit Info</Button>
           )}
-          {!isEditingQuantity && (
+          {!isEditingQuantity && auth.isInventoryMgr && (
             <Button onClick={() => setIsEditingQuantity(true)}>
               Edit Quantity
             </Button>
@@ -214,7 +214,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
             <Input
               type="number"
               name="quantity"
-              value={editableItem.quantity}
+              value={String(editableItem.quantity)}
               onChange={handleChange}
               className="h-10"
             />

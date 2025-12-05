@@ -19,7 +19,7 @@ export interface FormErrors {
 }
 
 export default function ResetPassword() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { setLoading, setLoadingText } = useLoading();
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email") || "";
@@ -79,7 +79,7 @@ export default function ResetPassword() {
         const response = await resetPassword(payload);
         console.log("Response", response);
         toast.success(response?.message || "Password reset successful!");
-        navigate('/login')
+        navigate("/login");
       }
     } catch (error) {
       const errorMessage = parseError(error);

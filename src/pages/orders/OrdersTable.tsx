@@ -118,7 +118,7 @@ export function OrdersTable({
     if (!order.table || order.order_type !== "dine-in") return "N/A";
     const table = tables.find((t) => t.id === order.table);
     if (!table) return "Unknown table";
-    
+
     return `Table ${table.table_number} (${table.max_party_size} seats)`;
   };
 
@@ -127,7 +127,7 @@ export function OrdersTable({
     if (!order.table || order.order_type !== "dine-in") return null;
     const table = tables.find((t) => t.id === order.table);
     if (!table) return null;
-    
+
     return table.is_available ? "available" : "occupied";
   };
 
@@ -264,15 +264,17 @@ export function OrdersTable({
                           {getAssignedTableInfo(order)}
                         </span>
                         <div className="flex items-center gap-1">
-                          <Badge 
-                            variant="outline" 
-                            className={`text-xs px-1 py-0 ${
-                              getTableAvailabilityStatus(order) === 'available' 
-                                ? 'bg-green-50 text-green-700 border-green-200' 
-                                : 'bg-amber-50 text-amber-700 border-amber-200'
+                          <Badge
+                            variant="outline"
+                            className={`px-1 py-0 text-xs ${
+                              getTableAvailabilityStatus(order) === "available"
+                                ? "border-green-200 bg-green-50 text-green-700"
+                                : "border-amber-200 bg-amber-50 text-amber-700"
                             }`}
                           >
-                            {getTableAvailabilityStatus(order) === 'available' ? 'Available' : 'Occupied'}
+                            {getTableAvailabilityStatus(order) === "available"
+                              ? "Available"
+                              : "Occupied"}
                           </Badge>
                         </div>
                       </div>

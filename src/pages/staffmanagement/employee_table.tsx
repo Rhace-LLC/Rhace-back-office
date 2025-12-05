@@ -69,8 +69,8 @@ const RenderEmployeeTable: React.FC<Props> = ({ data, onRowClick }) => {
   return (
     <div className="">
       {/* Modern Scroll Wrapper */}
-      <div className="w-full">
-        <table className="w-full border-collapse text-sm">
+      <div className="w-full overflow-x-auto">
+        <table className="min-w-full border-collapse text-sm">
           {/* Sticky Header */}
           <thead className="sticky top-0 z-10 border-b bg-gray-50">
             <tr className="text-gray-700">

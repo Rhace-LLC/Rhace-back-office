@@ -6,6 +6,7 @@ import { LogOut, X, Building2 } from "lucide-react";
 import { useState } from "react";
 import { LogoutDialog } from "./logoutdialog";
 import { useRoleBasedMenu } from "./AppSidebar";
+import { useLogout } from ".";
 
 interface MobileMenuProps {
   onNavigate: () => void;
@@ -14,6 +15,7 @@ interface MobileMenuProps {
 export function MobileMenu({ onNavigate }: MobileMenuProps) {
   const auth = useAuth();
   const navigate = useNavigate();
+  const {logout} = useLogout()
   const location = useLocation();
   const currentRoute = location.pathname;
 
@@ -129,8 +131,7 @@ export function MobileMenu({ onNavigate }: MobileMenuProps) {
           isOpen={logoutOpen}
           onOpenChange={setLogoutOpen}
           onConfirm={() => {
-            auth.logout();
-            onNavigate();
+            logout()
           }}
         />
       </div>

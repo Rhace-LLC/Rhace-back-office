@@ -52,7 +52,7 @@ const CategoryPage: React.FC = () => {
           {/* Header */}
           <div className="mt-4 mb-8 flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-medium tracking-tight">
+              <h1 className="text-2xl font-bold tracking-tight">
                 Manage Menu Category
               </h1>
               <p className="text-gray-600 dark:text-gray-400">

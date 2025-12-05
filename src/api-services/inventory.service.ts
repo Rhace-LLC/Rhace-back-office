@@ -4,6 +4,22 @@ import { bookiesAxiosInstance } from "./utils/baseUrl";
 import { InventoryResponse } from "./utils/types.service";
 import { InventoryItem } from "@/store/inventory.slice";
 
+export interface InventoryTransactionResponse {
+  message: string;
+  item: InventoryItem;
+  transaction: InventoryTransaction;
+}
+
+export interface InventoryTransaction {
+  id: number;
+  item: InventoryItem;
+  transaction_type: "restock" | "damaged" | "used" | string;
+  reason: string;
+  quantity: number;
+  recorded_by: string;
+  time_stamp: string; // ISO timestamp
+}
+
 /**
  * ==============================
  * INVENTORY ITEMS
@@ -102,6 +118,9 @@ const getInventoryTransactions = async (
  * }
  * @param token - Optional authorization token
  */
+
+
+
 const createInventoryTransaction = async (
   data: {
     item: number;
@@ -111,7 +130,7 @@ const createInventoryTransaction = async (
     recorded_by: string;
   },
   token?: string
-) => {
+): Promise<InventoryTransactionResponse> => {
   const config = getConfig(
     "/inventory/transactions/create/",
     "POST",

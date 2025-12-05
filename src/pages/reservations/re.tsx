@@ -126,7 +126,7 @@ export const ManageReservation: React.FC = () => {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-2xl font-medium tracking-tight">
+                <h3 className="text-2xl font-bold tracking-tight">
                   Reservations
                 </h3>
                 <p>Manage reservations, assign tables and update statuses.</p>
