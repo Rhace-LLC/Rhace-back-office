@@ -196,7 +196,7 @@ export const AdminDashboard = () => {
     return `${displayHour}:${minutes} ${period}`;
   };
 
-  // Transform order type breakdown for Pie chart
+  // Transform order type breakdown for Pie chart - FIXED VERSION
   const getOrderTypeData = (): OrderTypeData[] => {
     if (
       !dashboardStats.order_type_breakdown ||
@@ -205,12 +205,54 @@ export const AdminDashboard = () => {
       return [];
     }
 
-    return dashboardStats.order_type_breakdown.map((item) => ({
-      name:
-        item.order_type.charAt(0).toUpperCase() +
-        item.order_type.slice(1).replace("-", " "),
-      value: item.count,
-      count: item.count,
+    return dashboardStats.order_type_breakdown.map((item: any) => {
+      // Safely get order type from various possible property names
+      const orderType = 
+        item.order_type || 
+        item.type || 
+        item.name || 
+        item.category ||
+        'Unknown';
+      
+      // Safely format the name - handle cases where orderType might not be a string
+      let formattedName = 'Unknown';
+      if (typeof orderType === 'string') {
+        try {
+          formattedName = orderType.charAt(0).toUpperCase() + 
+                         orderType.slice(1).replace("-", " ").replace("_", " ");
+        } catch (e) {
+          console.error('Error formatting order type:', e);
+          formattedName = orderType;
+        }
+      }
+      
+      // Safely get count from various possible property names
+      const count = item.count || item.value || item.total || 0;
+      
+      return {
+        name: formattedName,
+        value: count,
+        count: count,
+        ...item // Include all original properties
+      };
+    });
+  };
+
+  // Generate empty weekly revenue data for chart
+  const getWeeklyRevenueData = (): WeeklyRevenueData[] => {
+    if (
+      dashboardData.weekly_revenue &&
+      dashboardData.weekly_revenue.length > 0
+    ) {
+      return dashboardData.weekly_revenue;
+    }
+
+    // Return empty data for each day of the week
+    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    return days.map((day) => ({
+      day,
+      date: "",
+      revenue: 0,
     }));
   };
 
@@ -369,6 +411,36 @@ export const AdminDashboard = () => {
     return () => clearInterval(interval);
   }, [token]);
 
+  // Custom tooltip for bar chart
+  const renderBarTooltip = (props: any) => {
+    const { active, payload, label } = props as any;
+    if (active && payload && payload.length) {
+      return (
+        <div className="rounded border border-gray-300 bg-white p-3 shadow-sm">
+          <p className="font-medium">{`Day: ${label}`}</p>
+          <p className="text-blue-600">
+            {`Revenue: ₦${payload && payload[0] && payload[0].value ? payload[0].value.toLocaleString() : 0}`}
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // Custom tooltip for pie chart
+  const renderPieTooltip = (props: any) => {
+    const { active, payload } = props as any;
+    if (active && payload && payload.length) {
+      return (
+        <div className="rounded border border-gray-300 bg-white p-3 shadow-sm">
+          <p className="font-medium">{payload[0].name}</p>
+          <p className="text-blue-600">{`${payload[0].value} orders`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   // Stats cards data - Updated to match actual API response
   const stats: StatCard[] = [
     {
@@ -444,53 +516,11 @@ export const AdminDashboard = () => {
     },
   ];
 
-  // Generate empty weekly revenue data for chart
-  const getWeeklyRevenueData = (): WeeklyRevenueData[] => {
-    if (
-      dashboardData.weekly_revenue &&
-      dashboardData.weekly_revenue.length > 0
-    ) {
-      return dashboardData.weekly_revenue;
-    }
-
-    // Return empty data for each day of the week
-    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    return days.map((day) => ({
-      day,
-      date: "",
-      revenue: 0,
-    }));
-  };
-
-  // Custom tooltip for bar chart
-  const renderBarTooltip = (props: any) => {
-    const { active, payload, label } = props as any;
-    if (active && payload && payload.length) {
-      return (
-        <div className="rounded border border-gray-300 bg-white p-3 shadow-sm">
-          <p className="font-medium">{`Day: ${label}`}</p>
-          <p className="text-blue-600">
-            {`Revenue: ₦${payload && payload[0] && payload[0].value ? payload[0].value.toLocaleString() : 0}`}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  // Custom tooltip for pie chart
-  const renderPieTooltip = (props: any) => {
-    const { active, payload } = props as any;
-    if (active && payload && payload.length) {
-      return (
-        <div className="rounded border border-gray-300 bg-white p-3 shadow-sm">
-          <p className="font-medium">{payload[0].name}</p>
-          <p className="text-blue-600">{`${payload[0].value} orders`}</p>
-        </div>
-      );
-    }
-    return null;
-  };
+  // Calculate total orders from order type breakdown
+  const totalOrders = getOrderTypeData().reduce(
+    (total, type) => total + (type.count || 0),
+    0
+  );
 
   if (loading && !dashboardCache) {
     return (
@@ -563,6 +593,8 @@ export const AdminDashboard = () => {
           Refresh
         </button>
       </div>
+
+    
 
       {/* Error Message */}
       {error && (
@@ -669,7 +701,7 @@ export const AdminDashboard = () => {
             <CardTitle>Order Types</CardTitle>
             <CardDescription>
               {hasData(dashboardStats.order_type_breakdown)
-                ? `Breakdown of ${formatCount(getOrderTypeData().reduce((total, type) => total + (type.count || 0), 0))} total orders`
+                ? `Breakdown of ${formatCount(totalOrders)} total orders`
                 : "No order type data available"}
             </CardDescription>
           </CardHeader>
@@ -727,14 +759,14 @@ export const AdminDashboard = () => {
           <CardContent>
             {hasData(dashboardStats.peak_hours) ? (
               <div className="space-y-3">
-                {dashboardStats.peak_hours.map((hour, index) => (
+                {dashboardStats.peak_hours.map((hour: any, index: number) => (
                   <div
                     key={index}
                     className="flex items-center justify-between rounded-lg border p-3"
                   >
                     <span className="font-medium">{formatHour(hour.hour)}</span>
                     <Badge variant="secondary">
-                      {formatCount(hour.order_count)} orders
+                      {formatCount(hour.order_count || hour.count || 0)} orders
                     </Badge>
                   </div>
                 ))}
