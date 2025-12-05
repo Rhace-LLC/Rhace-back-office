@@ -915,6 +915,7 @@ export function OrderDetailsSheet({
           )}
 
           {/* Status Section */}
+          
           <div className="space-y-4">
             <h3 className="text-foreground flex items-center gap-2 text-lg font-semibold">
               <div className="bg-primary h-5 w-1 rounded-full" />
