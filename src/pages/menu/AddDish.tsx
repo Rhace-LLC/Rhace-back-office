@@ -108,8 +108,12 @@ export const AddDish: React.FC<{
     dishForm.ingredients_data.forEach((ing, idx) => {
       if (!ing.inventory_item)
         errors[`ing_${idx}`] = "Select an inventory item.";
-      if (!ing.quantity || ing.quantity < 1)
-        errors[`ing_qty_${idx}`] = "Quantity must be at least 1.";
+
+      const qty = Number(ing.quantity);
+
+      // Allow decimals but disallow zero, negative, empty, NaN
+      if (!qty || qty <= 0)
+        errors[`ing_qty_${idx}`] = "Quantity must be greater than 0.";
     });
 
     // Detect duplicates
