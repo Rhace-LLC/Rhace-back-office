@@ -30,6 +30,7 @@ import { getActiveWaiters, Staff } from "../../api-services/staffService";
 import { getAvailableTables, Table } from "../../api-services/tableService";
 
 type OrderStatus =
+  | "paid"
   | "received"
   | "preparing"
   | "ready"
@@ -39,6 +40,7 @@ type OrderStatus =
 
 const statusOptions = [
   "All",
+  "paid",
   "received",
   "preparing",
   "ready",
@@ -91,17 +93,8 @@ export function Orders() {
   );
   const [tablesFetched, setTablesFetched] = useState(false);
 
-  // ✅ FIX: Get restaurant ID from auth context, not from orders
+  // Get restaurant ID from auth context
   const restaurantId = restaurants?.[0]?.id;
-
-  // DEBUG: Log restaurant ID
-  useEffect(() => {}, [
-    restaurants,
-    restaurantId,
-    orders,
-    tablesFetched,
-    tables,
-  ]);
 
   const filteredOrders = (orders || []).filter(
     (order) => statusFilter === "All" || order.status === statusFilter
@@ -113,17 +106,11 @@ export function Orders() {
 
     // Skip if already fetched and not forcing
     if (tablesFetched && !force) {
-      console.log("⏭️ Tables already fetched, skipping...");
       return;
     }
 
     try {
-      console.log("🔧 Fetching tables for restaurant:", restId);
       const tablesData = await getAvailableTables(token, restId);
-
-      console.log("✅ Tables fetched:", tablesData?.length || 0);
-      console.log("📋 Tables data:", tablesData);
-
       setTables(tablesData || []);
       setTablesFetched(true);
 
@@ -133,7 +120,6 @@ export function Orders() {
         ordersCache.restaurantId = restId;
       }
     } catch (err) {
-      console.error("❌ Error fetching tables:", err);
       setTables([]);
     }
   };
@@ -143,8 +129,6 @@ export function Orders() {
     if (!token || !restaurantId) return;
 
     try {
-      console.log("🔄 Orders - Background refresh...");
-
       const [ordersData, waitersData] = await Promise.all([
         getAllOrders(token),
         !isWaiter ? getActiveWaiters(token) : Promise.resolve([]),
@@ -167,10 +151,8 @@ export function Orders() {
         restaurantId: restaurantId,
       };
       setLastUpdated(Date.now());
-
-      console.log("✅ Orders - Background refresh complete");
     } catch (err) {
-      console.error("❌ Orders - Background refresh failed:", err);
+      // Silent fail for background refresh
     }
   };
 
@@ -183,7 +165,6 @@ export function Orders() {
 
     // Use cache if valid and not forcing refresh
     if (!forceRefresh && isCacheValid() && ordersCache) {
-      console.log("🔔 Orders - Using cached data");
       setOrders(ordersCache.orders);
       setWaiters(ordersCache.waiters);
       setTables(ordersCache.tables);
@@ -203,7 +184,6 @@ export function Orders() {
 
     try {
       setError(null);
-      console.log("🔧 Orders - Fetching fresh data...");
 
       const [ordersData, waitersData] = await Promise.all([
         getAllOrders(token),
@@ -212,9 +192,6 @@ export function Orders() {
 
       setOrders(ordersData || []);
       setWaiters(waitersData || []);
-
-      // ✅ FIX: Use restaurant ID from auth context
-      console.log("🏪 Restaurant ID from auth:", restaurantId);
 
       if (restaurantId) {
         // Force fetch tables on initial load or refresh
@@ -230,28 +207,8 @@ export function Orders() {
         restaurantId: restaurantId,
       };
       setLastUpdated(Date.now());
-
-      console.log("✅ Orders fetched:", ordersData?.length || 0);
-      console.log("✅ Waiters fetched:", waitersData?.length || 0);
-
-      // DEBUG: Check order structure
-      if (ordersData && ordersData.length > 0) {
-        console.log(
-          "📦 First order structure:",
-          JSON.stringify(ordersData[0], null, 2)
-        );
-        console.log("📦 Restaurant field:", ordersData[0].restaurant);
-        console.log("📦 All possible restaurant fields:", {
-          restaurant: ordersData[0].restaurant,
-          restaurant_id: (ordersData[0] as any).restaurant_id,
-          restaurantId: (ordersData[0] as any).restaurantId,
-        });
-      }
     } catch (err) {
-      console.error("❌ Error fetching orders:", err);
-
       if (ordersCache && !forceRefresh) {
-        console.log("🔔 Orders - Using cached data due to error");
         setOrders(ordersCache.orders);
         setWaiters(ordersCache.waiters);
         setTables(ordersCache.tables);
@@ -267,10 +224,6 @@ export function Orders() {
 
   // Initial load
   useEffect(() => {
-    console.log("🚀 Initial load effect triggered");
-    console.log("   - Token:", !!token);
-    console.log("   - Restaurant ID:", restaurantId);
-
     if (token) {
       fetchOrders();
     }
@@ -278,20 +231,8 @@ export function Orders() {
 
   // Fetch tables when restaurantId becomes available (only if not already fetched)
   useEffect(() => {
-    console.log("🎯 Tables Effect Triggered!");
-    console.log("   - Token:", !!token);
-    console.log("   - Restaurant ID:", restaurantId);
-    console.log("   - Tables Fetched:", tablesFetched);
-    console.log("   - Should Fetch:", token && restaurantId && !tablesFetched);
-
     if (token && restaurantId && !tablesFetched) {
-      console.log("🎯 ✅ All conditions met - Fetching tables...");
       fetchTables(restaurantId);
-    } else {
-      console.log("🎯 ❌ Conditions not met for fetching tables");
-      if (!token) console.log("   - Missing token");
-      if (!restaurantId) console.log("   - Missing restaurantId");
-      if (tablesFetched) console.log("   - Already fetched");
     }
   }, [token, restaurantId, tablesFetched]);
 
@@ -305,7 +246,7 @@ export function Orders() {
 
   const handleRefresh = () => {
     setRefreshing(true);
-    setTablesFetched(false); // Reset to force refetch
+    setTablesFetched(false);
     fetchOrders(true);
   };
 
@@ -337,7 +278,6 @@ export function Orders() {
       const updateData: UpdateOrderData = { status: newStatus };
       await updateOrderStatus(orderId, updateData, token);
     } catch (err) {
-      console.error(`❌ Error updating status for order ${orderId}:`, err);
       setError(err instanceof Error ? err.message : "Failed to update status");
       await fetchOrders(true);
     }
@@ -354,7 +294,6 @@ export function Orders() {
         await fetchTables(restaurantId, true);
       }
     } catch (err) {
-      console.error(`❌ Error assigning table to order ${orderId}:`, err);
       setError(err instanceof Error ? err.message : "Failed to assign table");
     }
   };
@@ -367,7 +306,6 @@ export function Orders() {
       await assignWaiterToOrder(orderId, waiterId, token);
       await fetchOrders(true);
     } catch (err) {
-      console.error(`❌ Error assigning waiter to order ${orderId}:`, err);
       setError(err instanceof Error ? err.message : "Failed to assign waiter");
     }
   };

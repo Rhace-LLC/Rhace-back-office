@@ -58,9 +58,6 @@ export const getAllNotifications = async (
   const config = getConfig(url, "GET", token);
   const response = await bookiesAxiosInstance(config);
 
-  console.log("🔔 NotificationService - Full response:", response);
-  console.log("🔔 NotificationService - response.data:", response.data);
-
   // Handle the response data properly with type safety
   let responseData: any;
 
@@ -111,21 +108,15 @@ export const deleteNotification = async (
     token
   );
 
-  console.log(
-    "🔔 NotificationService - Deleting notification:",
-    notificationId
-  );
+ 
   await bookiesAxiosInstance(config);
-  console.log("🔔 NotificationService - Notification deleted successfully");
 };
 
 // DELETE /notifications/clear-all/ - Clear all notifications
 export const clearAllNotifications = async (token: string): Promise<void> => {
   const config = getConfig("/notifications/clear-all/", "DELETE", token);
 
-  console.log("🔔 NotificationService - Clearing all notifications");
   await bookiesAxiosInstance(config);
-  console.log("🔔 NotificationService - All notifications cleared");
 };
 
 // POST /notifications/mark-read/ - Mark notifications as read
@@ -135,9 +126,7 @@ export const markNotificationsAsRead = async (
 ): Promise<MarkReadResponse> => {
   const config = getConfig("/notifications/mark-read/", "POST", token, data);
 
-  console.log("🔔 NotificationService - Marking notifications as read:", data);
   const response = await bookiesAxiosInstance(config);
-  console.log("🔔 NotificationService - Mark read response:", response);
 
   // Extract data from response
   let responseData: any;
@@ -169,13 +158,8 @@ export const markNotificationsAsRead = async (
 export const getUnreadCount = async (token: string): Promise<number> => {
   const config = getConfig("/notifications/unread-count/", "GET", token);
 
-  console.log("🔔 NotificationService - Fetching unread count");
   const response = await bookiesAxiosInstance(config);
-  console.log("🔔 NotificationService - Unread count full response:", response);
-  console.log(
-    "🔔 NotificationService - Unread count response.data:",
-    response.data
-  );
+ 
 
   // Extract data from response
   let responseData: any;
@@ -219,6 +203,5 @@ export const getUnreadCount = async (token: string): Promise<number> => {
     }
   }
 
-  console.log("✅ NotificationService - No unread notifications, returning 0");
   return 0;
 };

@@ -261,7 +261,6 @@ export const AdminDashboard = () => {
     if (!token) return;
 
     try {
-      console.log("🔄 Dashboard - Background refresh...");
 
       const [dataResult, statsResult] = await Promise.allSettled([
         getDashboardData(token),
@@ -292,7 +291,6 @@ export const AdminDashboard = () => {
       };
       setLastUpdated(Date.now());
 
-      console.log("✅ Dashboard - Background refresh complete");
     } catch (err) {
       console.error("❌ Dashboard - Background refresh failed:", err);
     }
@@ -308,7 +306,6 @@ export const AdminDashboard = () => {
 
     // Use cache if valid and not forcing refresh
     if (!forceRefresh && isCacheValid() && dashboardCache) {
-      console.log("🔔 Dashboard - Using cached data");
       setDashboardData(dashboardCache.data);
       setDashboardStats(dashboardCache.stats);
       setLoading(false);
@@ -328,7 +325,6 @@ export const AdminDashboard = () => {
 
     try {
       setError("");
-      console.log("🔧 Dashboard - Fetching fresh data...");
 
       const [dataResult, statsResult] = await Promise.allSettled([
         getDashboardData(token),
@@ -341,19 +337,15 @@ export const AdminDashboard = () => {
 
       // Process dashboard data with proper error handling
       if (dataResult.status === "fulfilled" && dataResult.value) {
-        console.log("✅ Dashboard API succeeded");
         newData = { ...emptyData, ...dataResult.value };
       } else {
-        console.log("❌ Dashboard API failed");
         hasError = true;
       }
 
       // Process stats data with proper error handling
       if (statsResult.status === "fulfilled" && statsResult.value) {
-        console.log("✅ Stats API succeeded");
         newStats = { ...emptyStats, ...statsResult.value };
       } else {
-        console.log("❌ Stats API failed");
         hasError = true;
       }
 
@@ -377,7 +369,6 @@ export const AdminDashboard = () => {
 
       // Use cached data on error if available
       if (dashboardCache && !forceRefresh) {
-        console.log("🔔 Dashboard - Using cached data due to error");
         setDashboardData(dashboardCache.data);
         setDashboardStats(dashboardCache.stats);
       } else {

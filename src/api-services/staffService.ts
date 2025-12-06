@@ -19,8 +19,6 @@ export const getAllStaff = async (token: string): Promise<Staff[]> => {
   const config = getConfig("/auth/all-staff", "GET", token);
   const response = await bookiesAxiosInstance(config);
 
-  console.log("🔧 StaffService - Full response:", response);
-  console.log("🔧 StaffService - response.data:", response.data);
 
   let staffData = response.data;
 
@@ -31,7 +29,6 @@ export const getAllStaff = async (token: string): Promise<Staff[]> => {
 
   // Handle the nested staff structure from your API response
   if (staffData && staffData.staff_by_role) {
-    console.log("✅ Found staff_by_role structure");
     // Extract all staff from all roles and flatten into one array
     const allStaff: Staff[] = [];
 
@@ -41,7 +38,6 @@ export const getAllStaff = async (token: string): Promise<Staff[]> => {
       }
     });
 
-    console.log(`✅ Extracted ${allStaff.length} staff members`);
     return allStaff;
   }
 
@@ -57,13 +53,11 @@ export const getAllStaff = async (token: string): Promise<Staff[]> => {
 // Get only active waiters
 export const getActiveWaiters = async (token: string): Promise<Staff[]> => {
   const allStaff = await getAllStaff(token);
-  console.log("🔧 All staff fetched:", allStaff.length);
 
   const activeWaiters = allStaff.filter(
     (staff) => staff.role === "waiter" && staff.is_active
   );
 
-  console.log("✅ Active waiters:", activeWaiters.length);
   return activeWaiters;
 };
 

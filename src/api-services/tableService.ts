@@ -70,23 +70,10 @@ export const getAvailableTables = async (
 ): Promise<Table[]> => {
   const allTables = await getAllTables(token, restaurantId);
 
-  console.log(
-    "🔧 All tables:",
-    allTables.map((t) => ({
-      number: t.table_number,
-      status: t.status,
-      is_available: t.is_available,
-    }))
-  );
-
   // Use status='free' as the primary indicator since is_available seems inconsistent
   const availableTables = allTables.filter((table) => table.status === "free");
 
-  console.log(`✅ Available tables (status='free'):`, availableTables.length);
-  console.log(
-    "✅ Available table numbers:",
-    availableTables.map((t) => t.table_number)
-  );
+ 
 
   return availableTables;
 };
