@@ -156,7 +156,6 @@ export function Notifications() {
 
     try {
       backgroundFetchInProgress = true;
-      console.log("🔔 Notifications - Background refreshing...");
 
       const response = await getAllNotifications(token);
       const notificationsData = response.results || [];
@@ -194,7 +193,6 @@ export function Notifications() {
       setUnreadCount(newUnreadCount);
       setLastUpdated(Date.now());
 
-      console.log("🔔 Notifications - Background refresh completed");
     } catch (error) {
       console.error("🔔 Notifications - Background refresh failed:", error);
     } finally {
@@ -205,7 +203,6 @@ export function Notifications() {
   // Main fetch function with cache - FIXED to prevent loading flash
   const fetchNotifications = async (forceRefresh = false) => {
     if (!token) {
-      console.log("🔔 Notifications - No token available");
       setLoading(false);
       setInitialLoadComplete(true);
       return;
@@ -213,7 +210,6 @@ export function Notifications() {
 
     // IMMEDIATELY set cached data if available and not forcing refresh
     if (!forceRefresh && isCacheValid() && notificationsCache) {
-      console.log("🔔 Notifications - Using cached data immediately");
       setNotifications(notificationsCache.data);
       setUnreadCount(notificationsCache.unreadCount);
       setLoading(false);
@@ -234,7 +230,6 @@ export function Notifications() {
     }
 
     try {
-      console.log("🔔 Notifications - Fetching notifications...");
 
       const response = await getAllNotifications(token);
       const notificationsData = response.results || [];
@@ -267,10 +262,7 @@ export function Notifications() {
         unreadCount: newUnreadCount,
       };
 
-      console.log(
-        "🔔 Notifications - Mapped notifications:",
-        mappedNotifications
-      );
+    
       setNotifications(mappedNotifications);
       setUnreadCount(newUnreadCount);
       setLastUpdated(Date.now());
@@ -279,7 +271,6 @@ export function Notifications() {
 
       // If we have cached data, use it even on error
       if (notificationsCache && !forceRefresh) {
-        console.log("🔔 Notifications - Using cached data due to error");
         setNotifications(notificationsCache.data);
         setUnreadCount(notificationsCache.unreadCount);
       } else {
@@ -306,7 +297,7 @@ export function Notifications() {
 
     try {
       const count = await getUnreadCount(token);
-      console.log("🔔 Notifications - Unread count:", count);
+      setUnreadCount(count);
     } catch (error) {
       console.error("🔔 Notifications - Error fetching unread count:", error);
     }
@@ -338,7 +329,6 @@ export function Notifications() {
 
     try {
       setProcessing((prev) => [...prev, id]);
-      console.log("🔔 Notifications - Marking as read:", id);
 
       await markNotificationsAsRead(
         { notification_ids: [id], mark_all: false },
@@ -374,7 +364,6 @@ export function Notifications() {
     if (!token) return;
 
     try {
-      console.log("🔔 Notifications - Marking all as read");
 
       await markNotificationsAsRead(
         { notification_ids: [], mark_all: true },
@@ -407,7 +396,6 @@ export function Notifications() {
 
     try {
       setProcessing((prev) => [...prev, id]);
-      console.log("🔔 Notifications - Deleting notification:", id);
 
       await deleteNotification(id, token);
 
@@ -439,7 +427,6 @@ export function Notifications() {
     if (!token) return;
 
     try {
-      console.log("🔔 Notifications - Clearing all read notifications");
 
       // Get all read notification IDs
       const readIds = notifications
@@ -483,7 +470,6 @@ export function Notifications() {
     if (!token) return;
 
     try {
-      console.log("🔔 Notifications - Clearing ALL notifications");
       await clearAllNotifications(token);
 
       // Update local state immediately

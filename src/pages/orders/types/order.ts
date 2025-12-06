@@ -42,6 +42,7 @@ export interface Order {
 }
 
 export type OrderStatus =
+| "paid"
   | "received"
   | "preparing"
   | "ready"

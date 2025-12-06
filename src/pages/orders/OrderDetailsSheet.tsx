@@ -34,8 +34,9 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
-// Define OrderStatus locally since there's an import issue
+// Define OrderStatus with "paid" included
 type OrderStatus =
+  | "paid"
   | "received"
   | "preparing"
   | "ready"
@@ -107,6 +108,7 @@ interface OrderDetailsSheetProps {
 
 // Convert status to uppercase for display, but keep values lowercase
 const statusColors: Record<OrderStatus, string> = {
+  paid: "bg-green-100 text-green-800 border-green-200",
   received: "bg-blue-100 text-blue-800 border-blue-200",
   preparing: "bg-yellow-100 text-yellow-800 border-yellow-200",
   ready: "bg-green-100 text-green-800 border-green-200",
@@ -116,6 +118,7 @@ const statusColors: Record<OrderStatus, string> = {
 };
 
 const statusIcons: Record<OrderStatus, React.ReactNode> = {
+  paid: <CheckCircle className="h-4 w-4" />,
   received: <Package className="h-4 w-4" />,
   preparing: <ChefHat className="h-4 w-4" />,
   ready: <Clock className="h-4 w-4" />,
@@ -125,6 +128,7 @@ const statusIcons: Record<OrderStatus, React.ReactNode> = {
 };
 
 const statusDescriptions: Record<OrderStatus, string> = {
+  paid: "Order has been paid for and is ready for processing",
   received: "Order has been received and is waiting to be processed",
   preparing: "Kitchen is currently preparing the order",
   ready: "Order is ready for pickup or delivery",
@@ -153,6 +157,12 @@ const showActionNotification = (action: string, orderId: string, newStatus?: str
         break;
       case "cancelled":
         description = `Order #${orderId} has been CANCELLED.`;
+        break;
+      case "paid":
+        description = `Order #${orderId} has been marked as PAID.`;
+        break;
+      case "preparing":
+        description = `Order #${orderId} is now being PREPARED.`;
         break;
     }
   }
@@ -213,6 +223,8 @@ export function OrderDetailsSheet({
   // Initialize when order changes
   useEffect(() => {
     if (order) {
+      console.log("Order status:", order.status);
+      console.log("Available status options:", getAvailableStatusOptions());
       setSelectedStatus(order.status as OrderStatus);
       if (order.waiter) {
         setSelectedWaiter(order.waiter);
@@ -266,12 +278,12 @@ export function OrderDetailsSheet({
     
     if (isKitchen) {
       // Kitchen staff permissions
-      if (currentStatus === "received" && newStatus === "preparing") canChange = true;
+      if ((currentStatus === "paid" || currentStatus === "received") && newStatus === "preparing") canChange = true;
       if (currentStatus === "preparing" && newStatus === "ready") canChange = true;
-      if (newStatus === "cancelled" && (currentStatus === "received" || currentStatus === "preparing")) canChange = true;
+      if (newStatus === "cancelled" && (currentStatus === "paid" || currentStatus === "received" || currentStatus === "preparing")) canChange = true;
       
       if (!canChange) {
-        errorMessage = `Kitchen staff can only change from "received" to "preparing" or "preparing" to "ready" or cancel during preparation`;
+        errorMessage = `Kitchen staff can only change from "paid/received" to "preparing" or "preparing" to "ready" or cancel during preparation`;
       }
     }
     
@@ -365,6 +377,12 @@ export function OrderDetailsSheet({
     const currentStatus = order.status as OrderStatus;
 
     switch (currentStatus) {
+      case "paid":
+        // Kitchen can change to preparing, anyone can cancel
+        if (isKitchen || isOwner) return ["preparing", "cancelled"];
+        if (isWaiter) return ["cancelled"];
+        return [];
+      
       case "received":
         // Kitchen can change to preparing, anyone can cancel
         if (isKitchen || isOwner) return ["preparing", "cancelled"];
@@ -915,7 +933,6 @@ export function OrderDetailsSheet({
           )}
 
           {/* Status Section */}
-          
           <div className="space-y-4">
             <h3 className="text-foreground flex items-center gap-2 text-lg font-semibold">
               <div className="bg-primary h-5 w-1 rounded-full" />
