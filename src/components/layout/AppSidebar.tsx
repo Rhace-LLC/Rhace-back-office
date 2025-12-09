@@ -145,11 +145,11 @@ export function useRoleBasedMenu(): MenuItem[] {
         url: "/dashboard",
         icon: LayoutDashboard,
       },
-    {
-      title: "Orders",
-      url: "/orders",
-      icon: ShoppingCart,
-    },
+      {
+        title: "Orders",
+        url: "/orders",
+        icon: ShoppingCart,
+      },
       {
         title: "Menu Management",
         url: "/menu",
@@ -173,7 +173,7 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const currentRoute = location.pathname;
-  const {logout} = useLogout()
+  const { logout } = useLogout();
 
   const menuItems = useRoleBasedMenu();
   console.log("isOpen", isOpen, "menuItems", menuItems);
@@ -285,9 +285,7 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
         isOpen={logoutOpen}
         onOpenChange={setLogoutOpen}
         onConfirm={() => {
-
-          logout()
-          
+          logout();
         }}
       />
     </Sidebar>

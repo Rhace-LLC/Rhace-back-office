@@ -110,7 +110,7 @@ export const AddDish: React.FC<{
         errors[`ing_${idx}`] = "Select an inventory item.";
 
       const qty = Number(ing.quantity);
-      
+
       if (!qty || qty <= 0)
         errors[`ing_qty_${idx}`] = "Quantity must be greater than 0.";
     });

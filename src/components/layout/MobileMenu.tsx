@@ -15,7 +15,7 @@ interface MobileMenuProps {
 export function MobileMenu({ onNavigate }: MobileMenuProps) {
   const auth = useAuth();
   const navigate = useNavigate();
-  const {logout} = useLogout()
+  const { logout } = useLogout();
   const location = useLocation();
   const currentRoute = location.pathname;
 
@@ -131,7 +131,7 @@ export function MobileMenu({ onNavigate }: MobileMenuProps) {
           isOpen={logoutOpen}
           onOpenChange={setLogoutOpen}
           onConfirm={() => {
-            logout()
+            logout();
           }}
         />
       </div>

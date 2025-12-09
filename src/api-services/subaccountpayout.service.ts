@@ -72,6 +72,81 @@ export interface WithdrawalRecord {
   failure_reason: string;
   notes: string;
 }
+export interface TransactionHistoryResponse {
+  status: boolean;
+  message: string;
+  data: TransactionData;
+}
+
+export interface TransactionData {
+  transactions: Transaction[];
+  restaurant: Restaurant;
+  pagination: Pagination;
+}
+
+export interface Transaction {
+  id: number;
+  reference: string;
+  amount: Amount;
+  status: string;
+  currency: string;
+  transaction_date: string;
+  paid_at: string;
+  channel: string;
+  customer: Customer;
+  subaccount_share: Amount;
+  fees: number;
+  authorization: Authorization;
+  metadata: Metadata;
+}
+
+export interface Amount {
+  kobo: number;
+  naira: number;
+  formatted: string;
+}
+
+export interface Customer {
+  email: string;
+  customer_code: string;
+}
+
+export interface Authorization {
+  card_type: string;
+  bank: string;
+  last4: string;
+}
+
+export interface Metadata {
+  order_id: string;
+  customer_id: string;
+  restaurant_id: string;
+  restaurant_name: string;
+  order_type: string;
+  subaccount_code: string;
+  platform_charge: string;
+  custom_fields: CustomField[];
+  referrer: string;
+}
+
+export interface CustomField {
+  display_name: string;
+  variable_name: string;
+  value: string;
+}
+
+export interface Restaurant {
+  id: string;
+  name: string;
+  subaccount_code: string;
+}
+
+export interface Pagination {
+  total: number;
+  page: number;
+  per_page: number;
+  page_count: number;
+}
 
 /**
  * =======================================
@@ -115,7 +190,27 @@ export const updateSubAccount = async (
   payload: CreateSubAccountDTO,
   token?: string
 ): Promise<CreateSubAccountResponse> => {
-  const config = getConfig(`/subaccount/subaccount/update/`, "PUT", token, payload);
+  const config = getConfig(
+    `/subaccount/subaccount/update/`,
+    "PUT",
+    token,
+    payload
+  );
+  return bookiesAxiosInstance(config);
+};
+
+/** POST — Create a subaccount */
+export const getTransactionHistory = async (
+  token?: string,
+  params?: any
+): Promise<TransactionHistoryResponse> => {
+  const config = getConfig(
+    `/subaccount/transaction/histories/`,
+    "GET",
+    token,
+    undefined,
+    params
+  );
   return bookiesAxiosInstance(config);
 };
 

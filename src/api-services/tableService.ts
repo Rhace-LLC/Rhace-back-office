@@ -73,7 +73,5 @@ export const getAvailableTables = async (
   // Use status='free' as the primary indicator since is_available seems inconsistent
   const availableTables = allTables.filter((table) => table.status === "free");
 
- 
-
   return availableTables;
 };

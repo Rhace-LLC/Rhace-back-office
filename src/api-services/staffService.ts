@@ -11,14 +11,12 @@ export interface Staff {
   role: string;
   phone: string;
   is_active: boolean;
-  
 }
 
 // api-services/staffService.ts
 export const getAllStaff = async (token: string): Promise<Staff[]> => {
   const config = getConfig("/auth/all-staff", "GET", token);
   const response = await bookiesAxiosInstance(config);
-
 
   let staffData = response.data;
 

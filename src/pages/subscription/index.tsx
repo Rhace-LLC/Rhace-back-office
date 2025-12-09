@@ -44,7 +44,7 @@ export default function BillingPage() {
   const dataStore = useSelector((state: RootState) => state.subscriptions);
   const details = dataStore.details;
   const plans = dataStore.plans;
-const [statusChecked, setStatusChecked] = useState(false);
+  const [statusChecked, setStatusChecked] = useState(false);
 
   //const status = dataStore.status;
   //const history = dataStore.paymentHistory;
@@ -81,7 +81,7 @@ const [statusChecked, setStatusChecked] = useState(false);
       const res = await getSubscriptionStatus(auth.token);
       dispatch(setSubscriptionStatus(res));
       auth.setHasSubscribed(true);
-      fetchAllData()
+      fetchAllData();
     } catch (err) {
       let message = parseError(err);
       if (message == "No subscription found") {
@@ -108,11 +108,11 @@ const [statusChecked, setStatusChecked] = useState(false);
     }
   };
 
-useEffect(() => {
-  if (!statusChecked) {
-    fetchStatus().finally(() => setStatusChecked(true));
-  }
-}, [statusChecked]);
+  useEffect(() => {
+    if (!statusChecked) {
+      fetchStatus().finally(() => setStatusChecked(true));
+    }
+  }, [statusChecked]);
 
   useEffect(() => {
     if (!isSubscription) {
