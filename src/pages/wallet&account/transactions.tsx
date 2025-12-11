@@ -192,7 +192,7 @@ export const TransactionsPage = () => {
           onPageChange={setPage}
           totalPages={total}
         />
-     </div>
+      </div>
     </div>
   );
 };
