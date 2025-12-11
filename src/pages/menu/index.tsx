@@ -152,7 +152,13 @@ export function MenuManagement() {
                 </TableCell>
 
                 {/* Price */}
-                <TableCell>NGN {Number(dish.price).toFixed(2)}</TableCell>
+                <TableCell>
+                  {new Intl.NumberFormat("en-NG", {
+                    style: "currency",
+                    currency: "NGN",
+                  }).format(Number(dish.price))}
+                </TableCell>
+
 
                 {/* Availability */}
                 <TableCell>

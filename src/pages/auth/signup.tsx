@@ -302,7 +302,8 @@ export function SignUp() {
       const response = await registerRestaurant(payload);
       console.log("Response:", response);
       toast.success("Restaurant Registered successfully!");
-      navigate(`/verify-email?email=${ownerForm.owner_email}`);
+      navigate(`/verify-email?email=${encodeURIComponent(ownerForm.owner_email)}`);
+
     } catch (error: any) {
       const message = parseError(error) || "Something went wrong!";
       toast.error(message);
