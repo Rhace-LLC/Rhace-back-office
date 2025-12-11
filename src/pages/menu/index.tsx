@@ -159,7 +159,6 @@ export function MenuManagement() {
                   }).format(Number(dish.price))}
                 </TableCell>
 
-
                 {/* Availability */}
                 <TableCell>
                   <div className="flex items-center gap-2">
