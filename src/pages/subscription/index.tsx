@@ -283,7 +283,6 @@ export default function BillingPage() {
         reference={paystackRef}
         onClose={() => {
           setOpenPaystackDialog(false);
-          //handleVerifyPayment(selectedPlan!); // Verify on close
         }}
         onVerified={() => {
           // Refresh subscription details

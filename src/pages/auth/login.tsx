@@ -254,7 +254,7 @@ export function Login() {
                 className="h-[100%] min-h-[500px] w-[100%] rounded-3xl"
               />
             </div>
-            <div className="mt-[24%] md:mt-[15%] w-[90%] max-w-xs rounded-xl bg-white/50 p-6 text-center backdrop-blur-sm">
+            <div className="mt-[24%] w-[90%] max-w-xs rounded-xl bg-white/50 p-6 text-center backdrop-blur-sm md:mt-[15%]">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={visibleIndex}

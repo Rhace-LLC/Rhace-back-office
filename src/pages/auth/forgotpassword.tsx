@@ -137,7 +137,7 @@ export default function ForgotPassword() {
             />
           </div>
 
-          <div className="mt-[20%] md:mt-[10%]  w-[90%] max-w-xs rounded-xl bg-white/50 p-6 text-center backdrop-blur-sm">
+          <div className="mt-[20%] w-[90%] max-w-xs rounded-xl bg-white/50 p-6 text-center backdrop-blur-sm md:mt-[10%]">
             <AnimatePresence mode="wait">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
