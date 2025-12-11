@@ -28,7 +28,6 @@ export default function ForgotPassword() {
     return { valid: Object.keys(errors).length === 0, errors };
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -57,9 +56,8 @@ export default function ForgotPassword() {
 
   return (
     <div className="item-center flex min-h-screen w-full justify-center bg-gray-50">
-      <div className="m-20 flex w-full max-w-4xl items-stretch">
-        {/* LEFT SIDE FORM */}
-        <div className="flex-1 rounded-l-3xl border bg-white p-6">
+      <div className="m-0 flex w-full max-w-5xl flex-col items-stretch gap-10 sm:m-15 md:m-25 md:flex-row md:gap-0">
+        <div className="rounded-0 md:rounded-r-0 flex-1 border-r-0 bg-white p-6">
           {/* TOP SECTION */}
           <div
             id="form-top"
@@ -99,8 +97,8 @@ export default function ForgotPassword() {
                   type="email"
                   placeholder="Enter your email address"
                   value={email}
-                  onChange={(e)=>{
-                    setEmail(e.target.value)
+                  onChange={(e) => {
+                    setEmail(e.target.value);
                   }}
                   required
                   className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -135,11 +133,11 @@ export default function ForgotPassword() {
           <div className="absolute inset-0 h-[100%] rounded-r-3xl bg-white/50 p-4">
             <img
               src="https://res.cloudinary.com/mixam/image/upload/v1765439452/y8b1xjftocmfzaf6ycxe.png"
-              className="h-[100%] w-[100%] rounded-3xl"
+              className="h-[100%] min-h-[500px] w-[100%] rounded-3xl"
             />
           </div>
 
-          <div className="w-[90%] max-w-xs rounded-xl bg-white/50 p-6 text-center backdrop-blur-sm">
+          <div className="mt-[20%] md:mt-[10%]  w-[90%] max-w-xs rounded-xl bg-white/50 p-6 text-center backdrop-blur-sm">
             <AnimatePresence mode="wait">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

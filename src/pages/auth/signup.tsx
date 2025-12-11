@@ -323,7 +323,7 @@ export function SignUp() {
   return (
     <>
       <div className="signup-page-main item-center flex min-h-screen w-full justify-center">
-        <div className="fixed top-0 left-0 h-full w-[40%]">
+        <div className="fixed top-0 left-0 hidden h-full w-[40%] sm:block">
           {/* Layer WRAPPER (creates stacking context) */}
           <div className="relative h-full w-full rounded-3xl">
             {/* Layer 1 — Background Image */}
@@ -357,7 +357,7 @@ export function SignUp() {
         </div>
 
         {/* Right side */}
-        <div className="ml-[40%] w-[60%] space-y-10 px-9 pt-4">
+        <div className="w-full space-y-10 px-4 pt-4 sm:ml-[40%] sm:w-[60%] sm:px-9">
           {/* Main Content Here */}
 
           <div className="space-y-2">
@@ -391,7 +391,7 @@ export function SignUp() {
             </div>
 
             {/* RESTAURANT EMAIL + PHONE */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium tracking-tight text-gray-700">
                   Restaurant Email
@@ -432,7 +432,7 @@ export function SignUp() {
             </div>
 
             {/* OWNER FIRST + LAST NAME */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium tracking-tight text-gray-700">
                   Owner First Name
@@ -471,7 +471,7 @@ export function SignUp() {
             </div>
 
             {/* OWNER EMAIL + PHONE */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium tracking-tight text-gray-700">
                   Owner Email
@@ -508,7 +508,7 @@ export function SignUp() {
             </div>
 
             {/* ADDRESS + COUNTRY */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium tracking-tight text-gray-700">
                   Address
@@ -546,7 +546,7 @@ export function SignUp() {
             </div>
 
             {/* STATE + CITY */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium tracking-tight text-gray-700">
                   State

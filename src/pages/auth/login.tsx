@@ -142,8 +142,8 @@ export function Login() {
   return (
     <>
       <div className="item-center flex min-h-screen w-full justify-center bg-gray-50">
-        <div className="m-20 flex w-full max-w-5xl items-stretch">
-          <div className="flex-1 rounded-l-3xl border-r bg-white p-6">
+        <div className="m-0 flex w-full max-w-5xl flex-col items-stretch gap-10 sm:m-15 md:m-25 md:flex-row md:gap-0">
+          <div className="rounded-0 md:rounded-r-0 flex-1 border-r-0 bg-white p-6">
             <form className="space-y-5" onSubmit={handleSubmit}>
               <div
                 id="form-top"
@@ -251,10 +251,10 @@ export function Login() {
                 src={
                   "https://res.cloudinary.com/mixam/image/upload/v1765439452/y8b1xjftocmfzaf6ycxe.png"
                 }
-                className="h-[100%] w-[100%] rounded-3xl"
+                className="h-[100%] min-h-[500px] w-[100%] rounded-3xl"
               />
             </div>
-            <div className="w-[90%] max-w-xs rounded-xl bg-white/50 p-6 text-center backdrop-blur-sm">
+            <div className="mt-[24%] md:mt-[15%] w-[90%] max-w-xs rounded-xl bg-white/50 p-6 text-center backdrop-blur-sm">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={visibleIndex}
