@@ -81,17 +81,18 @@ export function VerifyOtp() {
         {/* FORM */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <label className="text-sm font-medium tracking-tight text-gray-700">
+            <label className="text-sm font-medium tracking-tight text-gray-700 block">
               OTP
             </label>
             <input
+            autoFocus
               type="text"
               maxLength={6}
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
               placeholder="Enter OTP"
               required
-              className="mx-auto h-12 w-48 rounded-sm bg-gray-100 px-5 text-center text-xl transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full mx-auto h-12 rounded-sm bg-gray-100 px-5 text-center text-xl transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
             {errors?.otp && (
               <small className="text-red-500">{errors.otp}</small>

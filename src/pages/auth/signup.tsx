@@ -657,7 +657,7 @@ export function SignUp() {
             >
               {loading ? (
                 <span>
-                  <Loader2 className="h-5 w-5 animate-spin" /> Registering...
+                  <Loader2 className="h-5 w-5 animate-spin inline-block mr-5" /> Registering...
                 </span>
               ) : (
                 "Register Restaurant"
