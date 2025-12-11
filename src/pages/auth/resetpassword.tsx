@@ -1,10 +1,7 @@
 import RhaceLogo from "../../assets/Rhace-10.png";
 import { useState } from "react";
 import { useLoading } from "@/contexts/LoadingContext";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Eye, EyeOff } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Eye, EyeOff, Flag } from "lucide-react";
 import { toast } from "sonner";
 import {
   requestPasswordReset,
@@ -117,121 +114,137 @@ export default function ResetPassword() {
     }
   };
 
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="relative z-10 w-full max-w-lg space-y-10 rounded-[10px] bg-transparent p-8 py-[100px] shadow-sm">
-        <div className="text-center">
-          <img src={RhaceLogo} alt="Rhace Logo" className="mx-auto w-[100px]" />
-        </div>
+  return (<div className="item-center flex min-h-screen w-full justify-center bg-gray-50 px-4">
+  <div className="m-10 w-full max-w-xl rounded-3xl bg-white p-8 shadow-sm">
+    
+    {/* Top Logo & Country */}
+    <div id="form-top" className="mb-10 flex items-center justify-between">
+      <img src={RhaceLogo} className="w-20" />
 
-        <div className="text-center">
-          <h3 className="text-2xl font-semibold text-gray-800">
-            {step === "otp" ? "Verify OTP" : "Reset Password"}
-          </h3>
-          <p className="mt-2 font-medium text-gray-500">
-            {step === "otp"
-              ? "Enter your email and OTP sent to you"
-              : "Set a new password for your account"}
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {step === "otp" ? (
-            <>
-              <div className="space-y-1">
-                <Label htmlFor="otp">Enter OTP</Label>
-                <OtpInput value={otp} onChange={setOtp} />
-                {errors.otp && (
-                  <small className="text-red-500">{errors.otp}</small>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full rounded-[10px] bg-blue-600 hover:bg-blue-700"
-              >
-                Verify OTP
-              </Button>
-            </>
-          ) : (
-            <>
-              <div className="relative space-y-1">
-                <Label htmlFor="password">New Password</Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  value={form.password}
-                  onChange={handleChange}
-                  placeholder="********"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute top-8 right-3 text-gray-500 hover:text-gray-700"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-                {errors.password && (
-                  <small className="text-red-500">{errors.password}</small>
-                )}
-              </div>
-
-              <div className="relative space-y-1">
-                <Label htmlFor="confirm_password">Confirm Password</Label>
-                <Input
-                  id="confirm_password"
-                  name="confirm_password"
-                  type={showConfirmPassword ? "text" : "password"}
-                  value={form.confirm_password}
-                  onChange={handleChange}
-                  placeholder="********"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute top-8 right-3 text-gray-500 hover:text-gray-700"
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-                {errors.confirm_password && (
-                  <small className="text-red-500">
-                    {errors.confirm_password}
-                  </small>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full rounded-[10px] bg-blue-600 hover:bg-blue-700"
-              >
-                Reset Password
-              </Button>
-            </>
-          )}
-        </form>
-        <p className="flex justify-between text-center text-sm text-gray-600">
-          <span
-            className="cursor-pointer font-medium"
-            onClick={passwordResetRequest}
-          >
-            Resend OTP
-          </span>
-          <Link to="/login" className="text-blue-600 hover:underline">
-            Back to Login
-          </Link>
-        </p>
+      <div className="flex items-center gap-1">
+        <Flag className="h-4 w-4 text-green-500" />
+        <p className="text-sm font-semibold tracking-tighter">NG</p>
       </div>
     </div>
+
+    {/* Headings */}
+    <div className="text-center mb-6">
+      <h1 className="text-3xl font-bold tracking-tighter">
+        {step === "otp" ? "Verify OTP" : "Reset Password"}
+      </h1>
+
+      <p className="mt-2 leading-relaxed text-gray-600">
+        {step === "otp"
+          ? "Enter the 6-digit code sent to your email. Let’s get you back in."
+          : "Create a new password that’s secure and easy for you to remember."}
+      </p>
+    </div>
+
+    {/* FORM */}
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {step === "otp" ? (
+        <>
+          {/* OTP INPUT */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium tracking-tight text-gray-700">
+              Enter OTP
+            </label>
+            <OtpInput value={otp} onChange={setOtp} />
+            {errors.otp && (
+              <small className="text-red-500">{errors.otp}</small>
+            )}
+          </div>
+
+          {/* BUTTON */}
+          <button
+            type="submit"
+            className="flex h-12 w-full items-center justify-center rounded-md bg-black font-medium tracking-tight text-white shadow-sm transition-all duration-200 hover:bg-gray-900 hover:shadow-md active:scale-[0.98]"
+          >
+            Verify OTP
+          </button>
+        </>
+      ) : (
+        <>
+          {/* NEW PASSWORD */}
+          <div className="space-y-2 relative">
+            <label className="text-sm font-medium tracking-tight text-gray-700">
+              New Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter new password"
+              required
+              value={form.password}
+              onChange={handleChange}
+              className="h-12 w-full rounded-sm bg-gray-100 px-5 pr-12 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-8 top-[45px] right-4 flex items-center text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            </button>
+            {errors.password && (
+              <small className="text-red-500">{errors.password}</small>
+            )}
+          </div>
+
+          {/* CONFIRM PASSWORD */}
+          <div className="space-y-2 relative">
+            <label className="text-sm font-medium tracking-tight text-gray-700">
+              Confirm Password
+            </label>
+            <input
+              id="confirm_password"
+              name="confirm_password"
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Re-enter password"
+              required
+              value={form.confirm_password}
+              onChange={handleChange}
+              className="h-12 w-full rounded-sm bg-gray-100 px-5 pr-12 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute inset-y-8 right-4 top-[45px] flex items-center text-gray-500 hover:text-gray-700"
+            >
+              {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            </button>
+            {errors.confirm_password && (
+              <small className="text-red-500">{errors.confirm_password}</small>
+            )}
+          </div>
+
+          {/* BUTTON */}
+          <button
+            type="submit"
+            className="flex h-12 w-full items-center justify-center rounded-md bg-black font-medium tracking-tight text-white shadow-sm transition-all duration-200 hover:bg-gray-900 hover:shadow-md active:scale-[0.98]"
+          >
+            Reset Password
+          </button>
+        </>
+      )}
+    </form>
+
+    {/* FOOTER LINKS */}
+    <p className="mt-6 flex justify-between text-sm text-gray-600">
+      <span
+        className="cursor-pointer font-medium text-blue-600 hover:underline"
+        onClick={passwordResetRequest}
+      >
+        Resend OTP
+      </span>
+
+      <Link to="/login" className="text-blue-600 hover:underline">
+        Back to Login
+      </Link>
+    </p>
+  </div>
+</div>
+
   );
 }

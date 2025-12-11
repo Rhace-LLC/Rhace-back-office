@@ -36,9 +36,7 @@ import { toast } from "sonner";
 import { ContentHOC } from "@/components/nocontent";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLoading } from "@/contexts/LoadingContext";
-import {
-  updateSubAccount,
-} from "@/api-services/subaccountpayout.service";
+import { updateSubAccount } from "@/api-services/subaccountpayout.service";
 import { TransactionsPage } from "./transactions";
 
 export const WalletAndAccount = () => {

@@ -1,23 +1,17 @@
 "use client";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { parseError } from "@/api-services/utils/parseError";
 import { registerRestaurant } from "@/api-services/auth.service";
-import { Eye, EyeOff } from "lucide-react";
-import RhaceImage from "../../assets/Rhace-10.png";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+//import RhaceImage from "../../assets/Rhace-10.png";
 import { Country, State, City } from "country-state-city";
 import { UserRole } from "@/contexts/AuthContext";
+
+import "./auth.css";
 
 export const UserRoleLabels: Record<UserRole, string> = {
   admin: "Admin",
@@ -172,6 +166,44 @@ export const validateRestaurantSignupForm = (form: SignUpData) => {
   };
 };
 
+const businessTalks = [
+  {
+    mainText: "Effective Menu Planning for Seasonal and Holiday Specials",
+    subText:
+      "Offer seasonal and holiday dishes while keeping preparation manageable and quality consistent.",
+  },
+  {
+    mainText:
+      "Building Customer Loyalty Through Personalized Engagement Strategies",
+    subText:
+      "Use rewards and targeted promotions to encourage repeat visits and strengthen customer connections.",
+  },
+  {
+    mainText: "Maximizing Social Media Presence to Drive Restaurant Awareness",
+    subText:
+      "Engage your audience with high-quality content and consistent interaction across platforms.",
+  },
+  {
+    mainText: "Optimizing Supply Chain Management for Cost Efficiency",
+    subText:
+      "Reduce waste and maintain stock levels by improving supply chain efficiency.",
+  },
+  {
+    mainText: "Comprehensive Staff Training to Enhance Customer Experiences",
+    subText:
+      "Train staff thoroughly in service, menu knowledge, and operations for consistent experiences.",
+  },
+  {
+    mainText: "Implementing Data-Driven Marketing to Increase Brand Visibility",
+    subText:
+      "Use analytics to target campaigns and attract the right customers effectively.",
+  },
+  {
+    mainText: "Creating a Sustainable and Eco-Friendly Restaurant Operation",
+    subText:
+      "Adopt sustainable practices like local sourcing and waste reduction to appeal to conscious customers.",
+  },
+];
 // -------------------- COMPONENT --------------------
 export function SignUp() {
   const navigate = useNavigate();
@@ -279,157 +311,224 @@ export function SignUp() {
     }
   };
 
-  return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-2xl">
-        <CardHeader className="text-center">
-          <div className="mb-5 text-center">
-            <img
-              src={RhaceImage}
-              alt="Rhace Logo"
-              className="mx-auto !w-[100px]"
-            />
-          </div>
-          <CardTitle className="text-2xl font-semibold text-gray-800">
-            Restaurant Registration
-          </CardTitle>
-          <CardDescription>
-            Register your restaurant, fill in the details below
-          </CardDescription>
-        </CardHeader>
+  const [visibleIndex, setVisibleIndex] = useState(0);
 
-        <CardContent>
-          <form onSubmit={handleOwnerSubmit} className="mt-4 space-y-3">
-            <div>
-              <Label>Restaurant Name</Label>
-              <Input
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVisibleIndex((prev) => (prev + 1) % businessTalks.length);
+    }, 5000); // change every 3 seconds
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <>
+      <div className="signup-page-main item-center flex min-h-screen w-full justify-center">
+        <div className="fixed top-0 left-0 h-full w-[40%]">
+          {/* Layer WRAPPER (creates stacking context) */}
+          <div className="relative h-full w-full rounded-3xl">
+            {/* Layer 1 — Background Image */}
+            <div className="absolute top-0 left-0 h-full w-full">
+              <img
+                src="https://res.cloudinary.com/mixam/image/upload/v1765439452/sb5gch0g6ologhm6mchk.png"
+                className="inset-0 mt-[5%] ml-[5%] h-[95%] w-[95%] rounded-4xl"
+              />
+            </div>
+
+            {/* Layer 2 — Text Overlay */}
+            <div className="absolute top-[25%] left-1/2 z-10 w-[80%] max-w-xs -translate-x-1/2 rounded-xl bg-white/50 p-6 text-center backdrop-blur-md">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={visibleIndex}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <h2 className="text-3xl text-gray-800">
+                    {businessTalks[visibleIndex].mainText}
+                  </h2>
+                  <p className="mt-10 text-sm text-gray-600">
+                    {businessTalks[visibleIndex].subText}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+
+        {/* Right side */}
+        <div className="ml-[40%] w-[60%] space-y-10 px-9 pt-4">
+          {/* Main Content Here */}
+
+          <div className="space-y-2">
+            <p className="mt-2 text-sm leading-relaxed text-gray-400">
+              Get Started for Free
+            </p>
+            <h1 className="text-3xl font-bold tracking-tighter">
+              Begin Your Journey With Rhace
+            </h1>
+            <p className="mt-2 leading-relaxed text-gray-600">
+              Everything you need to run your restaurant smoothly—right at your
+              fingertips.
+            </p>
+          </div>
+          <form onSubmit={handleOwnerSubmit} className="mt-4 space-y-4">
+            {/* RESTAURANT NAME */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium tracking-tight text-gray-700">
+                Restaurant Name
+              </label>
+              <input
+                className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 value={ownerForm.restaurant_name}
                 onChange={(e) =>
                   handleOwnerChange("restaurant_name", e.target.value)
                 }
               />
               {errors.restaurant_name && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.restaurant_name}
-                </p>
+                <p className="text-sm text-red-500">{errors.restaurant_name}</p>
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>Restaurant Email</Label>
-                <Input
+            {/* RESTAURANT EMAIL + PHONE */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium tracking-tight text-gray-700">
+                  Restaurant Email
+                </label>
+                <input
                   type="email"
+                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   value={ownerForm.restaurant_email}
                   onChange={(e) =>
                     handleOwnerChange("restaurant_email", e.target.value)
                   }
                 />
                 {errors.restaurant_email && (
-                  <p className="mt-1 text-sm text-red-500">
+                  <p className="text-sm text-red-500">
                     {errors.restaurant_email}
                   </p>
                 )}
               </div>
-              <div>
-                <Label>Restaurant Phone</Label>
-                <Input
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium tracking-tight text-gray-700">
+                  Restaurant Phone
+                </label>
+                <input
                   type="tel"
+                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   value={ownerForm.restaurant_phone}
                   onChange={(e) =>
                     handleOwnerChange("restaurant_phone", e.target.value)
                   }
                 />
                 {errors.restaurant_phone && (
-                  <p className="mt-1 text-sm text-red-500">
+                  <p className="text-sm text-red-500">
                     {errors.restaurant_phone}
                   </p>
                 )}
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>Owner First Name</Label>
-                <Input
+            {/* OWNER FIRST + LAST NAME */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium tracking-tight text-gray-700">
+                  Owner First Name
+                </label>
+                <input
+                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   value={ownerForm.owner_first_name}
                   onChange={(e) =>
                     handleOwnerChange("owner_first_name", e.target.value)
                   }
                 />
                 {errors.owner_first_name && (
-                  <p className="mt-1 text-sm text-red-500">
+                  <p className="text-sm text-red-500">
                     {errors.owner_first_name}
                   </p>
                 )}
               </div>
-              <div>
-                <Label>Owner Last Name</Label>
-                <Input
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium tracking-tight text-gray-700">
+                  Owner Last Name
+                </label>
+                <input
+                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   value={ownerForm.owner_last_name}
                   onChange={(e) =>
                     handleOwnerChange("owner_last_name", e.target.value)
                   }
                 />
                 {errors.owner_last_name && (
-                  <p className="mt-1 text-sm text-red-500">
+                  <p className="text-sm text-red-500">
                     {errors.owner_last_name}
                   </p>
                 )}
               </div>
             </div>
 
-            {/* ---------------- OWNER CONTACT ---------------- */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>Owner Email</Label>
-                <Input
+            {/* OWNER EMAIL + PHONE */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium tracking-tight text-gray-700">
+                  Owner Email
+                </label>
+                <input
                   type="email"
+                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   value={ownerForm.owner_email}
                   onChange={(e) =>
                     handleOwnerChange("owner_email", e.target.value)
                   }
                 />
                 {errors.owner_email && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.owner_email}
-                  </p>
+                  <p className="text-sm text-red-500">{errors.owner_email}</p>
                 )}
               </div>
 
-              <div>
-                <Label>Owner Phone</Label>
-                <Input
+              <div className="space-y-2">
+                <label className="text-sm font-medium tracking-tight text-gray-700">
+                  Owner Phone
+                </label>
+                <input
                   type="tel"
+                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   value={ownerForm.owner_phone}
                   onChange={(e) =>
                     handleOwnerChange("owner_phone", e.target.value)
                   }
                 />
                 {errors.owner_phone && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.owner_phone}
-                  </p>
+                  <p className="text-sm text-red-500">{errors.owner_phone}</p>
                 )}
               </div>
             </div>
 
-            {/* ---------------- ADDRESS INFO ---------------- */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>Address</Label>
-                <Input
+            {/* ADDRESS + COUNTRY */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium tracking-tight text-gray-700">
+                  Address
+                </label>
+                <input
+                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   value={ownerForm.address}
                   onChange={(e) => handleOwnerChange("address", e.target.value)}
                 />
                 {errors.address && (
-                  <p className="mt-1 text-sm text-red-500">{errors.address}</p>
+                  <p className="text-sm text-red-500">{errors.address}</p>
                 )}
               </div>
-              <div>
-                <Label>Country</Label>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium tracking-tight text-gray-700">
+                  Country
+                </label>
                 <select
-                  className="w-full rounded border border-gray-300 p-2"
+                  className="h-12 w-full rounded-sm bg-gray-100 px-4 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   value={ownerForm.country}
                   onChange={(e) => handleCountryChange(e.target.value)}
                 >
@@ -441,17 +540,19 @@ export function SignUp() {
                   ))}
                 </select>
                 {errors.country && (
-                  <p className="mt-1 text-sm text-red-500">{errors.country}</p>
+                  <p className="text-sm text-red-500">{errors.country}</p>
                 )}
               </div>
             </div>
 
-            {/* ---------------- COUNTRY & STATE ---------------- */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>State</Label>
+            {/* STATE + CITY */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium tracking-tight text-gray-700">
+                  State
+                </label>
                 <select
-                  className="w-full rounded border border-gray-300 p-2"
+                  className="h-12 w-full rounded-sm bg-gray-100 px-4 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   value={ownerForm.state}
                   onChange={(e) => handleStateChange(e.target.value)}
                   disabled={!ownerForm.country}
@@ -464,15 +565,16 @@ export function SignUp() {
                   ))}
                 </select>
                 {errors.state && (
-                  <p className="mt-1 text-sm text-red-500">{errors.state}</p>
+                  <p className="text-sm text-red-500">{errors.state}</p>
                 )}
               </div>
 
-              {/* City */}
-              <div>
-                <Label>City</Label>
+              <div className="space-y-2">
+                <label className="text-sm font-medium tracking-tight text-gray-700">
+                  City
+                </label>
                 <select
-                  className="mt-1 w-full rounded-md border p-2"
+                  className="h-12 w-full rounded-sm bg-gray-100 px-4 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   value={ownerForm.city}
                   onChange={(e) => handleOwnerChange("city", e.target.value)}
                   disabled={!ownerForm.state}
@@ -485,34 +587,42 @@ export function SignUp() {
                   ))}
                 </select>
                 {errors.city && (
-                  <p className="mt-1 text-sm text-red-500">{errors.city}</p>
+                  <p className="text-sm text-red-500">{errors.city}</p>
                 )}
               </div>
             </div>
 
-            <div className="relative">
-              <Label>Password</Label>
-              <Input
+            {/* PASSWORD */}
+            <div className="relative space-y-2">
+              <label className="text-sm font-medium tracking-tight text-gray-700">
+                Password
+              </label>
+              <input
                 type={showOwnerPassword ? "text" : "password"}
+                className="h-12 w-full rounded-sm bg-gray-100 px-5 pr-12 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 value={ownerForm.password}
                 onChange={(e) => handleOwnerChange("password", e.target.value)}
               />
               <button
                 type="button"
                 onClick={() => setShowOwnerPassword(!showOwnerPassword)}
-                className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
+                className="absolute top-[40px] right-4 text-gray-500 hover:text-gray-700"
               >
                 {showOwnerPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
               {errors.password && (
-                <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+                <p className="text-sm text-red-500">{errors.password}</p>
               )}
             </div>
 
-            <div className="relative">
-              <Label>Confirm Password</Label>
-              <Input
+            {/* CONFIRM PASSWORD */}
+            <div className="relative space-y-2">
+              <label className="text-sm font-medium tracking-tight text-gray-700">
+                Confirm Password
+              </label>
+              <input
                 type={showOwnerConfirmPassword ? "text" : "password"}
+                className="h-12 w-full rounded-sm bg-gray-100 px-5 pr-12 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 value={ownerForm.confirm_password}
                 onChange={(e) =>
                   handleOwnerChange("confirm_password", e.target.value)
@@ -523,7 +633,7 @@ export function SignUp() {
                 onClick={() =>
                   setShowOwnerConfirmPassword(!showOwnerConfirmPassword)
                 }
-                className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
+                className="absolute top-[40px] right-4 text-gray-500 hover:text-gray-700"
               >
                 {showOwnerConfirmPassword ? (
                   <EyeOff size={18} />
@@ -532,30 +642,41 @@ export function SignUp() {
                 )}
               </button>
               {errors.confirm_password && (
-                <p className="mt-1 text-sm text-red-500">
+                <p className="text-sm text-red-500">
                   {errors.confirm_password}
                 </p>
               )}
             </div>
 
-            <Button
+            {/* SUBMIT BUTTON */}
+            <button
               type="submit"
               disabled={loading}
-              className="w-full"
+              className="flex h-12 w-full items-center justify-center rounded-sm font-medium text-white transition-all duration-200"
               style={{ backgroundColor: "#2542e3" }}
             >
-              {loading ? "Registering..." : "Register Restaurant"}
-            </Button>
+              {loading ? (
+                <span>
+                  <Loader2 className="h-5 w-5 animate-spin" /> Registering...
+                </span>
+              ) : (
+                "Register Restaurant"
+              )}
+            </button>
           </form>
-
-          <p className="text-muted-foreground mt-5 text-center text-sm">
+          <p className="mt-4 text-center text-sm text-gray-700">
             Already have an account?{" "}
-            <Link to="/login" className="text-[#2542e3] hover:underline">
-              Log in
+            <span className="text-gray-700">Login to your dashboard</span> here
+            and{" "}
+            <Link to={"/login"}>
+              <span className="font-medium text-blue-600">
+                continue your experience
+              </span>
             </Link>
           </p>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </div>
+      <div className="py-10" />
+    </>
   );
 }
