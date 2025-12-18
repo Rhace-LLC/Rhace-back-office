@@ -23,16 +23,16 @@ export const useLogout = () => {
     auth.logout();
 
     dispatch(clearProfile());
-    dispatch(clearCategoryData())
-    dispatch(clearInventoryData())
-    dispatch(clearMenuItemsData())
-    dispatch(clearReservationData())
-    dispatch(resetProfile())
-    dispatch(clearStaffData())
-    dispatch(resetSubaccountDetails())
-    dispatch(resetSubscriptionState())
-    dispatch(clearTableData())
-    
+    dispatch(clearCategoryData());
+    dispatch(clearInventoryData());
+    dispatch(clearMenuItemsData());
+    dispatch(clearReservationData());
+    dispatch(resetProfile());
+    dispatch(clearStaffData());
+    dispatch(resetSubaccountDetails());
+    dispatch(resetSubscriptionState());
+    dispatch(clearTableData());
+
     localStorage.removeItem("user");
 
     // Redirect to login page

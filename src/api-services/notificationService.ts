@@ -108,7 +108,6 @@ export const deleteNotification = async (
     token
   );
 
- 
   await bookiesAxiosInstance(config);
 };
 
@@ -159,7 +158,6 @@ export const getUnreadCount = async (token: string): Promise<number> => {
   const config = getConfig("/notifications/unread-count/", "GET", token);
 
   const response = await bookiesAxiosInstance(config);
- 
 
   // Extract data from response
   let responseData: any;

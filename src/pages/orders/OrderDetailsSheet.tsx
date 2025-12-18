@@ -142,12 +142,16 @@ const statusDescriptions: Record<OrderStatus, string> = {
 };
 
 // Show notification when an action is completed
-const showActionNotification = (action: string, orderId: string, newStatus?: string) => {
+const showActionNotification = (
+  action: string,
+  orderId: string,
+  newStatus?: string
+) => {
   let description = `Order #${orderId} has been updated successfully.`;
-  
+
   if (newStatus) {
     description = `Order #${orderId} status changed to ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1).toLowerCase()}.`;
-    
+
     // Special notifications for certain statuses
     switch (newStatus) {
       case "ready":
@@ -173,7 +177,7 @@ const showActionNotification = (action: string, orderId: string, newStatus?: str
         break;
     }
   }
-  
+
   toast.success(`${action} Completed`, {
     description,
     icon: <Bell className="h-4 w-4" />,
@@ -197,34 +201,38 @@ export function OrderDetailsSheet({
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | "">("");
 
   // Filter staff to only show active waiters
-  const waiters = staff.filter((staffMember) => 
-    staffMember.role === "waiter" && staffMember.is_active === true
+  const waiters = staff.filter(
+    (staffMember) =>
+      staffMember.role === "waiter" && staffMember.is_active === true
   );
 
   // Filter tables to only show available ones (is_available: true)
   const availableTables = tables.filter((table) => table.is_available === true);
 
   // Check order type
-  const isDeliveryTakeaway = order?.order_type === "delivery" || order?.order_type === "takeaway";
+  const isDeliveryTakeaway =
+    order?.order_type === "delivery" || order?.order_type === "takeaway";
   const isDineIn = order?.order_type === "dine-in";
 
   // Safe item accessor that handles both formats
   const getSafeItems = (order: Order | null): OrderItem[] => {
     if (!order) return [];
     if (!Array.isArray(order.items)) return [];
-    
+
     // Return all items as-is, the component will handle both formats
-    return order.items.filter(item => item !== null && typeof item === 'object') as OrderItem[];
+    return order.items.filter(
+      (item) => item !== null && typeof item === "object"
+    ) as OrderItem[];
   };
 
   // Helper function to check if item has full menu_item object
   const hasFullMenuItem = (item: OrderItem): item is OrderItemWithMenuItem => {
-    return 'menu_item' in item && item.menu_item !== null;
+    return "menu_item" in item && item.menu_item !== null;
   };
 
   // Helper function to check if item has simple format
   const hasSimpleItem = (item: OrderItem): item is OrderItemSimple => {
-    return 'menu_item_name' in item;
+    return "menu_item_name" in item;
   };
 
   // Initialize when order changes
@@ -272,28 +280,39 @@ export function OrderDetailsSheet({
   // Get assigned table details
   const getAssignedTable = () => {
     if (!order.table) return null;
-    const table = tables.find(t => t.id === order.table);
+    const table = tables.find((t) => t.id === order.table);
     return table;
   };
 
   const handleStatusChange = (newStatus: OrderStatus) => {
     const currentStatus = order.status as OrderStatus;
-    
+
     // Check if the transition is allowed based on user role
     let canChange = false;
     let errorMessage = "";
-    
+
     if (isKitchen) {
       // Kitchen staff permissions
-      if ((currentStatus === "paid" || currentStatus === "received") && newStatus === "preparing") canChange = true;
-      if (currentStatus === "preparing" && newStatus === "ready") canChange = true;
-      if (newStatus === "cancelled" && (currentStatus === "paid" || currentStatus === "received" || currentStatus === "preparing")) canChange = true;
-      
+      if (
+        (currentStatus === "paid" || currentStatus === "received") &&
+        newStatus === "preparing"
+      )
+        canChange = true;
+      if (currentStatus === "preparing" && newStatus === "ready")
+        canChange = true;
+      if (
+        newStatus === "cancelled" &&
+        (currentStatus === "paid" ||
+          currentStatus === "received" ||
+          currentStatus === "preparing")
+      )
+        canChange = true;
+
       if (!canChange) {
         errorMessage = `Kitchen staff can only change from "paid/received" to "preparing" or "preparing" to "ready" or cancel during preparation`;
       }
     }
-    
+
     if (isWaiter) {
       // Waiter permissions
       if (currentStatus === "ready" && newStatus === "served" && !isDeliveryTakeaway) canChange = true;
@@ -301,7 +320,7 @@ export function OrderDetailsSheet({
       if (currentStatus === "ready" && newStatus === "delivered" && isDeliveryTakeaway) canChange = true;
       if (currentStatus === "delivered" && newStatus === "completed" && isDeliveryTakeaway) canChange = true;
       if (newStatus === "cancelled") canChange = true; // Waiters can cancel any order
-      
+
       if (!canChange) {
         if (isDeliveryTakeaway) {
           errorMessage = `Waiters can only change from "ready" to "delivered" or "delivered" to "completed" for delivery/takeaway orders`;
@@ -310,22 +329,24 @@ export function OrderDetailsSheet({
         }
       }
     }
-    
+
     if (isOwner) {
       // Owners can do anything
       canChange = true;
     }
-    
+
     if (!canChange) {
       toast.error("Access Denied", {
-        description: errorMessage || `You don't have permission to change status from ${currentStatus} to ${newStatus}`,
+        description:
+          errorMessage ||
+          `You don't have permission to change status from ${currentStatus} to ${newStatus}`,
       });
       return;
     }
 
     setSelectedStatus(newStatus);
     onStatusChange(order.id, newStatus);
-    
+
     // Show notification
     showActionNotification("Status update", order.id, newStatus);
   };
@@ -336,7 +357,7 @@ export function OrderDetailsSheet({
       const nextStatus = availableStatusOptions[0];
       setSelectedStatus(nextStatus);
       onStatusChange(order.id, nextStatus);
-      
+
       // Show notification
       showActionNotification("Status update", order.id, nextStatus);
     }
@@ -354,7 +375,7 @@ export function OrderDetailsSheet({
     if (selectedTable) {
       onAssignTable(order.id, selectedTable);
       setSelectedTable("");
-      
+
       // Show notification
       showActionNotification("Table assigned", order.id);
     }
@@ -372,7 +393,7 @@ export function OrderDetailsSheet({
     if (selectedWaiter) {
       onAssignWaiter(order.id, selectedWaiter);
       setSelectedWaiter("");
-      
+
       // Show notification
       showActionNotification("Waiter assigned", order.id);
     }
@@ -390,19 +411,19 @@ export function OrderDetailsSheet({
         if (isKitchen || isOwner) return ["preparing", "cancelled"];
         if (isWaiter) return ["cancelled"];
         return [];
-      
+
       case "received":
         // Kitchen can change to preparing, anyone can cancel
         if (isKitchen || isOwner) return ["preparing", "cancelled"];
         if (isWaiter) return ["cancelled"];
         return [];
-      
+
       case "preparing":
         // Kitchen can change to ready or cancel
         if (isKitchen || isOwner) return ["ready", "cancelled"];
         if (isWaiter) return ["cancelled"];
         return [];
-      
+
       case "ready":
         const readyOptions: OrderStatus[] = ["cancelled"];
         
@@ -415,14 +436,14 @@ export function OrderDetailsSheet({
             readyOptions.push("served");
           }
         }
-        
+
         // Kitchen can also cancel at this stage
         if (isKitchen) {
           if (!readyOptions.includes("cancelled")) {
             readyOptions.push("cancelled");
           }
         }
-        
+
         return readyOptions;
       
       case "served":
@@ -436,13 +457,13 @@ export function OrderDetailsSheet({
         const deliveredOptions: OrderStatus[] = ["cancelled"];
         if (isWaiter || isOwner) deliveredOptions.push("completed");
         return deliveredOptions;
-      
+
       case "completed":
         return []; // No changes allowed after completion
-      
+
       case "cancelled":
         return []; // No changes allowed after cancellation
-      
+
       default:
         return [];
     }
@@ -481,9 +502,33 @@ export function OrderDetailsSheet({
 
   // Get user role badge
   const getUserRoleBadge = () => {
-    if (isKitchen) return <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800 border-orange-200">Kitchen</Badge>;
-    if (isWaiter) return <Badge variant="secondary" className="ml-2 bg-blue-100 text-blue-800 border-blue-200">Waiter</Badge>;
-    if (isOwner) return <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 border-green-200">Owner</Badge>;
+    if (isKitchen)
+      return (
+        <Badge
+          variant="secondary"
+          className="ml-2 border-orange-200 bg-orange-100 text-orange-800"
+        >
+          Kitchen
+        </Badge>
+      );
+    if (isWaiter)
+      return (
+        <Badge
+          variant="secondary"
+          className="ml-2 border-blue-200 bg-blue-100 text-blue-800"
+        >
+          Waiter
+        </Badge>
+      );
+    if (isOwner)
+      return (
+        <Badge
+          variant="secondary"
+          className="ml-2 border-green-200 bg-green-100 text-green-800"
+        >
+          Owner
+        </Badge>
+      );
     return null;
   };
 
@@ -492,46 +537,56 @@ export function OrderDetailsSheet({
     // Handle the API response format (simple format)
     if (hasSimpleItem(item)) {
       return (
-        <div key={item.id || index} className="p-4 bg-muted/30 rounded-lg border">
-          <div className="flex justify-between items-start mb-3">
+        <div
+          key={item.id || index}
+          className="bg-muted/30 rounded-lg border p-4"
+        >
+          <div className="mb-3 flex items-start justify-between">
             <div className="flex-1">
-              <h4 className="font-semibold text-foreground">
-                {item.menu_item_name || 'Unknown Item'}
+              <h4 className="text-foreground font-semibold">
+                {item.menu_item_name || "Unknown Item"}
               </h4>
-              <p className="text-sm text-muted-foreground">
-                Quantity: {item.quantity} × ₦{parseFloat(item.price || '0').toFixed(2)}
+              <p className="text-muted-foreground text-sm">
+                Quantity: {item.quantity} × ₦
+                {parseFloat(item.price || "0").toFixed(2)}
               </p>
-              <p className="text-sm font-medium mt-1">
-                Subtotal: ₦{(parseFloat(item.price || '0') * item.quantity).toFixed(2)}
+              <p className="mt-1 text-sm font-medium">
+                Subtotal: ₦
+                {(parseFloat(item.price || "0") * item.quantity).toFixed(2)}
               </p>
             </div>
           </div>
         </div>
       );
     }
-    
+
     // Handle the expected format with menu_item object
     if (hasFullMenuItem(item)) {
       return (
-        <div key={item.id || index} className="p-4 bg-muted/30 rounded-lg border">
+        <div
+          key={item.id || index}
+          className="bg-muted/30 rounded-lg border p-4"
+        >
           {/* Item Header */}
-          <div className="flex justify-between items-start mb-3">
+          <div className="mb-3 flex items-start justify-between">
             <div className="flex-1">
-              <h4 className="font-semibold text-foreground">
-                {item.menu_item?.name || 'Unknown Item'}
+              <h4 className="text-foreground font-semibold">
+                {item.menu_item?.name || "Unknown Item"}
               </h4>
-              <p className="text-sm text-muted-foreground">
-                Quantity: {item.quantity} × ₦{parseFloat(item.price || '0').toFixed(2)}
+              <p className="text-muted-foreground text-sm">
+                Quantity: {item.quantity} × ₦
+                {parseFloat(item.price || "0").toFixed(2)}
               </p>
-              <p className="text-sm font-medium mt-1">
-                Subtotal: ₦{(parseFloat(item.price || '0') * item.quantity).toFixed(2)}
+              <p className="mt-1 text-sm font-medium">
+                Subtotal: ₦
+                {(parseFloat(item.price || "0") * item.quantity).toFixed(2)}
               </p>
             </div>
             {item.menu_item?.image_url && (
-              <img 
-                src={item.menu_item.image_url} 
+              <img
+                src={item.menu_item.image_url}
                 alt={item.menu_item.name}
-                className="w-16 h-16 rounded-lg object-cover"
+                className="h-16 w-16 rounded-lg object-cover"
               />
             )}
           </div>
@@ -539,50 +594,61 @@ export function OrderDetailsSheet({
           {/* Description */}
           {item.menu_item?.description && (
             <div className="mb-3">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 {item.menu_item.description}
               </p>
             </div>
           )}
 
           {/* Ingredients */}
-          {item.menu_item?.display_ingredients && item.menu_item.display_ingredients.length > 0 && (
-            <div className="mb-3">
-              <div className="flex items-center gap-2 mb-2">
-                <Utensils className="h-4 w-4 text-green-600" />
-                <Label className="text-sm font-medium">Ingredients</Label>
+          {item.menu_item?.display_ingredients &&
+            item.menu_item.display_ingredients.length > 0 && (
+              <div className="mb-3">
+                <div className="mb-2 flex items-center gap-2">
+                  <Utensils className="h-4 w-4 text-green-600" />
+                  <Label className="text-sm font-medium">Ingredients</Label>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {item.menu_item.display_ingredients.map(
+                    (ingredient: string, idx: number) => (
+                      <Badge key={idx} variant="secondary" className="text-xs">
+                        {ingredient}
+                      </Badge>
+                    )
+                  )}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-1">
-                {item.menu_item.display_ingredients.map((ingredient: string, idx: number) => (
-                  <Badge key={idx} variant="secondary" className="text-xs">
-                    {ingredient}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
+            )}
 
           {/* Allergens */}
           {item.menu_item?.allergens && item.menu_item.allergens.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 mb-2">
+              <div className="mb-2 flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-amber-600" />
-                <Label className="text-sm font-medium text-amber-600">Allergens</Label>
+                <Label className="text-sm font-medium text-amber-600">
+                  Allergens
+                </Label>
               </div>
               <div className="flex flex-wrap gap-1">
-                {item.menu_item.allergens.map((allergen: string, idx: number) => (
-                  <Badge key={idx} variant="outline" className="text-xs border-amber-200 bg-amber-50 text-amber-700">
-                    {allergen}
-                  </Badge>
-                ))}
+                {item.menu_item.allergens.map(
+                  (allergen: string, idx: number) => (
+                    <Badge
+                      key={idx}
+                      variant="outline"
+                      className="border-amber-200 bg-amber-50 text-xs text-amber-700"
+                    >
+                      {allergen}
+                    </Badge>
+                  )
+                )}
               </div>
             </div>
           )}
 
           {/* Preparation Time */}
           {item.menu_item?.prep_time && (
-            <div className="mt-3 pt-3 border-t">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="mt-3 border-t pt-3">
+              <div className="text-muted-foreground flex items-center gap-2 text-sm">
                 <Clock className="h-3 w-3" />
                 <span>Prep time: {item.menu_item.prep_time}</span>
             </div>
@@ -591,11 +657,11 @@ export function OrderDetailsSheet({
         </div>
       );
     }
-    
+
     // Fallback for unknown format
     return (
-      <div key={index} className="p-4 bg-muted/30 rounded-lg border">
-        <p className="text-sm text-muted-foreground">Unknown item format</p>
+      <div key={index} className="bg-muted/30 rounded-lg border p-4">
+        <p className="text-muted-foreground text-sm">Unknown item format</p>
       </div>
     );
   };
@@ -659,11 +725,13 @@ export function OrderDetailsSheet({
             </h3>
             <div className="space-y-3">
               {getSafeItems(order).length === 0 ? (
-                <div className="p-4 text-center text-muted-foreground bg-muted/30 rounded-lg border">
+                <div className="text-muted-foreground bg-muted/30 rounded-lg border p-4 text-center">
                   No items in this order
                 </div>
               ) : (
-                getSafeItems(order).map((item, index) => renderOrderItem(item, index))
+                getSafeItems(order).map((item, index) =>
+                  renderOrderItem(item, index)
+                )
               )}
             </div>
           </div>
@@ -819,9 +887,7 @@ export function OrderDetailsSheet({
                                 <div className="flex items-center gap-2">
                                   <User className="h-4 w-4" />
                                   <div>
-                                    <span>
-                                      {waiter.full_name}
-                                    </span>
+                                    <span>{waiter.full_name}</span>
                                     <p className="text-muted-foreground text-xs">
                                       {waiter.phone}
                                     </p>
@@ -990,9 +1056,30 @@ export function OrderDetailsSheet({
                       Update Status
                     </Label>
                     <div className="flex items-center gap-2">
-                      {isKitchen && <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">Kitchen Access</Badge>}
-                      {isWaiter && <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">Waiter Access</Badge>}
-                      {isOwner && <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">Owner Access</Badge>}
+                      {isKitchen && (
+                        <Badge
+                          variant="outline"
+                          className="border-orange-200 bg-orange-50 text-xs text-orange-700"
+                        >
+                          Kitchen Access
+                        </Badge>
+                      )}
+                      {isWaiter && (
+                        <Badge
+                          variant="outline"
+                          className="border-blue-200 bg-blue-50 text-xs text-blue-700"
+                        >
+                          Waiter Access
+                        </Badge>
+                      )}
+                      {isOwner && (
+                        <Badge
+                          variant="outline"
+                          className="border-green-200 bg-green-50 text-xs text-green-700"
+                        >
+                          Owner Access
+                        </Badge>
+                      )}
                     </div>
                   </div>
                   <div className="flex gap-2">

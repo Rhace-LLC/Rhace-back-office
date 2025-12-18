@@ -192,7 +192,6 @@ export function Notifications() {
       setNotifications(mappedNotifications);
       setUnreadCount(newUnreadCount);
       setLastUpdated(Date.now());
-
     } catch (error) {
       console.error("🔔 Notifications - Background refresh failed:", error);
     } finally {
@@ -230,7 +229,6 @@ export function Notifications() {
     }
 
     try {
-
       const response = await getAllNotifications(token);
       const notificationsData = response.results || [];
 
@@ -262,7 +260,6 @@ export function Notifications() {
         unreadCount: newUnreadCount,
       };
 
-    
       setNotifications(mappedNotifications);
       setUnreadCount(newUnreadCount);
       setLastUpdated(Date.now());
@@ -364,7 +361,6 @@ export function Notifications() {
     if (!token) return;
 
     try {
-
       await markNotificationsAsRead(
         { notification_ids: [], mark_all: true },
         token
@@ -427,7 +423,6 @@ export function Notifications() {
     if (!token) return;
 
     try {
-
       // Get all read notification IDs
       const readIds = notifications
         .filter((notif) => notif.read)

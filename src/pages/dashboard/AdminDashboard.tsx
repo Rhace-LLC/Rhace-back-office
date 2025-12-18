@@ -207,33 +207,30 @@ export const AdminDashboard = () => {
 
     return dashboardStats.order_type_breakdown.map((item: any) => {
       // Safely get order type from various possible property names
-      const orderType = 
-        item.order_type || 
-        item.type || 
-        item.name || 
-        item.category ||
-        'Unknown';
-      
+      const orderType =
+        item.order_type || item.type || item.name || item.category || "Unknown";
+
       // Safely format the name - handle cases where orderType might not be a string
-      let formattedName = 'Unknown';
-      if (typeof orderType === 'string') {
+      let formattedName = "Unknown";
+      if (typeof orderType === "string") {
         try {
-          formattedName = orderType.charAt(0).toUpperCase() + 
-                         orderType.slice(1).replace("-", " ").replace("_", " ");
+          formattedName =
+            orderType.charAt(0).toUpperCase() +
+            orderType.slice(1).replace("-", " ").replace("_", " ");
         } catch (e) {
-          console.error('Error formatting order type:', e);
+          console.error("Error formatting order type:", e);
           formattedName = orderType;
         }
       }
-      
+
       // Safely get count from various possible property names
       const count = item.count || item.value || item.total || 0;
-      
+
       return {
         name: formattedName,
         value: count,
         count: count,
-        ...item // Include all original properties
+        ...item, // Include all original properties
       };
     });
   };
@@ -261,7 +258,6 @@ export const AdminDashboard = () => {
     if (!token) return;
 
     try {
-
       const [dataResult, statsResult] = await Promise.allSettled([
         getDashboardData(token),
         getDashboardStats(token),
@@ -290,7 +286,6 @@ export const AdminDashboard = () => {
         lastFetched: Date.now(),
       };
       setLastUpdated(Date.now());
-
     } catch (err) {
       console.error("❌ Dashboard - Background refresh failed:", err);
     }
@@ -584,8 +579,6 @@ export const AdminDashboard = () => {
           Refresh
         </button>
       </div>
-
-    
 
       {/* Error Message */}
       {error && (

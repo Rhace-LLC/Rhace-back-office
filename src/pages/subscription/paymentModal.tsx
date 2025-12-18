@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -61,21 +54,27 @@ export const PaystackCheckoutDialog: React.FC<PaystackCheckoutDialogProps> = ({
         if (!isOpen) {
           onClose();
           handleVerifyPayment();
-        } // Verify on close
+        }
       }}
     >
-      <DialogContent className="h-[600px] w-[80%] max-w-[600px] overflow-auto rounded-2xl p-0">
-        {/* Header */}
-        <DialogHeader className="flex flex-col items-center justify-center border-b bg-gray-50">
-          <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
-            Complete Payment <CheckCircle className="h-5 w-5 text-green-500" />
-          </DialogTitle>
-          <DialogDescription className="mt-1 text-center text-gray-600">
+      <DialogContent
+        className="flex h-[500px] w-[80%] max-w-[600px] flex-col overflow-auto rounded-2xl p-0"
+        onInteractOutside={(e) => e.preventDefault()} // Prevent closing on outside click
+      >
+        {/* Compact Header */}
+        <div className="border-b px-4 py-2 text-center">
+          <h2 className="text-md flex items-center justify-center gap-1 font-semibold">
+            Complete Payment{" "}
+            <CheckCircle className="inline h-5 w-5 text-green-500" />
+          </h2>
+          <p className="mt-1 text-sm text-gray-600">
             Follow the steps below to complete your subscription payment for{" "}
             <span className="font-medium">{plan?.name}</span> plan.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="h-[600px] w-full overflow-auto">
+          </p>
+        </div>
+
+        {/* Iframe */}
+        <div className="flex-1">
           <iframe
             src={url}
             title="Paystack Checkout"
@@ -84,19 +83,24 @@ export const PaystackCheckoutDialog: React.FC<PaystackCheckoutDialogProps> = ({
           />
         </div>
 
-        {/* Footer actions */}
-        <DialogFooter className="flex justify-center gap-3 border-t bg-gray-50 px-4 pt-4">
+        {/* Compact Footer */}
+        <div className="flex justify-center gap-2 border-t bg-gray-50 px-4 py-2">
           <Button
             variant="outline"
             onClick={handleVerifyPayment}
             disabled={verifying}
+            className="px-3 py-1 text-sm"
           >
             {verifying ? "Verifying..." : "I've Completed Payment"}
           </Button>
-          <Button variant="destructive" onClick={onClose}>
+          <Button
+            variant="destructive"
+            onClick={onClose}
+            className="px-3 py-1 text-sm"
+          >
             Cancel
           </Button>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

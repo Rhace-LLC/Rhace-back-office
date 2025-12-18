@@ -63,9 +63,14 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
   const { setLoading: setLoadingState, setLoadingText } = useLoading();
   const r = auth.restaurants[0];
 
-  const [qrValue, setQrValue] = useState(
-    `https://bookies-customer.onrender.com?tid=${table.id}&rid=${r.id}&r=${r.name}&tno=${table.table_number}`
-  );
+  const [qrValue, setQrValue] = useState(() => {
+    const tid = encodeURIComponent(table.id);
+    const rid = encodeURIComponent(r.id);
+    const rName = encodeURIComponent(r.name);
+    const tno = encodeURIComponent(table.table_number);
+
+    return `https://bookies-customer.onrender.com?tid=${tid}&rid=${rid}&r=${rName}&tno=${tno}`;
+  });
 
   const [loading, setLoading] = useState(false);
 

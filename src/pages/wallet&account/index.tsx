@@ -37,6 +37,7 @@ import { ContentHOC } from "@/components/nocontent";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLoading } from "@/contexts/LoadingContext";
 import { updateSubAccount } from "@/api-services/subaccountpayout.service";
+import { TransactionsPage } from "./transactions";
 
 export const WalletAndAccount = () => {
   const dispatch = useDispatch();
@@ -59,36 +60,36 @@ export const WalletAndAccount = () => {
     bank_code: "",
     bank_name: "",
   });
-// EDIT SUBACCOUNT
-const [editModal, setEditModal] = useState(false);
-const [editData, setEditData] = useState({
-  account_number: "",
-  bank_code: "",
-  bank_name: "",
-});
-const [editing, setEditing] = useState(false);
-const handleEditSubaccount = async () => {
-  try {
-    setEditing(true);
+  // EDIT SUBACCOUNT
+  const [editModal, setEditModal] = useState(false);
+  const [editData, setEditData] = useState({
+    account_number: "",
+    bank_code: "",
+    bank_name: "",
+  });
+  const [editing, setEditing] = useState(false);
+  const handleEditSubaccount = async () => {
+    try {
+      setEditing(true);
 
-    await updateSubAccount(editData, auth.token);
+      await updateSubAccount(editData, auth.token);
 
-    toast.success("Subaccount updated successfully!");
+      toast.success("Subaccount updated successfully!");
 
-    setEditModal(false);
+      setEditModal(false);
 
-    fetchSubAccount(); // reload updated data
-  } catch (err: any) {
-    toast.error(parseError(err));
-  } finally {
-    setEditing(false);
-  }
-};
+      fetchSubAccount(); // reload updated data
+    } catch (err: any) {
+      toast.error(parseError(err));
+    } finally {
+      setEditing(false);
+    }
+  };
 
-const canSubmitEdit =
-  editData.account_number.trim() !== "" &&
-  editData.bank_code.trim() !== "" &&
-  editData.bank_name.trim() !== "";
+  const canSubmitEdit =
+    editData.account_number.trim() !== "" &&
+    editData.bank_code.trim() !== "" &&
+    editData.bank_name.trim() !== "";
 
   const [creating, setCreating] = useState(false);
 
@@ -120,8 +121,6 @@ const canSubmitEdit =
   useEffect(() => {
     if (!subaccount) fetchSubAccount();
   }, []);
-
-  console.log("Sub account", subaccount);
 
   /* ============================================================
         FETCH BANKS
@@ -231,79 +230,85 @@ const canSubmitEdit =
   ============================================================ */
   return (
     <div className="p-4">
-    <Dialog open={editModal} onOpenChange={setEditModal}>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>Edit Subaccount</DialogTitle>
-    </DialogHeader>
+      <Dialog open={editModal} onOpenChange={setEditModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Subaccount</DialogTitle>
+          </DialogHeader>
 
-    {/* Account Number */}
-    <div className="mt-4 space-y-2">
-      <label className="text-sm font-medium">Account Number</label>
-      <Input
-        value={editData.account_number}
-        onChange={(e) =>
-          setEditData((prev) => ({
-            ...prev,
-            account_number: e.target.value,
-          }))
-        }
-      />
-    </div>
+          {/* Account Number */}
+          <div className="mt-4 space-y-2">
+            <label className="text-sm font-medium">Account Number</label>
+            <Input
+              value={editData.account_number}
+              onChange={(e) =>
+                setEditData((prev) => ({
+                  ...prev,
+                  account_number: e.target.value,
+                }))
+              }
+            />
+          </div>
 
-    {/* Bank Select */}
-    <div className="mt-4 space-y-2">
-      <label className="text-sm font-medium">Bank</label>
+          {/* Bank Select */}
+          <div className="mt-4 space-y-2">
+            <label className="text-sm font-medium">Bank</label>
 
-      {banksLoading && <p className="text-sm text-gray-500">Loading banks...</p>}
+            {banksLoading && (
+              <p className="text-sm text-gray-500">Loading banks...</p>
+            )}
 
-      {!banksLoading && (
-        <Select
-          onValueChange={(val) => {
-            const bank = banks.find((b) => b.code === val);
-            setEditData((prev) => ({
-              ...prev,
-              bank_code: bank.code,
-              bank_name: bank.name,
-            }));
-          }}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder={editData.bank_name || "Select bank"} />
-          </SelectTrigger>
-          <SelectContent className="max-h-64 p-0">
-            <ScrollArea className="h-64">
-              <div className="p-1">
-                {banks.map((b) => (
-                  <SelectItem key={b.id} value={b.code}>
-                    {b.name}
-                  </SelectItem>
-                ))}
-              </div>
-            </ScrollArea>
-          </SelectContent>
-        </Select>
-      )}
-    </div>
+            {!banksLoading && (
+              <Select
+                onValueChange={(val) => {
+                  const bank = banks.find((b) => b.code === val);
+                  setEditData((prev) => ({
+                    ...prev,
+                    bank_code: bank.code,
+                    bank_name: bank.name,
+                  }));
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue
+                    placeholder={editData.bank_name || "Select bank"}
+                  />
+                </SelectTrigger>
+                <SelectContent className="max-h-64 p-0">
+                  <ScrollArea className="h-64">
+                    <div className="p-1">
+                      {banks.map((b) => (
+                        <SelectItem key={b.id} value={b.code}>
+                          {b.name}
+                        </SelectItem>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </SelectContent>
+              </Select>
+            )}
+          </div>
 
-    <DialogFooter>
-      <Button
-        disabled={!canSubmitEdit || editing}
-        onClick={handleEditSubaccount}
-        className="mt-4 w-full"
-      >
-        {editing ? "Updating..." : "Update Subaccount"}
-      </Button>
-    </DialogFooter>
-  </DialogContent>
-</Dialog>
+          <DialogFooter>
+            <Button
+              disabled={!canSubmitEdit || editing}
+              onClick={handleEditSubaccount}
+              className="mt-4 w-full"
+            >
+              {editing ? "Updating..." : "Update Subaccount"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* ============================================================
             CREATE SUBACCOUNT FLOW
       ============================================================ */}
       {error === "No subaccount found for this restaurant" && (
         <div className="space-y-4 rounded-lg border bg-white p-6 shadow">
-          <h2 className="text-lg font-semibold">Link Your Payout Account</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-gray-800">
+            Link Your Payout Account
+          </h2>
 
           {/* ---- ACCOUNT NUMBER ---- */}
           <div className="space-y-2">
@@ -393,8 +398,10 @@ const canSubmitEdit =
           errMessage={error}
           actionFn={fetchSubAccount}
         >
-          <div className="space-y-4 p-4">
-            <h2 className="text-xl font-semibold">Wallet & Sub Account</h2>
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold tracking-tight text-gray-800">
+              Wallet & Sub Account
+            </h2>
 
             <div className="space-y-3 rounded-lg border bg-white p-4 shadow-sm">
               <p>
@@ -419,21 +426,20 @@ const canSubmitEdit =
                 Withdraw Funds
               </Button>
               <Button
-  variant="outline"
-  onClick={() => {
-    setEditData({
-      account_number: subaccount?.account_number || "",
-      bank_code: "",
-      bank_name: "",
-    });
-    fetchBanks();
-    setEditModal(true);
-  }}
-  className="mt-3"
->
-  Edit Subaccount
-</Button>
-
+                variant="outline"
+                onClick={() => {
+                  setEditData({
+                    account_number: subaccount?.account_number || "",
+                    bank_code: "",
+                    bank_name: "",
+                  });
+                  fetchBanks();
+                  setEditModal(true);
+                }}
+                className="mt-3"
+              >
+                Edit Subaccount
+              </Button>
             </div>
           </div>
 
@@ -469,6 +475,17 @@ const canSubmitEdit =
           </Dialog>
         </ContentHOC>
       )}
+      {subaccount && (
+        <div className="mt-10 mb-6">
+          <h3 className="text-2xl font-bold tracking-tight text-gray-800">
+            Transactions History
+          </h3>
+          <p className="mt-1 text-sm text-gray-500">
+            View and manage all your transactions with detailed information.
+          </p>
+        </div>
+      )}
+      {subaccount && <TransactionsPage />}
     </div>
   );
 };
