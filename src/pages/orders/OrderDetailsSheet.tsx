@@ -40,6 +40,7 @@ type OrderStatus =
   | "received"
   | "preparing"
   | "ready"
+  | "served"  // Added served status
   | "completed"
   | "cancelled"
   | "delivered";
@@ -112,6 +113,7 @@ const statusColors: Record<OrderStatus, string> = {
   received: "bg-blue-100 text-blue-800 border-blue-200",
   preparing: "bg-yellow-100 text-yellow-800 border-yellow-200",
   ready: "bg-green-100 text-green-800 border-green-200",
+  served: "bg-indigo-100 text-indigo-800 border-indigo-200",  // Added served
   completed: "bg-gray-100 text-gray-800 border-gray-200",
   cancelled: "bg-red-100 text-red-800 border-red-200",
   delivered: "bg-purple-100 text-purple-800 border-purple-200",
@@ -122,6 +124,7 @@ const statusIcons: Record<OrderStatus, React.ReactNode> = {
   received: <Package className="h-4 w-4" />,
   preparing: <ChefHat className="h-4 w-4" />,
   ready: <Clock className="h-4 w-4" />,
+  served: <Utensils className="h-4 w-4" />,  // Added served icon
   completed: <CheckCircle className="h-4 w-4" />,
   cancelled: <Clock className="h-4 w-4" />,
   delivered: <Truck className="h-4 w-4" />,
@@ -132,6 +135,7 @@ const statusDescriptions: Record<OrderStatus, string> = {
   received: "Order has been received and is waiting to be processed",
   preparing: "Kitchen is currently preparing the order",
   ready: "Order is ready for pickup or delivery",
+  served: "Order has been served to the customer",  // Added served description
   completed: "Order has been completed successfully",
   cancelled: "Order has been cancelled",
   delivered: "Order has been delivered to customer",
@@ -152,6 +156,9 @@ const showActionNotification = (
     switch (newStatus) {
       case "ready":
         description = `Order #${orderId} is now READY for serving!`;
+        break;
+      case "served":
+        description = `Order #${orderId} has been SERVED to customer.`;
         break;
       case "delivered":
         description = `Order #${orderId} has been DELIVERED to customer.`;
@@ -308,31 +315,17 @@ export function OrderDetailsSheet({
 
     if (isWaiter) {
       // Waiter permissions
-      if (
-        currentStatus === "ready" &&
-        newStatus === "completed" &&
-        !isDeliveryTakeaway
-      )
-        canChange = true;
-      if (
-        currentStatus === "ready" &&
-        newStatus === "delivered" &&
-        isDeliveryTakeaway
-      )
-        canChange = true;
-      if (
-        currentStatus === "delivered" &&
-        newStatus === "completed" &&
-        isDeliveryTakeaway
-      )
-        canChange = true;
+      if (currentStatus === "ready" && newStatus === "served" && !isDeliveryTakeaway) canChange = true;
+      if (currentStatus === "served" && newStatus === "completed" && !isDeliveryTakeaway) canChange = true;
+      if (currentStatus === "ready" && newStatus === "delivered" && isDeliveryTakeaway) canChange = true;
+      if (currentStatus === "delivered" && newStatus === "completed" && isDeliveryTakeaway) canChange = true;
       if (newStatus === "cancelled") canChange = true; // Waiters can cancel any order
 
       if (!canChange) {
         if (isDeliveryTakeaway) {
           errorMessage = `Waiters can only change from "ready" to "delivered" or "delivered" to "completed" for delivery/takeaway orders`;
         } else {
-          errorMessage = `Waiters can only change from "ready" to "completed" for dine-in orders`;
+          errorMessage = `Waiters can only change from "ready" to "served" or "served" to "completed" for dine-in orders`;
         }
       }
     }
@@ -433,14 +426,14 @@ export function OrderDetailsSheet({
 
       case "ready":
         const readyOptions: OrderStatus[] = ["cancelled"];
-
-        // Waiters/owners can mark as delivered or completed based on order type
+        
+        // Waiters/owners can mark as served (for dine-in) or delivered (for delivery/takeaway)
         if (isWaiter || isOwner) {
           if (isDeliveryTakeaway) {
             readyOptions.push("delivered");
           } else {
-            // For dine-in and other order types
-            readyOptions.push("completed");
+            // For dine-in orders: ready -> served -> completed
+            readyOptions.push("served");
           }
         }
 
@@ -452,7 +445,13 @@ export function OrderDetailsSheet({
         }
 
         return readyOptions;
-
+      
+      case "served":
+        // Only for dine-in orders
+        const servedOptions: OrderStatus[] = ["cancelled"];
+        if (isWaiter || isOwner) servedOptions.push("completed");
+        return servedOptions;
+      
       case "delivered":
         // Only for delivery/takeaway orders
         const deliveredOptions: OrderStatus[] = ["cancelled"];
@@ -483,6 +482,8 @@ export function OrderDetailsSheet({
         return "Start Preparing";
       case "ready":
         return "Mark Ready";
+      case "served":
+        return "Mark as Served";
       case "delivered":
         return "Mark Delivered";
       case "completed":
@@ -650,7 +651,7 @@ export function OrderDetailsSheet({
               <div className="text-muted-foreground flex items-center gap-2 text-sm">
                 <Clock className="h-3 w-3" />
                 <span>Prep time: {item.menu_item.prep_time}</span>
-              </div>
+            </div>
             </div>
           )}
         </div>
