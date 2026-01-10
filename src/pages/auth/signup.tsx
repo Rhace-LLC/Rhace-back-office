@@ -8,7 +8,6 @@ import { parseError } from "@/api-services/utils/parseError";
 import { registerRestaurant } from "@/api-services/auth.service";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 //import RhaceImage from "../../assets/Rhace-10.png";
-import { Country, State, City } from "country-state-city";
 import { UserRole } from "@/contexts/AuthContext";
 
 import "./auth.css";
@@ -24,54 +23,47 @@ export const UserRoleLabels: Record<UserRole, string> = {
   restaurant_owner: "Owner",
 };
 
-export interface SignUpData {
-  restaurant_name: string;
-  restaurant_email: string;
-  restaurant_phone: string;
-  address: string;
-  city: string;
-  state: string;
-  country: string;
-  postal_code: string;
-  description: string;
-  cuisine_type: string;
-  owner_first_name: string;
-  owner_last_name: string;
-  owner_email: string;
-  owner_phone: string;
-  password: string;
-  confirm_password: string;
-}
-
-export interface EmployeeSignUpData {
-  id?: string;
-  email: string;
+export interface BasicSignUpData {
   first_name: string;
   last_name: string;
+  email: string;
   phone: string;
   password: string;
-  confirm_password: string;
-  role: UserRole;
-  is_verified?: boolean;
-  invitation_token?: string;
+  confirm_password?: string;
 }
 
 interface FormErrors {
   [key: string]: string;
 }
 
-/** Validate employee signup form */
-export const validateEmployeeSignupForm = (form: EmployeeSignUpData) => {
+/** Validate basic signup form */
+export const validateBasicSignupForm = (form: BasicSignUpData) => {
   const errors: FormErrors = {};
 
-  // --- Required field checks ---
-  if (!form.first_name?.trim()) errors.first_name = "First name is required";
-  if (!form.last_name?.trim()) errors.last_name = "Last name is required";
-  if (!form.email?.trim()) errors.email = "Email is required";
-  if (!form.phone?.trim()) errors.phone = "Phone number is required";
-  if (!form.password?.trim()) errors.password = "Password is required";
-  if (!form.confirm_password?.trim())
+  // --- Basic info ---
+  if (!form.first_name?.trim()) {
+    errors.first_name = "First name is required";
+  }
+
+  if (!form.last_name?.trim()) {
+    errors.last_name = "Last name is required";
+  }
+
+  if (!form.email?.trim()) {
+    errors.email = "Email is required";
+  }
+
+  if (!form.phone?.trim()) {
+    errors.phone = "Phone number is required";
+  }
+
+  if (!form.password?.trim()) {
+    errors.password = "Password is required";
+  }
+
+  if (!form.confirm_password?.trim()) {
     errors.confirm_password = "Confirm password is required";
+  }
 
   // --- Email validation ---
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -85,7 +77,7 @@ export const validateEmployeeSignupForm = (form: EmployeeSignUpData) => {
     errors.phone = "Invalid phone number";
   }
 
-  // --- Password validation ---
+  // --- Password strength ---
   const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
   if (form.password && !passwordRegex.test(form.password)) {
     errors.password =
@@ -93,70 +85,11 @@ export const validateEmployeeSignupForm = (form: EmployeeSignUpData) => {
   }
 
   // --- Confirm password match ---
-  if (form.password !== form.confirm_password) {
-    errors.confirm_password = "Passwords do not match";
-  }
-
-  return {
-    valid: Object.keys(errors).length === 0,
-    errors,
-  };
-};
-
-/** Validate restaurant (owner) signup form */
-export const validateRestaurantSignupForm = (form: SignUpData) => {
-  const errors: FormErrors = {};
-
-  // --- Restaurant info ---
-  if (!form.restaurant_name?.trim())
-    errors.restaurant_name = "Restaurant name is required";
-  if (!form.restaurant_email?.trim())
-    errors.restaurant_email = "Restaurant email is required";
-  if (!form.restaurant_phone?.trim())
-    errors.restaurant_phone = "Restaurant phone is required";
-  if (!form.address?.trim()) errors.address = "Address is required";
-  if (!form.city?.trim()) errors.city = "City is required";
-  if (!form.state?.trim()) errors.state = "State is required";
-  if (!form.country?.trim()) errors.country = "Country is required";
-
-  // --- Owner info ---
-  if (!form.owner_first_name?.trim())
-    errors.owner_first_name = "Owner first name is required";
-  if (!form.owner_last_name?.trim())
-    errors.owner_last_name = "Owner last name is required";
-  if (!form.owner_email?.trim()) errors.owner_email = "Owner email is required";
-  if (!form.owner_phone?.trim()) errors.owner_phone = "Owner phone is required";
-  if (!form.password?.trim()) errors.password = "Password is required";
-  if (!form.confirm_password?.trim())
-    errors.confirm_password = "Confirm password is required";
-
-  // --- Email validation ---
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (form.restaurant_email && !emailRegex.test(form.restaurant_email)) {
-    errors.restaurant_email = "Invalid restaurant email address";
-  }
-  if (form.owner_email && !emailRegex.test(form.owner_email)) {
-    errors.owner_email = "Invalid owner email address";
-  }
-
-  // --- Phone validation ---
-  const phoneRegex = /^[0-9+]{7,15}$/;
-  if (form.restaurant_phone && !phoneRegex.test(form.restaurant_phone)) {
-    errors.restaurant_phone = "Invalid restaurant phone number";
-  }
-  if (form.owner_phone && !phoneRegex.test(form.owner_phone)) {
-    errors.owner_phone = "Invalid owner phone number";
-  }
-
-  // --- Password validation ---
-  const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
-  if (form.password && !passwordRegex.test(form.password)) {
-    errors.password =
-      "Password must be at least 6 characters, include one uppercase letter and one number";
-  }
-
-  // --- Confirm password match ---
-  if (form.password !== form.confirm_password) {
+  if (
+    form.password &&
+    form.confirm_password &&
+    form.password !== form.confirm_password
+  ) {
     errors.confirm_password = "Passwords do not match";
   }
 
@@ -215,63 +148,25 @@ export function SignUp() {
     useState(false);
 
   // Owner signup form
-  const [ownerForm, setOwnerForm] = useState<SignUpData>({
-    restaurant_name: "",
-    restaurant_email: "",
-    restaurant_phone: "",
-    address: "",
-    city: "",
-    state: "",
-    country: "",
-    postal_code: "",
-    description: "",
-    cuisine_type: "",
-    owner_first_name: "",
-    owner_last_name: "",
-    owner_email: "",
-    owner_phone: "",
+  // Basic signup form
+  const [formData, setFormData] = useState<BasicSignUpData>({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
     password: "",
     confirm_password: "",
   });
 
-  const [countries] = useState(Country.getAllCountries());
-  const [states, setStates] = useState<any[]>([]);
-  const [cities, setCities] = useState<any[]>([]); // 👈 added city state
-
-  const handleCountryChange = (value: string) => {
-    handleOwnerChange("country", value);
-    const selectedCountry = countries.find((c: any) => c.name === value);
-    if (selectedCountry) {
-      const fetchedStates = State.getStatesOfCountry(selectedCountry.isoCode);
-      setStates(fetchedStates);
-    }
-  };
-
-  const handleStateChange = (value: string) => {
-    handleOwnerChange("state", value);
-    handleOwnerChange("city", "");
-    const selectedCountry = countries.find(
-      (c: any) => c.name === ownerForm.country
-    );
-    const selectedState = states.find((s: any) => s.name === value);
-    if (selectedCountry && selectedState) {
-      const fetchedCities = City.getCitiesOfState(
-        selectedCountry.isoCode,
-        selectedState.isoCode
-      );
-      setCities(fetchedCities);
-    }
-  };
-
-  const handleOwnerChange = (field: keyof SignUpData, value: string) => {
-    setOwnerForm((prev) => ({ ...prev, [field]: value }));
+  const handleChange = (field: keyof BasicSignUpData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
     setErrors(() => ({}));
   };
 
-  const handleOwnerSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     e.preventDefault();
-    const { valid, errors } = validateRestaurantSignupForm(ownerForm);
+    const { valid, errors } = validateBasicSignupForm(formData);
     setErrors(errors);
     console.log(valid, errors);
 
@@ -281,30 +176,10 @@ export function SignUp() {
 
     setLoading(true);
     try {
-      const payload = {
-        restaurant_name: ownerForm.restaurant_name,
-        restaurant_email: ownerForm.restaurant_email,
-        restaurant_phone: ownerForm.restaurant_phone,
-        address: ownerForm.address,
-        city: ownerForm.city,
-        state: ownerForm.state,
-        country: ownerForm.country,
-        postal_code: ownerForm.postal_code,
-        description: ownerForm.description,
-        cuisine_type: ownerForm.cuisine_type,
-        owner_first_name: ownerForm.owner_first_name,
-        owner_last_name: ownerForm.owner_last_name,
-        owner_email: ownerForm.owner_email,
-        owner_phone: ownerForm.owner_phone,
-        password: ownerForm.password,
-        confirm_password: ownerForm.confirm_password,
-      };
-      const response = await registerRestaurant(payload);
+      const response = await registerRestaurant(formData);
       console.log("Response:", response);
       toast.success("Restaurant Registered successfully!");
-      navigate(
-        `/verify-email?email=${encodeURIComponent(ownerForm.owner_email)}`
-      );
+      navigate(`/verify-email?email=${encodeURIComponent(formData.email)}`);
     } catch (error: any) {
       const message = parseError(error) || "Something went wrong!";
       toast.error(message);
@@ -374,100 +249,34 @@ export function SignUp() {
               fingertips.
             </p>
           </div>
-          <form onSubmit={handleOwnerSubmit} className="mt-4 space-y-4">
-            {/* RESTAURANT NAME */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium tracking-tight text-gray-700">
-                Restaurant Name
-              </label>
-              <input
-                className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                value={ownerForm.restaurant_name}
-                onChange={(e) =>
-                  handleOwnerChange("restaurant_name", e.target.value)
-                }
-              />
-              {errors.restaurant_name && (
-                <p className="text-sm text-red-500">{errors.restaurant_name}</p>
-              )}
-            </div>
-
-            {/* RESTAURANT EMAIL + PHONE */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-sm font-medium tracking-tight text-gray-700">
-                  Restaurant Email
-                </label>
-                <input
-                  type="email"
-                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={ownerForm.restaurant_email}
-                  onChange={(e) =>
-                    handleOwnerChange("restaurant_email", e.target.value)
-                  }
-                />
-                {errors.restaurant_email && (
-                  <p className="text-sm text-red-500">
-                    {errors.restaurant_email}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium tracking-tight text-gray-700">
-                  Restaurant Phone
-                </label>
-                <input
-                  type="tel"
-                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={ownerForm.restaurant_phone}
-                  onChange={(e) =>
-                    handleOwnerChange("restaurant_phone", e.target.value)
-                  }
-                />
-                {errors.restaurant_phone && (
-                  <p className="text-sm text-red-500">
-                    {errors.restaurant_phone}
-                  </p>
-                )}
-              </div>
-            </div>
-
+          <form onSubmit={handleSubmit} className="mt-4 space-y-4">
             {/* OWNER FIRST + LAST NAME */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium tracking-tight text-gray-700">
-                  Owner First Name
+                  First Name
                 </label>
                 <input
                   className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={ownerForm.owner_first_name}
-                  onChange={(e) =>
-                    handleOwnerChange("owner_first_name", e.target.value)
-                  }
+                  value={formData.first_name}
+                  onChange={(e) => handleChange("first_name", e.target.value)}
                 />
-                {errors.owner_first_name && (
-                  <p className="text-sm text-red-500">
-                    {errors.owner_first_name}
-                  </p>
+                {errors.first_name && (
+                  <p className="text-sm text-red-500">{errors.first_name}</p>
                 )}
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium tracking-tight text-gray-700">
-                  Owner Last Name
+                  Last Name
                 </label>
                 <input
                   className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={ownerForm.owner_last_name}
-                  onChange={(e) =>
-                    handleOwnerChange("owner_last_name", e.target.value)
-                  }
+                  value={formData.last_name}
+                  onChange={(e) => handleChange("last_name", e.target.value)}
                 />
-                {errors.owner_last_name && (
-                  <p className="text-sm text-red-500">
-                    {errors.owner_last_name}
-                  </p>
+                {errors.last_name && (
+                  <p className="text-sm text-red-500">{errors.last_name}</p>
                 )}
               </div>
             </div>
@@ -476,120 +285,31 @@ export function SignUp() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium tracking-tight text-gray-700">
-                  Owner Email
+                  Email
                 </label>
                 <input
                   type="email"
                   className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={ownerForm.owner_email}
-                  onChange={(e) =>
-                    handleOwnerChange("owner_email", e.target.value)
-                  }
+                  value={formData.email}
+                  onChange={(e) => handleChange("email", e.target.value)}
                 />
-                {errors.owner_email && (
-                  <p className="text-sm text-red-500">{errors.owner_email}</p>
+                {errors.email && (
+                  <p className="text-sm text-red-500">{errors.email}</p>
                 )}
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium tracking-tight text-gray-700">
-                  Owner Phone
+                  Phone
                 </label>
                 <input
                   type="tel"
                   className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={ownerForm.owner_phone}
-                  onChange={(e) =>
-                    handleOwnerChange("owner_phone", e.target.value)
-                  }
+                  value={formData.phone}
+                  onChange={(e) => handleChange("phone", e.target.value)}
                 />
-                {errors.owner_phone && (
-                  <p className="text-sm text-red-500">{errors.owner_phone}</p>
-                )}
-              </div>
-            </div>
-
-            {/* ADDRESS + COUNTRY */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-sm font-medium tracking-tight text-gray-700">
-                  Address
-                </label>
-                <input
-                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={ownerForm.address}
-                  onChange={(e) => handleOwnerChange("address", e.target.value)}
-                />
-                {errors.address && (
-                  <p className="text-sm text-red-500">{errors.address}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium tracking-tight text-gray-700">
-                  Country
-                </label>
-                <select
-                  className="h-12 w-full rounded-sm bg-gray-100 px-4 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={ownerForm.country}
-                  onChange={(e) => handleCountryChange(e.target.value)}
-                >
-                  <option value="">Select Country</option>
-                  {countries.map((country) => (
-                    <option key={country.isoCode} value={country.name}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
-                {errors.country && (
-                  <p className="text-sm text-red-500">{errors.country}</p>
-                )}
-              </div>
-            </div>
-
-            {/* STATE + CITY */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-sm font-medium tracking-tight text-gray-700">
-                  State
-                </label>
-                <select
-                  className="h-12 w-full rounded-sm bg-gray-100 px-4 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={ownerForm.state}
-                  onChange={(e) => handleStateChange(e.target.value)}
-                  disabled={!ownerForm.country}
-                >
-                  <option value="">Select State</option>
-                  {states.map((state) => (
-                    <option key={state.isoCode} value={state.name}>
-                      {state.name}
-                    </option>
-                  ))}
-                </select>
-                {errors.state && (
-                  <p className="text-sm text-red-500">{errors.state}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium tracking-tight text-gray-700">
-                  City
-                </label>
-                <select
-                  className="h-12 w-full rounded-sm bg-gray-100 px-4 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={ownerForm.city}
-                  onChange={(e) => handleOwnerChange("city", e.target.value)}
-                  disabled={!ownerForm.state}
-                >
-                  <option value="">Select City</option>
-                  {cities.map((city) => (
-                    <option key={city.name} value={city.name}>
-                      {city.name}
-                    </option>
-                  ))}
-                </select>
-                {errors.city && (
-                  <p className="text-sm text-red-500">{errors.city}</p>
+                {errors.phone && (
+                  <p className="text-sm text-red-500">{errors.phone}</p>
                 )}
               </div>
             </div>
@@ -602,8 +322,8 @@ export function SignUp() {
               <input
                 type={showOwnerPassword ? "text" : "password"}
                 className="h-12 w-full rounded-sm bg-gray-100 px-5 pr-12 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                value={ownerForm.password}
-                onChange={(e) => handleOwnerChange("password", e.target.value)}
+                value={formData.password}
+                onChange={(e) => handleChange("password", e.target.value)}
               />
               <button
                 type="button"
@@ -625,9 +345,9 @@ export function SignUp() {
               <input
                 type={showOwnerConfirmPassword ? "text" : "password"}
                 className="h-12 w-full rounded-sm bg-gray-100 px-5 pr-12 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                value={ownerForm.confirm_password}
+                value={formData.confirm_password}
                 onChange={(e) =>
-                  handleOwnerChange("confirm_password", e.target.value)
+                  handleChange("confirm_password", e.target.value)
                 }
               />
               <button

@@ -45,7 +45,7 @@ export default function ForgotPassword() {
       const response = await requestPasswordReset(email);
 
       toast.success(response?.message || "Password reset link sent!");
-      navigate(`/resetpassword?email=${email}`);
+      navigate(`/reset-password?email=${encodeURIComponent(email)}`);
     } catch (error) {
       toast.error("Failed to send reset link. Please try again.");
     } finally {

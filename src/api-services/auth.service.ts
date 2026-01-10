@@ -4,6 +4,7 @@ import { getConfig } from "./utils/reqConfig";
 import { bookiesAxiosInstance } from "./utils/baseUrl";
 import { RegisterRestaurantResponse } from "./utils/types.service";
 import { UserRole } from "@/contexts/AuthContext";
+import { BasicSignUpData } from "@/pages/auth/signup";
 
 // ---------------------------
 // 📘 Interfaces
@@ -83,26 +84,6 @@ export interface RegisterEmployeeBody {
   role: UserRole;
   is_verified?: boolean;
   invitation_token?: string;
-}
-
-// 🔹 Register Restaurant
-export interface RegisterRestaurantBody {
-  restaurant_name: string;
-  restaurant_email: string;
-  restaurant_phone: string;
-  address: string;
-  city: string;
-  state: string;
-  country: string;
-  postal_code: string;
-  description: string;
-  cuisine_type: string;
-  owner_first_name: string;
-  owner_last_name: string;
-  owner_email: string;
-  owner_phone: string;
-  password: string;
-  confirm_password: string;
 }
 
 // 🔹 Verify Email OTP
@@ -275,7 +256,7 @@ const registerEmployee = async (data: RegisterEmployeeBody): Promise<any> => {
 
 // 🔸 Register restaurant
 const registerRestaurant = async (
-  data: RegisterRestaurantBody
+  data: BasicSignUpData
 ): Promise<RegisterRestaurantResponse> => {
   const config = getConfig(
     `/auth/register-restaurant/`,
