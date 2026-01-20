@@ -13,6 +13,7 @@ export interface Restaurant {
 
 export interface Table {
   id: string;
+  access_code: string | null;
   restaurant_name: string;
   table_number: string;
   qr_code_image: string;

@@ -28,5 +28,9 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "generic_page.tsx", "../bookies-customer/src/pages/home/useSelectedRestaurant.ts"]
+  "include": [
+    "src",
+    "generic_page.tsx",
+    "../bookies-customer/src/pages/home/useSelectedRestaurant.ts"
+  ]
 }

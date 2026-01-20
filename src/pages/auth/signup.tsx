@@ -24,10 +24,10 @@ export const UserRoleLabels: Record<UserRole, string> = {
 };
 
 export interface BasicSignUpData {
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
+  owner_first_name: string;
+  owner_last_name: string;
+  owner_email: string;
+  owner_phone: string;
   password: string;
   confirm_password?: string;
 }
@@ -41,20 +41,20 @@ export const validateBasicSignupForm = (form: BasicSignUpData) => {
   const errors: FormErrors = {};
 
   // --- Basic info ---
-  if (!form.first_name?.trim()) {
-    errors.first_name = "First name is required";
+  if (!form.owner_first_name?.trim()) {
+    errors.owner_first_name = "First name is required";
   }
 
-  if (!form.last_name?.trim()) {
-    errors.last_name = "Last name is required";
+  if (!form.owner_last_name?.trim()) {
+    errors.owner_last_name = "Last name is required";
   }
 
-  if (!form.email?.trim()) {
-    errors.email = "Email is required";
+  if (!form.owner_email?.trim()) {
+    errors.owner_email = "owner_Email is required";
   }
 
-  if (!form.phone?.trim()) {
-    errors.phone = "Phone number is required";
+  if (!form.owner_phone?.trim()) {
+    errors.owner_phone = "owner_Phone number is required";
   }
 
   if (!form.password?.trim()) {
@@ -65,16 +65,16 @@ export const validateBasicSignupForm = (form: BasicSignUpData) => {
     errors.confirm_password = "Confirm password is required";
   }
 
-  // --- Email validation ---
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (form.email && !emailRegex.test(form.email)) {
-    errors.email = "Invalid email address";
+  // --- owner_Email validation ---
+  const owner_emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (form.owner_email && !owner_emailRegex.test(form.owner_email)) {
+    errors.owner_email = "Invalid owner_email address";
   }
 
-  // --- Phone validation ---
-  const phoneRegex = /^[0-9+]{7,15}$/;
-  if (form.phone && !phoneRegex.test(form.phone)) {
-    errors.phone = "Invalid phone number";
+  // --- owner_Phone validation ---
+  const owner_phoneRegex = /^[0-9+]{7,15}$/;
+  if (form.owner_phone && !owner_phoneRegex.test(form.owner_phone)) {
+    errors.owner_phone = "Invalid owner_phone number";
   }
 
   // --- Password strength ---
@@ -150,10 +150,10 @@ export function SignUp() {
   // Owner signup form
   // Basic signup form
   const [formData, setFormData] = useState<BasicSignUpData>({
-    first_name: "",
-    last_name: "",
-    email: "",
-    phone: "",
+    owner_first_name: "",
+    owner_last_name: "",
+    owner_email: "",
+    owner_phone: "",
     password: "",
     confirm_password: "",
   });
@@ -179,7 +179,7 @@ export function SignUp() {
       const response = await registerRestaurant(formData);
       console.log("Response:", response);
       toast.success("Restaurant Registered successfully!");
-      navigate(`/verify-email?email=${encodeURIComponent(formData.email)}`);
+      navigate(`/verify_email?email=${encodeURIComponent(formData.owner_email)}`);
     } catch (error: any) {
       const message = parseError(error) || "Something went wrong!";
       toast.error(message);
@@ -258,11 +258,11 @@ export function SignUp() {
                 </label>
                 <input
                   className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={formData.first_name}
-                  onChange={(e) => handleChange("first_name", e.target.value)}
+                  value={formData.owner_first_name}
+                  onChange={(e) => handleChange("owner_first_name", e.target.value)}
                 />
-                {errors.first_name && (
-                  <p className="text-sm text-red-500">{errors.first_name}</p>
+                {errors.owner_first_name && (
+                  <p className="text-sm text-red-500">{errors.owner_first_name}</p>
                 )}
               </div>
 
@@ -272,29 +272,29 @@ export function SignUp() {
                 </label>
                 <input
                   className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={formData.last_name}
-                  onChange={(e) => handleChange("last_name", e.target.value)}
+                  value={formData.owner_last_name}
+                  onChange={(e) => handleChange("owner_last_name", e.target.value)}
                 />
-                {errors.last_name && (
-                  <p className="text-sm text-red-500">{errors.last_name}</p>
+                {errors.owner_last_name && (
+                  <p className="text-sm text-red-500">{errors.owner_last_name}</p>
                 )}
               </div>
             </div>
 
-            {/* OWNER EMAIL + PHONE */}
+            {/* OWNER owner_EMAIL + owner_PHONE */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium tracking-tight text-gray-700">
                   Email
                 </label>
                 <input
-                  type="email"
+                  type="owner_email"
                   className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={formData.email}
-                  onChange={(e) => handleChange("email", e.target.value)}
+                  value={formData.owner_email}
+                  onChange={(e) => handleChange("owner_email", e.target.value)}
                 />
-                {errors.email && (
-                  <p className="text-sm text-red-500">{errors.email}</p>
+                {errors.owner_email && (
+                  <p className="text-sm text-red-500">{errors.owner_email}</p>
                 )}
               </div>
 
@@ -305,11 +305,11 @@ export function SignUp() {
                 <input
                   type="tel"
                   className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={formData.phone}
-                  onChange={(e) => handleChange("phone", e.target.value)}
+                  value={formData.owner_phone}
+                  onChange={(e) => handleChange("owner_phone", e.target.value)}
                 />
-                {errors.phone && (
-                  <p className="text-sm text-red-500">{errors.phone}</p>
+                {errors.owner_phone && (
+                  <p className="text-sm text-red-500">{errors.owner_phone}</p>
                 )}
               </div>
             </div>

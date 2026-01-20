@@ -130,7 +130,7 @@ export function Login() {
       const message = parseError(error) || "Something went wrong!";
       toast.error(message);
       if (message === "Please verify your email before logging in") {
-        navigate(`/verify-email?email=${email}`);
+        navigate(`/verify-email?email=${encodeURIComponent(email)}`);
         handleResend();
         toast.info("A verification OTP would be sent to your mail " + email);
       }

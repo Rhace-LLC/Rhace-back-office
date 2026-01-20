@@ -29,6 +29,7 @@ export const TableCard: React.FC<TableCardProps> = ({ table }) => {
 
   // Availability badge
   const availabilityLabel = is_available ? "Available" : "Unavailable";
+
   const availabilityColor = is_available
     ? "text-green-700 bg-green-100/50"
     : "text-red-700 bg-red-100/50";
@@ -37,6 +38,7 @@ export const TableCard: React.FC<TableCardProps> = ({ table }) => {
   const statusLabel = status
     ? status.charAt(0).toUpperCase() + status.slice(1)
     : "-";
+
   const statusBoxColor =
     status === "free"
       ? "bg-green-50 text-green-800"
@@ -115,4 +117,4 @@ export const TableCard: React.FC<TableCardProps> = ({ table }) => {
       </GenericSheet>
     </div>
   );
-};
+}

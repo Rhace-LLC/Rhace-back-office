@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { QrCode, Download } from "lucide-react";
@@ -11,10 +11,16 @@ import { Table as TableItem } from "@/api-services/tableService";
 
 import { RefreshCcw, Table, X, Check, Utensils } from "lucide-react";
 import { useLoading } from "@/contexts/LoadingContext";
-import { updateTable } from "@/api-services/menu.service";
+import {
+//  getWaitersTableAssignments,
+  updateTable,
+} from "@/api-services/menu.service";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { Input } from "@/components/ui/input";
+import { getStaffByRole, Staff } from "@/api-services/staffService";
+//  import { getAllStaff } from "@/api-services/auth.service";
+import { parseError } from "@/api-services/utils/parseError";
 
 export type TableStatus = "free" | "occupied" | "needs_cleaning";
 const StatusLabelToValue: Record<string, TableStatus> = {
@@ -68,8 +74,9 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
     const rid = encodeURIComponent(r.id);
     const rName = encodeURIComponent(r.name);
     const tno = encodeURIComponent(table.table_number);
+    const accessCode = encodeURIComponent(table.access_code || "")
 
-    return `https://bookies-customer.onrender.com?tid=${tid}&rid=${rid}&r=${rName}&tno=${tno}`;
+    return `https://bookies-customer.onrender.com?tid=${tid}&rid=${rid}&r=${rName}&tno=${tno}&access_code=${accessCode}`;
   });
 
   const [loading, setLoading] = useState(false);
@@ -177,6 +184,58 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
     }
   };
 
+  const [waiters, setWaiters] = useState<Staff[]>([]);
+  const [waiterReqLoading, setWaiterReqLoading] = useState(false);
+  const [waiterReqError, setWaiterReqError] = useState<string | null>(null);
+
+  const fetchWaiters = async () => {
+    setWaiterReqLoading(true);
+    setWaiterReqError(null);
+
+    try {
+      const byRole = await getStaffByRole(auth.token, "waiter");
+      console.log("byRole", byRole);
+      setWaiters(byRole);
+    } catch (error: any) {
+      const errorMessage = parseError(error);
+      setWaiterReqError(
+        errorMessage || "Unable to fetch waiters at the moment"
+      );
+    } finally {
+      setWaiterReqLoading(false);
+    }
+  };
+/*
+
+  const [waiterAssignmentReqLoading, setWaiterAssignmentReqLoading] =
+    useState(false);
+  const [waiterAssignmentReqError, setWaiterAssignmentReqError] = useState<
+    string | null
+  >(null);
+
+  const fetchWaiterAssignment = async () => {
+    setWaiterAssignmentReqLoading(true);
+    setWaiterAssignmentReqError(null);
+
+    try {
+      const response = await getWaitersTableAssignments({}, {}, auth?.token);
+      return response;
+    } catch (error: any) {
+      const errorMessage = parseError(error);
+      setWaiterAssignmentReqError(
+        errorMessage || "Unable to fetch waiters at the moment"
+      );
+      throw error;
+    } finally {
+      setWaiterAssignmentReqLoading(false);
+    }
+  };
+*/
+
+  useEffect(() => {
+    fetchWaiters();
+  }, []); // <-- run only once
+
   return (
     <div className="space-y-4 pt-5">
       <Tabs defaultValue="overview" className="w-full space-y-4">
@@ -237,6 +296,76 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
             >
               Update Table Info
             </Button>
+          </div>
+          <div className="my-5 border-t border-gray-300" />
+          <div className="w-full hidden">
+            {/* Header */}
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold tracking-tight text-[#262626]">
+                Waiter Assignment
+              </h3>
+              <p className="mt-1 text-sm text-[#636262]">
+                Assign available waiters to tables to manage service flow and
+                improve customer experience.
+              </p>
+            </div>
+
+            {/* Loading state */}
+            {waiterReqLoading && (
+              <div className="rounded-lg border border-gray-200 bg-white p-4 text-sm text-[#636262]">
+                Loading waiters…
+              </div>
+            )}
+
+            {/* Error state */}
+            {!waiterReqLoading && waiterReqError && (
+              <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+                <p className="text-sm text-red-600">{waiterReqError}</p>
+                <button
+                  onClick={fetchWaiters}
+                  className="mt-3 inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+                >
+                  Retry
+                </button>
+              </div>
+            )}
+            {/* Body */}
+            {!waiterReqLoading && !waiterReqError && (
+              <div className="space-y-3">
+                {waiters.length === 0 ? (
+                  <p className="text-sm text-[#8a8a8a]">
+                    No waiters available.
+                  </p>
+                ) : (
+                  waiters.map((waiter) => (
+                    <div
+                      key={waiter.id}
+                      className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4"
+                    >
+                      {/* Waiter Info */}
+                      <div>
+                        <p className="font-medium text-[#262626]">
+                          {waiter.full_name}
+                        </p>
+                        <p className="text-sm text-[#636262]">
+                          {waiter.email} • {waiter.phone}
+                        </p>
+                      </div>
+
+                      {/* Action */}
+                      <button
+                        onClick={() => {
+                          // assign waiter to table logic here
+                        }}
+                        className="rounded-md bg-[#262626] px-4 py-2 text-sm font-medium text-white transition hover:bg-black"
+                      >
+                        Assign to table
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
           </div>
         </TabsContent>
 

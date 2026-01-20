@@ -41,6 +41,47 @@ export interface MenuIngredient {
   inventory_item: number;
   quantity: number;
 }
+
+export interface GetTableAssignment {
+  date: string; // ISO date string
+  restaurant: string;
+  total_assignments: number;
+  assignments: Assignment[]; // reuse TableAssignment from previous interface
+}
+
+export interface TableAssignment {
+  waiter_id: string;
+  waiter_name: string;
+  waiter_email: string;
+  tables: string[];
+  table_count: number;
+  email_sent?: boolean; // optional since in some GET responses there may be no emails sent yet
+}
+
+export interface TableAssignData {
+  id: string;
+  table_number: string;
+  max_party_size: number;
+  status: string; // e.g. "free", "occupied"
+}
+
+export interface Waiter {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+}
+
+export interface Assignment {
+  id: string;
+  waiter: Waiter;
+  tables: TableAssignData[];
+  table_count: number;
+  notes: string;
+  assigned_by: string;
+  created_at: string; // ISO datetime string
+}
+
 // ========== CATEGORIES =========
 const getAllCategories = async (
   restaurantId: string,
@@ -482,6 +523,36 @@ const deleteTable = async (restaurantId: string, id: string, token: string) => {
   return bookiesAxiosInstance(config);
 };
 
+const getWaitersTableAssignments = async (
+  data?: any,
+  params?: Record<string, string>,
+  token?: string
+): Promise<GetTableAssignment> => {
+  const config = getConfig(
+    `/menu/table-assignments/`,
+    "GET",
+    token,
+    data,
+    params
+  );
+  return bookiesAxiosInstance(config);
+};
+
+const assignWaitersForTheDay = async (
+  data?: any,
+  params?: Record<string, string>,
+  token?: string
+) => {
+  const config = getConfig(
+    `/menu/assign-waiter-tables/`,
+    "POST",
+    token,
+    data,
+    params
+  );
+  return bookiesAxiosInstance(config);
+};
+
 // ========== EXPORTS ==========
 export {
   // Categories
@@ -522,4 +593,6 @@ export {
   updateTable,
   patchTable,
   deleteTable,
+  getWaitersTableAssignments,
+  assignWaitersForTheDay,
 };

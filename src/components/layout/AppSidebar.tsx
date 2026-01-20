@@ -7,11 +7,11 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
 } from "../ui/sidebar";
+
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
+
 import {
   LayoutDashboard,
   LogOut,
@@ -21,6 +21,7 @@ import {
   Users,
   CalendarDays,
 } from "lucide-react";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth, UserRole, UserRoleLabels } from "@/contexts/AuthContext";
 import { useState } from "react";
@@ -82,7 +83,7 @@ export function useRoleBasedMenu(): MenuItem[] {
         icon: Layers3,
       },
       {
-        title: "Inventory Management",
+        title: "Inventory",
         url: "/inventory",
         icon: Package,
       },
@@ -92,7 +93,7 @@ export function useRoleBasedMenu(): MenuItem[] {
         icon: Utensils,
       },
       {
-        title: "Staff Management",
+        title: "Staffs",
         url: "/staff",
         icon: Users,
       },
@@ -102,12 +103,12 @@ export function useRoleBasedMenu(): MenuItem[] {
         icon: Users,
       },
       {
-        title: "Billings & Subscriptions",
+        title: "Subscriptions",
         url: "/billings-and-subscriptions",
         icon: Users,
       },
       {
-        title: "Wallet & Account",
+        title: "Payment Account",
         url: "/wallet-and-account",
         icon: Users,
       },
@@ -130,7 +131,7 @@ export function useRoleBasedMenu(): MenuItem[] {
   if (auth.isInventoryMgr) {
     return [
       {
-        title: "Inventory Management",
+        title: "Inventory",
         url: "/inventory",
         icon: Package,
       },
@@ -151,7 +152,7 @@ export function useRoleBasedMenu(): MenuItem[] {
         icon: ShoppingCart,
       },
       {
-        title: "Menu Management",
+        title: "Menu .Mgt",
         url: "/menu",
         icon: Utensils,
       },
@@ -223,35 +224,43 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  {item.items ? (
-                    <div className="space-y-1">
-                      <div className="text-sidebar-foreground/80 flex items-center gap-2 px-3 py-2">
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.title}</span>
-                      </div>
-                      {item.items.map((subItem: any) => (
-                        <SidebarMenuButton
-                          key={subItem.title}
-                          onClick={() => handleNavigate(subItem.url)}
-                          isActive={isActive(subItem.url)}
-                          className="ml-6"
-                        >
-                          <subItem.icon className="h-4 w-4" />
-                          <span>{subItem.title}</span>
-                        </SidebarMenuButton>
-                      ))}
-                    </div>
-                  ) : (
-                    <SidebarMenuButton
-                      onClick={() => handleNavigate(item.url)}
-                      isActive={isActive(item.url)}
-                    >
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </SidebarMenuButton>
-                  )}
-                </SidebarMenuItem>
+                <div key={item.title} className="px-3 py-0.5">
+                  <button
+                    onClick={() => handleNavigate(item.url)}
+                    className={`
+                      group relative flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm transition-all duration-200 ease-out
+                      active:scale-[0.97]
+                      ${isActive(item.url) 
+                        ? "bg-black text-white shadow-lg shadow-black/10" 
+                        : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+                      }
+                    `}
+                  >
+                    {/* Active Indicator (Subtle vertical bar) */}
+                    {isActive(item.url) && (
+                      <div className="absolute left-0 h-5 w-1 rounded-r-full bg-white" />
+                    )}
+
+                    {/* Icon with hover scale effect */}
+                    <item.icon 
+                      className={`h-4 w-4 transition-transform duration-300 group-hover:rotate-3 group-hover:scale-110 
+                        ${isActive(item.url) ? "text-white" : "text-gray-400 group-hover:text-gray-900"}
+                      `} 
+                    />
+
+                    {/* Label with improved tracking */}
+                    <span className={`font-semibold tracking-tight transition-colors ${
+                      isActive(item.url) ? "text-white" : "text-gray-600 group-hover:text-gray-900"
+                    }`}>
+                      {item.title}
+                    </span>
+
+                    {/* Optional: Hover spotlight effect */}
+                    {!isActive(item.url) && (
+                      <div className="absolute inset-0 rounded-xl opacity-0 transition-opacity group-hover:opacity-100" />
+                    )}
+                  </button>
+                </div>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>

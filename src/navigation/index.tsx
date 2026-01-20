@@ -132,7 +132,7 @@ function NavigationContent() {
             <Route path="/login" Component={Login} />
             <Route path="/signup" Component={SignUp} />
             <Route path="/forgot-password" Component={ForgotPassword} />
-            <Route path="/resetpassword" Component={ResetPassword} />
+            <Route path="/reset-password" Component={ResetPassword} />
             <Route path="/verify-email" Component={VerifyOtp} />
             <Route path="/accept-invite" Component={AcceptInvite} />
 
