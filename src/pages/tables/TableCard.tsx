@@ -117,4 +117,4 @@ export const TableCard: React.FC<TableCardProps> = ({ table }) => {
       </GenericSheet>
     </div>
   );
-}
+};

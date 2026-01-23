@@ -67,7 +67,7 @@ export function TablesPage() {
       setWaiterAssignmentReqLoading(false);
     }
   };
-/*
+  /*
 
 
   const [waiters, setWaiters] = useState<Staff[]>([]);

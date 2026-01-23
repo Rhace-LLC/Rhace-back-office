@@ -179,7 +179,9 @@ export function SignUp() {
       const response = await registerRestaurant(formData);
       console.log("Response:", response);
       toast.success("Restaurant Registered successfully!");
-      navigate(`/verify_email?email=${encodeURIComponent(formData.owner_email)}`);
+      navigate(
+        `/verify_email?email=${encodeURIComponent(formData.owner_email)}`
+      );
     } catch (error: any) {
       const message = parseError(error) || "Something went wrong!";
       toast.error(message);
@@ -259,10 +261,14 @@ export function SignUp() {
                 <input
                   className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   value={formData.owner_first_name}
-                  onChange={(e) => handleChange("owner_first_name", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("owner_first_name", e.target.value)
+                  }
                 />
                 {errors.owner_first_name && (
-                  <p className="text-sm text-red-500">{errors.owner_first_name}</p>
+                  <p className="text-sm text-red-500">
+                    {errors.owner_first_name}
+                  </p>
                 )}
               </div>
 
@@ -273,10 +279,14 @@ export function SignUp() {
                 <input
                   className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   value={formData.owner_last_name}
-                  onChange={(e) => handleChange("owner_last_name", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("owner_last_name", e.target.value)
+                  }
                 />
                 {errors.owner_last_name && (
-                  <p className="text-sm text-red-500">{errors.owner_last_name}</p>
+                  <p className="text-sm text-red-500">
+                    {errors.owner_last_name}
+                  </p>
                 )}
               </div>
             </div>

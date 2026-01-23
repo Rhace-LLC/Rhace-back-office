@@ -12,7 +12,7 @@ import { Table as TableItem } from "@/api-services/tableService";
 import { RefreshCcw, Table, X, Check, Utensils } from "lucide-react";
 import { useLoading } from "@/contexts/LoadingContext";
 import {
-//  getWaitersTableAssignments,
+  //  getWaitersTableAssignments,
   updateTable,
 } from "@/api-services/menu.service";
 import { toast } from "sonner";
@@ -74,7 +74,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
     const rid = encodeURIComponent(r.id);
     const rName = encodeURIComponent(r.name);
     const tno = encodeURIComponent(table.table_number);
-    const accessCode = encodeURIComponent(table.access_code || "")
+    const accessCode = encodeURIComponent(table.access_code || "");
 
     return `https://bookies-customer.onrender.com?tid=${tid}&rid=${rid}&r=${rName}&tno=${tno}&access_code=${accessCode}`;
   });
@@ -205,7 +205,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
       setWaiterReqLoading(false);
     }
   };
-/*
+  /*
 
   const [waiterAssignmentReqLoading, setWaiterAssignmentReqLoading] =
     useState(false);
@@ -298,7 +298,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
             </Button>
           </div>
           <div className="my-5 border-t border-gray-300" />
-          <div className="w-full hidden">
+          <div className="hidden w-full">
             {/* Header */}
             <div className="mb-6">
               <h3 className="text-xl font-semibold tracking-tight text-[#262626]">

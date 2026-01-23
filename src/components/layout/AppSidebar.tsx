@@ -227,14 +227,11 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
                 <div key={item.title} className="px-3 py-0.5">
                   <button
                     onClick={() => handleNavigate(item.url)}
-                    className={`
-                      group relative flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm transition-all duration-200 ease-out
-                      active:scale-[0.97]
-                      ${isActive(item.url) 
-                        ? "bg-black text-white shadow-lg shadow-black/10" 
+                    className={`group relative flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm transition-all duration-200 ease-out active:scale-[0.97] ${
+                      isActive(item.url)
+                        ? "bg-black text-white shadow-lg shadow-black/10"
                         : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
-                      }
-                    `}
+                    } `}
                   >
                     {/* Active Indicator (Subtle vertical bar) */}
                     {isActive(item.url) && (
@@ -242,16 +239,18 @@ export function AppSidebar({ isOpen, onNavigate }: AppSidebarProps) {
                     )}
 
                     {/* Icon with hover scale effect */}
-                    <item.icon 
-                      className={`h-4 w-4 transition-transform duration-300 group-hover:rotate-3 group-hover:scale-110 
-                        ${isActive(item.url) ? "text-white" : "text-gray-400 group-hover:text-gray-900"}
-                      `} 
+                    <item.icon
+                      className={`h-4 w-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 ${isActive(item.url) ? "text-white" : "text-gray-400 group-hover:text-gray-900"} `}
                     />
 
                     {/* Label with improved tracking */}
-                    <span className={`font-semibold tracking-tight transition-colors ${
-                      isActive(item.url) ? "text-white" : "text-gray-600 group-hover:text-gray-900"
-                    }`}>
+                    <span
+                      className={`font-semibold tracking-tight transition-colors ${
+                        isActive(item.url)
+                          ? "text-white"
+                          : "text-gray-600 group-hover:text-gray-900"
+                      }`}
+                    >
                       {item.title}
                     </span>
 
