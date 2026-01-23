@@ -180,7 +180,7 @@ export function SignUp() {
       console.log("Response:", response);
       toast.success("Restaurant Registered successfully!");
       navigate(
-        `/verify_email?email=${encodeURIComponent(formData.owner_email)}`
+        `/verify-email?email=${encodeURIComponent(formData.owner_email)}`
       );
     } catch (error: any) {
       const message = parseError(error) || "Something went wrong!";

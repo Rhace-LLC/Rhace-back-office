@@ -46,6 +46,7 @@ export type OrderStatus =
   | "received"
   | "preparing"
   | "ready"
+  | "served"
   | "completed"
   | "cancelled"
   | "delivered";

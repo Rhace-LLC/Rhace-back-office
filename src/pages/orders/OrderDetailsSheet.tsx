@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Order } from "./types/order";
+import { Order, OrderStatus } from "./types/order";
 import { Staff } from "../../api-services/staffService";
 import { Table } from "../../api-services/tableService";
 import { useState, useEffect } from "react";
@@ -34,16 +34,6 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
-// Define OrderStatus with "paid" included
-type OrderStatus =
-  | "paid"
-  | "received"
-  | "preparing"
-  | "ready"
-  | "served" // Added served status
-  | "completed"
-  | "cancelled"
-  | "delivered";
 
 // Define proper types for order items based on your data structure
 interface MenuItem {
@@ -100,7 +90,7 @@ interface OrderDetailsSheetProps {
   order: Order | null;
   isOpen: boolean;
   onClose: () => void;
-  onStatusChange: (orderId: string, status: OrderStatus) => void;
+  onStatusChange: (orderId: string, status: OrderStatus) => Promise<void>;
   onAssignTable: (orderId: string, tableId: string) => void;
   onAssignWaiter: (orderId: string, waiterId: string) => void;
   staff: Staff[];
@@ -787,7 +777,7 @@ export function OrderDetailsSheet({
                 <Label className="text-muted-foreground text-sm font-medium">
                   Created
                 </Label>
-                <p className="text-base text-sm">{getCreatedAt()}</p>
+                <p className="text-base">{getCreatedAt()}</p>
               </div>
 
               {/* Current Assignments */}

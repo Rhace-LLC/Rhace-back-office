@@ -31,6 +31,6 @@
   "include": [
     "src",
     "generic_page.tsx",
-    "../bookies-customer/src/pages/home/useSelectedRestaurant.ts"
+    "../bookies-customer/src/pages/home/useRestaurant.ts"
   ]
 }

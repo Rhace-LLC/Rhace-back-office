@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Filter, RefreshCw } from "lucide-react";
-import { Order, UpdateOrderData } from "./types/order";
+import { Order, OrderStatus, UpdateOrderData } from "./types/order";
 import { OrdersStats } from "./OrdersStats";
 import { OrdersTable } from "./OrdersTable";
 import { OrderDetailsSheet } from "./OrderDetailsSheet";
@@ -28,15 +28,6 @@ import {
 } from "../../api-services/orderService";
 import { getActiveWaiters, Staff } from "../../api-services/staffService";
 import { getAvailableTables, Table } from "../../api-services/tableService";
-
-type OrderStatus =
-  | "paid"
-  | "received"
-  | "preparing"
-  | "ready"
-  | "completed"
-  | "cancelled"
-  | "delivered";
 
 const statusOptions = [
   "All",
