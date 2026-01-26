@@ -36,10 +36,7 @@ export function MenuManagement() {
   const auth = useAuth();
   const dispatch = useDispatch();
 
-  const totalItems = 100;
   const [page, setPage] = useState(1);
-  const page_size = 8;
-  const total_pages = Math.ceil(totalItems / page_size);
 
   // Modals
   const [addDishOpen, setAddDishOpen] = useState(false);
@@ -222,7 +219,7 @@ export function MenuManagement() {
       {/* Pagination */}
       <Pagination
         currentPage={page}
-        totalPages={total_pages}
+        totalPages={page+1}
         onPageChange={(p) => setPage(p)}
       />
     </div>

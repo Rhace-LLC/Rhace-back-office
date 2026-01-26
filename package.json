@@ -33,6 +33,7 @@
     "date-fns": "^4.1.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.544.0",
+    "mapbox-gl": "^3.18.1",
     "moment": "^2.30.1",
     "motion": "^12.23.22",
     "react": "^19.1.1",

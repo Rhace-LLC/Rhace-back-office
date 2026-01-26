@@ -37,10 +37,9 @@ const ManageInventoryPage: React.FC = () => {
     "normal"
   );
 
-  const [totalItems, setTotalItems] = useState(0);
   const [page, setPage] = useState(1);
   const page_size = 8;
-  const total_pages = Math.ceil(totalItems / page_size);
+  
 
   const [fetchLoading, setFetchLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
@@ -73,7 +72,7 @@ const ManageInventoryPage: React.FC = () => {
       setFetchLoading(true);
       setFetchError("");
       const res = await getInventoryItems({ page, page_size }, auth.token);
-      setTotalItems(50);
+
       setDataDisposable((prev) => {
         const existing = prev[String(page)] ?? [];
         const combined = [...existing, ...res.results];
@@ -119,8 +118,6 @@ const ManageInventoryPage: React.FC = () => {
       fetchDataWithFiltersAndSearch();
     } else handleBack();
   }, [filters.category, filters.searchTerm]);
-
-  useEffect(() => setTotalItems(dataStore?.data_total || 0), [dataStore]);
 
   return (
     <div className="space-y-6 p-5 md:mt-0">
@@ -192,7 +189,7 @@ const ManageInventoryPage: React.FC = () => {
       {/* Pagination */}
       <Pagination
         currentPage={page}
-        totalPages={total_pages}
+        totalPages={page + 1}
         onPageChange={(p) => setPage(p)}
       />
 

@@ -21,10 +21,7 @@ export type ReservationStatus =
 export const ManageReservation: React.FC = () => {
   const auth = useAuth();
   const dispatch = useDispatch();
-
-  const [viewState, setViewState] = useState<"normal" | "search" | "filter">(
-    "normal"
-  );
+  const viewState = "normal"
   const [page, setPage] = useState(1);
   const page_size = 10;
   //const [totalItems, setTotalItems] = useState(0);
@@ -32,9 +29,6 @@ export const ManageReservation: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const [filters, setFilters] = useState<any>({ searchTerm: "", status: "" });
-  console.log("SetFilters", setFilters);
 
   const reservationsState = useSelector((s: RootState) => s.reservations);
   const [dataDisposable, setDataDisposable] = useState<
@@ -52,7 +46,6 @@ export const ManageReservation: React.FC = () => {
       const res = await getReservations(auth.token, {
         page,
         page_size,
-        ...filters,
       });
       dispatch(updateReservationData({ key: String(page), data: res }));
     } catch (err) {
@@ -69,7 +62,6 @@ export const ManageReservation: React.FC = () => {
       const res = await getReservations(auth.token, {
         page,
         page_size,
-        ...filters,
       });
       setDataDisposable((prev) => ({ ...prev, [String(page)]: res }));
     } catch (err) {
@@ -89,35 +81,13 @@ export const ManageReservation: React.FC = () => {
   }, [page, viewState]);
 
   useEffect(() => {
-    if (viewState === "filter" || viewState === "search") {
+    if (!viewState) {
       const pageData = dataDisposable[String(page)];
       if (!pageData) fetchAllReservationsWithFilters();
     }
-  }, [page, viewState, dataDisposable, filters]);
+  }, [page, viewState, dataDisposable]);
 
   useEffect(() => setPage(1), [viewState]);
-
-  useEffect(() => {
-    if (filters.status || filters.searchTerm.trim()) {
-      setPage(1);
-      setViewState("filter");
-      setDataDisposable({});
-      fetchAllReservationsWithFilters();
-    } else {
-      setViewState("normal");
-      setDataDisposable({});
-    }
-  }, [filters.status]);
-
-  // ========== Handlers ==========
-  const onSearch = () => {
-    setPage(1);
-    setDataDisposable({});
-    setViewState("search");
-    fetchAllReservationsWithFilters();
-  };
-
-  console.log({ onSearch });
 
   return (
     <>

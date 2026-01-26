@@ -31,6 +31,7 @@ import AcceptInvite from "@/pages/AcceptInvite";
 import { ManageReservation } from "@/pages/reservations/re";
 import BillingPage from "@/pages/subscription";
 import { WalletAndAccount } from "@/pages/wallet&account";
+import { MapLocationProvider } from "@/contexts/MapLocationContext";
 
 export interface User {
   id: string;
@@ -100,8 +101,10 @@ function Navigation(): React.JSX.Element {
   return (
     <Router>
       <ScrollToTop />
-      <DashboardLayout>
-        <NavigationContent />
+      <DashboardLayout>        
+        <MapLocationProvider>
+            <NavigationContent />
+        </MapLocationProvider>
       </DashboardLayout>
     </Router>
   );
