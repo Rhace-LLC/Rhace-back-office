@@ -34,7 +34,6 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
-
 // Define proper types for order items based on your data structure
 interface MenuItem {
   id: string;

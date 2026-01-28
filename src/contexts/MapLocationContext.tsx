@@ -49,11 +49,9 @@ export const MapLocationProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (navigator.permissions) {
-      navigator.permissions
-        .query({ name: "geolocation" })
-        .then((result) => {
-          setPermissionStatus(result.state as PermissionStatus);
-        });
+      navigator.permissions.query({ name: "geolocation" }).then((result) => {
+        setPermissionStatus(result.state as PermissionStatus);
+      });
     }
   }, []);
 

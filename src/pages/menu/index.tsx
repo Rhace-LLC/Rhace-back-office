@@ -219,7 +219,7 @@ export function MenuManagement() {
       {/* Pagination */}
       <Pagination
         currentPage={page}
-        totalPages={page+1}
+        totalPages={page + 1}
         onPageChange={(p) => setPage(p)}
       />
     </div>

@@ -21,7 +21,7 @@ export const PickAddressFromMap = () => {
     null
   );
 
-  console.log("pickedCoords", pickedCoords)
+  console.log("pickedCoords", pickedCoords);
 
   const [address, setAddress] = useState<string | null>(null);
 
@@ -47,9 +47,9 @@ export const PickAddressFromMap = () => {
       zoom: 14,
     });
 
-    const marker = new mapboxgl.Marker().setLngLat(userCoords).addTo(
-      mapRef.current
-    );
+    const marker = new mapboxgl.Marker()
+      .setLngLat(userCoords)
+      .addTo(mapRef.current);
 
     mapRef.current.on("click", async (e: any) => {
       const { lng, lat } = e.lngLat;
@@ -93,10 +93,7 @@ export const PickAddressFromMap = () => {
   // ✅ All good
   return (
     <div style={{ height: "100vh", position: "relative" }}>
-      <div
-        ref={mapContainerRef}
-        style={{ height: "100%", width: "100%" }}
-      />
+      <div ref={mapContainerRef} style={{ height: "100%", width: "100%" }} />
 
       {address && (
         <div

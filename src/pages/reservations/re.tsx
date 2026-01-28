@@ -21,7 +21,7 @@ export type ReservationStatus =
 export const ManageReservation: React.FC = () => {
   const auth = useAuth();
   const dispatch = useDispatch();
-  const viewState = "normal"
+  const viewState = "normal";
   const [page, setPage] = useState(1);
   const page_size = 10;
   //const [totalItems, setTotalItems] = useState(0);

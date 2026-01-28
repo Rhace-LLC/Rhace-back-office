@@ -39,7 +39,6 @@ const ManageInventoryPage: React.FC = () => {
 
   const [page, setPage] = useState(1);
   const page_size = 8;
-  
 
   const [fetchLoading, setFetchLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");

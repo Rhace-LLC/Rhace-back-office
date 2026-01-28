@@ -101,9 +101,9 @@ function Navigation(): React.JSX.Element {
   return (
     <Router>
       <ScrollToTop />
-      <DashboardLayout>        
+      <DashboardLayout>
         <MapLocationProvider>
-            <NavigationContent />
+          <NavigationContent />
         </MapLocationProvider>
       </DashboardLayout>
     </Router>

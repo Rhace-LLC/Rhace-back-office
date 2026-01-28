@@ -20,6 +20,9 @@ import {
   Package,
   Users,
   CalendarDays,
+  Store,
+  CreditCard,
+  Wallet,
 } from "lucide-react";
 
 import { useLocation, useNavigate } from "react-router-dom";
@@ -100,19 +103,18 @@ export function useRoleBasedMenu(): MenuItem[] {
       {
         title: "Restaurant Profile",
         url: "/myrestaurant",
-        icon: Users,
+        icon: Store,
       },
       {
         title: "Subscriptions",
         url: "/billings-and-subscriptions",
-        icon: Users,
+        icon: CreditCard,
       },
       {
         title: "Payment Account",
         url: "/wallet-and-account",
-        icon: Users,
+        icon: Wallet,
       },
-
       ...baseMenu.slice(2), // Notifications, Profile
     ];
   }

@@ -203,7 +203,7 @@ export default function EditRestaurantProfile({
           Ensure your customers can easily find and reach you.
         </p>
 
-         {/*   <PickAddressFromMap />
+        {/*   <PickAddressFromMap />
        Full Address */}
         <div className="space-y-1">
           <label className="text-sm font-semibold tracking-wide text-gray-800">
