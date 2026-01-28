@@ -12,10 +12,7 @@ import { useCategoryData } from "./useCategoryData";
 const CategoryPage: React.FC = () => {
   const [addSheetOpen, setAddSheetOpen] = useState<boolean>(false);
 
-  const [totalItems, setTotalItems] = useState(0);
   const [page, setPage] = useState(1);
-  const page_size = 8;
-  const total_pages = Math.ceil(totalItems / page_size);
 
   const dataStore = useSelector((state: RootState) => state.category);
   const allData = dataStore.data;
@@ -41,10 +38,7 @@ const CategoryPage: React.FC = () => {
     }
   }, [page, allData]);
 
-  useEffect(() => {
-    setTotalItems(dataStore.data_total);
-  }, [dataStore]);
-
+  
   return (
     <div className="space-y-6 p-5 md:mt-0">
       <div className="mx-auto space-y-6">
@@ -94,7 +88,7 @@ const CategoryPage: React.FC = () => {
       {/* Pagination */}
       <Pagination
         currentPage={page}
-        totalPages={total_pages}
+        totalPages={page+1}
         onPageChange={(p) => setPage(p)}
       />
 
