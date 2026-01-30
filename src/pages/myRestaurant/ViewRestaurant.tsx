@@ -206,8 +206,7 @@ export default function ViewMyRestaurant({
                 <div>
                   <strong className="block text-gray-800">Address</strong>
                   <span>
-                    {display(profile.address)}, {display(profile.city)},{" "}
-                    {display(profile.state)}
+                    {display(profile.address)}
                   </span>
                 </div>
               </div>

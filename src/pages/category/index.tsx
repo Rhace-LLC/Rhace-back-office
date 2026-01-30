@@ -38,7 +38,6 @@ const CategoryPage: React.FC = () => {
     }
   }, [page, allData]);
 
-  
   return (
     <div className="space-y-6 p-5 md:mt-0">
       <div className="mx-auto space-y-6">
@@ -88,7 +87,7 @@ const CategoryPage: React.FC = () => {
       {/* Pagination */}
       <Pagination
         currentPage={page}
-        totalPages={page+1}
+        totalPages={page + 1}
         onPageChange={(p) => setPage(p)}
       />
 

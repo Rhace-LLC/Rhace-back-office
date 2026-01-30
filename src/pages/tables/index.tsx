@@ -18,6 +18,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 //import { getStaffByRole, Staff } from "@/api-services/staffService";
 import { parseError } from "@/api-services/utils/parseError";
+import { WaiterAssignmentView } from "./WaiterAssignmentView";
 
 export function TablesPage() {
   const auth = useAuth();
@@ -46,6 +47,10 @@ export function TablesPage() {
     string | null
   >(null);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
+
+  const userAssignment = assignments.find(
+    (assignment) => assignment.waiter.id === auth?.user?.id
+  );
 
   const fetchWaiterAssignment = async () => {
     setWaiterAssignmentReqLoading(true);
@@ -128,26 +133,39 @@ export function TablesPage() {
 
   return (
     <div className="space-y-6 p-5 md:mt-0">
+      {auth.isWaiter && (
+        <>
+          <WaiterAssignmentView
+            onRefresh={fetchWaiterAssignment}
+            assignment={userAssignment}
+          />
+        </>
+      )}
+
       {!isWaiterManagement && (
         <>
-          <div className="mb-6 flex flex-col gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm text-gray-700">
-                Manage your daily waiter assignments to tables. Assign waiters
-                efficiently and keep track of service flow.
-              </p>
-            </div>
-            <div className="flex-shrink-0">
-              <button
-                onClick={() => {
-                  setIsWaiterManagement(true);
-                }}
-                className="cursor-pointer rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
-              >
-                Go to Waiter Assignment
-              </button>
-            </div>
-          </div>
+          {auth.isOwner && (
+            <>
+              <div className="mb-6 flex flex-col gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm text-gray-700">
+                    Manage your daily waiter assignments to tables. Assign
+                    waiters efficiently and keep track of service flow.
+                  </p>
+                </div>
+                <div className="flex-shrink-0">
+                  <button
+                    onClick={() => {
+                      setIsWaiterManagement(true);
+                    }}
+                    className="cursor-pointer rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+                  >
+                    Go to Waiter Assignment
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
           <div className="items-center justify-between sm:flex">
             <div>
               <h1 className="text-2xl font-bold tracking-tight">
@@ -202,7 +220,7 @@ export function TablesPage() {
         </>
       )}
 
-      {isWaiterManagement && (
+      {isWaiterManagement && auth.isOwner && (
         <>
           <div className="mb-6 flex flex-col gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between">
             <div>

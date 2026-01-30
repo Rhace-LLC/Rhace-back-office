@@ -2,11 +2,14 @@ import { useState, ChangeEvent, memo } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { X, Calendar, Clock } from "lucide-react"; // Added useful icons
+import { X, Calendar, Clock, Map } from "lucide-react"; // Added useful icons
 import {
   OpeningHour,
   RestaurantProfile,
 } from "@/api-services/restaurantProfile";
+import { PickAddressFromMap } from "./PickAddrFromMap";
+import { cn } from "@/lib/utils";
+import { ReverseGeocodeResult } from "@/utils/geocode";
 //import { PickAddressFromMap } from "./PickAddrFromMap";
 
 interface Props {
@@ -30,6 +33,7 @@ export default function EditRestaurantProfile({
   onEdit,
   onSave,
 }: Props) {
+  const [pickAddrFromMap, setPickAddrFromMap] = useState(false);
   const [form, setForm] = useState<RestaurantProfile>(profile);
   const [logoPreview, setLogoPreview] = useState<string | null>(
     profile.logo_url
@@ -198,13 +202,79 @@ export default function EditRestaurantProfile({
 
       {/* --- SECTION: LOCATION & CONTACT --- */}
       <section className="space-y-6 rounded-xl border border-gray-100 bg-white p-6 shadow-lg md:p-8">
-        <h3 className="text-xl font-bold text-gray-800">Location & Contact</h3>
-        <p className="text-sm text-gray-500">
-          Ensure your customers can easily find and reach you.
-        </p>
+        {/* --- SECTION: LOCATION & CONTACT --- */}
+        <section className="space-y-8 border-t border-gray-50 pt-10">
+          {/* HEADER: CLEAN HIERARCHY */}
+          <div className="flex justify-between">
+            <div className="flex flex-col gap-1">
+              <h3 className="text-[22px] font-bold tracking-tight text-gray-900">
+                Location & Contact
+              </h3>
+              <p className="max-w-md text-[14px] leading-relaxed font-medium text-gray-400">
+                Define your physical presence so customers can navigate to you
+                effortlessly.
+              </p>
+            </div>
 
-        {/*   <PickAddressFromMap />
-       Full Address */}
+            {/* MINIMALIST MODE SWITCHER */}
+            <button
+              type="button"
+              onClick={() => setPickAddrFromMap((prev) => !prev)}
+              className={cn(
+                "group flex items-center gap-2 rounded-full px-5 transition-all duration-500 ease-out active:scale-95",
+                pickAddrFromMap
+                  ? "bg-black text-white shadow-xl shadow-black/10"
+                  : "bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900"
+              )}
+            >
+              {/* ICON BOX: Transitions color and rotation */}
+              <div
+                className={cn(
+                  "flex h-5 w-5 items-center justify-center rounded-full transition-all duration-500",
+                  pickAddrFromMap
+                    ? "rotate-0 bg-white/20"
+                    : "-rotate-90 bg-gray-200"
+                )}
+              >
+                {pickAddrFromMap ? (
+                  <X size={12} strokeWidth={3} />
+                ) : (
+                  <Map size={12} strokeWidth={3} />
+                )}
+              </div>
+
+              {/* TEXT LABEL: Changes based on state */}
+              <span className="text-[13px] font-bold tracking-tight">
+                {pickAddrFromMap ? "Close Map View" : "Choose On Map"}
+              </span>
+
+              {/* STATUS DOT: Only visible when map is inactive to prompt action */}
+              {!pickAddrFromMap && (
+                <div className="relative ml-1 flex h-2 w-2">
+                  <div className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
+                  <div className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
+                </div>
+              )}
+            </button>
+          </div>
+
+          {/* CONTENT AREA: OVERFLOW CONTROL */}
+          <div className="relative overflow-hidden rounded-[2.5rem] bg-gray-50/50 ring-1 ring-gray-100">
+            {pickAddrFromMap && (
+              <div className="animate-in fade-in zoom-in-95 duration-500">
+                <PickAddressFromMap
+                  onConfirm={(data: ReverseGeocodeResult) => {
+                    updateField("address", data.fullAddress);
+                    updateField("city", data.city);
+                    updateField("state", data.state);
+                    updateField("country", data.country);
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        </section>
+
         <div className="space-y-1">
           <label className="text-sm font-semibold tracking-wide text-gray-800">
             Full Address
@@ -480,6 +550,8 @@ export default function EditRestaurantProfile({
           Save Changes
         </Button>
       </div>
+
+      <div className="py-[50px]" />
     </div>
   );
 }
