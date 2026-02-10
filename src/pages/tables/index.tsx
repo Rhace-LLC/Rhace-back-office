@@ -257,8 +257,6 @@ export function TablesPage() {
 
             {/* Action Buttons */}
             <div className="flex flex-shrink-0 gap-2">
-              {/* Setup for Today */}
-              {/* Setup for Today */}
               <button
                 onClick={setUpForToday}
                 disabled={setupLoading || assignments.length > 0}
@@ -344,9 +342,6 @@ export function TablesPage() {
                       <th className="px-4 py-2">Email</th>
                       <th className="px-4 py-2">Phone</th>
                       <th className="px-4 py-2">Assigned Tables</th>
-                      <th className="px-4 py-2">Table Count</th>
-                      <th className="px-4 py-2">Notes</th>
-                      <th className="px-4 py-2">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -376,24 +371,8 @@ export function TablesPage() {
                           </td>
                           <td className="px-4 py-2 text-gray-600">
                             {assignment.tables
-                              .map((t) => t.table_number)
+                              .map((t) => `Table ${t.table_number}`)
                               .join(", ")}
-                          </td>
-                          <td className="px-4 py-2 text-gray-600">
-                            {assignment.table_count}
-                          </td>
-                          <td className="px-4 py-2 text-gray-600">
-                            {assignment.notes || "-"}
-                          </td>
-                          <td className="px-4 py-2">
-                            <button
-                              onClick={() => {
-                                // logic to change assigned table for this waiter
-                              }}
-                              className="rounded-md bg-blue-600 px-3 py-1 text-sm font-medium text-white transition hover:bg-blue-700"
-                            >
-                              Change Assigned Table
-                            </button>
                           </td>
                         </tr>
                       ))

@@ -369,23 +369,6 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
           </div>
         </TabsContent>
 
-        {/* --- ORDER TAB --- */}
-        <TabsContent
-          value="order"
-          className="rounded-lg border border-gray-200 bg-white p-4"
-        >
-          <p className="text-gray-700">
-            Display current orders for this table.
-          </p>
-        </TabsContent>
-
-        {/* --- RESERVATION TAB --- */}
-        <TabsContent value="reservation" className="rounded-lg p-4">
-          <p className="text-gray-700">
-            Display current reservation for this table.
-          </p>
-        </TabsContent>
-
         {/* --- QR TAB --- */}
         <TabsContent
           value="qr"
@@ -394,6 +377,9 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
           <h2 className="text-center text-lg font-semibold">Table QR Code</h2>
           <p className="text-center text-sm text-gray-600">
             Paste this on dining table {table.table_number}.
+          </p>
+          <p className="text-center text-sm text-gray-600">
+            {qrValue}
           </p>
 
           <div className="flex flex-col items-center space-y-4">
