@@ -15,7 +15,7 @@ const handleResponse = (response: AxiosResponse) => response.data;
 
 const handleError = (error: AxiosError) => {
   if (error.response) return Promise.reject(error.response.data);
-  return Promise.reject({ message: "Network error or server not reachable" });
-};
+  return Promise.reject({ message: "Network error or server not reachable" })
+}
 
-bookiesAxiosInstance.interceptors.response.use(handleResponse, handleError);
+bookiesAxiosInstance.interceptors.response.use(handleResponse, handleError)
