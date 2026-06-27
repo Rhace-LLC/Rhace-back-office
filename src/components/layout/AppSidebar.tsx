@@ -19,7 +19,7 @@ import {
   Layers3,
   Package,
   Users,
-  CalendarDays,
+  //CalendarDays,
   Store,
   CreditCard,
   Wallet,
@@ -69,12 +69,14 @@ export function useRoleBasedMenu(): MenuItem[] {
   if (auth.isAdmin || auth.isOwner) {
     return [
       ...baseMenu.slice(0, 2), // Dashboard, Orders
+/*
 
       {
         title: "Reservations",
         url: "/reservations",
         icon: CalendarDays,
       },
+*/
       {
         title: "Tables",
         url: "/tables",
