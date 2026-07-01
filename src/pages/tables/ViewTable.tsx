@@ -63,6 +63,8 @@ interface ViewTableProps {
   table: TableItem;
 }
 
+const CUSTOMER_URL = import.meta.env.VITE_CUSTOMER_SITE_URL || "https://customer.rhace.co";
+
 export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
   const auth = useAuth();
   const dispatch = useDispatch();
@@ -76,7 +78,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
     const tno = encodeURIComponent(table.table_number);
     const accessCode = encodeURIComponent(table.access_code || "");
 
-    return `https://bookies-customer.onrender.com?tid=${tid}&rid=${rid}&r=${rName}&tno=${tno}&access_code=${accessCode}`;
+    return `${CUSTOMER_URL}?tid=${tid}&rid=${rid}&r=${rName}&tno=${tno}&access_code=${accessCode}`;
   });
 
   const [loading, setLoading] = useState(false);
