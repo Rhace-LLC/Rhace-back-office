@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { inviteStaff } from "@/api-services/auth.service";
 import { UserRole } from "@/contexts/AuthContext";
+import { parseError } from "@/api-services/utils/parseError";
 
 interface Props {
   onSubmit: () => void;
@@ -68,9 +69,8 @@ const InviteEmployeeForm: React.FC<Props> = ({ onSubmit }) => {
       }
     } catch (error: any) {
       console.error(error);
-      toast.error(
-        error?.response?.data?.message || "Failed to generate invite link"
-      );
+      const message = parseError(error)
+      toast.error(message || "Failed to generate invite link");
     } finally {
       setLoading(false);
     }
