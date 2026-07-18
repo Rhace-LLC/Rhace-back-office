@@ -6,6 +6,7 @@ import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Users, Clock, DollarSign } from "lucide-react";
 import { RootState } from "@/store/store";
 import { updateStatsWaiterDashboard } from "@/store/dashboard.slice";
+import formatPrice from "@/utils/formatPrice";
 
 export function StatsWaiterDashboard() {
   const dispatch = useDispatch();
@@ -110,7 +111,7 @@ export function StatsWaiterDashboard() {
           <DollarSign className="text-muted-foreground h-4 w-4" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl">${stats.todaysTips.amount}</div>
+          <div className="text-2xl">{formatPrice(stats.todaysTips.amount)}</div>
           <p className="text-muted-foreground text-xs">
             +{stats.todaysTips.percentChange}% from yesterday
           </p>

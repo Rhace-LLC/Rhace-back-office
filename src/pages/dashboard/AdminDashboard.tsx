@@ -42,6 +42,7 @@ import {
   DashboardData,
   DashboardStats,
 } from "../../api-services/dashboardService";
+import formatPrice from "@/utils/formatPrice";
 
 // Empty data structure
 const emptyData: DashboardData = {
@@ -658,7 +659,7 @@ export const AdminDashboard = () => {
             <BarChart data={getWeeklyRevenueData()}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="day" />
-              <YAxis tickFormatter={(value) => `₦${value}`} />
+              <YAxis tickFormatter={(value) => formatPrice(value)} />
               <Tooltip content={renderBarTooltip} />
               <Bar
                 dataKey="revenue"

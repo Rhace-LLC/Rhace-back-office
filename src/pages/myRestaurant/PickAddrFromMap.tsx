@@ -170,7 +170,7 @@ export const PickAddressFromMap = ({
 };
 
 const Centered = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex h-screen w-full flex-col items-center justify-center bg-white p-8">
+  <div className="flex w-full flex-col items-center justify-center bg-white p-8">
     {children}
   </div>
 );

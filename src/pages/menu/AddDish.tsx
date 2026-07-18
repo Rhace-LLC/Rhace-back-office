@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useLoading } from "@/contexts/LoadingContext";
-import { createMenuItem } from "@/api-services/menu.service";
+import { createMenuItem, createCategory } from "@/api-services/menu.service";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { parseError } from "@/api-services/utils/parseError";
@@ -15,6 +15,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useInventory } from "../inventory/useInventory";
 import { appendMenuItemToPage } from "@/store/menu.slice";
+import { appendCategoryToPage } from "@/store/category.slice";
+import { createInventoryItem } from "@/api-services/inventory.service";
+import { appendInventoryItem } from "@/store/inventory.slice";
 
 interface Ingredient {
   inventory_item: string;
@@ -60,6 +63,79 @@ export const AddDish: React.FC<{
     inventory_item: "",
     quantity: 1,
   });
+
+  // ---------------- INLINE ADD STATES ----------------
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryDesc, setNewCategoryDesc] = useState("");
+  const [addingCategory, setAddingCategory] = useState(false);
+
+  const [showAddInventory, setShowAddInventory] = useState(false);
+  const [newInvName, setNewInvName] = useState("");
+  const [newInvQty, setNewInvQty] = useState(0);
+  const [newInvUnit, setNewInvUnit] = useState("");
+  const [newInvThreshold, setNewInvThreshold] = useState(0);
+  const [newInvAllergen, setNewInvAllergen] = useState(false);
+  const [addingInventory, setAddingInventory] = useState(false);
+
+  // ---------------- INLINE ADD HANDLERS ----------------
+  const handleAddCategory = async () => {
+    if (!newCategoryName.trim()) {
+      toast.error("Category name is required.");
+      return;
+    }
+    setAddingCategory(true);
+    try {
+      const formData = new FormData();
+      formData.append("name", newCategoryName.trim());
+      formData.append("description", newCategoryDesc.trim());
+      const res = await createCategory(
+        auth.restaurants[0].id,
+        formData,
+        auth.token
+      );
+      dispatch(appendCategoryToPage({ key: "1", item: res }));
+      setDishForm((prev) => ({ ...prev, category_id: String(res.id) }));
+      toast.success("Category added!");
+      setShowAddCategory(false);
+      setNewCategoryName("");
+      setNewCategoryDesc("");
+    } catch (err: any) {
+      toast.error(parseError(err) || "Failed to add category.");
+    } finally {
+      setAddingCategory(false);
+    }
+  };
+
+  const handleAddInventory = async () => {
+    if (!newInvName.trim() || !newInvUnit.trim()) {
+      toast.error("Item name and unit are required.");
+      return;
+    }
+    setAddingInventory(true);
+    try {
+      const payload = {
+        name: newInvName.trim(),
+        is_allergen: newInvAllergen,
+        unit: newInvUnit.trim(),
+        threshold: newInvThreshold,
+        restaurant: auth.restaurants[0].id,
+      };
+      const newItem = await createInventoryItem(payload, auth.token);
+      dispatch(appendInventoryItem({ key: "1", item: newItem }));
+      toast.success("Inventory item added!");
+      setShowAddInventory(false);
+      setNewInvName("");
+      setNewInvQty(0);
+      setNewInvUnit("");
+      setNewInvThreshold(0);
+      setNewInvAllergen(false);
+    } catch (err: any) {
+      toast.error(parseError(err) || "Failed to add inventory item.");
+    } finally {
+      setAddingInventory(false);
+    }
+  };
 
   // ---------------- IMAGE HANDLING ----------------
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -249,9 +325,54 @@ export const AddDish: React.FC<{
 
       {/* CATEGORY */}
       <div>
-        {/* Category */}
         <div className="space-y-2">
-          <Label htmlFor="category">Category</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="category">Category</Label>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowAddCategory(!showAddCategory)}
+              className="text-blue-600 hover:text-blue-800"
+            >
+              + Add Category
+            </Button>
+          </div>
+
+          {showAddCategory && (
+            <div className="rounded-lg border bg-gray-50 p-3 space-y-2">
+              <Input
+                placeholder="Category name"
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+              />
+              <Input
+                placeholder="Description (optional)"
+                value={newCategoryDesc}
+                onChange={(e) => setNewCategoryDesc(e.target.value)}
+              />
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={handleAddCategory}
+                  disabled={addingCategory}
+                >
+                  {addingCategory ? "Saving..." : "Save"}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setShowAddCategory(false);
+                    setNewCategoryName("");
+                    setNewCategoryDesc("");
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
 
           {fetchCategoriesError && (
             <div className="flex flex-col items-start gap-2 text-red-600">
@@ -266,33 +387,28 @@ export const AddDish: React.FC<{
             !fetchCategoriesLoading &&
             allDataCategory.length === 0 && (
               <div className="flex flex-col items-start gap-2 text-gray-600">
-                <p>No categories found.</p>
-                <Button size="sm" variant="outline" onClick={fetchCategories}>
-                  Reload Categories
-                </Button>
+                <p>No categories found. Add one above.</p>
               </div>
             )}
 
-          {!fetchCategoriesError && allDataCategory.length > 0 && (
-            <select
-              id="category"
-              value={dishForm.category_id}
-              onChange={(e) =>
-                setDishForm((prev) => ({
-                  ...prev,
-                  category_id: e.target.value,
-                }))
-              }
-              className="w-full rounded-md border p-2"
-            >
-              <option value="">Select a category</option>
-              {allDataCategory.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-          )}
+          <select
+            id="category"
+            value={dishForm.category_id}
+            onChange={(e) =>
+              setDishForm((prev) => ({
+                ...prev,
+                category_id: e.target.value,
+              }))
+            }
+            className="w-full rounded-md border p-2"
+          >
+            <option value="">Select a category</option>
+            {allDataCategory.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
         </div>
         {validationErrors.category_id && (
           <p className="mt-1 text-xs text-red-600">
@@ -303,9 +419,92 @@ export const AddDish: React.FC<{
 
       {/* INGREDIENTS */}
       <div className="space-y-3">
-        {/* Ingredients */}
         <div className="space-y-4">
-          <Label>Ingredients</Label>
+          <div className="flex items-center justify-between">
+            <Label>Ingredients</Label>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowAddInventory(!showAddInventory)}
+              className="text-blue-600 hover:text-blue-800"
+            >
+              + Add Inventory Item
+            </Button>
+          </div>
+
+          {showAddInventory && (
+            <div className="rounded-lg border bg-gray-50 p-3 space-y-3">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600">Item Name</label>
+                <Input
+                  placeholder="e.g. Chicken breast"
+                  value={newInvName}
+                  onChange={(e) => setNewInvName(e.target.value)}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-600">Quantity</label>
+                  <Input
+                    type="number"
+                    placeholder="0"
+                    value={newInvQty}
+                    onChange={(e) => setNewInvQty(Number(e.target.value))}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-600">Unit</label>
+                  <Input
+                    placeholder="kg, pcs, litres"
+                    value={newInvUnit}
+                    onChange={(e) => setNewInvUnit(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600">Low Stock Threshold</label>
+                <Input
+                  type="number"
+                  placeholder="Minimum before reorder"
+                  value={newInvThreshold}
+                  onChange={(e) => setNewInvThreshold(Number(e.target.value))}
+                />
+              </div>
+              <label className="flex items-center gap-2 text-sm pt-1">
+                <input
+                  type="checkbox"
+                  checked={newInvAllergen}
+                  onChange={(e) => setNewInvAllergen(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                />
+                <span className="text-xs font-medium text-red-600">Mark as Allergen</span>
+              </label>
+              <div className="flex gap-2 pt-1">
+                <Button
+                  size="sm"
+                  onClick={handleAddInventory}
+                  disabled={addingInventory}
+                >
+                  {addingInventory ? "Saving..." : "Save Item"}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setShowAddInventory(false);
+                    setNewInvName("");
+                    setNewInvQty(0);
+                    setNewInvUnit("");
+                    setNewInvThreshold(0);
+                    setNewInvAllergen(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
 
           {inventoryError && (
             <div className="flex flex-col items-start gap-2 text-red-600">
@@ -318,148 +517,141 @@ export const AddDish: React.FC<{
 
           {!inventoryError &&
             !inventoryLoading &&
-            inventoryData.length === 0 && (
+            inventoryData.length === 0 && !showAddInventory && (
               <div className="flex flex-col items-start gap-2 text-gray-600">
-                <p>No inventory items found.</p>
-                <Button size="sm" variant="outline" onClick={fetchInventory}>
-                  Reload Inventory
-                </Button>
+                <p>No inventory items found. Add one above.</p>
               </div>
             )}
 
-          {!inventoryError && inventoryData.length > 0 && (
-            <>
-              {/* ------------------- SELECTED INGREDIENTS ------------------- */}
-              {dishForm.ingredients_data.length > 0 && (
-                <div className="mb-4 space-y-2">
-                  <p className="font-semibold">Selected Ingredients</p>
+          {/* ------------------- SELECTED INGREDIENTS ------------------- */}
+          {dishForm.ingredients_data.length > 0 && (
+            <div className="mb-4 space-y-2">
+              <p className="font-semibold">Selected Ingredients</p>
 
-                  {dishForm.ingredients_data.map((ing, idx) => {
-                    const itemData = inventoryData.find(
-                      (inv) => String(inv.id) === ing.inventory_item
-                    );
+              {dishForm.ingredients_data.map((ing, idx) => {
+                const itemData = inventoryData.find(
+                  (inv) => String(inv.id) === ing.inventory_item
+                );
 
-                    return (
-                      <div
-                        key={idx}
-                        className="flex items-center justify-between rounded-md border bg-gray-50 p-2"
-                      >
-                        <div className="flex flex-col">
-                          <span className="font-medium">
-                            {itemData ? itemData.name : "Unknown Item"}
-                          </span>
-                          <span className="text-sm text-gray-500">
-                            Qty: {ing.quantity}
-                          </span>
-                        </div>
+                return (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between rounded-md border bg-gray-50 p-2"
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-medium">
+                        {itemData ? itemData.name : "Unknown Item"}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        Qty: {ing.quantity}
+                      </span>
+                    </div>
 
-                        <button
-                          onClick={() =>
-                            setDishForm((prev) => ({
-                              ...prev,
-                              ingredients_data: prev.ingredients_data.filter(
-                                (_, i) => i !== idx
-                              ),
-                            }))
-                          }
-                          className="font-bold text-red-500 hover:text-red-700"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-              {/* ------------------- SELECTED INGREDIENTS (EMPTY STATE) ------------------- */}
-              {dishForm.ingredients_data.length === 0 && (
-                <div className="mb-4 rounded-md bg-gray-100 p-4 text-center text-sm text-gray-600">
-                  <p className="font-medium">No ingredients added yet.</p>
-                  <p className="mt-1">
-                    Use the form below to add ingredients to this dish.
-                  </p>
-                </div>
-              )}
-
-              {/* ------------------- ADD INGREDIENT SECTION ------------------- */}
-              <div
-                className={`mt-0 space-y-4 rounded-xl bg-gray-100 p-4 ${validationErrors.ingredients && "border-1 border-red-300"}`}
-              >
-                {/* Label with improved typography */}
-                <label className="w-full text-center text-sm font-medium tracking-tight text-slate-700">
-                  Add Ingredient
-                </label>
-
-                <div className="flex items-center gap-3">
-                  {/* ITEM SELECT - Refined with subtle border and focus ring */}
-                  <div className="relative flex-1">
-                    <select
-                      value={tempIngredient.inventory_item}
-                      onChange={(e) => {
-                        setTempIngredient((prev) => ({
+                    <button
+                      onClick={() =>
+                        setDishForm((prev) => ({
                           ...prev,
-                          inventory_item: e.target.value,
-                        }));
-                        setValidationErrors({});
-                      }}
-                      className="h-10 w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
-                    >
-                      <option value="">Select an item...</option>
-                      {inventoryData
-                        .filter(
-                          (item) =>
-                            !dishForm.ingredients_data.some(
-                              (sel) => sel.inventory_item === String(item.id)
-                            )
-                        )
-                        .map((item) => (
-                          <option key={item.id} value={item.id}>
-                            {item.name} — {item.quantity} {item.unit} available
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-
-                  {/* QUANTITY INPUT - Styled to match select height */}
-                  <div className="w-24">
-                    <Input
-                      type="number"
-                      min={1}
-                      placeholder="Qty"
-                      value={String(tempIngredient.quantity)}
-                      onChange={(e) =>
-                        setTempIngredient((prev) => ({
-                          ...prev,
-                          quantity: Number(e.target.value),
+                          ingredients_data: prev.ingredients_data.filter(
+                            (_, i) => i !== idx
+                          ),
                         }))
                       }
-                      className="h-10 rounded-lg border-slate-200 bg-slate-50 focus:ring-2 focus:ring-blue-500/20"
-                    />
+                      className="font-bold text-red-500 hover:text-red-700"
+                    >
+                      ✕
+                    </button>
                   </div>
-
-                  {/* ADD BUTTON - Minimalist but high contrast */}
-                  <Button
-                    size="sm"
-                    className="flex h-10 items-center gap-2 rounded-lg bg-slate-900 px-4 text-white transition-colors hover:bg-slate-800"
-                    onClick={() => {
-                      if (!tempIngredient.inventory_item) return;
-                      setDishForm((prev) => ({
-                        ...prev,
-                        ingredients_data: [
-                          ...prev.ingredients_data,
-                          tempIngredient,
-                        ],
-                      }));
-                      setTempIngredient({ inventory_item: "", quantity: 1 });
-                    }}
-                  >
-                    <span className="text-lg">+</span>
-                    <span>Add</span>
-                  </Button>
-                </div>
-              </div>
-            </>
+                );
+              })}
+            </div>
           )}
+          {/* ------------------- SELECTED INGREDIENTS (EMPTY STATE) ------------------- */}
+          {dishForm.ingredients_data.length === 0 && (
+            <div className="mb-4 rounded-md bg-gray-100 p-4 text-center text-sm text-gray-600">
+              <p className="font-medium">No ingredients added yet.</p>
+              <p className="mt-1">
+                Use the form below to add ingredients to this dish.
+              </p>
+            </div>
+          )}
+
+          {/* ------------------- ADD INGREDIENT SECTION ------------------- */}
+          <div
+            className={`mt-0 space-y-4 rounded-xl bg-gray-100 p-4 ${validationErrors.ingredients && "border-1 border-red-300"}`}
+          >
+            {/* Label with improved typography */}
+            <label className="w-full text-center text-sm font-medium tracking-tight text-slate-700">
+              Add Ingredient
+            </label>
+
+            <div className="flex items-center gap-3">
+              {/* ITEM SELECT - Refined with subtle border and focus ring */}
+              <div className="relative flex-1">
+                <select
+                  value={tempIngredient.inventory_item}
+                  onChange={(e) => {
+                    setTempIngredient((prev) => ({
+                      ...prev,
+                      inventory_item: e.target.value,
+                    }));
+                    setValidationErrors({});
+                  }}
+                  className="h-10 w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
+                >
+                  <option value="">Select an item...</option>
+                  {inventoryData
+                    .filter(
+                      (item) =>
+                        !dishForm.ingredients_data.some(
+                          (sel) => sel.inventory_item === String(item.id)
+                        )
+                    )
+                    .map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name} — {item.quantity} {item.unit} available
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              {/* QUANTITY INPUT - Styled to match select height */}
+              <div className="w-24">
+                <Input
+                  type="number"
+                  min={1}
+                  placeholder="Qty"
+                  value={String(tempIngredient.quantity)}
+                  onChange={(e) =>
+                    setTempIngredient((prev) => ({
+                      ...prev,
+                      quantity: Number(e.target.value),
+                    }))
+                  }
+                  className="h-10 rounded-lg border-slate-200 bg-slate-50 focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
+
+              {/* ADD BUTTON - Minimalist but high contrast */}
+              <Button
+                size="sm"
+                className="flex h-10 items-center gap-2 rounded-lg bg-slate-900 px-4 text-white transition-colors hover:bg-slate-800"
+                onClick={() => {
+                  if (!tempIngredient.inventory_item) return;
+                  setDishForm((prev) => ({
+                    ...prev,
+                    ingredients_data: [
+                      ...prev.ingredients_data,
+                      tempIngredient,
+                    ],
+                  }));
+                  setTempIngredient({ inventory_item: "", quantity: 1 });
+                }}
+              >
+                <span className="text-lg">+</span>
+                <span>Add</span>
+              </Button>
+            </div>
+          </div>
         </div>
 
         {validationErrors.ingredients && (
@@ -471,11 +663,11 @@ export const AddDish: React.FC<{
       <div>
         <Label>Preparation Time</Label>
         <Input
-          value={dishForm.prep_time}
+          type="time"
+          value={dishForm.prep_time ? dishForm.prep_time.slice(0, 5) : ""}
           onChange={(e) =>
-            setDishForm((prev) => ({ ...prev, prep_time: e.target.value }))
+            setDishForm((prev) => ({ ...prev, prep_time: e.target.value ? e.target.value + ":00" : "" }))
           }
-          placeholder="00:30:00"
         />
         {validationErrors.prep_time && (
           <p className="mt-1 text-xs text-red-600">

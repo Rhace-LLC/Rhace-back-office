@@ -13,6 +13,7 @@ import { Eye, Clock, Truck, User, Table as TableIcon } from "lucide-react";
 import type { Order } from "./types/order";
 import { Staff } from "../../api-services/staffService";
 import { Table as TableType } from "../../api-services/tableService";
+import formatPrice from "@/utils/formatPrice";
 
 // Define OrderStatus locally to avoid import issues
 type OrderStatus =
@@ -78,8 +79,8 @@ export function OrdersTable({
 
   const getTotalPrice = (order: Order) => {
     return order?.total_price
-      ? parseFloat(order.total_price).toFixed(2)
-      : "0.00";
+      ? formatPrice(order.total_price)
+      : formatPrice(0);
   };
 
   const getOrderType = (order: Order) => {
@@ -293,7 +294,7 @@ export function OrdersTable({
               </TableCell>
               <TableCell className="py-2.5">
                 <div className="text-sm font-semibold text-gray-900">
-                  ₦{getTotalPrice(order)}
+                  {getTotalPrice(order)}
                 </div>
               </TableCell>
               <TableCell className="py-2.5">

@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Users, CheckCircle, DollarSign, Clock } from "lucide-react";
+import formatPrice from "@/utils/formatPrice";
 
 interface Table {
   id: number;
@@ -64,7 +65,7 @@ export const TableStats: React.FC<TableStatsProps> = ({
           <DollarSign className="text-muted-foreground h-4 w-4" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl">${totalRevenue.toFixed(2)}</div>
+          <div className="text-2xl">{formatPrice(totalRevenue)}</div>
           <p className="text-muted-foreground text-xs">From occupied tables</p>
         </CardContent>
       </Card>

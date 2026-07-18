@@ -9,7 +9,8 @@ import {
 } from "@/api-services/restaurantProfile";
 import { PickAddressFromMap } from "./PickAddrFromMap";
 import { cn } from "@/lib/utils";
-import { ReverseGeocodeResult } from "@/utils/geocode";
+import { ReverseGeocodeResult, Suggestion } from "@/utils/geocode";
+import { AutocompleteAddress } from "./AutocompleteAddress";
 //import { PickAddressFromMap } from "./PickAddrFromMap";
 
 interface Props {
@@ -279,11 +280,15 @@ export default function EditRestaurantProfile({
           <label className="text-sm font-semibold tracking-wide text-gray-800">
             Full Address
           </label>
-          <Input
-            className="h-11"
+          <AutocompleteAddress
             value={form.address}
-            onChange={(e) => updateField("address", e.target.value)}
-            placeholder="Street address, building name, etc."
+            onChange={(val) => updateField("address", val)}
+            onSelect={(suggestion: Suggestion) => {
+              updateField("address", suggestion.placeName);
+              updateField("city", suggestion.city ?? "");
+              updateField("state", suggestion.state ?? "");
+              updateField("country", suggestion.country ?? "");
+            }}
           />
         </div>
 

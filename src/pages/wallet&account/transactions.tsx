@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useAuth } from "@/contexts/AuthContext";
+import formatPrice from "@/utils/formatPrice";
 
 import {
   Table,
@@ -156,7 +157,7 @@ export const TransactionsPage = () => {
                             />
                             <Detail
                               label="Fees"
-                              value={String(selected.fees)}
+                              value={formatPrice(selected.fees)}
                             />
                             <Detail
                               label="Card Type"

@@ -14,9 +14,10 @@ import { Table } from "@/api-services/tableService";
 
 interface TableCardProps {
   table: Table;
+  waiterName?: string | null;
 }
 
-export const TableCard: React.FC<TableCardProps> = ({ table }) => {
+export const TableCard: React.FC<TableCardProps> = ({ table, waiterName }) => {
   const [viewOpen, setViewOpen] = useState(false);
 
   const {
@@ -92,6 +93,16 @@ export const TableCard: React.FC<TableCardProps> = ({ table }) => {
               </span>
               <span className="text-lg font-bold">{statusLabel}</span>
             </div>
+          </div>
+
+          {/* Waiter */}
+          <div className="mt-3 rounded-lg bg-purple-50 p-3">
+            <span className="text-xs font-semibold tracking-wide text-purple-800 uppercase">
+              Waiter
+            </span>
+            <span className="block text-sm font-bold text-purple-900">
+              {waiterName || "No waiter assigned for today"}
+            </span>
           </div>
         </CardContent>
 

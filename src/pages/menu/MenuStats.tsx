@@ -3,6 +3,7 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { UtensilsCrossed, DollarSign } from "lucide-react";
+import formatPrice from "@/utils/formatPrice";
 
 interface MenuStatsProps {
   totalDishes: number;
@@ -71,7 +72,7 @@ export const MenuStats: React.FC<MenuStatsProps> = ({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-semibold">
-            ${averagePrice.toFixed(2)}
+            {formatPrice(averagePrice)}
           </div>
           <p className="text-muted-foreground text-xs">Per dish</p>
         </CardContent>

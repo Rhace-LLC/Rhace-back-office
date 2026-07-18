@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 import { Order, OrderStatus } from "./types/order";
 import { Staff } from "../../api-services/staffService";
 import { Table } from "../../api-services/tableService";
+import formatPrice from "@/utils/formatPrice";
 import { useState, useEffect } from "react";
 import {
   Clock,
@@ -246,7 +247,7 @@ export function OrderDetailsSheet({
   const getCustomerName = () => order?.customer_name || "N/A";
   const getCustomerPhone = () => order?.customer_phone || "N/A";
   const getTotalPrice = () =>
-    order?.total_price ? parseFloat(order.total_price).toFixed(2) : "0.00";
+    order?.total_price ? formatPrice(order.total_price) : formatPrice(0);
   const getOrderType = () => order?.order_type || "unknown";
   const getCreatedAt = () => {
     if (!order?.created_at) return "N/A";
@@ -556,12 +557,10 @@ export function OrderDetailsSheet({
                 {item.menu_item_name || "Unknown Item"}
               </h4>
               <p className="text-muted-foreground text-sm">
-                Quantity: {item.quantity} × ₦
-                {parseFloat(item.price || "0").toFixed(2)}
+                Quantity: {item.quantity} × {formatPrice(item.price || "0")}
               </p>
               <p className="mt-1 text-sm font-medium">
-                Subtotal: ₦
-                {(parseFloat(item.price || "0") * item.quantity).toFixed(2)}
+                Subtotal: {formatPrice(Number(item.price || "0") * item.quantity)}
               </p>
             </div>
           </div>
@@ -583,12 +582,10 @@ export function OrderDetailsSheet({
                 {item.menu_item?.name || "Unknown Item"}
               </h4>
               <p className="text-muted-foreground text-sm">
-                Quantity: {item.quantity} × ₦
-                {parseFloat(item.price || "0").toFixed(2)}
+                Quantity: {item.quantity} × {formatPrice(item.price || "0")}
               </p>
               <p className="mt-1 text-sm font-medium">
-                Subtotal: ₦
-                {(parseFloat(item.price || "0") * item.quantity).toFixed(2)}
+                Subtotal: {formatPrice(Number(item.price || "0") * item.quantity)}
               </p>
             </div>
             {item.menu_item?.image_url && (
@@ -764,7 +761,7 @@ export function OrderDetailsSheet({
                 <Label className="text-muted-foreground text-sm font-medium">
                   Total Amount
                 </Label>
-                <p className="text-base font-medium">₦{getTotalPrice()}</p>
+                <p className="text-base font-medium">{getTotalPrice()}</p>
               </div>
               <div className="space-y-2">
                 <Label className="text-muted-foreground text-sm font-medium">

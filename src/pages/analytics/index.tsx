@@ -21,6 +21,7 @@ import {
   Clock,
   UtensilsCrossed,
 } from "lucide-react";
+import formatPrice from "@/utils/formatPrice";
 import {
   Bar,
   XAxis,
@@ -142,7 +143,7 @@ export function Analytics() {
             <DollarSign className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl">$4,847</div>
+            <div className="text-2xl">₦4,847</div>
             <p className="text-muted-foreground flex items-center text-xs">
               <TrendingUp className="mr-1 h-3 w-3 text-green-600" />
               +12% from yesterday
@@ -167,8 +168,8 @@ export function Analytics() {
             <DollarSign className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl">$54.45</div>
-            <p className="text-muted-foreground text-xs">+$3.20 increase</p>
+            <div className="text-2xl">₦54.45</div>
+            <p className="text-muted-foreground text-xs">+₦3.20 increase</p>
           </CardContent>
         </Card>
 
@@ -213,7 +214,7 @@ export function Analytics() {
                 <YAxis yAxisId="right" orientation="right" />
                 <Tooltip
                   formatter={(value, name) => [
-                    name === "revenue" ? `$${value}` : value,
+                    name === "revenue" ? formatPrice(value) : value,
                     name === "revenue" ? "Revenue" : "Orders",
                   ]}
                 />
@@ -300,7 +301,7 @@ export function Analytics() {
                   <TableRow key={index}>
                     <TableCell>{dish.name}</TableCell>
                     <TableCell>{dish.orders}</TableCell>
-                    <TableCell>${dish.revenue.toFixed(2)}</TableCell>
+                    <TableCell>{formatPrice(dish.revenue)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -331,7 +332,7 @@ export function Analytics() {
                     <TableCell>{table.table}</TableCell>
                     <TableCell>{table.turns}</TableCell>
                     <TableCell>{table.avgTime}</TableCell>
-                    <TableCell>${table.revenue.toFixed(2)}</TableCell>
+                    <TableCell>{formatPrice(table.revenue)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

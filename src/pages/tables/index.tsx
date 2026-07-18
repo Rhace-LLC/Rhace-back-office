@@ -52,14 +52,24 @@ export function TablesPage() {
     (assignment) => assignment.waiter.id === auth?.user?.id
   );
 
-  const fetchWaiterAssignment = async () => {
+  const tableWaiterMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    assignments.forEach((a) =>
+      a.tables.forEach((t) => {
+        map[t.id] = a.waiter.name;
+      })
+    );
+    return map;
+  }, [assignments]);
+
+  const fetchWaiterAssignment = async (autoAssign = true) => {
     setWaiterAssignmentReqLoading(true);
     setWaiterAssignmentReqError(null);
 
     try {
       const response = await getWaitersTableAssignments({}, {}, auth?.token);
       setAssignments(response.assignments);
-      if (response.assignments.length === 0) {
+      if (response.assignments.length === 0 && autoAssign) {
         setUpForToday();
       }
     } catch (error: any) {
@@ -126,8 +136,12 @@ export function TablesPage() {
   }, []);
 
   useEffect(() => {
+    fetchWaiterAssignment(false);
+  }, []);
+
+  useEffect(() => {
     if (isWaiterManagement && assignments.length == 0) {
-      fetchWaiterAssignment();
+      fetchWaiterAssignment(true);
     }
   }, [isWaiterManagement]);
 
@@ -206,7 +220,7 @@ export function TablesPage() {
           >
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {toShow.map((table) => (
-                <TableCard table={table} />
+                <TableCard table={table} waiterName={tableWaiterMap[table.id]} />
               ))}
             </div>
           </ContentHOC>

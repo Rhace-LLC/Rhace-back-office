@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import formatPrice from "@/utils/formatPrice";
 
 // ---------------- Types ----------------
 export type TableStatus = "Free" | "Occupied" | "Reserved";
@@ -195,7 +196,7 @@ export const WaiterDashboard = () => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm">${order.total}</div>
+                        <div className="text-sm">{formatPrice(order.total)}</div>
                         <Badge
                           variant={
                             order.status === "Pending" ? "secondary" : "default"

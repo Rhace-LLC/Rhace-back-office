@@ -13,6 +13,7 @@ import { useLoading } from "@/contexts/LoadingContext";
 import { parseError } from "@/api-services/utils/parseError";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
+import formatPrice from "@/utils/formatPrice";
 import { updateMenuItemById } from "@/store/menu.slice";
 
 export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
@@ -103,7 +104,7 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
 
           <div className="flex justify-between text-sm text-gray-500">
             <span>Price</span>
-            <span className="font-medium text-gray-900">NGN {dish.price}</span>
+            <span className="font-medium text-gray-900">{formatPrice(dish.price)}</span>
           </div>
 
           <div className="space-y-1">
