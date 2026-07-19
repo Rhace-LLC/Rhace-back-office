@@ -214,7 +214,7 @@ export function Analytics() {
                 <YAxis yAxisId="right" orientation="right" />
                 <Tooltip
                   formatter={(value, name) => [
-                    name === "revenue" ? formatPrice(value) : value,
+                    name === "revenue" && typeof value === "number" ? formatPrice(value) : value,
                     name === "revenue" ? "Revenue" : "Orders",
                   ]}
                 />

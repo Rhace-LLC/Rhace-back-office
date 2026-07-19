@@ -1,6 +1,33 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type StockStatus = "in_stock" | "low_stock" | "out_of_stock";
+
+export const Unit = {
+  kg: "kg",
+  g: "g",
+  lb: "lb",
+  oz: "oz",
+  L: "L",
+  mL: "mL",
+  box: "box",
+  case: "case",
+  bag: "bag",
+  bunch: "bunch",
+  piece: "piece",
+  each: "each",
+  dozen: "dozen",
+  pack: "pack",
+  bottle: "bottle",
+  can: "can",
+  jar: "jar",
+  liter: "liter",
+  gallon: "gallon",
+  pint: "pint",
+  quart: "quart",
+} as const;
+
+export type Unit = (typeof Unit)[keyof typeof Unit];
+
 // ---------------- Types ----------------
 export interface InventoryItem {
   id: number;

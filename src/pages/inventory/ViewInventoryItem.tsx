@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
   InventoryItem,
+  Unit,
   updateInventoryDataById,
 } from "@/store/inventory.slice";
 import { toast } from "sonner";
@@ -146,12 +147,20 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
           {/* Unit */}
           <div className="space-y-2">
             <Label className="text-sm font-medium text-gray-700">Unit</Label>
-            <Input
+            <select
               name="unit"
               value={editableItem.unit}
-              onChange={handleChange}
-              className="h-10"
-            />
+              onChange={(e) =>
+                setEditableItem((prev) => ({ ...prev, unit: e.target.value }))
+              }
+              className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              {Object.values(Unit).map((u) => (
+                <option key={u} value={u}>
+                  {u}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Threshold */}

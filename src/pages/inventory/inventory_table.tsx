@@ -23,7 +23,8 @@ const RenderInventoryTableData: React.FC<Props> = ({ data, onView }) => {
         <TableRow className="bg-gray-50">
           <TableHead className="font-medium text-gray-600">ID</TableHead>
           <TableHead className="font-medium text-gray-600">Name</TableHead>
-          <TableHead className="font-medium text-gray-600">Quantity</TableHead>
+          <TableHead className="font-medium text-gray-600">Quantity / Min Qty</TableHead>
+          <TableHead className="font-medium text-gray-600">Unit</TableHead>
           <TableHead className="font-medium text-gray-600">Available</TableHead>
           <TableHead className="font-medium text-gray-600">Allergen</TableHead>
           <TableHead className="font-medium text-gray-600">Actions</TableHead>
@@ -45,7 +46,15 @@ const RenderInventoryTableData: React.FC<Props> = ({ data, onView }) => {
             </TableCell>
 
             {/* Quantity */}
-            <TableCell>{item.quantity}</TableCell>
+            <TableCell>
+              <div>Quantity: {item.quantity}</div>
+              <div className="text-xs text-gray-500">
+                Minimum Quantity: {item.threshold}
+              </div>
+            </TableCell>
+
+            {/* Unit */}
+            <TableCell>{item.unit}</TableCell>
 
             {/* Available */}
             <TableCell>

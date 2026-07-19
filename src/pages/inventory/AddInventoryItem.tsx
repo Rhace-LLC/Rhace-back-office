@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { createInventoryItem } from "@/api-services/inventory.service";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDispatch } from "react-redux";
-import { appendInventoryItem } from "@/store/inventory.slice";
+import { appendInventoryItem, Unit } from "@/store/inventory.slice";
 
 // Define the expected shape of the inventory item data
 interface InventoryItemData {
@@ -112,36 +112,26 @@ export const AddInventoryItem: React.FC<{
 
         {/* Quantity & Unit Fields (Two Columns/Grid) */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="col-span-2 space-y-2">
-            <Label
-              htmlFor="quantity"
-              className="text-sm font-medium text-gray-700"
-            >
-              Current Quantity
-            </Label>
-            <Input
-              id="quantity"
-              name="quantity"
-              type="number"
-              value={formData.quantity}
-              onChange={handleChange}
-              min="0"
-              placeholder="0"
-              className="h-10"
-            />
-          </div>
           <div className="col-span-1 space-y-2">
             <Label htmlFor="unit" className="text-sm font-medium text-gray-700">
               Unit
             </Label>
-            <Input
+            <select
               id="unit"
               name="unit"
               value={formData.unit}
-              onChange={handleChange}
-              placeholder="kg, box, oz"
-              className="h-10"
-            />
+              onChange={(e) => setFormData((prev) => ({ ...prev, unit: e.target.value }))}
+              className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="" disabled>
+                Select unit
+              </option>
+              {Object.values(Unit).map((u) => (
+                <option key={u} value={u}>
+                  {u}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
