@@ -2,7 +2,7 @@ import { useState, ChangeEvent, memo } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { X, Calendar, Clock, Map } from "lucide-react"; // Added useful icons
+import { X, Calendar, Clock, Map, Pipette } from "lucide-react";
 import {
   OpeningHour,
   RestaurantProfile,
@@ -11,7 +11,6 @@ import { PickAddressFromMap } from "./PickAddrFromMap";
 import { cn } from "@/lib/utils";
 import { ReverseGeocodeResult, Suggestion } from "@/utils/geocode";
 import { AutocompleteAddress } from "./AutocompleteAddress";
-//import { PickAddressFromMap } from "./PickAddrFromMap";
 
 interface Props {
   profile: RestaurantProfile;
@@ -28,6 +27,31 @@ const DAYS = [
   "Saturday",
   "Sunday",
 ];
+
+// Moving this OUTSIDE the main component block stops it from re-creating 
+// on every state change and breaking the HTML5 color picker window focus.
+const FormField = memo(
+  ({
+    label,
+    children,
+    description,
+  }: {
+    label: string;
+    children: React.ReactNode;
+    description?: string;
+  }) => (
+    <div className="space-y-1">
+      <label className="text-sm font-semibold tracking-wide text-gray-800">
+        {label}
+      </label>
+      {description && (
+        <p className="mb-2 text-xs text-gray-500">{description}</p>
+      )}
+      {children}
+    </div>
+  )
+);
+FormField.displayName = "FormField";
 
 export default function EditRestaurantProfile({
   profile,
@@ -56,7 +80,6 @@ export default function EditRestaurantProfile({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Clean up previous blob URL if it exists (good practice)
     if (type === "logo" && logoPreview && logoPreview.startsWith("blob:")) {
       URL.revokeObjectURL(logoPreview);
     } else if (
@@ -84,13 +107,11 @@ export default function EditRestaurantProfile({
     const normalizedTag = tag.trim().toLowerCase();
 
     if (tags.includes(normalizedTag)) {
-      // Remove tag
       updateField(
         "tags",
         tags.filter((t) => t !== normalizedTag)
       );
     } else {
-      // Add tag, ensuring max length/count might be useful here in a real app
       updateField("tags", [...tags, normalizedTag]);
     }
   };
@@ -110,30 +131,6 @@ export default function EditRestaurantProfile({
   const handleSave = () => {
     onSave(form);
   };
-
-  // Memoized FormField to prevent losing focus
-  const FormField = memo(
-    ({
-      label,
-      children,
-      description,
-    }: {
-      label: string;
-      children: React.ReactNode;
-      description?: string;
-    }) => (
-      <div className="space-y-1">
-        <label className="text-sm font-semibold tracking-wide text-gray-800">
-          {label}
-        </label>
-        {description && (
-          <p className="mb-2 text-xs text-gray-500">{description}</p>
-        )}
-        {children}
-      </div>
-    )
-  );
-  // --------------------------------------------------------
 
   return (
     <div className="space-y-8">
@@ -203,78 +200,69 @@ export default function EditRestaurantProfile({
 
       {/* --- SECTION: LOCATION & CONTACT --- */}
       <section className="space-y-6 rounded-xl border border-gray-100 bg-white p-6 shadow-lg md:p-8">
-        {/* --- SECTION: LOCATION & CONTACT --- */}
-        <section className="space-y-8 border-t border-gray-50 pt-10">
-          {/* HEADER: CLEAN HIERARCHY */}
-          <div className="flex justify-between">
-            <div className="flex flex-col gap-1">
-              <h3 className="text-[22px] font-bold tracking-tight text-gray-900">
-                Location & Contact
-              </h3>
-              <p className="max-w-md text-[14px] leading-relaxed font-medium text-gray-400">
-                Define your physical presence so customers can navigate to you
-                effortlessly.
-              </p>
-            </div>
+        <div className="flex justify-between">
+          <div className="flex flex-col gap-1">
+            <h3 className="text-[22px] font-bold tracking-tight text-gray-900">
+              Location & Contact
+            </h3>
+            <p className="max-w-md text-[14px] leading-relaxed font-medium text-gray-400">
+              Define your physical presence so customers can navigate to you
+              effortlessly.
+            </p>
+          </div>
 
-            {/* MINIMALIST MODE SWITCHER */}
-            <button
-              type="button"
-              onClick={() => setPickAddrFromMap((prev) => !prev)}
+          <button
+            type="button"
+            onClick={() => setPickAddrFromMap((prev) => !prev)}
+            className={cn(
+              "group flex items-center gap-2 rounded-full px-5 transition-all duration-500 ease-out active:scale-95",
+              pickAddrFromMap
+                ? "bg-black text-white shadow-xl shadow-black/10"
+                : "bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900"
+            )}
+          >
+            <div
               className={cn(
-                "group flex items-center gap-2 rounded-full px-5 transition-all duration-500 ease-out active:scale-95",
+                "flex h-5 w-5 items-center justify-center rounded-full transition-all duration-500",
                 pickAddrFromMap
-                  ? "bg-black text-white shadow-xl shadow-black/10"
-                  : "bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900"
+                  ? "rotate-0 bg-white/20"
+                  : "-rotate-90 bg-gray-200"
               )}
             >
-              {/* ICON BOX: Transitions color and rotation */}
-              <div
-                className={cn(
-                  "flex h-5 w-5 items-center justify-center rounded-full transition-all duration-500",
-                  pickAddrFromMap
-                    ? "rotate-0 bg-white/20"
-                    : "-rotate-90 bg-gray-200"
-                )}
-              >
-                {pickAddrFromMap ? (
-                  <X size={12} strokeWidth={3} />
-                ) : (
-                  <Map size={12} strokeWidth={3} />
-                )}
-              </div>
-
-              {/* TEXT LABEL: Changes based on state */}
-              <span className="text-[13px] font-bold tracking-tight">
-                {pickAddrFromMap ? "Close Map View" : "Choose On Map"}
-              </span>
-
-              {/* STATUS DOT: Only visible when map is inactive to prompt action */}
-              {!pickAddrFromMap && (
-                <div className="relative ml-1 flex h-2 w-2">
-                  <div className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
-                  <div className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
-                </div>
+              {pickAddrFromMap ? (
+                <X size={12} strokeWidth={3} />
+              ) : (
+                <Map size={12} strokeWidth={3} />
               )}
-            </button>
-          </div>
+            </div>
 
-          {/* CONTENT AREA: OVERFLOW CONTROL */}
-          <div className="relative overflow-hidden rounded-[2.5rem] bg-gray-50/50 ring-1 ring-gray-100">
-            {pickAddrFromMap && (
-              <div className="animate-in fade-in zoom-in-95 duration-500">
-                <PickAddressFromMap
-                  onConfirm={(data: ReverseGeocodeResult) => {
-                    updateField("address", data.fullAddress);
-                    updateField("city", data.city);
-                    updateField("state", data.state);
-                    updateField("country", data.country);
-                  }}
-                />
+            <span className="text-[13px] font-bold tracking-tight">
+              {pickAddrFromMap ? "Close Map View" : "Choose On Map"}
+            </span>
+
+            {!pickAddrFromMap && (
+              <div className="relative ml-1 flex h-2 w-2">
+                <div className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
+                <div className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
               </div>
             )}
-          </div>
-        </section>
+          </button>
+        </div>
+
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-gray-50/50 ring-1 ring-gray-100">
+          {pickAddrFromMap && (
+            <div className="animate-in fade-in zoom-in-95 duration-500">
+              <PickAddressFromMap
+                onConfirm={(data: ReverseGeocodeResult) => {
+                  updateField("address", data.fullAddress);
+                  updateField("city", data.city);
+                  updateField("state", data.state);
+                  updateField("country", data.country);
+                }}
+              />
+            </div>
+          )}
+        </div>
 
         <div className="space-y-1">
           <label className="text-sm font-semibold tracking-wide text-gray-800">
@@ -292,7 +280,6 @@ export default function EditRestaurantProfile({
           />
         </div>
 
-        {/* City / State / Country */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="space-y-1">
             <label className="text-sm font-semibold tracking-wide text-gray-800">
@@ -326,7 +313,6 @@ export default function EditRestaurantProfile({
           </div>
         </div>
 
-        {/* Email / Phone */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-1">
             <label className="text-sm font-semibold tracking-wide text-gray-800">
@@ -403,6 +389,66 @@ export default function EditRestaurantProfile({
             />
           </div>
         </FormField>
+
+        {/* BRAND COLOR */}
+        <FormField
+          label="Brand Color"
+          description="Choose a primary color for your restaurant branding."
+        >
+          <div className="flex flex-col gap-3">
+            {/* Swatch container - condensed to h-6 w-6 loops */}
+            <div className="flex flex-wrap items-center gap-2">
+              {[
+                "#000000",
+                "#ffffff",
+                "#2542e3",
+                "#f59e0b",
+                "#ef4444",
+                "#10b981",
+                "#8b5cf6",
+                "#ec4899",
+                "#14b8a6",
+                "#f97316",
+              ].map((color) => (
+                <button
+                  key={color}
+                  type="button"
+                  onClick={() => updateField("brand_color", color)}
+                  className={`h-6 w-6 rounded-full border shadow-sm transition-all hover:scale-110 ${
+                    form.brand_color === color
+                      ? "border-gray-900 ring-2 ring-gray-900 ring-offset-1"
+                      : "border-gray-200"
+                  }`}
+                  style={{ backgroundColor: color }}
+                  title={color}
+                />
+              ))}
+
+              {/* Minimalist Color Picker Trigger Wrapper */}
+              <label className="relative flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-500 hover:border-gray-400 hover:bg-gray-100">
+                <input
+                  type="color"
+                  value={form.brand_color || "#2542e3"}
+                  onChange={(e) => updateField("brand_color", e.target.value)}
+                  className="absolute inset-0 cursor-pointer opacity-0"
+                />
+                <Pipette size={12} />
+              </label>
+            </div>
+
+            {/* Selected Value Indicator */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-gray-400">Selected Color:</span>
+              <span
+                className="inline-block h-5 w-5 rounded-full border border-gray-300"
+                style={{ backgroundColor: form.brand_color || "#2542e3" }}
+              />
+              <span className="font-mono text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 border border-gray-200 px-2 py-0.5 rounded-md">
+                {form.brand_color || "#2542e3"}
+              </span>
+            </div>
+          </div>
+        </FormField>
       </section>
 
       {/* --- SECTION: TAGS --- */}
@@ -424,12 +470,10 @@ export default function EditRestaurantProfile({
           />
         </FormField>
 
-        {/* Display Tags - Modernized Style */}
         <div className="flex flex-wrap gap-2 pt-2">
           {(form.tags ?? []).map((tag: string) => (
             <div
               key={tag}
-              // Enhanced pill styling with indigo theme and transition
               className="flex cursor-default items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 transition duration-200 hover:bg-indigo-100"
             >
               <span>{tag}</span>
@@ -452,7 +496,6 @@ export default function EditRestaurantProfile({
           times for each.
         </p>
 
-        {/* Capsule Day Selector - Modernized Blue */}
         <div className="flex flex-wrap gap-2">
           {DAYS.map((day) => {
             const isActive = form.opening_hours?.some((h) => h.day === day);
@@ -465,11 +508,8 @@ export default function EditRestaurantProfile({
                   let updated = [...(form.opening_hours ?? [])];
 
                   if (isActive) {
-                    // Remove the day
                     updated = updated.filter((h) => h.day !== day);
                   } else {
-                    // Add the day with blank fields, preserving order (important for display
-
                     if (!isActive) {
                       updated.push({
                         day,
@@ -477,7 +517,6 @@ export default function EditRestaurantProfile({
                         close_time: "20:00",
                       });
                     }
-                    // Sort updated array by DAYS index to keep them in order
                     updated.sort(
                       (a, b) => DAYS.indexOf(a.day) - DAYS.indexOf(b.day)
                     );
@@ -497,7 +536,6 @@ export default function EditRestaurantProfile({
           })}
         </div>
 
-        {/* Render inputs ONLY for active (selected) days */}
         <div className="space-y-4 pt-4">
           {(form.opening_hours ?? []).map((hour, idx) => (
             <div
@@ -521,7 +559,7 @@ export default function EditRestaurantProfile({
                     onChange={(e) =>
                       updateOpeningHour(idx, "open_time", e.target.value)
                     }
-                    type="time" // Use HTML5 time input for better mobile experience
+                    type="time"
                   />
                 </div>
 
@@ -537,7 +575,7 @@ export default function EditRestaurantProfile({
                     onChange={(e) =>
                       updateOpeningHour(idx, "close_time", e.target.value)
                     }
-                    type="time" // Use HTML5 time input
+                    type="time"
                   />
                 </div>
               </div>

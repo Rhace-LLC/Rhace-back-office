@@ -29,6 +29,7 @@ export interface RestaurantProfile {
   is_open: boolean;
   avg_rating: number | null;
   rating_count: number;
+  brand_color: string | null;
 }
 
 /**
