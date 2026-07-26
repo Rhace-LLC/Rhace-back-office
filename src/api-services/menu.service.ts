@@ -297,6 +297,16 @@ export const toggleMenuItemSpecial = async (
 /**
  * Get all special menu items for a restaurant
  */
+export const bulkUploadMenuItems = async (
+  token: string,
+  file: File
+): Promise<any> => {
+  const formData = new FormData();
+  formData.append("file", file);
+  const config = getConfig(`/menu/menu-items/bulk-upload/`, "POST", token, formData);
+  return bookiesAxiosInstance(config);
+};
+
 export const getSpecialMenuItems = async (
   restaurantId: string,
   token: string

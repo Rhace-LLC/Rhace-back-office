@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,27 +18,14 @@ import { appendMenuItemToPage } from "@/store/menu.slice";
 import { appendCategoryToPage } from "@/store/category.slice";
 import { createInventoryItem } from "@/api-services/inventory.service";
 import { appendInventoryItem } from "@/store/inventory.slice";
-
-interface Ingredient {
-  inventory_item: string;
-  quantity: number;
-}
-
-interface DishForm {
-  name: string;
-  price: string;
-  description: string;
-  category_id: string;
-  prep_time: string;
-  available: boolean;
-  image: File | null;
-  ingredients_data: Ingredient[];
-}
+import { DishForm, DishDraft } from "./types";
+import { saveDraft, updateDraft, deleteDraft, getDraftById } from "./draftStorage";
 
 export const AddDish: React.FC<{
   onComplete: () => void;
   currentPage: string;
-}> = ({ onComplete, currentPage }) => {
+  draftId?: string;
+}> = ({ onComplete, currentPage, draftId }) => {
   const auth = useAuth();
   const dispatch = useDispatch();
   const { setLoading, setLoadingText } = useLoading();
@@ -63,6 +50,25 @@ export const AddDish: React.FC<{
     inventory_item: "",
     quantity: 1,
   });
+
+  // ---------------- LOAD DRAFT ON MOUNT ----------------
+  useEffect(() => {
+    if (!draftId) return;
+    const draft = getDraftById(draftId);
+    if (draft) {
+      setDishForm({
+        name: draft.form.name,
+        price: draft.form.price,
+        description: draft.form.description,
+        category_id: draft.form.category_id,
+        prep_time: draft.form.prep_time,
+        available: draft.form.available,
+        image: null,
+        ingredients_data: draft.form.ingredients_data,
+      });
+      setImagePreview(draft.form.imagePreview);
+    }
+  }, []);
 
   // ---------------- INLINE ADD STATES ----------------
   const [showAddCategory, setShowAddCategory] = useState(false);
@@ -216,7 +222,45 @@ export const AddDish: React.FC<{
     return Object.keys(errors).length === 0;
   };
 
-  console.log("validationError", validationErrors);
+  // ---------------- SAVE DRAFT ----------------
+  const handleSaveDraft = () => {
+    const convertAndSave = async () => {
+      let preview = imagePreview;
+      if (dishForm.image) {
+        preview = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.readAsDataURL(dishForm.image!);
+        });
+      }
+
+      const now = Date.now();
+      const draftData: DishDraft = {
+        id: draftId || (crypto.randomUUID?.() ?? `${now}-${Math.random().toString(36).slice(2, 9)}`),
+        savedAt: now,
+        form: {
+          name: dishForm.name,
+          price: dishForm.price,
+          description: dishForm.description,
+          category_id: dishForm.category_id,
+          prep_time: dishForm.prep_time,
+          available: dishForm.available,
+          ingredients_data: dishForm.ingredients_data,
+          imagePreview: preview,
+        },
+      };
+
+      if (draftId) {
+        updateDraft(draftData.id, draftData);
+      } else {
+        saveDraft(draftData);
+      }
+      toast.success(draftId ? "Draft updated!" : "Draft saved!");
+      onComplete();
+    };
+    convertAndSave();
+  };
+
   // ---------------- SUBMIT ----------------
   const handleSubmit = async () => {
     if (!validateForm()) {
@@ -248,6 +292,9 @@ export const AddDish: React.FC<{
       );
       dispatch(appendMenuItemToPage({ key: currentPage, item: res }));
       toast.success("Dish created successfully!");
+
+      // Clean up draft if it exists
+      if (draftId) deleteDraft(draftId);
 
       // Reset form
       setDishForm({
@@ -702,9 +749,18 @@ export const AddDish: React.FC<{
       <Separator />
 
       {/* SUBMIT */}
-      <Button className="w-full bg-[#2542e3]" onClick={handleSubmit}>
-        Add Dish
-      </Button>
+      <div className="flex gap-3">
+        <Button
+          variant="outline"
+          className="flex-1"
+          onClick={handleSaveDraft}
+        >
+          Save to Draft
+        </Button>
+        <Button className="flex-1 bg-[#2542e3]" onClick={handleSubmit}>
+          Add Dish
+        </Button>
+      </div>
     </div>
   );
 };

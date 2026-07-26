@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Plus } from "lucide-react";
+import { Plus, Upload, FileText } from "lucide-react";
 
 import { RootState } from "@/store/store";
 import { useAuth } from "@/contexts/AuthContext";
@@ -31,6 +31,8 @@ import {
 import { Pagination } from "@/components/pagination";
 import { updateMenuItemById } from "@/store/menu.slice";
 import { AddDish } from "./AddDish";
+import { DraftList } from "./DraftList";
+import { BulkUploadModal } from "./BulkUploadModal";
 
 export function MenuManagement() {
   const auth = useAuth();
@@ -41,6 +43,9 @@ export function MenuManagement() {
   // Modals
   const [addDishOpen, setAddDishOpen] = useState(false);
   const [viewDishOpen, setViewDishOpen] = useState(false);
+  const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
+  const [draftsListOpen, setDraftsListOpen] = useState(false);
+  const [editingDraftId, setEditingDraftId] = useState<string | undefined>(undefined);
 
   // Selected dish
   const [selectedDish, setSelectedDish] = useState<any>(null);
@@ -88,12 +93,31 @@ export function MenuManagement() {
             Manage dishes, availability, and menu items
           </p>
         </div>
-        <Button
-          className="mt-4 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 sm:mt-0"
-          onClick={() => setAddDishOpen(true)}
-        >
-          <Plus className="h-4 w-4" /> Add Dish
-        </Button>
+        <div className="mt-4 flex items-center gap-2 sm:mt-0">
+          <Button
+            variant="outline"
+            onClick={() => setBulkUploadOpen(true)}
+            className="flex items-center gap-2"
+          >
+            <Upload className="h-4 w-4" /> Bulk Upload
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setDraftsListOpen(true)}
+            className="flex items-center gap-2"
+          >
+            <FileText className="h-4 w-4" /> Draft Dishes
+          </Button>
+          <Button
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+            onClick={() => {
+              setEditingDraftId(undefined);
+              setAddDishOpen(true);
+            }}
+          >
+            <Plus className="h-4 w-4" /> Add Dish
+          </Button>
+        </div>
       </div>
 
       {/* Table / Content */}
@@ -194,13 +218,37 @@ export function MenuManagement() {
       {/* Add Dish Sheet */}
       <GenericSheet
         open={addDishOpen}
-        onOpenChange={setAddDishOpen}
-        title="Add Dish"
-        subtitle="Add new menu item and set availability"
+        onOpenChange={(open) => {
+          if (!open) setEditingDraftId(undefined);
+          setAddDishOpen(open);
+        }}
+        title={editingDraftId ? "Edit Draft Dish" : "Add Dish"}
+        subtitle={editingDraftId ? "Continue editing your saved draft" : "Add new menu item and set availability"}
       >
         <AddDish
+          key={editingDraftId ?? "new-dish"}
           currentPage={String(page)}
-          onComplete={() => setAddDishOpen(false)}
+          onComplete={() => {
+            setAddDishOpen(false);
+            setEditingDraftId(undefined);
+          }}
+          draftId={editingDraftId}
+        />
+      </GenericSheet>
+
+      {/* Drafts List Sheet */}
+      <GenericSheet
+        open={draftsListOpen}
+        onOpenChange={setDraftsListOpen}
+        title="Draft Dishes"
+        subtitle="Select a draft to continue editing"
+      >
+        <DraftList
+          onSelect={(draftId) => {
+            setEditingDraftId(draftId);
+            setDraftsListOpen(false);
+            setAddDishOpen(true);
+          }}
         />
       </GenericSheet>
 
@@ -215,6 +263,13 @@ export function MenuManagement() {
           <ManageDish dish={selectedDish} />
         </GenericSheet>
       )}
+
+      {/* Bulk Upload Modal */}
+      <BulkUploadModal
+        open={bulkUploadOpen}
+        onOpenChange={setBulkUploadOpen}
+        onComplete={fetchAllData}
+      />
 
       {/* Pagination */}
       <Pagination

@@ -2,8 +2,8 @@ import { RestaurantProfile } from "@/api-services/restaurantProfile";
 import { Button } from "@/components/ui/button";
 
 // Fallback images (assuming these paths are correct)
-const fallbackCover = "/images/fallback-cover.png";
-const fallbackAvatar = "/images/fallback-avatar.png";
+const fallbackCover = "https://res.cloudinary.com/mixam/image/upload/v1784977017/z0bqqxe3yxx48mhwiydx.png";
+const fallbackAvatar = "https://res.cloudinary.com/mixam/image/upload/v1784976263/za3wvroai7ramqo0bip5.png";
 const gallery = [
   "https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?q=80&w=889&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   "https://images.unsplash.com/photo-1556742393-d75f468bfcb0?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -34,82 +34,87 @@ export default function ViewMyRestaurant({
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
-      <div className="hover:shadow-3xl relative overflow-hidden rounded-3xl shadow-2xl transition-all duration-300">
-        <img
-          src={profile.cover_image_url || fallbackCover}
-          alt="Restaurant Cover"
-          className="aspect-video h-64 w-full object-cover md:h-80 lg:h-96"
-        />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+<div className="hover:shadow-3xl relative overflow-hidden rounded-3xl shadow-2xl transition-all duration-300">
+  {/* Cover Image */}
+  <img
+    src={profile.cover_image_url || fallbackCover}
+    alt="Restaurant Cover"
+    className="aspect-video  h-120 w-full object-cover md:h-100 lg:h-80"
+  />
 
-        {/* Content positioned at the bottom left */}
-        <div className="absolute bottom-0 left-0 flex w-full items-end p-6 md:p-10">
-          <div className="flex w-full items-end gap-6">
-            {/* Logo/Avatar */}
-            <div className="relative -mt-24 flex-shrink-0">
-              <div className="h-32 w-32 overflow-hidden rounded-xl border-4 border-white bg-white/20 shadow-xl backdrop-blur-sm md:h-40 md:w-40">
-                <img
-                  src={profile.logo_url || fallbackAvatar}
-                  alt="Restaurant Logo"
-                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                />
-              </div>
-            </div>
+  {/* Overlay Gradient */}
+  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
-            {/* Title and Info Block */}
-            <div className="flex-grow text-white drop-shadow-md">
-              {/* Name and Slogan */}
-              <h1 className="text-3xl font-extrabold tracking-tight md:text-5xl">
-                {display(profile.name)}
-              </h1>
-              <p className="mt-1 text-lg font-light opacity-95">
-                {display(profile.slogan)}
-              </p>
-
-              <div className="mt-3 flex flex-wrap items-center gap-4">
-                <span className="inline-flex items-center rounded-full bg-white/20 px-3 py-1 text-sm font-semibold text-white ring-1 ring-white/30 backdrop-blur-sm">
-                  {display(profile.city)}, {display(profile.state)}
-                </span>
-
-                {/* Rating and Status */}
-                <div className="flex items-center gap-3 text-lg font-medium">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 fill-current text-amber-300"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M12 .587l3.668 7.431L24 9.748l-6 5.847 1.416 8.255L12 19.771l-7.416 4.079L6 15.595 0 9.748l8.332-1.73L12 .587z" />
-                  </svg>
-                  <span>{display(profile.avg_rating)}</span>
-                  <span className="text-sm opacity-80">
-                    ({profile.rating_count ?? 0} reviews)
-                  </span>
-
-                  {/* Open/Closed Status - Clear distinction */}
-                  <span
-                    className={`ml-2 border-l border-white/40 pl-3 text-sm font-semibold ${profile.is_open ? "text-green-300" : "text-red-300"}`}
-                  >
-                    {profile.is_open ? "Open Now" : "Currently Closed"}
-                  </span>
-                </div>
-              </div>
-
-              {/* Edit Button - Clear call to action, moved out of the info block */}
-              <div className="mt-6">
-                <Button
-                  onClick={() => onEdit(true)}
-                  // Modern button styling: rounded, slightly larger, impactful color
-                  className="rounded-full bg-white px-8 py-3 text-lg font-semibold text-gray-900 shadow-lg transition duration-200 hover:bg-gray-100 hover:shadow-xl"
-                >
-                  Edit Profile
-                </Button>
-              </div>
-            </div>
-          </div>
+  {/* Content Area */}
+  <div className="absolute bottom-0 left-0 w-full p-4 sm:p-6 md:p-10">
+    <div className="flex flex-col items-start gap-4 md:flex-row md:items-end md:gap-6">
+      
+      {/* Circular Logo/Avatar */}
+      <div className="flex-shrink-0">
+        <div className="h-24 w-24 overflow-hidden rounded-full border-4 border-white bg-white/20 shadow-xl backdrop-blur-sm md:h-32 md:w-32">
+          <img
+            src={profile.logo_url || fallbackAvatar}
+            alt="Restaurant Logo"
+            className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+          />
         </div>
       </div>
+
+      {/* Title and Info Block */}
+      <div className="flex-grow text-white drop-shadow-md">
+        {/* Name and Slogan */}
+        <h1 className="text-2xl font-medium tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
+          {display(profile.name)}
+        </h1>
+        <p className="mt-1 text-base font-light opacity-90 sm:text-lg">
+          {display(profile.slogan)}
+        </p>
+
+        {/* Badges & Rating */}
+        <div className="mt-3 flex flex-wrap items-center gap-3 sm:gap-4">
+          <span className="inline-flex items-center rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white ring-1 ring-white/30 backdrop-blur-sm sm:text-sm">
+            {display(profile.city)}, {display(profile.state)}
+          </span>
+
+          {/* Rating and Status */}
+          <div className="flex items-center gap-2 text-sm font-medium sm:text-base">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 fill-current text-amber-300 sm:h-5 sm:w-5"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 .587l3.668 7.431L24 9.748l-6 5.847 1.416 8.255L12 19.771l-7.416 4.079L6 15.595 0 9.748l8.332-1.73L12 .587z" />
+            </svg>
+            <span>{display(profile.avg_rating)}</span>
+            <span className="text-xs opacity-80 sm:text-sm">
+              ({profile.rating_count ?? 0} reviews)
+            </span>
+
+            {/* Open/Closed Status */}
+            <span
+              className={`ml-1 border-l border-white/40 pl-2 text-xs font-semibold sm:ml-2 sm:pl-3 sm:text-sm ${
+                profile.is_open ? "text-green-300" : "text-red-300"
+              }`}
+            >
+              {profile.is_open ? "Open Now" : "Currently Closed"}
+            </span>
+          </div>
+        </div>
+
+        {/* Edit Button */}
+        <div className="mt-4 sm:mt-6">
+          <Button
+            onClick={() => onEdit(true)}
+            className="rounded-full bg-white px-6 py-2 text-sm font-semibold text-gray-900 shadow-lg transition duration-200 hover:bg-gray-100 hover:shadow-xl sm:px-8 sm:py-3 sm:text-base"
+          >
+            Edit Profile
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
       {/* Left Column: Overview, Tags, Hours (2/3 width on desktop) */}
       <div className="space-y-8">
@@ -177,6 +182,18 @@ export default function ViewMyRestaurant({
               ))}
             </div>
           </div>
+          
+            {/* Selected Value Indicator */}
+            <div className="flex items-center gap-2 mt-5 p-1">
+              <span className="text-base font-medium text-gray-600">Brand Color:</span>
+              <span
+                className="inline-block h-5 w-5 rounded-full border border-gray-300"
+                style={{ backgroundColor: profile?.brand_color || "#ffffff" }}
+              />
+              <span className="font-mono text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 border border-gray-200 px-2 py-0.5 rounded-md">
+                {profile?.brand_color || "Not yet added"}
+              </span>
+            </div>
         </section>
 
         {/* Right Column: Contact Info (1/3 width on desktop) */}
