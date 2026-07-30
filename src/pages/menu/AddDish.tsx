@@ -709,13 +709,35 @@ export const AddDish: React.FC<{
       {/* PREP TIME */}
       <div>
         <Label>Preparation Time</Label>
-        <Input
-          type="time"
-          value={dishForm.prep_time ? dishForm.prep_time.slice(0, 5) : ""}
+        <select
+          value={dishForm.prep_time}
           onChange={(e) =>
-            setDishForm((prev) => ({ ...prev, prep_time: e.target.value ? e.target.value + ":00" : "" }))
+            setDishForm((prev) => ({ ...prev, prep_time: e.target.value }))
           }
-        />
+          className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
+        >
+          <option value="">Select prep time</option>
+          <option value="00:02:00">2 minutes</option>
+          <option value="00:04:00">4 minutes</option>
+          <option value="00:06:00">6 minutes</option>
+          <option value="00:08:00">8 minutes</option>
+          <option value="00:10:00">10 minutes</option>
+          <option value="00:15:00">15 minutes</option>
+          <option value="00:20:00">20 minutes</option>
+          <option value="00:25:00">25 minutes</option>
+          <option value="00:30:00">30 minutes</option>
+          <option value="00:35:00">35 minutes</option>
+          <option value="00:40:00">40 minutes</option>
+          <option value="00:45:00">45 minutes</option>
+          <option value="00:50:00">50 minutes</option>
+          <option value="00:55:00">55 minutes</option>
+          <option value="01:00:00">1hr</option>
+          <option value="01:20:00">1hr 20min</option>
+          <option value="01:30:00">1hr 30min</option>
+          <option value="01:40:00">1hr 40min</option>
+          <option value="01:50:00">1hr 50min</option>
+          <option value="02:00:00">2hrs</option>
+        </select>
         {validationErrors.prep_time && (
           <p className="mt-1 text-xs text-red-600">
             {validationErrors.prep_time}
