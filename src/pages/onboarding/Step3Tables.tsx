@@ -6,7 +6,18 @@ import { Field, NumberStepper, StepActions, StepHeader } from "./ui";
 import { obChip, obChipActive, obChipIdle, obField } from "./tokens";
 import { FloorData } from "./types";
 
-const DEFAULT_AREAS = ["Main Dining", "Outdoor", "Upstairs", "Private Room"];
+const DEFAULT_AREAS = [
+  "Main Dining",
+  "Outdoor / Patio",
+  "Upstairs",
+  "Mezzanine",
+  "Private Dining Room",
+  "VIP Lounge",
+  "Bar & Lounge",
+  "Chef's Table",
+  "Counter Seating",
+  "Rooftop"
+];
 const METHODS = ["Dine-in", "Takeaway", "Online ordering", "Delivery", "Reservations"];
 
 export function Step3Tables({

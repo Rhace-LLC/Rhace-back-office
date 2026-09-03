@@ -1,19 +1,20 @@
 export interface RestaurantInfo {
   name: string;
-  businessType: string;
+  description: string;
+  features: string[];
   phone: string;
   email: string;
-  country: string;
-  stateCity: string;
   address: string;
+  city: string;
+  state: string;
+  country: string;
   website: string;
   instagram: string;
-  description: string;
   logoUrl?: string;
   coverUrl?: string;
 }
 
-export type MenuMode = "manual" | "import" | "sample" | "later";
+export type MenuMode = "sample" | "manual" | "import" | "later";
 
 export interface MenuDraftItem {
   name: string;
@@ -25,6 +26,9 @@ export interface MenuDraftItem {
 
 export interface MenuData {
   mode: MenuMode;
+  /** Restaurant-level dish categories the user serves. */
+  categories: string[];
+  /** Selected dishes (from the sample set, manual builder, etc.). */
   items: MenuDraftItem[];
 }
 

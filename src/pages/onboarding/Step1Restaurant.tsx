@@ -1,20 +1,31 @@
 "use client";
 import { useState } from "react";
-import { ImagePlus, X } from "lucide-react";
+import { ImagePlus, MapPin, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Field, StepActions, StepHeader } from "./ui";
-import { obField, obTextarea } from "./tokens";
+import { obField, obLabel, obTextarea } from "./tokens";
 import { RestaurantInfo } from "./types";
+import { AutocompleteAddress } from "@/pages/myRestaurant/AutocompleteAddress";
+import { PickAddressFromMap } from "@/pages/myRestaurant/PickAddrFromMap";
+import { ReverseGeocodeResult, Suggestion } from "@/utils/geocode";
 
-const BUSINESS_TYPES = [
-  "Restaurant",
+const FEATURES = [
   "Café",
   "Bar",
   "Lounge",
   "Bakery",
   "Fast Food",
   "Catering",
-  "Other",
+  "Takeaway counter",
+  "Outdoor seating",
+  "Rooftop",
+  "Private dining room",
+  "Delivery / cloud kitchen",
+  "Drive-through",
+  "Live music / entertainment",
+  "Coffee & dessert bar",
+  "Shisha lounge",
+  "Event / party hosting",
 ];
 
 function ImageDrop({
@@ -71,27 +82,52 @@ export function Step1Restaurant({
 }: {
   onContinue: (data: RestaurantInfo) => void;
 }) {
+  const [pickAddrFromMap, setPickAddrFromMap] = useState(false);
   const [form, setForm] = useState<RestaurantInfo>({
     name: "",
-    businessType: "",
+    description: "",
+    features: [],
     phone: "",
     email: "",
-    country: "Nigeria",
-    stateCity: "",
     address: "",
+    city: "",
+    state: "",
+    country: "Nigeria",
     website: "",
     instagram: "",
-    description: "",
   });
 
   const set = <K extends keyof RestaurantInfo>(key: K, value: RestaurantInfo[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
+  /** Apply a resolved location (map confirm / autocomplete select). */
+  const applyLocation = (loc: {
+    address?: string | null;
+    city?: string | null;
+    state?: string | null;
+    country?: string | null;
+  }) => {
+    setForm((prev) => ({
+      ...prev,
+      address: (loc.address ?? prev.address) || "",
+      city: (loc.city ?? prev.city) || "",
+      state: (loc.state ?? prev.state) || "",
+      country: (loc.country ?? prev.country) || prev.country,
+    }));
+  };
+
+  const toggleFeature = (feature: string) =>
+    setForm((prev) => ({
+      ...prev,
+      features: prev.features.includes(feature)
+        ? prev.features.filter((f) => f !== feature)
+        : [...prev.features, feature],
+    }));
+
   const requiredOk =
     form.name.trim() !== "" &&
-    form.businessType !== "" &&
     form.phone.trim() !== "" &&
-    form.stateCity.trim() !== "";
+    (form.city.trim() !== "" || form.state.trim() !== "");
 
   return (
     <>
@@ -102,38 +138,56 @@ export function Step1Restaurant({
       />
 
       <div className="space-y-5">
-        {/* Name + type */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <Field id="ob-name" label="Restaurant name" required>
-            <input
-              id="ob-name"
-              className={obField}
-              value={form.name}
-              onChange={(e) => set("name", e.target.value)}
-              placeholder="e.g. Rhace Kitchen"
-            />
-          </Field>
-          <Field id="ob-type" label="Business type" required>
-            <div className="grid grid-cols-2 gap-2">
-              {BUSINESS_TYPES.map((type) => (
+        {/* Name — full width */}
+        <Field id="ob-name" label="Restaurant name" required>
+          <input
+            id="ob-name"
+            className={obField}
+            value={form.name}
+            onChange={(e) => set("name", e.target.value)}
+            placeholder="e.g. Rhace Kitchen"
+          />
+        </Field>
+
+        {/* Description — right after the name */}
+        <Field id="ob-desc" label="Short description">
+          <textarea
+            id="ob-desc"
+            className={obTextarea}
+            value={form.description}
+            onChange={(e) => set("description", e.target.value)}
+            placeholder="A sentence about your restaurant…"
+          />
+        </Field>
+
+        {/* Additional features — multi-select */}
+        <Field
+          id="ob-features"
+          label="What other features does your restaurant have?"
+          hint="Select all that apply. A restaurant can be any combination of these."
+        >
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {FEATURES.map((feature) => {
+              const active = form.features.includes(feature);
+              return (
                 <button
-                  key={type}
+                  key={feature}
                   type="button"
-                  aria-pressed={form.businessType === type}
-                  onClick={() => set("businessType", type)}
+                  aria-pressed={active}
+                  onClick={() => toggleFeature(feature)}
                   className={cn(
                     "rounded-[10px] border px-3 py-2.5 text-sm leading-5 transition-colors duration-150",
-                    form.businessType === type
+                    active
                       ? "border-brand bg-brand/[0.04] font-medium text-brand ring-1 ring-brand"
                       : "border-line bg-surface text-ink-muted hover:border-line-strong hover:text-ink"
                   )}
                 >
-                  {type}
+                  {feature}
                 </button>
-              ))}
-            </div>
-          </Field>
-        </div>
+              );
+            })}
+          </div>
+        </Field>
 
         {/* Phone + email */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -159,37 +213,107 @@ export function Step1Restaurant({
           </Field>
         </div>
 
-        {/* Country + state */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <Field id="ob-country" label="Country">
-            <input
-              id="ob-country"
-              className={obField}
-              value={form.country}
-              onChange={(e) => set("country", e.target.value)}
-            />
-          </Field>
-          <Field id="ob-state" label="State / City" required>
-            <input
-              id="ob-state"
-              className={obField}
-              value={form.stateCity}
-              onChange={(e) => set("stateCity", e.target.value)}
-              placeholder="e.g. Lagos"
-            />
-          </Field>
-        </div>
+        {/* ------- Location & Contact ------- */}
+        <div className="rounded-[16px] border border-line bg-cardfill p-4 sm:p-5">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium leading-5 text-ink">
+                Where is your restaurant?
+              </p>
+              <p className="mt-0.5 text-xs leading-[17px] text-ink-subtle">
+                Add the full address or pick a spot on the map — it helps
+                customers find you.
+              </p>
+            </div>
 
-        {/* Address */}
-        <Field id="ob-address" label="Restaurant address">
-          <input
-            id="ob-address"
-            className={obField}
-            value={form.address}
-            onChange={(e) => set("address", e.target.value)}
-            placeholder="Street, area, city"
-          />
-        </Field>
+            <button
+              type="button"
+              onClick={() => setPickAddrFromMap((prev) => !prev)}
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors duration-150",
+                pickAddrFromMap
+                  ? "border-brand bg-brand/[0.06] text-brand"
+                  : "border-line bg-surface text-ink-muted hover:border-line-strong hover:text-ink"
+              )}
+            >
+              {pickAddrFromMap ? (
+                <>
+                  <X className="h-4 w-4" />
+                  Close Map View
+                </>
+              ) : (
+                <>
+                  <MapPin className="h-4 w-4" />
+                  Choose On Map
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Map chooser (reuses profile-page picker) */}
+          {pickAddrFromMap && (
+            <div className="mb-5 overflow-hidden rounded-[16px] border border-line bg-surface">
+              <PickAddressFromMap
+                onConfirm={(data: ReverseGeocodeResult) => {
+                  applyLocation({
+                    address: data.fullAddress,
+                    city: data.city,
+                    state: data.state,
+                    country: data.country,
+                  });
+                  setPickAddrFromMap(false);
+                }}
+              />
+            </div>
+          )}
+
+          {/* Full address with autocomplete */}
+          <div className="space-y-1">
+            <span className={obLabel}>Full Address</span>
+            <AutocompleteAddress
+              value={form.address}
+              onChange={(val) => set("address", val)}
+              onSelect={(suggestion: Suggestion) => {
+                applyLocation({
+                  address: suggestion.placeName,
+                  city: suggestion.city,
+                  state: suggestion.state,
+                  country: suggestion.country,
+                });
+              }}
+            />
+          </div>
+
+          {/* City / State / Country */}
+          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+            <Field id="ob-city" label="City" required>
+              <input
+                id="ob-city"
+                className={obField}
+                value={form.city}
+                onChange={(e) => set("city", e.target.value)}
+                placeholder="e.g. Lagos"
+              />
+            </Field>
+            <Field id="ob-state" label="State / Province">
+              <input
+                id="ob-state"
+                className={obField}
+                value={form.state}
+                onChange={(e) => set("state", e.target.value)}
+                placeholder="e.g. Lagos State"
+              />
+            </Field>
+            <Field id="ob-country" label="Country">
+              <input
+                id="ob-country"
+                className={obField}
+                value={form.country}
+                onChange={(e) => set("country", e.target.value)}
+              />
+            </Field>
+          </div>
+        </div>
 
         {/* Logo + cover */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -226,16 +350,6 @@ export function Step1Restaurant({
             />
           </Field>
         </div>
-
-        <Field id="ob-desc" label="Short description">
-          <textarea
-            id="ob-desc"
-            className={obTextarea}
-            value={form.description}
-            onChange={(e) => set("description", e.target.value)}
-            placeholder="A sentence about your restaurant…"
-          />
-        </Field>
       </div>
 
       <StepActions
