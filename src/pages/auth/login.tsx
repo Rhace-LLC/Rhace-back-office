@@ -2,7 +2,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
-import { Eye, EyeOff, Flag, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
@@ -13,6 +13,18 @@ import {
 } from "@/api-services/auth.service";
 import { parseError } from "@/api-services/utils/parseError";
 import RhaceImage from "../../assets/Rhace-10.png";
+import { AuthGlows } from "./AuthGlows";
+import { Button } from "@/components/ui/button";
+import {
+  authButton,
+  authField,
+  authLabel,
+  authPage,
+  authPanel,
+  authSubtitle,
+  authTitle,
+  authLink,
+} from "./authTokens";
 
 import "./auth.css";
 
@@ -77,7 +89,7 @@ export function Login() {
       const resendVerificationMail = await resendOtp({ email });
       toast.success("OTP has been resent successfully!");
       return resendVerificationMail;
-    } catch (error: any) {
+    } catch (error: unknown) {
       const message = parseError(error) || "Something went wrong!";
       toast.error(message);
     }
@@ -125,7 +137,7 @@ export function Login() {
 
       toast.success("Login successful!");
       navigate("/dashboard"); // or your desired route
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Login error:", error);
       const message = parseError(error) || "Something went wrong!";
       toast.error(message);
@@ -140,56 +152,52 @@ export function Login() {
   };
 
   return (
-    <>
-      <div className="item-center flex min-h-screen w-full justify-center bg-gray-50">
-        <div className="m-0 flex w-full max-w-5xl flex-col items-stretch gap-10 sm:m-15 md:m-25 md:flex-row md:gap-0">
-          <div className="rounded-0 md:rounded-r-0 flex-1 border-r-0 bg-white p-6">
-            <form className="space-y-5" onSubmit={handleSubmit}>
-              <div
-                id="form-top"
-                className="mb-10 flex items-center justify-between"
-              >
-                <img src={RhaceImage} className="w-20" />
+    <div
+      className={`${authPage} relative items-center overflow-hidden px-4 py-10 sm:px-6 sm:py-14`}
+    >
+      {/* Soft atmospheric accents (soft SaaS background treatment) */}
+      <AuthGlows />
+      <div className={`${authPanel} relative z-10 max-w-[1080px] overflow-hidden`}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[85vh]">
+          {/* ---------- Form column ---------- */}
+          <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-14 bg-white">
+            {/* Top brand + country */}
+            <div className="mb-10 flex items-center justify-between">
+              <img src={RhaceImage} alt="Rhace" className="h-auto w-[88px]" />
+              <span className="rounded-md bg-cardfill px-2 py-1 text-xs font-medium tracking-tight text-ink-muted">
+                NG
+              </span>
+            </div>
 
-                <div className="flex items-center gap-1">
-                  <Flag className="h-4 w-4 text-green-500" />
-                  <p className="text-sm font-semibold tracking-tighter">NG</p>
-                </div>
-              </div>
-              <div className="text-center">
-                <h1 className="text-3xl font-bold tracking-tighter">Hello!</h1>
-                <p className="mt-2 leading-relaxed text-gray-600">
-                  To access your account, enter your email and password. Make
-                  sure your details are correct and free of errors.
-                </p>
-              </div>
-              <div className="space-y-3">
-                <div className="space-y-2">
-                  <label
-                    htmlFor="email"
-                    className="text-sm font-medium tracking-tight text-gray-700"
-                  >
+            <div className="text-center lg:text-left">
+              <h1 className={authTitle}>Hello!</h1>
+              <p className={authSubtitle}>
+                To access your account, enter your email and password. Make
+                sure your details are correct and free of errors.
+              </p>
+            </div>
+
+            <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="email" className={authLabel}>
                     Email (User-ID)
                   </label>
-
                   <input
                     id="email"
                     type="email"
-                    className={`h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none`}
+                    className={authField}
                     placeholder="Enter your email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
-                <div className="space-y-2">
-                  <label
-                    htmlFor="password"
-                    className="text-sm font-medium tracking-tight text-gray-700"
-                  >
+
+                <div>
+                  <label htmlFor="password" className={authLabel}>
                     Password
                   </label>
-
                   <div className="relative">
                     <input
                       id="password"
@@ -198,14 +206,13 @@ export function Login() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className={`h-12 w-full rounded-sm bg-gray-100 px-5 pr-12 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none`}
+                      className={`${authField} pr-11`}
                     />
-
-                    {/* Show / Hide Button */}
                     <button
                       type="button"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-4 flex items-center text-gray-500 transition hover:text-gray-700"
+                      className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-ink-subtle transition-colors hover:text-ink"
                     >
                       {showPassword ? (
                         <EyeOff className="h-5 w-5" />
@@ -217,64 +224,63 @@ export function Login() {
                 </div>
               </div>
 
-              <p className="cursor-pointer text-sm font-medium text-blue-600 transition-colors hover:text-blue-700">
-                <Link to={"/forgot-password"}>Forgot Password?</Link>
-              </p>
+              <div className="flex items-center justify-between">
+                <p className={authLink}>
+                  <Link to={"/forgot-password"}>Forgot Password?</Link>
+                </p>
+              </div>
 
-              <button
+              <Button
+                type="submit"
                 disabled={loading}
-                className={`flex h-12 w-full items-center justify-center rounded-md bg-black font-medium tracking-tight text-white shadow-sm transition-all duration-200 hover:bg-gray-900 hover:shadow-md active:scale-[0.98] ${loading ? "cursor-not-allowed opacity-60 hover:bg-black hover:shadow-sm" : ""} `}
+                className={authButton}
               >
-                {loading ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                ) : (
-                  "Login"
-                )}
-              </button>
-              <p className="mt-4 text-center text-sm text-gray-700">
-                Are you new to the platform ?{" "}
-                <span className="text-gray-700">Register your restaurant</span>{" "}
-                here and{" "}
-                <Link to={"/signup"}>
-                  <span className="font-medium text-blue-600">
-                    sign up for an awesome experience
-                  </span>
-                </Link>
+                {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                Login
+              </Button>
+
+              <p className="text-center text-sm leading-5 text-ink-muted">
+                Are you new to the platform?{" "}
+                <Link to={"/signup"} className={authLink}>
+                  Register your restaurant
+                </Link>{" "}
+                here
               </p>
             </form>
           </div>
 
-          <div className="relative flex flex-1 items-center justify-center rounded-r-3xl bg-white p-5">
-            <div className="absolute inset-0 h-[100%] rounded-r-3xl bg-white/50 p-4">
-              {/* Your content goes here */}
-              <img
-                src={
-                  "https://res.cloudinary.com/mixam/image/upload/v1765439452/y8b1xjftocmfzaf6ycxe.png"
-                }
-                className="h-[100%] min-h-[500px] w-[100%] rounded-3xl"
-              />
-            </div>
-            <div className="mt-[24%] w-[90%] max-w-xs rounded-xl bg-white/50 p-6 text-center backdrop-blur-sm md:mt-[15%]">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={visibleIndex}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <h2 className="text-3xl text-gray-800">
-                    {businessTalks[visibleIndex].mainText}
-                  </h2>
-                  <p className="mt-10 text-sm text-gray-600">
-                    {businessTalks[visibleIndex].subText}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
+          {/* ---------- Visual column ---------- */}
+          <div className="relative hidden overflow-hidden bg-transparent lg:block">
+            <img
+              src={
+                "https://res.cloudinary.com/mixam/image/upload/v1765439452/y8b1xjftocmfzaf6ycxe.png"
+              }
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="relative flex h-full min-h-[640px] flex-col items-start justify-end p-10">
+              <div className="max-w-sm rounded-2xl border border-white/60 bg-white/70 p-6 text-center shadow-md backdrop-blur-md">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={visibleIndex}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <h2 className="text-[24px] leading-[29px] font-semibold tracking-[-0.4px] text-ink">
+                      {businessTalks[visibleIndex].mainText}
+                    </h2>
+                    <p className="mt-4 text-sm leading-5 text-ink-muted">
+                      {businessTalks[visibleIndex].subText}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -1,27 +1,26 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { parseError } from "@/api-services/utils/parseError";
 import { registerRestaurant } from "@/api-services/auth.service";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-//import RhaceImage from "../../assets/Rhace-10.png";
-import { UserRole } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import RhaceImage from "../../assets/Rhace-10.png";
+import { AuthGlows } from "./AuthGlows";
+import {
+  authButton,
+  authField,
+  authLabel,
+  authPage,
+  authPanel,
+  authSubtitle,
+  authTitle,
+  authLink,
+} from "./authTokens";
 
 import "./auth.css";
-
-export const UserRoleLabels: Record<UserRole, string> = {
-  admin: "Admin",
-  waiter: "Waiter",
-  kitchen: "Kitchen",
-  inventory_mgr: "Inventory Manager",
-  driver: "Driver",
-  customer: "Customer",
-  unassigned: "Unassigned",
-  restaurant_owner: "Owner",
-};
 
 export interface BasicSignUpData {
   owner_first_name: string;
@@ -37,7 +36,7 @@ interface FormErrors {
 }
 
 /** Validate basic signup form */
-export const validateBasicSignupForm = (form: BasicSignUpData) => {
+const validateBasicSignupForm = (form: BasicSignUpData) => {
   const errors: FormErrors = {};
 
   // --- Basic info ---
@@ -50,11 +49,11 @@ export const validateBasicSignupForm = (form: BasicSignUpData) => {
   }
 
   if (!form.owner_email?.trim()) {
-    errors.owner_email = "owner_Email is required";
+    errors.owner_email = "Email is required";
   }
 
   if (!form.owner_phone?.trim()) {
-    errors.owner_phone = "owner_Phone number is required";
+    errors.owner_phone = "Phone number is required";
   }
 
   if (!form.password?.trim()) {
@@ -65,16 +64,16 @@ export const validateBasicSignupForm = (form: BasicSignUpData) => {
     errors.confirm_password = "Confirm password is required";
   }
 
-  // --- owner_Email validation ---
-  const owner_emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (form.owner_email && !owner_emailRegex.test(form.owner_email)) {
-    errors.owner_email = "Invalid owner_email address";
+  // --- Email validation ---
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (form.owner_email && !emailRegex.test(form.owner_email)) {
+    errors.owner_email = "Invalid email address";
   }
 
-  // --- owner_Phone validation ---
-  const owner_phoneRegex = /^[0-9+]{7,15}$/;
-  if (form.owner_phone && !owner_phoneRegex.test(form.owner_phone)) {
-    errors.owner_phone = "Invalid owner_phone number";
+  // --- Phone validation ---
+  const phoneRegex = /^[0-9+]{7,15}$/;
+  if (form.owner_phone && !phoneRegex.test(form.owner_phone)) {
+    errors.owner_phone = "Invalid phone number";
   }
 
   // --- Password strength ---
@@ -99,44 +98,6 @@ export const validateBasicSignupForm = (form: BasicSignUpData) => {
   };
 };
 
-const businessTalks = [
-  {
-    mainText: "Effective Menu Planning for Seasonal and Holiday Specials",
-    subText:
-      "Offer seasonal and holiday dishes while keeping preparation manageable and quality consistent.",
-  },
-  {
-    mainText:
-      "Building Customer Loyalty Through Personalized Engagement Strategies",
-    subText:
-      "Use rewards and targeted promotions to encourage repeat visits and strengthen customer connections.",
-  },
-  {
-    mainText: "Maximizing Social Media Presence to Drive Restaurant Awareness",
-    subText:
-      "Engage your audience with high-quality content and consistent interaction across platforms.",
-  },
-  {
-    mainText: "Optimizing Supply Chain Management for Cost Efficiency",
-    subText:
-      "Reduce waste and maintain stock levels by improving supply chain efficiency.",
-  },
-  {
-    mainText: "Comprehensive Staff Training to Enhance Customer Experiences",
-    subText:
-      "Train staff thoroughly in service, menu knowledge, and operations for consistent experiences.",
-  },
-  {
-    mainText: "Implementing Data-Driven Marketing to Increase Brand Visibility",
-    subText:
-      "Use analytics to target campaigns and attract the right customers effectively.",
-  },
-  {
-    mainText: "Creating a Sustainable and Eco-Friendly Restaurant Operation",
-    subText:
-      "Adopt sustainable practices like local sourcing and waste reduction to appeal to conscious customers.",
-  },
-];
 // -------------------- COMPONENT --------------------
 export function SignUp() {
   const navigate = useNavigate();
@@ -147,7 +108,6 @@ export function SignUp() {
   const [showOwnerConfirmPassword, setShowOwnerConfirmPassword] =
     useState(false);
 
-  // Owner signup form
   // Basic signup form
   const [formData, setFormData] = useState<BasicSignUpData>({
     owner_first_name: "",
@@ -165,10 +125,8 @@ export function SignUp() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    e.preventDefault();
     const { valid, errors } = validateBasicSignupForm(formData);
     setErrors(errors);
-    console.log(valid, errors);
 
     if (!valid) {
       return;
@@ -176,13 +134,12 @@ export function SignUp() {
 
     setLoading(true);
     try {
-      const response = await registerRestaurant(formData);
-      console.log("Response:", response);
+      await registerRestaurant(formData);
       toast.success("Restaurant Registered successfully!");
       navigate(
         `/verify-email?email=${encodeURIComponent(formData.owner_email)}`
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
       const message = parseError(error) || "Something went wrong!";
       toast.error(message);
     } finally {
@@ -190,226 +147,190 @@ export function SignUp() {
     }
   };
 
-  const [visibleIndex, setVisibleIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setVisibleIndex((prev) => (prev + 1) % businessTalks.length);
-    }, 5000); // change every 3 seconds
-    return () => clearInterval(interval);
-  }, []);
+  const inputError = (field: string) =>
+    `${authField} ${errors[field] ? "border-red-400" : ""}`;
 
   return (
-    <>
-      <div className="signup-page-main item-center flex min-h-screen w-full justify-center">
-        <div className="fixed top-0 left-0 hidden h-full w-[40%] sm:block">
-          {/* Layer WRAPPER (creates stacking context) */}
-          <div className="relative h-full w-full rounded-3xl">
-            {/* Layer 1 — Background Image */}
-            <div className="absolute top-0 left-0 h-full w-full">
-              <img
-                src="https://res.cloudinary.com/mixam/image/upload/v1765439452/sb5gch0g6ologhm6mchk.png"
-                className="inset-0 mt-[5%] ml-[5%] h-[95%] w-[95%] rounded-4xl"
-              />
-            </div>
+    <div className={`${authPage} relative overflow-hidden py-10 sm:py-14`}>
+      {/* Soft atmospheric accents (soft SaaS background treatment) */}
+      <AuthGlows />
 
-            {/* Layer 2 — Text Overlay */}
-            <div className="absolute top-[25%] left-1/2 z-10 w-[80%] max-w-xs -translate-x-1/2 rounded-xl bg-white/50 p-6 text-center backdrop-blur-md">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={visibleIndex}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <h2 className="text-3xl text-gray-800">
-                    {businessTalks[visibleIndex].mainText}
-                  </h2>
-                  <p className="mt-10 text-sm text-gray-600">
-                    {businessTalks[visibleIndex].subText}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
-            </div>
+      <div className="relative z-10 flex w-full justify-center px-4 sm:px-6">
+        <div
+          className={`${authPanel} flex max-w-[880px] flex-col gap-6 bg-white px-6 py-8 sm:gap-8 sm:p-12 justify-center`}
+        >
+          {/* Top brand */}
+          <div className="flex items-center justify-between">
+            <img src={RhaceImage} alt="Rhace" className="h-auto w-[88px]" />
+            <Link to="/login" className="text-sm font-medium text-ink-muted transition-colors hover:text-ink">
+              Have an account? <span className={authLink}>Log in</span>
+            </Link>
           </div>
-        </div>
 
-        {/* Right side */}
-        <div className="w-full space-y-10 px-4 pt-4 sm:ml-[40%] sm:w-[60%] sm:px-9">
-          {/* Main Content Here */}
-
-          <div className="space-y-2">
-            <p className="mt-2 text-sm leading-relaxed text-gray-400">
-              Get Started for Free
-            </p>
-            <h1 className="text-3xl font-bold tracking-tighter">
+          {/* Heading */}
+          <div className="max-w-lg">
+            <p className="text-sm font-medium text-ink-muted">Get Started for Free</p>
+            <h1 className={`${authTitle} mt-2`}>
               Begin Your Journey With Rhace
             </h1>
-            <p className="mt-2 leading-relaxed text-gray-600">
+            <p className={authSubtitle}>
               Everything you need to run your restaurant smoothly—right at your
               fingertips.
             </p>
           </div>
-          <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+
+          <form onSubmit={handleSubmit} className="space-y-5">
             {/* OWNER FIRST + LAST NAME */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-sm font-medium tracking-tight text-gray-700">
-                  First Name
-                </label>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div>
+                <label className={authLabel}>First Name</label>
                 <input
-                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className={inputError("owner_first_name")}
                   value={formData.owner_first_name}
                   onChange={(e) =>
                     handleChange("owner_first_name", e.target.value)
                   }
                 />
                 {errors.owner_first_name && (
-                  <p className="text-sm text-red-500">
+                  <p className="mt-1 text-xs text-red-500">
                     {errors.owner_first_name}
                   </p>
                 )}
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium tracking-tight text-gray-700">
-                  Last Name
-                </label>
+              <div>
+                <label className={authLabel}>Last Name</label>
                 <input
-                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className={inputError("owner_last_name")}
                   value={formData.owner_last_name}
                   onChange={(e) =>
                     handleChange("owner_last_name", e.target.value)
                   }
                 />
                 {errors.owner_last_name && (
-                  <p className="text-sm text-red-500">
+                  <p className="mt-1 text-xs text-red-500">
                     {errors.owner_last_name}
                   </p>
                 )}
               </div>
             </div>
 
-            {/* OWNER owner_EMAIL + owner_PHONE */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-sm font-medium tracking-tight text-gray-700">
-                  Email
-                </label>
+            {/* OWNER EMAIL + PHONE */}
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div>
+                <label className={authLabel}>Email</label>
                 <input
-                  type="owner_email"
-                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  type="email"
+                  className={inputError("owner_email")}
                   value={formData.owner_email}
                   onChange={(e) => handleChange("owner_email", e.target.value)}
                 />
                 {errors.owner_email && (
-                  <p className="text-sm text-red-500">{errors.owner_email}</p>
+                  <p className="mt-1 text-xs text-red-500">{errors.owner_email}</p>
                 )}
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium tracking-tight text-gray-700">
-                  Phone
-                </label>
+              <div>
+                <label className={authLabel}>Phone</label>
                 <input
                   type="tel"
-                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className={inputError("owner_phone")}
                   value={formData.owner_phone}
                   onChange={(e) => handleChange("owner_phone", e.target.value)}
                 />
                 {errors.owner_phone && (
-                  <p className="text-sm text-red-500">{errors.owner_phone}</p>
+                  <p className="mt-1 text-xs text-red-500">{errors.owner_phone}</p>
                 )}
               </div>
             </div>
 
             {/* PASSWORD */}
-            <div className="relative space-y-2">
-              <label className="text-sm font-medium tracking-tight text-gray-700">
-                Password
-              </label>
-              <input
-                type={showOwnerPassword ? "text" : "password"}
-                className="h-12 w-full rounded-sm bg-gray-100 px-5 pr-12 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                value={formData.password}
-                onChange={(e) => handleChange("password", e.target.value)}
-              />
-              <button
-                type="button"
-                onClick={() => setShowOwnerPassword(!showOwnerPassword)}
-                className="absolute top-[40px] right-4 text-gray-500 hover:text-gray-700"
-              >
-                {showOwnerPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-              {errors.password && (
-                <p className="text-sm text-red-500">{errors.password}</p>
-              )}
-            </div>
-
-            {/* CONFIRM PASSWORD */}
-            <div className="relative space-y-2">
-              <label className="text-sm font-medium tracking-tight text-gray-700">
-                Confirm Password
-              </label>
-              <input
-                type={showOwnerConfirmPassword ? "text" : "password"}
-                className="h-12 w-full rounded-sm bg-gray-100 px-5 pr-12 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                value={formData.confirm_password}
-                onChange={(e) =>
-                  handleChange("confirm_password", e.target.value)
-                }
-              />
-              <button
-                type="button"
-                onClick={() =>
-                  setShowOwnerConfirmPassword(!showOwnerConfirmPassword)
-                }
-                className="absolute top-[40px] right-4 text-gray-500 hover:text-gray-700"
-              >
-                {showOwnerConfirmPassword ? (
-                  <EyeOff size={18} />
-                ) : (
-                  <Eye size={18} />
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div>
+                <label className={authLabel}>Password</label>
+                <div className="relative">
+                  <input
+                    type={showOwnerPassword ? "text" : "password"}
+                    className={`${inputError("password")} pr-11`}
+                    value={formData.password}
+                    onChange={(e) => handleChange("password", e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    aria-label={showOwnerPassword ? "Hide password" : "Show password"}
+                    onClick={() => setShowOwnerPassword(!showOwnerPassword)}
+                    className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-ink-subtle transition-colors hover:text-ink"
+                  >
+                    {showOwnerPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="mt-1 text-xs text-red-500">{errors.password}</p>
                 )}
-              </button>
-              {errors.confirm_password && (
-                <p className="text-sm text-red-500">
-                  {errors.confirm_password}
-                </p>
-              )}
+              </div>
+
+              {/* CONFIRM PASSWORD */}
+              <div>
+                <label className={authLabel}>Confirm Password</label>
+                <div className="relative">
+                  <input
+                    type={showOwnerConfirmPassword ? "text" : "password"}
+                    className={`${inputError("confirm_password")} pr-11`}
+                    value={formData.confirm_password}
+                    onChange={(e) =>
+                      handleChange("confirm_password", e.target.value)
+                    }
+                  />
+                  <button
+                    type="button"
+                    aria-label={
+                      showOwnerConfirmPassword ? "Hide password" : "Show password"
+                    }
+                    onClick={() =>
+                      setShowOwnerConfirmPassword(!showOwnerConfirmPassword)
+                    }
+                    className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-ink-subtle transition-colors hover:text-ink"
+                  >
+                    {showOwnerConfirmPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                </div>
+                {errors.confirm_password && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors.confirm_password}
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* SUBMIT BUTTON */}
-            <button
+            <Button
               type="submit"
               disabled={loading}
-              className="flex h-12 w-full items-center justify-center rounded-sm font-medium text-white transition-all duration-200"
-              style={{ backgroundColor: "#2542e3" }}
+              className={`${authButton} mt-2`}
             >
               {loading ? (
-                <span>
-                  <Loader2 className="mr-5 inline-block h-5 w-5 animate-spin" />{" "}
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
                   Registering...
-                </span>
+                </>
               ) : (
                 "Register Restaurant"
               )}
-            </button>
+            </Button>
           </form>
-          <p className="mt-4 text-center text-sm text-gray-700">
+
+          <p className="text-center text-sm leading-5 text-ink-muted">
             Already have an account?{" "}
-            <span className="text-gray-700">Login to your dashboard</span> here
-            and{" "}
-            <Link to={"/login"}>
-              <span className="font-medium text-blue-600">
-                continue your experience
-              </span>
+            <Link to={"/login"} className={authLink}>
+              Log in to your dashboard
             </Link>
           </p>
         </div>
       </div>
-      <div className="py-10" />
-    </>
+    </div>
   );
 }

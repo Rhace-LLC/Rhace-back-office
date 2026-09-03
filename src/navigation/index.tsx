@@ -32,6 +32,7 @@ import { ManageReservation } from "@/pages/reservations/re";
 import BillingPage from "@/pages/subscription";
 import { WalletAndAccount } from "@/pages/wallet&account";
 import { MapLocationProvider } from "@/contexts/MapLocationContext";
+import Onboarding from "@/pages/onboarding";
 
 export interface User {
   id: string;
@@ -145,6 +146,14 @@ function NavigationContent() {
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/onboarding"
+              element={
+                <ProtectedRoute allowedRoles={["restaurant_owner"]}>
+                  <Onboarding />
                 </ProtectedRoute>
               }
             />

@@ -5,7 +5,17 @@ import { useLoading } from "@/contexts/LoadingContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { requestPasswordReset } from "@/api-services/auth.service";
-import { Flag } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  authButton,
+  authField,
+  authLabel,
+  authPage,
+  authPanel,
+  authSubtitle,
+  authTitle,
+  authLink,
+} from "./authTokens";
 
 export interface FormErrors {
   [key: string]: string;
@@ -46,7 +56,7 @@ export default function ForgotPassword() {
 
       toast.success(response?.message || "Password reset link sent!");
       navigate(`/reset-password?email=${encodeURIComponent(email)}`);
-    } catch (error) {
+    } catch {
       toast.error("Failed to send reset link. Please try again.");
     } finally {
       setLoading(false);
@@ -55,105 +65,85 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="item-center flex min-h-screen w-full justify-center bg-gray-50">
-      <div className="m-0 flex w-full max-w-5xl flex-col items-stretch gap-10 sm:m-15 md:m-25 md:flex-row md:gap-0">
-        <div className="rounded-0 md:rounded-r-0 flex-1 border-r-0 bg-white p-6">
-          {/* TOP SECTION */}
-          <div
-            id="form-top"
-            className="mb-10 flex items-center justify-between"
-          >
-            <img src={RhaceLogo} className="w-20" />
-
-            <div className="flex items-center gap-1">
-              <Flag className="h-4 w-4 text-green-500" />
-              <p className="text-sm font-semibold tracking-tighter">NG</p>
+    <div className={`${authPage} items-center px-4 py-10 sm:px-6 sm:py-14`}>
+      <div className={`${authPanel} max-w-[1080px] overflow-hidden bg-white`}>
+        <div className="grid grid-cols-1 lg:grid-cols-2  min-h-[85vh]">
+          {/* ---------- Form column ---------- */}
+          <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-14">
+            <div className="mb-12 flex items-center justify-between">
+              <img src={RhaceLogo} alt="Rhace" className="h-auto w-[88px]" />
+              <span className="rounded-md bg-cardfill px-2 py-1 text-xs font-medium tracking-tight text-ink-muted">
+                NG
+              </span>
             </div>
-          </div>
-          <form className="space-y-5 py-20" onSubmit={handleSubmit}>
-            {/* TITLE */}
-            <div className="text-center">
-              <h1 className="text-3xl font-bold tracking-tighter">
-                Forgot Password
-              </h1>
-              <p className="mt-2 leading-relaxed text-gray-600">
+
+            <div className="text-center lg:text-left">
+              <h1 className={authTitle}>Forgot Password</h1>
+              <p className={authSubtitle}>
                 Enter the email linked to your account and we will send you a
                 password reset link.
               </p>
             </div>
 
-            {/* INPUT */}
-            <div className="space-y-3">
-              <div className="space-y-2">
-                <label
-                  htmlFor="email"
-                  className="text-sm font-medium tracking-tight text-gray-700"
-                >
+            <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+              <div>
+                <label htmlFor="email" className={authLabel}>
                   Email (User-ID)
                 </label>
-
                 <input
                   id="email"
                   type="email"
                   placeholder="Enter your email address"
                   value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-12 w-full rounded-sm bg-gray-100 px-5 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className={authField}
                 />
-
                 {errors.email && (
-                  <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                  <p className="mt-1 text-xs text-red-500">{errors.email}</p>
                 )}
               </div>
-            </div>
 
-            {/* SUBMIT BUTTON */}
-            <button
-              type="submit"
-              className="flex h-12 w-full items-center justify-center rounded-md bg-black font-medium tracking-tight text-white shadow-sm transition-all duration-200 hover:bg-gray-900 hover:shadow-md active:scale-[0.98]"
-            >
-              Send Reset Link
-            </button>
+              <Button type="submit" className={authButton}>
+                Send Reset Link
+              </Button>
 
-            {/* FOOTER LINK */}
-            <p className="mt-4 text-center text-sm text-gray-700">
-              Remember your password?{" "}
-              <Link to="/login">
-                <span className="font-medium text-blue-600">Back to login</span>
-              </Link>
-            </p>
-          </form>
-        </div>
-
-        {/* RIGHT SIDE IMAGE PANEL */}
-        <div className="relative flex flex-1 items-center justify-center rounded-r-3xl bg-white p-5">
-          <div className="absolute inset-0 h-[100%] rounded-r-3xl bg-white/50 p-4">
-            <img
-              src="https://res.cloudinary.com/mixam/image/upload/v1765439452/y8b1xjftocmfzaf6ycxe.png"
-              className="h-[100%] min-h-[500px] w-[100%] rounded-3xl"
-            />
+              <p className="text-center text-sm leading-5 text-ink-muted">
+                Remember your password?{" "}
+                <Link to="/login" className={authLink}>
+                  Back to login
+                </Link>
+              </p>
+            </form>
           </div>
 
-          <div className="mt-[20%] w-[90%] max-w-xs rounded-xl bg-white/50 p-6 text-center backdrop-blur-sm md:mt-[10%]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
-              >
-                <h2 className="text-3xl text-gray-800">
-                  Forgot Your Password?
-                </h2>
-                <p className="mt-10 text-sm text-gray-600">
-                  You're not alone — it’s one of the most common things. We’ll
-                  help you recover it in seconds.
-                </p>
-              </motion.div>
-            </AnimatePresence>
+          {/* ---------- Visual column ---------- */}
+          <div className="relative hidden overflow-hidden bg-page lg:block">
+            <img
+              src="https://res.cloudinary.com/mixam/image/upload/v1765439452/y8b1xjftocmfzaf6ycxe.png"
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="relative flex h-full min-h-[560px] flex-col items-start justify-end p-10">
+              <div className="max-w-sm rounded-2xl border border-white/60 bg-white/70 p-6 text-center shadow-md backdrop-blur-md">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <h2 className="text-[24px] leading-[29px] font-semibold tracking-[-0.4px] text-ink">
+                      Forgot Your Password?
+                    </h2>
+                    <p className="mt-4 text-sm leading-5 text-ink-muted">
+                      You're not alone — it's one of the most common things.
+                      We'll help you recover it in seconds.
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
           </div>
         </div>
       </div>

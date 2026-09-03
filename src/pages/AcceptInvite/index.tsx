@@ -30,7 +30,7 @@ export default function AcceptInvite() {
       console.log("Invite Accepted:", response);
 
       setSuccess(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       const message = parseError(err);
       setError(message || "Failed to accept invite. Please try again.");
     } finally {
@@ -49,18 +49,21 @@ export default function AcceptInvite() {
   }, [inviteToken]);
 
   return (
-    <div className="flex h-[80vh] flex-col items-center justify-center space-y-6 text-center">
+    <div className="flex min-h-screen w-full items-center justify-center bg-page px-4 py-10">
+      <div className="flex min-h-[60vh] w-full max-w-xl flex-col items-center justify-center space-y-6 rounded-[24px] border border-line bg-surface p-8 text-center shadow-md sm:p-10">
       {loading && (
         <div className="flex flex-col items-center gap-3">
-          <Loader2Icon className="h-10 w-10 animate-spin text-blue-600" />
-          <p className="font-medium text-gray-600">Accepting your invite...</p>
+          <Loader2Icon className="h-8 w-8 animate-spin text-brand" />
+          <p className="text-sm font-medium text-ink-muted">
+            Accepting your invite...
+          </p>
         </div>
       )}
 
       {!loading && error && (
         <div className="flex flex-col items-center gap-3">
-          <AlertCircle className="h-10 w-10 text-red-600" />
-          <p className="font-medium text-gray-700">{error}</p>
+          <AlertCircle className="h-10 w-10 text-red-500" />
+          <p className="font-medium text-ink-secondary">{error}</p>
           <Button variant="outline" onClick={handleAccept}>
             Retry
           </Button>
@@ -69,11 +72,11 @@ export default function AcceptInvite() {
 
       {!loading && success && (
         <div className="flex flex-col items-center gap-3">
-          <CheckCircle className="h-10 w-10 text-green-600" />
-          <p className="font-medium text-gray-700">
+          <CheckCircle className="h-10 w-10 text-emerald-500" />
+          <p className="font-medium text-ink-secondary">
             Invite accepted successfully! You may now log in.
           </p>
-          <p className="text-center text-sm text-gray-600">
+          <p className="max-w-md text-sm leading-5 text-ink-muted">
             Shortly, you will receive an email containing your temporary login
             credentials. Please make sure to change your password after you log
             in.
@@ -83,13 +86,14 @@ export default function AcceptInvite() {
               onClick={() => {
                 navigate("/login");
               }}
-              className="mx-auto w-max rounded-[10px] bg-blue-500 px-10 py-2"
+              className="h-10 px-8"
             >
               Proceed to Login
             </Button>
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
