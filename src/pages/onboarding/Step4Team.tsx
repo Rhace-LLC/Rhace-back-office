@@ -5,7 +5,17 @@ import { Field, StepActions, StepHeader } from "./ui";
 import { obField } from "./tokens";
 import { TeamData, TeamMemberDraft } from "./types";
 
-const ROLES = ["Manager", "Cashier", "Waiter", "Kitchen", "Accountant", "Admin"];
+const ROLES: { label: string; value: string }[] = [
+  { label: "Manager", value: "admin" },
+  { label: "Waiter", value: "waiter" },
+  { label: "Kitchen", value: "kitchen" },
+  { label: "Inventory Manager", value: "inventory_mgr" },
+  { label: "Driver", value: "driver" },
+  { label: "Admin", value: "admin" },
+];
+
+const roleLabel = (value: string) =>
+  ROLES.find((r) => r.value === value)?.label ?? value;
 
 const PERMISSION_HINT =
   "Permissions are applied automatically based on role — you can refine them later.";
@@ -21,13 +31,13 @@ export function Step4Team({
   const [draft, setDraft] = useState<TeamMemberDraft>({
     name: "",
     contact: "",
-    role: ROLES[0],
+    role: ROLES[0].value,
   });
 
   const addMember = () => {
     if (!draft.name.trim() || !draft.contact.trim()) return;
     setMembers((prev) => [...prev, { ...draft }]);
-    setDraft({ name: "", contact: "", role: ROLES[0] });
+    setDraft({ name: "", contact: "", role: ROLES[0].value });
   };
 
   return (
@@ -95,8 +105,8 @@ export function Step4Team({
               onChange={(e) => setDraft((p) => ({ ...p, role: e.target.value }))}
             >
               {ROLES.map((role) => (
-                <option key={role} value={role}>
-                  {role}
+                <option key={role.value} value={role.value}>
+                  {role.label}
                 </option>
               ))}
             </select>
@@ -133,7 +143,7 @@ export function Step4Team({
               </div>
               <div className="flex items-center gap-3">
                 <span className="rounded-[8px] bg-cardfill px-2.5 py-1 text-xs font-medium text-ink-secondary ring-1 ring-line">
-                  {member.role}
+                  {roleLabel(member.role)}
                 </span>
                 <button
                   type="button"

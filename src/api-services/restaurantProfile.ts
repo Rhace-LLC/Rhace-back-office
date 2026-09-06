@@ -19,6 +19,9 @@ export interface RestaurantProfile {
   country: string;
   description: string | null;
   tags: string[] | null;
+  features: string[];
+  current_onboarding_step: number;
+  onboarding_complete: boolean;
   cover_image: string | null;
   cover_image_url: string | null;
   opening_hours: OpeningHour[] | null;
@@ -71,9 +74,41 @@ export const updateRestaurantProfile = async (
 
 export const patchRestaurantProfile = async (
   id: string,
-  data: FormData,
+  data: FormData | Partial<RestaurantProfile>,
   token: string
 ): Promise<RestaurantProfile> => {
   const config = getConfig(`/restaurants/update/${id}`, "PATCH", token, data);
+  return bookiesAxiosInstance(config);
+};
+
+/**
+ * Mark a restaurant's onboarding as complete
+ */
+export const completeRestaurantOnboarding = async (
+  id: string,
+  token: string
+): Promise<{ message: string }> => {
+  const config = getConfig(
+    `/restaurants/${id}/complete-onboarding/`,
+    "PUT",
+    token
+  );
+  return bookiesAxiosInstance(config);
+};
+
+/**
+ * Update a restaurant's current onboarding step
+ */
+export const updateRestaurantOnboardingStep = async (
+  id: string,
+  stepNumber: number,
+  token: string
+): Promise<{ message: string }> => {
+  const config = getConfig(
+    `/restaurants/${id}/update-onboarding-step/`,
+    "PATCH",
+    token,
+    { step_number: stepNumber }
+  );
   return bookiesAxiosInstance(config);
 };

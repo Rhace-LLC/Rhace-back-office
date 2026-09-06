@@ -6,20 +6,24 @@ import { store } from "./store/store";
 import { LoadingProvider } from "./contexts/LoadingContext";
 import { ToastProvider } from "./contexts/ToastContext";
 import { Toaster } from "sonner";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./lib/queryClient";
 
 function App() {
   return (
     <>
       <ErrorBoundary>
-        <Provider store={store}>
-          <ToastProvider>
-            <LoadingProvider>
-              <AuthProvider>
-                <Navigation />
-              </AuthProvider>
-            </LoadingProvider>
-          </ToastProvider>
-        </Provider>
+        <QueryClientProvider client={queryClient}>
+          <Provider store={store}>
+            <ToastProvider>
+              <LoadingProvider>
+                <AuthProvider>
+                  <Navigation />
+                </AuthProvider>
+              </LoadingProvider>
+            </ToastProvider>
+          </Provider>
+        </QueryClientProvider>
         <Toaster position="top-right" />
       </ErrorBoundary>
     </>

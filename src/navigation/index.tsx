@@ -1,4 +1,6 @@
 import { useAuth, UserRole } from "@/contexts/AuthContext";
+import { useRestaurantProfileQuery } from "@/hooks/useRestaurantProfile";
+import { FullScreenLoader } from "@/components/FullScreenLoader";
 import NotFound from "@/pages/404";
 import React, { useEffect } from "react";
 import {
@@ -52,6 +54,72 @@ const ScrollToTop = () => {
   return null;
 };
 
+/** Routes that should never trap an authenticated owner. */
+const AUTH_PATHS = [
+  "/",
+  "/login",
+  "/signup",
+  "/forgot-password",
+  "/reset-password",
+  "/verify-email",
+  "/accept-invite",
+];
+
+/**
+ * 🚦 Session gate — sits above the app shell so nothing (chrome or page)
+ * flashes before we know where an authenticated restaurant owner belongs.
+ * While their onboarding state is being resolved we show a full-screen loader;
+ * owners who haven't completed onboarding are sent straight to /onboarding.
+ */
+function SessionGate({ children }: { children: React.ReactNode }) {
+  const auth = useAuth();
+  const location = useLocation();
+  const profileQuery = useRestaurantProfileQuery();
+
+  // 1. Restoring the session from storage.
+  if (auth.loading) {
+    return <FullScreenLoader label="Loading session…" />;
+  }
+
+  // 2. Only restaurant owners need the onboarding-state check.
+  if (!auth.isAuthenticated || !auth.isOwner) {
+    return <>{children}</>;
+  }
+
+  const { pathname } = location;
+  const isAuthPath = AUTH_PATHS.includes(pathname);
+  const isOnboarding = pathname === "/onboarding";
+
+  // 3. Wait for the restaurant profile before deciding where to route.
+  const profilePending =
+    profileQuery.isLoading ||
+    profileQuery.isFetching ||
+    (profileQuery.status !== "success" && profileQuery.status !== "error");
+
+  if (profilePending && !isOnboarding) {
+    return <FullScreenLoader label="Checking your restaurant…" />;
+  }
+
+  const onboardingComplete = Boolean(profileQuery.data?.onboarding_complete);
+
+  // 4. Authenticated owners should never linger on auth pages.
+  if (isAuthPath) {
+    return (
+      <Navigate
+        to={onboardingComplete ? "/dashboard" : "/onboarding"}
+        replace
+      />
+    );
+  }
+
+  // 5. Owners who haven't finished onboarding may only access /onboarding.
+  if (!isOnboarding && !onboardingComplete) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  return <>{children}</>;
+}
+
 /** 🔒 Protected Route Wrapper */
 function ProtectedRoute({
   children,
@@ -62,16 +130,32 @@ function ProtectedRoute({
 }) {
   const auth = useAuth();
   const location = useLocation();
+  const profileQuery = useRestaurantProfileQuery();
 
   if (auth.loading) {
-    return <div className="p-8 text-center">Loading Session...</div>;
+    return <FullScreenLoader label="Loading session…" />;
   }
 
   if (!auth.isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  // 🔹 FIRST: Force payout account setup
+  // 🔹 FIRST: Onboarding gate — owners must finish onboarding first.
+  if (auth.isOwner) {
+    if (profileQuery.isLoading || profileQuery.isFetching) {
+      return <FullScreenLoader label="Checking your restaurant…" />;
+    }
+
+    const onboardingComplete = Boolean(
+      profileQuery.data?.onboarding_complete
+    );
+
+    if (!onboardingComplete && location.pathname !== "/onboarding") {
+      return <Navigate to="/onboarding" replace />;
+    }
+  }
+
+  // 🔹 SECOND: Force payout account setup
   if (
     auth.isOwner &&
     !auth.hasPayoutAccount &&
@@ -80,7 +164,7 @@ function ProtectedRoute({
     return <Navigate to="/wallet-and-account" replace />;
   }
 
-  // 🔹 SECOND: Force subscription if payout is set but not subscribed
+  // 🔹 THIRD: Force subscription if payout is set but not subscribed
   if (
     auth.isOwner &&
     auth.hasPayoutAccount &&
@@ -90,7 +174,7 @@ function ProtectedRoute({
     return <Navigate to="/billings-and-subscriptions" replace />;
   }
 
-  // 🔹 THIRD: Role validation
+  // 🔹 FOURTH: Role validation
   if (allowedRoles && !allowedRoles.includes(auth.accountType as UserRole)) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -102,11 +186,13 @@ function Navigation(): React.JSX.Element {
   return (
     <Router>
       <ScrollToTop />
-      <DashboardLayout>
-        <MapLocationProvider>
-          <NavigationContent />
-        </MapLocationProvider>
-      </DashboardLayout>
+      <SessionGate>
+        <DashboardLayout>
+          <MapLocationProvider>
+            <NavigationContent />
+          </MapLocationProvider>
+        </DashboardLayout>
+      </SessionGate>
     </Router>
   );
 }

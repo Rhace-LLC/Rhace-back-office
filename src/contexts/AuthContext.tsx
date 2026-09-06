@@ -4,6 +4,7 @@ import {
   RestaurantDataLogin,
   UserDataLogin,
 } from "@/api-services/auth.service";
+import { queryClient } from "@/lib/queryClient";
 
 // ------------------ USER ROLE TYPE ------------------
 export type UserRole =
@@ -176,10 +177,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             _setHasSubscribed(storedHasSubscribed === "true");
         } else {
           localStorage.clear();
+          queryClient.clear();
         }
       } catch (err) {
         console.error("Token decode failed:", err);
         localStorage.clear();
+        queryClient.clear();
       }
     }
 
@@ -226,6 +229,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsAuthenticated(false);
 
     localStorage.clear();
+    queryClient.clear();
   };
 
   const saveProfile = (profile: UserDataLogin) => {

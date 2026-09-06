@@ -2,21 +2,22 @@
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+/** Backend steps shown in the wizard (Step 3 / "Setup" is hidden). */
 const STEPS = [
-  { label: "Restaurant", num: "01" },
-  { label: "Menu", num: "02" },
-  { label: "Setup", num: "03" },
-  { label: "Team", num: "04" },
-  { label: "Payments", num: "05" },
+  { label: "Restaurant", num: "01", value: 1 },
+  { label: "Menu", num: "02", value: 2 },
+  { label: "Team", num: "04", value: 4 },
+  { label: "Payments", num: "05", value: 5 },
 ];
 
 export function StepProgress({ current }: { current: number }) {
+  const currentIndex = STEPS.findIndex((s) => s.value === current);
+
   return (
     <ol className="flex w-full items-center justify-center gap-0 sm:gap-1">
       {STEPS.map((step, i) => {
-        const index = i + 1;
-        const done = index < current;
-        const active = index === current;
+        const done = currentIndex > -1 && i < currentIndex;
+        const active = step.value === current;
         return (
           <li key={step.num} className="flex items-center">
             <div className="flex flex-col items-center gap-1.5">
@@ -47,7 +48,7 @@ export function StepProgress({ current }: { current: number }) {
                 aria-hidden
                 className={cn(
                   "mx-1 mb-4 h-px w-4 sm:mx-2 sm:w-8",
-                  index < current ? "bg-brand" : "bg-line"
+                  i + 1 < currentIndex ? "bg-brand" : "bg-line"
                 )}
               />
             )}
