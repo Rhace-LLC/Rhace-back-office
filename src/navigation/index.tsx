@@ -141,18 +141,25 @@ function ProtectedRoute({
   }
 
   // 🔹 FIRST: Onboarding gate — owners must finish onboarding first.
-  if (auth.isOwner) {
+  // An owner mid-onboarding is only ever allowed to be on /onboarding.
+  // The payout-account and subscription gates below must NOT run until the
+  // owner has completed onboarding, otherwise they fight the onboarding gate
+  // and produce a /onboarding <-> /wallet-and-account redirect loop.
+  const onboardingComplete = auth.isOwner
+    ? Boolean(profileQuery.data?.onboarding_complete)
+    : true;
+
+  if (auth.isOwner && !onboardingComplete) {
     if (profileQuery.isLoading || profileQuery.isFetching) {
       return <FullScreenLoader label="Checking your restaurant…" />;
     }
 
-    const onboardingComplete = Boolean(
-      profileQuery.data?.onboarding_complete
-    );
-
-    if (!onboardingComplete && location.pathname !== "/onboarding") {
+    if (location.pathname !== "/onboarding") {
       return <Navigate to="/onboarding" replace />;
     }
+
+    // Onboarding wins — allow the wizard to render without further gating.
+    return <>{children}</>;
   }
 
   // 🔹 SECOND: Force payout account setup

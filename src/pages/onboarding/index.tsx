@@ -195,12 +195,11 @@ export default function Onboarding() {
     for (const member of members) {
       const [firstName = "", ...rest] = member.name.trim().split(/\s+/);
       const lastName = rest.join(" ");
-      const isEmail = /@/.test(member.contact);
       const body = {
         first_name: firstName,
         last_name: lastName,
-        email: isEmail ? member.contact : "",
-        phone: isEmail ? "" : member.contact,
+        email: member.contact.trim(),
+        phone: "",
         role: member.role,
       };
       try {

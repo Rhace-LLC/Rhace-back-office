@@ -86,15 +86,16 @@ export function Step4Team({
               placeholder="Full name"
             />
           </Field>
-          <Field id="ob-m-contact" label="Phone / Email">
+          <Field id="ob-m-contact" label="Email">
             <input
               id="ob-m-contact"
+              type="email"
               className={`${obField} bg-surface`}
               value={draft.contact}
               onChange={(e) =>
                 setDraft((p) => ({ ...p, contact: e.target.value }))
               }
-              placeholder="Phone or email"
+              placeholder="you@restaurant.com"
             />
           </Field>
           <Field id="ob-m-role" label="Role">
