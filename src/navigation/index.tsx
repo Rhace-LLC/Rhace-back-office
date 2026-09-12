@@ -16,6 +16,7 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Login } from "@/pages/auth/login";
 import { Dashboard } from "@/pages/dashboard";
 import { TablesPage } from "@/pages/tables";
+import { WaiterAssignmentPage } from "@/pages/tables/WaiterAssignmentPage";
 import { MenuManagement } from "@/pages/menu";
 import { Notifications } from "@/pages/notification";
 import { Profile } from "@/pages/profile";
@@ -35,6 +36,10 @@ import BillingPage from "@/pages/subscription";
 import { WalletAndAccount } from "@/pages/wallet&account";
 import { MapLocationProvider } from "@/contexts/MapLocationContext";
 import Onboarding from "@/pages/onboarding";
+import PromotionsPage from "@/pages/promotions";
+import EntertainmentPage from "@/pages/entertainment";
+import DebugPage from "@/pages/debug";
+import { isLocalEnv } from "@/lib/env";
 
 export interface User {
   id: string;
@@ -62,7 +67,6 @@ const AUTH_PATHS = [
   "/forgot-password",
   "/reset-password",
   "/verify-email",
-  "/accept-invite",
 ];
 
 /**
@@ -75,6 +79,12 @@ function SessionGate({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
   const location = useLocation();
   const profileQuery = useRestaurantProfileQuery();
+
+  // Accepting an invite must always run, signed in or not. It has the highest
+  // priority so the auth/onboarding/session redirects can never swallow it.
+  if (location.pathname === "/accept-invite") {
+    return <>{children}</>;
+  }
 
   // 1. Restoring the session from storage.
   if (auth.loading) {
@@ -262,6 +272,16 @@ function NavigationContent() {
               }
             />
             <Route
+              path="/tables/waiter-assignment"
+              element={
+                <ProtectedRoute
+                  allowedRoles={["admin", "waiter", "restaurant_owner"]}
+                >
+                  <WaiterAssignmentPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/reservations"
               element={
                 <ProtectedRoute
@@ -316,6 +336,22 @@ function NavigationContent() {
               }
             />
             <Route
+              path="/promotions"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
+                  <PromotionsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/entertainment"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
+                  <EntertainmentPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/billings-and-subscriptions"
               element={
                 <ProtectedRoute allowedRoles={["restaurant_owner"]}>
@@ -355,6 +391,18 @@ function NavigationContent() {
                 </ProtectedRoute>
               }
             />
+
+            {/* Local-only debug surface */}
+            {isLocalEnv() && (
+              <Route
+                path="/debug"
+                element={
+                  <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
+                    <DebugPage />
+                  </ProtectedRoute>
+                }
+              />
+            )}
 
             {/* 404 - Must be last */}
             <Route path="*" Component={NotFound} />

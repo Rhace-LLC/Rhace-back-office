@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 // <-- adjust import path
 import { parseError } from "@/api-services/utils/parseError";
@@ -38,13 +38,22 @@ export default function AcceptInvite() {
     }
   };
 
+  // Guards against React StrictMode's double effect invocation (and any
+  // remount) firing the one-time acceptance request twice. The invite token is
+  // single-use, so a duplicate call reports it as expired/already accepted.
+  const attemptedTokenRef = useRef<string | null>(null);
+
   useEffect(() => {
-    // Automatically attempt acceptance when token is present
-    if (inviteToken) {
-      handleAccept();
-    } else {
+    if (!inviteToken) {
       setError("Invalid or missing invite token.");
+      return;
     }
+
+    // Already attempted this token (e.g. StrictMode's second effect run).
+    if (attemptedTokenRef.current === inviteToken) return;
+
+    attemptedTokenRef.current = inviteToken;
+    handleAccept();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inviteToken]);
 

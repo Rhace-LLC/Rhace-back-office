@@ -61,6 +61,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     return <>{children}</>;
   }
 
+  // Invite acceptance is a standalone page — no header/rail — even when the
+  // current browser happens to have an active session.
+  if (location.pathname === "/accept-invite") {
+    return <>{children}</>;
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col text-foreground">
       {/* ---------- Top Navigation (component-shell.md §1) ---------- */}
