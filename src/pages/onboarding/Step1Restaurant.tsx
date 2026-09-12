@@ -6,8 +6,9 @@ import { Field, StepActions, StepHeader } from "./ui";
 import { obField, obLabel, obTextarea } from "./tokens";
 import { RestaurantInfo } from "./types";
 import { AutocompleteAddress } from "@/pages/myRestaurant/AutocompleteAddress";
-import { PickAddressFromMap } from "@/pages/myRestaurant/PickAddrFromMap";
-import { ReverseGeocodeResult, Suggestion } from "@/utils/geocode";
+import { MapPicker } from "@/components/map/MapPicker";
+import type { MapLocation } from "@/components/map/types";
+import { Suggestion } from "@/utils/geocode";
 
 const FEATURES = [
   "Café",
@@ -250,11 +251,11 @@ export function Step1Restaurant({
             </button>
           </div>
 
-          {/* Map chooser (reuses profile-page picker) */}
+          {/* Map chooser (Mapbox or Google Maps) */}
           {pickAddrFromMap && (
             <div className="mb-5 overflow-hidden rounded-[16px] border border-line bg-surface">
-              <PickAddressFromMap
-                onConfirm={(data: ReverseGeocodeResult) => {
+              <MapPicker
+                onConfirm={(data: MapLocation) => {
                   applyLocation({
                     address: data.fullAddress,
                     city: data.city,

@@ -7,9 +7,10 @@ import {
   OpeningHour,
   RestaurantProfile,
 } from "@/api-services/restaurantProfile";
-import { PickAddressFromMap } from "./PickAddrFromMap";
+import { MapPicker } from "@/components/map/MapPicker";
 import { cn } from "@/lib/utils";
-import { ReverseGeocodeResult, Suggestion } from "@/utils/geocode";
+import { Suggestion } from "@/utils/geocode";
+import type { MapLocation } from "@/components/map/types";
 import { AutocompleteAddress } from "./AutocompleteAddress";
 
 interface Props {
@@ -252,8 +253,8 @@ export default function EditRestaurantProfile({
         <div className="relative overflow-hidden rounded-[2.5rem] bg-gray-50/50 ring-1 ring-gray-100">
           {pickAddrFromMap && (
             <div className="animate-in fade-in zoom-in-95 duration-500">
-              <PickAddressFromMap
-                onConfirm={(data: ReverseGeocodeResult) => {
+              <MapPicker
+                onConfirm={(data: MapLocation) => {
                   updateField("address", data.fullAddress);
                   updateField("city", data.city);
                   updateField("state", data.state);
