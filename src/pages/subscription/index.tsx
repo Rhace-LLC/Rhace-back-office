@@ -10,6 +10,7 @@ import {
   getSubscriptionStatus,
   initiateRenewalPayment,
   initiateSubscriptionPayment,
+  selectPayAsYouGoSubscription,
   SubscriptionPlan,
 } from "@/api-services/subscriptiions.service";
 
@@ -122,7 +123,33 @@ export default function BillingPage() {
 
   // if no subscription is found, then load the plans and render the UI for subscription plans
 
+  const handlePayAsYouGoSelect = async (plan: SubscriptionPlan) => {
+    try {
+      setLoading(true);
+      setLoadingText("Activating Pay As You Go...");
+
+      const res = await selectPayAsYouGoSubscription(plan.id, auth.token);
+
+      auth.setHasSubscribed(true);
+      toast.success(res.message || `${plan.name} activated successfully!`);
+
+      await fetchStatus();
+    } catch (error) {
+      const message = parseError(error);
+      toast.error(message || "Failed to activate pay-as-you-go plan.");
+    } finally {
+      setLoading(false);
+      setLoadingText(""); // Reset loading text
+    }
+  };
+
   const handleSelectPlan = (plan: SubscriptionPlan) => {
+    // Pay-as-you-go plans are activated directly — no payment checkout.
+    if (plan.plan_type === "pay_as_you_go") {
+      handlePayAsYouGoSelect(plan);
+      return;
+    }
+
     setSlectedPlan(plan);
     setProceedModalOpen(true);
   };

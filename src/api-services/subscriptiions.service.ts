@@ -147,6 +147,7 @@ export interface PaymentHistory {
 export interface SubscriptionPlan {
   id: string;
   name: string;
+  plan_type: string;
   base_price: string;
   staff_threshold: number;
   surcharge_percentage: string;
@@ -157,6 +158,15 @@ export interface SubscriptionPlan {
 }
 
 export type GetSubscriptionPlansResponse = SubscriptionPlan[];
+
+/** POST /subscriptions/pay-as-you-go/select/ */
+export interface SelectPayAsYouGoBody {
+  plan_id: string;
+}
+
+export interface SelectPayAsYouGoResponse extends Partial<SubscriptionDetails> {
+  message?: string;
+}
 
 /** GET /subscriptions/status/ */
 export interface SubscriptionStatus {
@@ -247,6 +257,20 @@ export const getSubscriptionPlans = async (
   token?: string
 ): Promise<GetSubscriptionPlansResponse> => {
   const config = getConfig("/subscriptions/plans/", "GET", token);
+  return bookiesAxiosInstance(config);
+};
+
+/** POST — Select and activate pay-as-you-go subscription */
+export const selectPayAsYouGoSubscription = async (
+  plan_id: string,
+  token?: string
+): Promise<SelectPayAsYouGoResponse> => {
+  const config = getConfig(
+    "/subscriptions/pay-as-you-go/select/",
+    "POST",
+    token,
+    { plan_id }
+  );
   return bookiesAxiosInstance(config);
 };
 
