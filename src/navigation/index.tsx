@@ -40,6 +40,8 @@ import PromotionsPage from "@/pages/promotions";
 import EntertainmentPage from "@/pages/entertainment";
 import DebugPage from "@/pages/debug";
 import { isLocalEnv } from "@/lib/env";
+import { AllShiftsAdmin } from "@/pages/staffmanagement/AllShifts";
+import StaffIntelligenceAnalytics from "@/pages/staffmanagement/StaffAnalyticsAdmin";
 
 export interface User {
   id: string;
@@ -314,6 +316,22 @@ function NavigationContent() {
               element={
                 <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
                   <ManageStaff />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/staff/report"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
+                  <StaffIntelligenceAnalytics />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/staff/shifts"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
+                  <AllShiftsAdmin />
                 </ProtectedRoute>
               }
             />

@@ -70,7 +70,27 @@ export function useRoleBasedMenu(): MenuItem[] {
       { title: "Categories", url: "/category", icon: Layers3 },
       { title: "Inventory", url: "/inventory", icon: Package },
       { title: "Menu Management", url: "/menu", icon: Utensils },
-      { title: "Staff", url: "/staff", icon: Users },
+            {
+        title: "Staff Management",
+        icon: Users,
+        items: [
+          {
+            title: "All Staffs",
+            url: "/staff",
+            icon: ListOrdered,
+          },
+          {
+            title: "Shift Logs",
+            url: "/staff/shifts",
+            icon: ListOrdered,
+          },
+          {
+            title: "Report",
+            url: "/staff/report",
+            icon: UserCheck,
+          },
+        ],
+      },
       {
         title: "Restaurant Experience",
         icon: Sparkles,

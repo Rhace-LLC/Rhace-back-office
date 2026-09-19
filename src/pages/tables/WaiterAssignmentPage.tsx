@@ -29,6 +29,7 @@ export function WaiterAssignmentPage() {
         <WaiterAssignmentView
           onRefresh={() => fetchAssignments(true)}
           assignment={userAssignment}
+          isLoading={loading}
         />
       )}
 
