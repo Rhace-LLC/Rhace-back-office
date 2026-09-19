@@ -51,7 +51,7 @@ export const StaffShiftWidget = () => {
     setActionLoading(true);
     setError(null);
     try {
-      const res = await clockOutShift({}, token);
+      await clockOutShift({}, token);
       setActiveShift(null);
     } catch (err: any) {
       setError("Failed to clock out");
