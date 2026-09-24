@@ -1,50 +1,57 @@
+import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 import type { MapLocation, Suggestion } from "../types";
 
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+setOptions({
+  key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+  v: "weekly",
+});
 
-interface GoogleAddressComponent {
-  long_name: string;
-  short_name: string;
-  types: string[];
-}
+let geocoderPromise: Promise<google.maps.Geocoder> | null = null;
 
-interface GoogleGeocodeResult {
-  formatted_address?: string;
-  address_components?: GoogleAddressComponent[];
-  geometry?: { location?: { lat: number; lng: number } };
-}
+const getGeocoder = () => {
+  if (!geocoderPromise) {
+    geocoderPromise = (async () => {
+      await importLibrary("geocoding");
+      return new google.maps.Geocoder();
+    })();
+  }
+  return geocoderPromise;
+};
 
-interface GoogleGeocodeResponse {
-  results?: GoogleGeocodeResult[];
-}
-
-const component = (result: GoogleGeocodeResult, type: string) =>
-  result.address_components?.find((c) => c.types.includes(type))?.long_name ??
+const component = (
+  result: google.maps.GeocoderResult,
+  type: string
+): string | null =>
+  result.address_components.find((c) => c.types.includes(type))?.long_name ??
   null;
 
-const cityOf = (result: GoogleGeocodeResult) =>
+const cityOf = (result: google.maps.GeocoderResult): string | null =>
   component(result, "locality") ??
   component(result, "postal_town") ??
   component(result, "administrative_area_level_2");
 
+const latOf = (result: google.maps.GeocoderResult): number =>
+  result.geometry.location.lat();
+
+const lngOf = (result: google.maps.GeocoderResult): number =>
+  result.geometry.location.lng();
+
+const toSuggestion = (r: google.maps.GeocoderResult): Suggestion => ({
+  placeName: r.formatted_address ?? "",
+  address: r.formatted_address ?? "",
+  city: cityOf(r),
+  state: component(r, "administrative_area_level_1"),
+  country: component(r, "country"),
+  lat: latOf(r),
+  lng: lngOf(r),
+});
+
 export const forwardGeocode = async (query: string): Promise<Suggestion[]> => {
   if (!query.trim()) return [];
   try {
-    const res = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-        query
-      )}&key=${GOOGLE_MAPS_API_KEY}`
-    );
-    const data: GoogleGeocodeResponse = await res.json();
-    return (data.results || []).slice(0, 5).map((r) => ({
-      placeName: r.formatted_address ?? "",
-      address: r.formatted_address ?? "",
-      city: cityOf(r),
-      state: component(r, "administrative_area_level_1"),
-      country: component(r, "country"),
-      lat: r.geometry?.location?.lat ?? 0,
-      lng: r.geometry?.location?.lng ?? 0,
-    }));
+    const geocoder = await getGeocoder();
+    const { results } = await geocoder.geocode({ address: query });
+    return (results || []).slice(0, 5).map(toSuggestion);
   } catch {
     return [];
   }
@@ -55,12 +62,9 @@ export const reverseGeocode = async (
   lng: number
 ): Promise<MapLocation | null> => {
   try {
-    const res = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_API_KEY}`
-    );
-
-    const data: GoogleGeocodeResponse = await res.json();
-    const feature = data.results?.[0];
+    const geocoder = await getGeocoder();
+    const { results } = await geocoder.geocode({ location: { lat, lng } });
+    const feature = results?.[0];
 
     if (!feature) return null;
 

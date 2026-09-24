@@ -39,6 +39,7 @@ import Onboarding from "@/pages/onboarding";
 import PromotionsPage from "@/pages/promotions";
 import EntertainmentPage from "@/pages/entertainment";
 import DebugPage from "@/pages/debug";
+import SeedsPage from "@/pages/seeds";
 import { isLocalEnv } from "@/lib/env";
 import { AllShiftsAdmin } from "@/pages/staffmanagement/AllShifts";
 import StaffIntelligenceAnalytics from "@/pages/staffmanagement/StaffAnalyticsAdmin";
@@ -417,6 +418,18 @@ function NavigationContent() {
                 element={
                   <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
                     <DebugPage />
+                  </ProtectedRoute>
+                }
+              />
+            )}
+
+            {/* Local-only seed data surface */}
+            {isLocalEnv() && (
+              <Route
+                path="/seeds"
+                element={
+                  <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
+                    <SeedsPage />
                   </ProtectedRoute>
                 }
               />

@@ -20,6 +20,7 @@ import {
   LayoutGrid,
   UserCheck,
   Bug,
+  Sprout,
 } from "lucide-react";
 
 export interface MenuItem {
@@ -147,7 +148,11 @@ export function useRoleBasedMenu(): MenuItem[] {
 
   // Local development only — never shipped to production nav.
   if (isLocalEnv()) {
-    menu = [...menu, { title: "Debug", url: "/debug", icon: Bug }];
+    menu = [
+      ...menu,
+      { title: "Debug", url: "/debug", icon: Bug },
+      { title: "Seed Data", url: "/seeds", icon: Sprout },
+    ];
   }
 
   return menu;

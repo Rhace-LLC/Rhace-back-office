@@ -18,7 +18,7 @@ import { Filter, RefreshCw } from "lucide-react";
 import { Order, OrderStatus, UpdateOrderData } from "./types/order";
 import { OrdersStats } from "./OrdersStats";
 import { OrdersTable } from "./OrdersTable";
-import { OrderDetailsSheet } from "./OrderDetailsSheet";
+import { OrderDetailsDialog } from "./order_details_dialog/OrderDetailsDialog";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   getAllOrders,
@@ -416,7 +416,7 @@ export function Orders() {
         </CardContent>
       </Card>
 
-      <OrderDetailsSheet
+      <OrderDetailsDialog
         order={selectedOrder}
         isOpen={!!selectedOrder}
         onClose={handleCloseSheet}

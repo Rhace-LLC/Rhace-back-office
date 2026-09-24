@@ -3,11 +3,13 @@ import { useMemo, useState } from "react";
 import {
   ClipboardList,
   FileUp,
+  Loader2,
   Plus,
   Sparkles,
   Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
 import { Field, StepActions, StepHeader } from "./ui";
 import { obField } from "./tokens";
 import { MenuData, MenuDraftItem } from "./types";
@@ -39,8 +41,12 @@ const CATEGORY_ORDER = new Map(CATEGORY_LABELS.map((label, i) => [label, i]));
 
 export function Step2Menu({
   onContinue,
+  saving,
+  progress,
 }: {
   onContinue: (data: MenuData) => void;
+  saving?: boolean;
+  progress?: { done: number; total: number } | null;
 }) {
   const [mode, setMode] = useState<MenuData["mode"]>("sample");
   const [chosen, setChosen] = useState<string[]>([]);
@@ -112,6 +118,12 @@ export function Step2Menu({
     [chosen]
   );
 
+  const showProgress =
+    Boolean(saving) && progress != null && progress.total > 0;
+  const progressValue = showProgress
+    ? Math.min(100, Math.round((progress!.done / progress!.total) * 100))
+    : 0;
+
   const handlePrimary = () => {
     if (mode === "sample") {
       onContinue({ mode: "sample", categories, items: selectedDrafts });
@@ -143,8 +155,9 @@ export function Step2Menu({
             type="button"
             aria-pressed={mode === key}
             onClick={() => setMode(key)}
+            disabled={saving}
             className={cn(
-              "flex flex-col items-start gap-3 rounded-[16px] border p-4 text-left transition-colors duration-150 focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none",
+              "flex flex-col items-start gap-3 rounded-[16px] border p-4 text-left transition-colors duration-150 focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none disabled:opacity-60",
               mode === key
                 ? "border-brand bg-brand/[0.04] ring-1 ring-brand"
                 : "border-line bg-surface hover:border-line-strong"
@@ -219,8 +232,9 @@ export function Step2Menu({
                         type="button"
                         aria-pressed={active}
                         onClick={() => toggleDish(dish.name)}
+                        disabled={saving}
                         className={cn(
-                          "flex items-start gap-3 rounded-[16px] border p-3.5 text-left transition-colors duration-150",
+                          "flex items-start gap-3 rounded-[16px] border p-3.5 text-left transition-colors duration-150 disabled:opacity-60",
                           active
                             ? "border-brand bg-brand/[0.04] ring-1 ring-brand"
                             : "border-line bg-surface hover:border-line-strong"
@@ -332,7 +346,7 @@ export function Step2Menu({
           <button
             type="button"
             onClick={addItem}
-            disabled={!draft.name.trim() || !draft.price.trim()}
+            disabled={!draft.name.trim() || !draft.price.trim() || saving}
             className="inline-flex items-center gap-2 rounded-[10px] bg-ink px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-ink-secondary disabled:pointer-events-none disabled:opacity-50"
           >
             <Plus className="h-4 w-4" />
@@ -390,9 +404,30 @@ export function Step2Menu({
         </div>
       )}
 
+      {showProgress && (
+        <div
+          className="mt-6 rounded-[16px] border border-line bg-cardfill p-4 sm:p-5"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-center gap-2.5">
+            <Loader2 className="h-4 w-4 animate-spin text-brand" aria-hidden />
+            <p className="text-sm font-medium leading-5 text-ink">
+              Saving your menu… {progress!.done} of {progress!.total} saved
+            </p>
+          </div>
+          <Progress value={progressValue} className="mt-3 h-2" />
+          <p className="mt-2 text-xs leading-[17px] text-ink-subtle">
+            Creating categories and dishes — please keep this page open.
+          </p>
+        </div>
+      )}
+
       <StepActions
         onContinue={handlePrimary}
         continueDisabled={mode === "sample" ? chosen.length === 0 : false}
+        continueLoading={saving}
+        loadingLabel="Saving your menu…"
         onSecondary={handleLater}
         secondaryLabel="I'll do this later"
       />

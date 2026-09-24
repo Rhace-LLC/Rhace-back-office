@@ -38,6 +38,22 @@ export const OtpInput: React.FC<OtpInputProps> = ({
     }
   };
 
+  const handlePaste = (
+    e: React.ClipboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    e.preventDefault();
+    const digits = e.clipboardData.getData("text").replace(/\D/g, "");
+    if (!digits) return;
+    const otpArray = value.split("");
+    const fillCount = Math.min(digits.length, length - index);
+    for (let i = 0; i < fillCount; i++) {
+      otpArray[index + i] = digits[i];
+    }
+    onChange(otpArray.join("").slice(0, length));
+    inputsRef.current[Math.min(index + fillCount, length - 1)]?.focus();
+  };
+
   return (
     <div className="flex justify-between gap-2">
       {Array.from({ length }).map((_, index) => (
@@ -45,10 +61,12 @@ export const OtpInput: React.FC<OtpInputProps> = ({
           key={index}
           type="text"
           inputMode="numeric"
+          autoComplete="one-time-code"
           maxLength={1}
           value={value[index] || ""}
           onChange={(e) => handleChange(index, e.target.value)}
           onKeyDown={(e) => handleKeyDown(e, index)}
+          onPaste={(e) => handlePaste(e, index)}
           ref={(el) => {
             inputsRef.current[index] = el;
           }}

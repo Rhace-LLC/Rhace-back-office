@@ -23,9 +23,11 @@ const PERMISSION_HINT =
 export function Step4Team({
   ownerEmail,
   onContinue,
+  saving,
 }: {
   ownerEmail: string;
   onContinue: (data: TeamData) => void;
+  saving?: boolean;
 }) {
   const [members, setMembers] = useState<TeamMemberDraft[]>([]);
   const [draft, setDraft] = useState<TeamMemberDraft>({
@@ -164,6 +166,8 @@ export function Step4Team({
 
       <StepActions
         onContinue={() => onContinue({ members })}
+        continueLoading={saving}
+        loadingLabel="Sending invites…"
         onSecondary={() => onContinue({ members: [] })}
         secondaryLabel="Skip for now"
       />

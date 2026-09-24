@@ -80,8 +80,10 @@ function ImageDrop({
 
 export function Step1Restaurant({
   onContinue,
+  saving,
 }: {
   onContinue: (data: RestaurantInfo) => void;
+  saving?: boolean;
 }) {
   const [pickAddrFromMap, setPickAddrFromMap] = useState(false);
   const [form, setForm] = useState<RestaurantInfo>({
@@ -356,6 +358,7 @@ export function Step1Restaurant({
       <StepActions
         onContinue={() => onContinue(form)}
         continueDisabled={!requiredOk}
+        continueLoading={saving}
       />
     </>
   );

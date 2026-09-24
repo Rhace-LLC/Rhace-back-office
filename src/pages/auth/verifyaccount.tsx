@@ -96,9 +96,19 @@ export function VerifyOtp() {
             <input
               autoFocus
               type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
               maxLength={6}
               value={otp}
-              onChange={(e) => setOtp(e.target.value)}
+              onChange={(e) =>
+                setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+              }
+              onPaste={(e) => {
+                e.preventDefault();
+                setOtp(
+                  e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6)
+                );
+              }}
               placeholder="Enter OTP"
               required
               className={`${authField} text-center text-xl tracking-[0.5em]`}

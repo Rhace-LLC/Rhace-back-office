@@ -65,6 +65,11 @@ export default function Onboarding() {
     normalizeStep(profile?.current_onboarding_step ?? 1)
   );
   const finishingRef = useRef(false);
+  const [saving, setSaving] = useState(false);
+  const [menuProgress, setMenuProgress] = useState<{
+    done: number;
+    total: number;
+  } | null>(null);
   const [data, setData] = useState<OnboardingData>(() => {
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
@@ -138,7 +143,10 @@ export default function Onboarding() {
   };
 
   /** Step 2 — create the chosen categories, then the menu items. */
-  const persistMenu = async (menu?: MenuData) => {
+  const persistMenu = async (
+    menu?: MenuData,
+    onProgress?: (done: number, total: number) => void
+  ) => {
     if (!restaurantId || !auth.token) return;
     if (!menu || menu.mode === "later" || menu.items.length === 0) return;
 
@@ -146,6 +154,12 @@ export default function Onboarding() {
     const labels = [
       ...new Set(menu.items.map((i) => i.category.trim()).filter(Boolean)),
     ];
+    const total = labels.length + menu.items.length;
+    let done = 0;
+    const tick = () => {
+      done += 1;
+      onProgress?.(done, total);
+    };
 
     for (const label of labels) {
       try {
@@ -157,13 +171,18 @@ export default function Onboarding() {
       } catch (error) {
         console.error(`Failed to create category "${label}":`, error);
         toast.error(parseError(error) || `Could not create category "${label}".`);
+      } finally {
+        tick();
       }
     }
 
     let created = 0;
     for (const item of menu.items) {
       const categoryId = categoryIds.get(item.category.trim());
-      if (!categoryId) continue;
+      if (!categoryId) {
+        tick();
+        continue;
+      }
       try {
         const parsed = parseFloat(String(item.price).replace(/[^\d.]/g, ""));
         const formData = new FormData();
@@ -178,6 +197,8 @@ export default function Onboarding() {
       } catch (error) {
         console.error(`Failed to create menu item "${item.name}":`, error);
         toast.error(parseError(error) || `Could not add "${item.name}".`);
+      } finally {
+        tick();
       }
     }
 
@@ -234,22 +255,31 @@ export default function Onboarding() {
   const next = async (payload?: Partial<OnboardingData>) => {
     if (payload) setData((prev) => ({ ...prev, ...payload }));
 
-    const nextStep = nextVisibleStep(step);
-    if (step === 1) {
-      if (payload?.restaurant) {
-        await persistRestaurant(payload.restaurant, nextStep);
-      } else {
+    setSaving(true);
+    try {
+      const nextStep = nextVisibleStep(step);
+      if (step === 1) {
+        if (payload?.restaurant) {
+          await persistRestaurant(payload.restaurant, nextStep);
+        } else {
+          await persistStep(nextStep);
+        }
+      } else if (step === 2) {
+        setMenuProgress(null);
+        await persistMenu(payload?.menu ?? data.menu, (done, total) =>
+          setMenuProgress({ done, total })
+        );
+        await persistStep(nextStep);
+      } else if (step === 4) {
+        await persistTeam(payload?.team ?? data.team);
         await persistStep(nextStep);
       }
-    } else if (step === 2) {
-      await persistMenu(payload?.menu ?? data.menu);
-      await persistStep(nextStep);
-    } else if (step === 4) {
-      await persistTeam(payload?.team ?? data.team);
-      await persistStep(nextStep);
-    }
 
-    setStep(nextStep);
+      setStep(nextStep);
+    } finally {
+      setSaving(false);
+      setMenuProgress(null);
+    }
   };
 
   const finish = async () => {
@@ -308,11 +338,23 @@ export default function Onboarding() {
 
         {/* Active step */}
         <div className={`${obPanel} overflow-hidden px-5 py-7 sm:px-10 sm:py-10`}>
-          {step === 1 && <Step1Restaurant onContinue={(d) => next({ restaurant: d })} />}
-          {step === 2 && <Step2Menu onContinue={(d) => next({ menu: d })} />}
+          {step === 1 && (
+            <Step1Restaurant
+              saving={saving}
+              onContinue={(d) => next({ restaurant: d })}
+            />
+          )}
+          {step === 2 && (
+            <Step2Menu
+              saving={saving}
+              progress={menuProgress}
+              onContinue={(d) => next({ menu: d })}
+            />
+          )}
           {step === 4 && (
             <Step4Team
               ownerEmail={ownerEmail}
+              saving={saving}
               onContinue={(d) => next({ team: d })}
             />
           )}

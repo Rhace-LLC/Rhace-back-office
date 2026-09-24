@@ -1,5 +1,5 @@
 "use client";
-import { Minus, Plus } from "lucide-react";
+import { Loader2, Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   obChoice,
@@ -145,27 +145,38 @@ export function StepActions({
   onContinue,
   continueLabel = "Continue",
   continueDisabled,
+  continueLoading,
+  loadingLabel = "Saving…",
   onSecondary,
   secondaryLabel,
 }: {
   onContinue: () => void;
   continueLabel?: string;
   continueDisabled?: boolean;
+  continueLoading?: boolean;
+  loadingLabel?: string;
   onSecondary?: () => void;
   secondaryLabel?: string;
 }) {
+  const busy = Boolean(continueLoading);
   return (
-    <div className="mt-8 space-y-2 border-t border-line-subtle pt-6">
+    <div className="mt-8 space-y-2 border-t border-line-subtle pt-6" aria-busy={busy}>
       <button
         type="button"
-        disabled={continueDisabled}
+        disabled={continueDisabled || busy}
         onClick={onContinue}
         className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-[8px] bg-ink px-5 text-sm font-medium leading-5 text-white transition-colors duration-150 hover:bg-ink-secondary active:bg-ink focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
       >
-        {continueLabel}
+        {busy && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
+        <span aria-live="polite">{busy ? loadingLabel : continueLabel}</span>
       </button>
       {secondaryLabel && onSecondary && (
-        <button type="button" onClick={onSecondary} className={obCtaGhost}>
+        <button
+          type="button"
+          onClick={onSecondary}
+          disabled={busy}
+          className={cn(obCtaGhost, "disabled:pointer-events-none disabled:opacity-50")}
+        >
           {secondaryLabel}
         </button>
       )}
