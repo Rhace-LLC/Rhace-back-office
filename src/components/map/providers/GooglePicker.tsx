@@ -66,7 +66,7 @@ const GoogleMap = ({
   if (error) {
     return (
       <MapCentered>
-        <p className="text-[14px] font-medium text-gray-400">
+        <p className="text-[14px] font-medium text-ink-subtle">
           Unable to load Google Maps. Check the API key and enabled APIs.
         </p>
       </MapCentered>
@@ -74,7 +74,7 @@ const GoogleMap = ({
   }
 
   return (
-    <div className="relative h-[50vh] w-full bg-gray-50">
+    <div className="relative h-[50vh] w-full bg-inset">
       <div ref={containerRef} className="h-full w-full" />
       <MapStatusBadge />
       {address && (

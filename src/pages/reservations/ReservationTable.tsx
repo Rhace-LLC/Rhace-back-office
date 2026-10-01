@@ -77,7 +77,7 @@ const getStatusBadgeProps = (status: Reservation["status"]) => {
       // Neutral/waiting color
       return {
         className:
-          "bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100 font-medium",
+          "bg-inset text-ink-secondary border-line hover:bg-inset font-medium",
         variant: "default",
       };
   }
@@ -90,29 +90,29 @@ export const RenderReservationTableData: React.FC<
 
   return (
     // Outer div for context and potential container styling
-    <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
+    <div className="overflow-hidden rounded-3xl border bg-surface shadow-sm">
       <Table className="w-full">
-        <TableHeader className="border-b bg-gray-50">
-          <TableRow className="hover:bg-gray-50">
-            <TableHead className="w-[100px] text-xs font-semibold tracking-wider text-gray-500 uppercase">
+        <TableHeader className="border-b bg-inset">
+          <TableRow className="hover:bg-inset">
+            <TableHead className="w-[100px] text-xs font-semibold tracking-wider text-ink-muted uppercase">
               <Hash className="mr-1 inline h-3 w-3" /> Ref
             </TableHead>
-            <TableHead className="text-xs font-semibold tracking-wider text-gray-500 uppercase">
+            <TableHead className="text-xs font-semibold tracking-wider text-ink-muted uppercase">
               Customer
             </TableHead>
-            <TableHead className="text-xs font-semibold tracking-wider whitespace-nowrap text-gray-500 uppercase">
+            <TableHead className="text-xs font-semibold tracking-wider whitespace-nowrap text-ink-muted uppercase">
               <Clock className="mr-1 inline h-3 w-3" /> Time
             </TableHead>
-            <TableHead className="text-xs font-semibold tracking-wider whitespace-nowrap text-gray-500 uppercase">
+            <TableHead className="text-xs font-semibold tracking-wider whitespace-nowrap text-ink-muted uppercase">
               <Table2 className="mr-1 inline h-3 w-3" /> Table
             </TableHead>
-            <TableHead className="text-xs font-semibold tracking-wider text-gray-500 uppercase">
+            <TableHead className="text-xs font-semibold tracking-wider text-ink-muted uppercase">
               <Users className="mr-1 inline h-3 w-3" /> Guests
             </TableHead>
-            <TableHead className="text-xs font-semibold tracking-wider text-gray-500 uppercase">
+            <TableHead className="text-xs font-semibold tracking-wider text-ink-muted uppercase">
               Status
             </TableHead>
-            <TableHead className="text-right text-xs font-semibold tracking-wider text-gray-500 uppercase">
+            <TableHead className="text-right text-xs font-semibold tracking-wider text-ink-muted uppercase">
               Actions
             </TableHead>
           </TableRow>
@@ -121,7 +121,7 @@ export const RenderReservationTableData: React.FC<
         <TableBody>
           {data.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="h-24 text-center text-gray-500">
+              <TableCell colSpan={6} className="h-24 text-center text-ink-muted">
                 No reservations found.
               </TableCell>
             </TableRow>
@@ -134,28 +134,28 @@ export const RenderReservationTableData: React.FC<
                 className="cursor-pointer transition-colors duration-150 hover:bg-indigo-50/50"
               >
                 {/* Reference ID */}
-                <TableCell className="font-mono text-xs text-gray-600">
+                <TableCell className="font-mono text-xs text-ink-secondary">
                   {index + 1}
                 </TableCell>
 
                 {/* Customer Info */}
                 <TableCell>
-                  <div className="font-semibold text-gray-800">
+                  <div className="font-semibold text-ink">
                     {r.customer.first_name} {r.customer.last_name}
                   </div>
-                  <div className="mt-0.5 text-xs text-gray-500">
+                  <div className="mt-0.5 text-xs text-ink-muted">
                     {r.customer.phone || r.customer.email}
                   </div>
                 </TableCell>
 
                 <TableCell className="text-sm">
-                  <div className="font-medium whitespace-nowrap text-gray-700">
+                  <div className="font-medium whitespace-nowrap text-ink-secondary">
                     {moment(r.time, "HH:mm:ss").format("hh:mm A")}
                   </div>
-                  <div className="mt-0.5 text-xs text-gray-500">
+                  <div className="mt-0.5 text-xs text-ink-muted">
                     {moment(r.date).format("MMM D")}
                   </div>
-                  <div className="mt-0.5 text-xs text-gray-500">
+                  <div className="mt-0.5 text-xs text-ink-muted">
                     {formatRelativeDate(r.date)}
                   </div>
                 </TableCell>
@@ -165,7 +165,7 @@ export const RenderReservationTableData: React.FC<
                 </TableCell>
 
                 {/* Party Size */}
-                <TableCell className="text-center font-semibold text-gray-700">
+                <TableCell className="text-center font-semibold text-ink-secondary">
                   {r.party_size}
                 </TableCell>
 
@@ -191,7 +191,7 @@ export const RenderReservationTableData: React.FC<
                       e.stopPropagation();
                       setSelectedReservation(r.id);
                     }}
-                    className="text-xs font-medium hover:bg-gray-100"
+                    className="text-xs font-medium hover:bg-inset"
                   >
                     Details
                   </Button>

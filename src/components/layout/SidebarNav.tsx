@@ -12,12 +12,9 @@ interface SidebarNavProps {
 }
 
 /**
- * Token-compliant navigation items (component-shell.md §2.2–2.5):
- * 40px rows, md radius, 20px icons, 8px icon/text gap, 4px item gap.
- * Active -> brand text + 4×24px brand indicator. Hover -> brand hover bg + inverted text.
- *
- * Parent items with `items` expand/collapse to reveal sub-navigation. Sub-items
- * use iconography.small (16px), the 10px radius and the same interactive tokens.
+ * Tactile navigation items (visual-direction.md §3):
+ * 40px rows, 16px radius, solid surfaces. Active = solid royal blue
+ * with white text; idle hover = soft inset tint.
  */
 export function SidebarNav({ collapsed = false, onNavigate }: SidebarNavProps) {
   const navigate = useNavigate();
@@ -83,28 +80,18 @@ export function SidebarNav({ collapsed = false, onNavigate }: SidebarNavProps) {
               aria-expanded={hasChildren ? isOpen : undefined}
               onClick={() => handleItemClick(item)}
               className={cn(
-                "group relative flex h-10 w-full items-center gap-2 rounded-[10px] text-[14px] leading-5 transition-colors duration-150 focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none",
-                "hover:bg-brand-hover active:bg-brand-active",
+                "group relative flex h-10 w-full items-center gap-2 rounded-2xl text-[14px] leading-5 transition-colors duration-150 focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none",
                 collapsed ? "justify-center px-0" : "px-4",
-                active && !collapsed ? "bg-cardfill font-medium" : ""
+                active
+                  ? "bg-primary font-medium text-white shadow-button"
+                  : "text-ink hover:bg-inset active:bg-inset-accent"
               )}
             >
-              {/* Active indicator — component-shell.md §2.3 */}
-              {!collapsed && (
-                <span
-                  aria-hidden
-                  className={cn(
-                    "absolute top-1/2 left-0 h-6 w-1 -translate-y-1/2 rounded-r-[6px] bg-brand transition-opacity",
-                    active ? "opacity-100" : "opacity-0"
-                  )}
-                />
-              )}
-
               {Icon && (
                 <Icon
                   className={cn(
-                    "h-5 w-5 shrink-0 transition-colors group-hover:text-white",
-                    active ? "text-brand" : "text-ink-muted"
+                    "h-5 w-5 shrink-0 transition-colors",
+                    active ? "text-white" : "text-ink-muted"
                   )}
                 />
               )}
@@ -112,8 +99,8 @@ export function SidebarNav({ collapsed = false, onNavigate }: SidebarNavProps) {
               {!collapsed && (
                 <span
                   className={cn(
-                    "flex-1 truncate text-left transition-colors group-hover:text-white",
-                    active ? "font-medium text-brand" : "text-ink"
+                    "flex-1 truncate text-left transition-colors",
+                    active ? "font-medium text-white" : "text-ink"
                   )}
                 >
                   {item.title}
@@ -123,7 +110,8 @@ export function SidebarNav({ collapsed = false, onNavigate }: SidebarNavProps) {
               {!collapsed && hasChildren && (
                 <ChevronDown
                   className={cn(
-                    "h-4 w-4 shrink-0 text-ink-muted transition-transform duration-200 group-hover:text-white",
+                    "h-4 w-4 shrink-0 transition-transform duration-200",
+                    active ? "text-white" : "text-ink-muted",
                     isOpen && "rotate-180"
                   )}
                 />
@@ -143,18 +131,17 @@ export function SidebarNav({ collapsed = false, onNavigate }: SidebarNavProps) {
                         aria-current={childIsActive ? "page" : undefined}
                         onClick={() => handleNavigate(child.url)}
                         className={cn(
-                          "group flex h-8 w-full items-center gap-2 rounded-[10px] px-3 text-[13px] leading-5 transition-colors duration-150 focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none",
-                          "hover:bg-brand-hover hover:text-white",
+                          "group flex h-8 w-full items-center gap-2 rounded-2xl px-3 text-[13px] leading-5 transition-colors duration-150 focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none",
                           childIsActive
-                            ? "bg-cardfill font-medium text-brand"
-                            : "text-ink-muted"
+                            ? "bg-primary font-medium text-white shadow-button"
+                            : "text-ink-muted hover:bg-inset hover:text-ink"
                         )}
                       >
                         {ChildIcon && (
                           <ChildIcon
                             className={cn(
-                              "h-4 w-4 shrink-0 transition-colors group-hover:text-white",
-                              childIsActive ? "text-brand" : "text-ink-subtle"
+                              "h-4 w-4 shrink-0 transition-colors",
+                              childIsActive ? "text-white" : "text-ink-subtle"
                             )}
                           />
                         )}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Bell, CheckCircle, Clock, ChefHat, Package, Truck, Utensils } from "lucide-react";
+import { Bell, CheckCircle, Clock, ChefHat, Package, Truck, Utensils, Check } from "lucide-react";
 
 import { Order, OrderStatus } from "../types/order";
 import { Staff } from "@/api-services/staffService";
@@ -25,15 +25,17 @@ interface OrderDetailsDialogProps {
   onStatusChange: (orderId: string, status: OrderStatus) => Promise<void>;
   onAssignTable: (orderId: string, tableId: string) => void;
   onAssignWaiter: (orderId: string, waiterId: string) => void;
+  onWaiterConfirm?: (orderId: string) => Promise<void>;
+  isConfirming?: boolean;
   staff: Staff[];
   tables: Table[];
 }
 
 const statusBadgeStyles: Record<OrderStatus, string> = {
-  paid: "bg-[#DCEEFF] text-[#146BE8] border-[#4DA3FF]",
-  received: "bg-[#DCEEFF] text-[#146BE8] border-[#4DA3FF]",
+  paid: "bg-inset-accent text-brand border-brand",
+  received: "bg-inset-accent text-brand border-brand",
   preparing: "bg-[#FEF3C7] text-[#D97706] border-[#FCD34D]",
-  ready: "bg-[#D1FAE5] text-[#059669] border-[#6EE7B7]",
+  ready: "bg-[#D1FAE5] text-emerald-600 border-[#6EE7B7]",
   served: "bg-[#E0E7FF] text-[#4338CA] border-[#A5B4FC]",
   completed: "bg-[#F3F4F6] text-[#374151] border-[#D1D5DB]",
   cancelled: "bg-[#FEE2E2] text-[#DC2626] border-[#FCA5A5]",
@@ -58,6 +60,8 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
   onStatusChange,
   onAssignTable,
   onAssignWaiter,
+  onWaiterConfirm,
+  isConfirming = false,
   staff,
   tables,
 }) => {
@@ -125,10 +129,24 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
   const assignedWaiter = staff.find((s) => s.id === order.waiter);
   const assignedTable = tables.find((t) => t.id === order.table);
 
+  // Waiter confirmation is distinct from status: a `received` order can be
+  // unconfirmed or confirmed. `waiter_confirmed` may be undefined on older
+  // payloads — treat as unconfirmed.
+  const needsConfirmation = order.status === "received" && !order.waiter_confirmed;
+  const isConfirmed = order.status === "received" && !!order.waiter_confirmed;
+
+  const handleWaiterConfirmClick = async () => {
+    if (!onWaiterConfirm || isConfirming) return;
+    await onWaiterConfirm(order.id);
+    toast.success("Order confirmed", {
+      icon: <Check className="h-4 w-4 text-emerald-600" />,
+    });
+  };
+
   const handleStatusTransition = async (newStatus: OrderStatus) => {
     await onStatusChange(order.id, newStatus);
     toast.success(`Status updated to ${newStatus.toUpperCase()}`, {
-      icon: <Bell className="h-4 w-4 text-[#146BE8]" />,
+      icon: <Bell className="h-4 w-4 text-brand" />,
     });
   };
 
@@ -152,9 +170,9 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
       onOpenChange={(open: boolean) => !open && onClose()}
     >
       <DialogContent className="max-w-[640px]">
-        <div className="space-y-5 font-[#Inter] text-[#0B0D10]">
+        <div className="space-y-5 font-sans text-ink">
         {/* Header Bar */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#E8EDF3]">
+        <div className="flex items-center justify-between pb-3 border-b border-line-subtle">
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-bold tracking-tight">Order #{order.id}</h3>
             {isKitchen && <Badge className="bg-[#FFF7ED] text-[#C2410C] border-[#FFEDD5]">Kitchen</Badge>}
@@ -172,6 +190,50 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
 
         {/* Scrollable Content Body */}
         <div className="space-y-4 max-h-[65vh] overflow-y-auto pr-1">
+          {(needsConfirmation || isConfirmed) && (
+            <div
+              className={`flex items-center justify-between gap-3 rounded-3xl border p-3 text-sm ${
+                isConfirmed
+                  ? "border-[#6EE7B7] bg-[#ECFDF5]"
+                  : "border-[#FCD34D] bg-[#FFFBEB]"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                {isConfirmed ? (
+                  <CheckCircle className="h-4 w-4 text-emerald-600" />
+                ) : (
+                  <Clock className="h-4 w-4 text-[#D97706]" />
+                )}
+                <div>
+                  <div
+                    className={`font-semibold ${
+                      isConfirmed ? "text-[#065F46]" : "text-[#92400E]"
+                    }`}
+                  >
+                    {isConfirmed ? "Confirmed by waiter" : "Awaiting waiter confirmation"}
+                  </div>
+                  <div className="text-xs text-ink-muted">
+                    {isConfirmed
+                      ? order.waiter_name
+                        ? `Confirmed • ${order.waiter_name}`
+                        : "Confirmed • status stays received until kitchen updates it"
+                      : "Confirm to acknowledge this received order"}
+                  </div>
+                </div>
+              </div>
+              {needsConfirmation && (isWaiter || isOwner) && onWaiterConfirm && (
+                <button
+                  onClick={handleWaiterConfirmClick}
+                  disabled={isConfirming}
+                  className="flex h-9 items-center gap-1.5 rounded-2xl bg-[#059669] px-4 text-xs font-semibold text-white hover:bg-[#047857] disabled:opacity-60"
+                >
+                  <Check className="h-4 w-4" />
+                  {isConfirming ? "Confirming…" : "Confirm Order"}
+                </button>
+              )}
+            </div>
+          )}
+
           <OrderCustomerInfo order={order} />
           
           <OrderItemsList items={safeItems} />

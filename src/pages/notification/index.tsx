@@ -103,13 +103,13 @@ const getNotificationIcon = (
     case "table_cleaning":
       return { icon: Users, color: "text-yellow-600" };
     case "shift_reminder":
-      return { icon: Clock, color: "text-gray-600" };
+      return { icon: Clock, color: "text-ink-secondary" };
     case "kitchen_delay":
       return { icon: AlertTriangle, color: "text-red-600" };
     case "customer_request":
       return { icon: Bell, color: "text-blue-600" };
     default:
-      return { icon: Bell, color: "text-gray-600" };
+      return { icon: Bell, color: "text-ink-secondary" };
   }
 };
 
@@ -518,7 +518,7 @@ export function Notifications() {
           <p className="text-muted-foreground">
             Stay updated with restaurant activities and alerts
             {notificationsCache && (
-              <span className="ml-2 text-xs text-gray-500">
+              <span className="ml-2 text-xs text-ink-muted">
                 • Updated {Math.round((Date.now() - lastUpdated) / 1000)}s ago
                 {refreshing && " (refreshing...)"}
               </span>
@@ -614,7 +614,7 @@ export function Notifications() {
           variant={filter === "all" ? "default" : "outline"}
           size="sm"
           onClick={() => setFilter("all")}
-          className={filter === "all" ? "bg-[#2542e3]" : ""}
+          className={filter === "all" ? "bg-primary" : ""}
         >
           All ({notifications.length})
         </Button>
@@ -622,7 +622,7 @@ export function Notifications() {
           variant={filter === "unread" ? "default" : "outline"}
           size="sm"
           onClick={() => setFilter("unread")}
-          className={filter === "unread" ? "bg-[#2542e3]" : ""}
+          className={filter === "unread" ? "bg-primary" : ""}
         >
           Unread ({unreadCount})
         </Button>
@@ -630,7 +630,7 @@ export function Notifications() {
           variant={filter === "high" ? "default" : "outline"}
           size="sm"
           onClick={() => setFilter("high")}
-          className={filter === "high" ? "bg-[#2542e3]" : ""}
+          className={filter === "high" ? "bg-primary" : ""}
         >
           High Priority ({highPriorityCount})
         </Button>
@@ -665,7 +665,7 @@ export function Notifications() {
                 return (
                   <div
                     key={notification.id}
-                    className={`flex items-start gap-3 rounded-lg border border-l-4 p-4 transition-all ${priorityColors[notification.priority]} ${notification.read ? "bg-muted/20" : "bg-background border"} ${!notification.read ? "shadow-sm" : ""} `}
+                    className={`flex items-start gap-3 rounded-2xl border border-l-4 p-4 transition-all ${priorityColors[notification.priority]} ${notification.read ? "bg-muted/20" : "bg-background border"} ${!notification.read ? "shadow-sm" : ""} `}
                   >
                     <div className={`mt-1 ${notification.color}`}>
                       <IconComponent className="h-5 w-5" />

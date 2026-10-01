@@ -211,11 +211,11 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
   return (
     <div className="flex h-full flex-col space-y-6 p-4">
       {/* Header */}
-      <header className="border-b border-gray-200 pb-4">
-        <h1 className="text-2xl font-bold text-gray-900">
+      <header className="border-b border-line pb-4">
+        <h1 className="text-2xl font-bold text-ink">
           Reservation #{String(reservation.id).slice(0, 8)}
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-ink-muted">
           {reservation.customer.first_name} {reservation.customer.last_name}'s
           booking.
         </p>
@@ -235,7 +235,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
         className="flex flex-grow flex-col"
       >
         <TabsList
-          className={`rounded-md bg-gray-100 ${
+          className={`rounded-2xl bg-inset ${
             isCompleted ? "grid grid-cols-1" : "grid grid-cols-2"
           }`}
         >
@@ -246,10 +246,10 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
 
         <div className="flex-grow overflow-y-auto">
           {/* Details Tab */}
-          <TabsContent value="details" className="space-y-8 bg-white">
+          <TabsContent value="details" className="space-y-8 bg-surface">
             {/* Booking Time Section */}
-            <section className="space-y-4 rounded-lg bg-white py-4">
-              <h3 className="flex items-center text-lg font-semibold text-gray-800">
+            <section className="space-y-4 rounded-2xl bg-surface py-4">
+              <h3 className="flex items-center text-lg font-semibold text-ink">
                 <Calendar className="mr-2 h-5 w-5 text-indigo-600" /> Booking
                 Time
               </h3>
@@ -258,8 +258,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 <div className="flex items-center space-x-3">
                   <Calendar className="h-5 w-5 text-indigo-500" />
                   <div className="flex flex-col">
-                    <span className="text-xs text-gray-500">Date</span>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-xs text-ink-muted">Date</span>
+                    <span className="text-sm font-medium text-ink">
                       {moment(reservation.date).format("MMM D, YYYY")}
                     </span>
                   </div>
@@ -268,8 +268,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 <div className="flex items-center space-x-3">
                   <Clock className="h-5 w-5 text-indigo-500" />
                   <div className="flex flex-col">
-                    <span className="text-xs text-gray-500">Time</span>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-xs text-ink-muted">Time</span>
+                    <span className="text-sm font-medium text-ink">
                       {moment(reservation.time, "HH:mm:ss").format("hh:mm A")}
                     </span>
                   </div>
@@ -277,11 +277,11 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               </div>
             </section>
 
-            <div className="my-5 border border-gray-200" />
+            <div className="my-5 border border-line" />
 
             {/* Customer Info Section */}
-            <section className="space-y-4 rounded-lg bg-white py-4">
-              <h3 className="flex items-center text-lg font-semibold text-gray-800">
+            <section className="space-y-4 rounded-2xl bg-surface py-4">
+              <h3 className="flex items-center text-lg font-semibold text-ink">
                 <User className="mr-2 h-5 w-5 text-indigo-600" /> Customer Info
               </h3>
 
@@ -289,8 +289,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 <div className="flex items-center space-x-3">
                   <User className="h-5 w-5 text-green-500" />
                   <div className="flex flex-col">
-                    <span className="text-xs text-gray-500">Full Name</span>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-xs text-ink-muted">Full Name</span>
+                    <span className="text-sm font-medium text-ink">
                       {reservation.customer.first_name}{" "}
                       {reservation.customer.last_name}
                     </span>
@@ -300,8 +300,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 <div className="flex items-center space-x-3">
                   <Users className="h-5 w-5 text-green-500" />
                   <div className="flex flex-col">
-                    <span className="text-xs text-gray-500">Party Size</span>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-xs text-ink-muted">Party Size</span>
+                    <span className="text-sm font-medium text-ink">
                       {reservation.party_size}
                     </span>
                   </div>
@@ -310,8 +310,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 <div className="flex items-center space-x-3">
                   <Phone className="h-5 w-5 text-green-500" />
                   <div className="flex flex-col">
-                    <span className="text-xs text-gray-500">Phone</span>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-xs text-ink-muted">Phone</span>
+                    <span className="text-sm font-medium text-ink">
                       {reservation.customer.phone || "—"}
                     </span>
                   </div>
@@ -320,8 +320,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 <div className="flex min-w-0 items-center space-x-3">
                   <Mail className="h-5 w-5 text-green-500" />
                   <div className="flex flex-col truncate">
-                    <span className="text-xs text-gray-500">Email</span>
-                    <span className="truncate text-sm font-medium text-gray-900">
+                    <span className="text-xs text-ink-muted">Email</span>
+                    <span className="truncate text-sm font-medium text-ink">
                       {reservation.customer.email || "—"}
                     </span>
                   </div>
@@ -334,15 +334,15 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
           <TabsContent value="actions" className="space-y-6">
             {/* Pending => Confirm */}
             {reservation.status === "cancelled" && (
-              <div className="mt-6 rounded-xl border border-gray-300 bg-gray-50 p-5 shadow-sm">
+              <div className="mt-6 rounded-3xl border border-line bg-inset p-5 shadow-sm">
                 <div className="flex items-center space-x-3">
                   <XCircle className="h-6 w-6 text-red-600" />
-                  <h4 className="text-lg font-semibold text-gray-800">
+                  <h4 className="text-lg font-semibold text-ink">
                     Reservation Cancelled
                   </h4>
                 </div>
 
-                <p className="mt-2 text-sm text-gray-600">
+                <p className="mt-2 text-sm text-ink-secondary">
                   This reservation has been cancelled. No further actions can be
                   taken.
                 </p>
@@ -352,19 +352,19 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
             {reservation.status !== "cancelled" &&
               reservation.status !== "completed" &&
               reservation.table && (
-                <div className="mt-4 rounded-md border bg-gray-50 p-3">
-                  <p className="mb-1 font-semibold text-gray-700">
+                <div className="mt-4 rounded-2xl border bg-inset p-3">
+                  <p className="mb-1 font-semibold text-ink-secondary">
                     Assigned Table
                   </p>
 
-                  <div className="space-y-1 text-sm text-gray-600">
+                  <div className="space-y-1 text-sm text-ink-secondary">
                     <p>Table Number: {reservation.table.table_number}</p>
                     <p>Max Party Size: {reservation.table.max_party_size}</p>
                   </div>
                 </div>
               )}
             {reservation.status === "pending" && (
-              <div className="space-y-3 rounded-xl border border-green-200 bg-green-50 p-5 shadow-sm">
+              <div className="space-y-3 rounded-3xl border border-green-200 bg-green-50 p-5 shadow-sm">
                 <h4 className="flex items-center text-lg font-semibold text-green-800">
                   <CheckCircle className="mr-2 h-5 w-5" /> Confirm Reservation
                 </h4>
@@ -385,8 +385,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
             {reservation.status !== "cancelled" &&
               reservation.status !== "completed" &&
               !reservation.table && (
-                <div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-5 shadow-sm">
-                  <h4 className="flex items-center text-lg font-semibold text-gray-800">
+                <div className="space-y-3 rounded-3xl border border-line bg-inset p-5 shadow-sm">
+                  <h4 className="flex items-center text-lg font-semibold text-ink">
                     Assign Table
                   </h4>
                   <Label htmlFor="table-select" className="text-sm">
@@ -394,7 +394,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                   </Label>
 
                   {fetchLoading ? (
-                    <div className="py-2 text-sm text-gray-500">
+                    <div className="py-2 text-sm text-ink-muted">
                       Loading tables...
                     </div>
                   ) : fetchError ? (
@@ -408,7 +408,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                       </Button>
                     </div>
                   ) : allTables.length === 0 ? (
-                    <div className="py-2 text-sm text-gray-500">
+                    <div className="py-2 text-sm text-ink-muted">
                       No tables available.
                     </div>
                   ) : (
@@ -417,7 +417,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                         id="table-select"
                         value={selectedTable || ""}
                         onChange={(e) => setSelectedTable(e.target.value)}
-                        className="flex-1 rounded-lg border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        className="flex-1 rounded-2xl border border-line p-2 text-sm focus:border-brand focus:ring-focus-ring"
                       >
                         <option value="">-- Select Table --</option>
                         {allTables
@@ -441,7 +441,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               )}
 
             {reservation.status == "confirmed" && (
-              <div className="space-y-2 rounded-xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
+              <div className="space-y-2 rounded-3xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
                 <h4 className="flex items-center text-lg font-semibold text-blue-800">
                   <CheckCircle className="mr-2 h-5 w-5" /> Complete Reservation
                 </h4>
@@ -462,17 +462,17 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               <>
                 {/* Divider */}
                 <div className="my-6 flex items-center">
-                  <div className="flex-grow border-t border-gray-200"></div>
-                  <span className="mx-3 text-sm font-medium text-gray-500">
+                  <div className="flex-grow border-t border-line"></div>
+                  <span className="mx-3 text-sm font-medium text-ink-muted">
                     Cancel Reservation
                   </span>
-                  <div className="flex-grow border-t border-gray-200"></div>
+                  <div className="flex-grow border-t border-line"></div>
                 </div>
 
                 {/* Neutral Cancel Button */}
                 <Button
                   onClick={() => setCancelDialogOpen(true)}
-                  className="w-full border border-gray-300 bg-gray-100 font-medium text-gray-800 shadow-sm hover:bg-gray-200"
+                  className="w-full border border-line bg-inset font-medium text-ink shadow-sm hover:bg-inset-accent"
                 >
                   Cancel Reservation
                 </Button>
@@ -485,17 +485,17 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
       {/* Dialogs */}
       <GenericDialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
         <div className="space-y-4 p-5">
-          <h3 className="text-lg font-semibold text-gray-800">
+          <h3 className="text-lg font-semibold text-ink">
             Confirm Table Assignment
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-ink-secondary">
             Are you sure you want to assign table{" "}
             {selectedTableData?.table_number} to this reservation?
           </p>
           <div className="flex justify-end space-x-2">
             <Button
               onClick={() => setAssignDialogOpen(false)}
-              className="bg-gray-200 text-gray-800 hover:bg-gray-300"
+              className="bg-inset text-ink hover:bg-inset-accent"
             >
               Cancel
             </Button>
@@ -514,17 +514,17 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
         onOpenChange={setConfirmDialogOpen}
       >
         <div className="space-y-4 p-5">
-          <h3 className="text-lg font-semibold text-gray-800">
+          <h3 className="text-lg font-semibold text-ink">
             Confirm Reservation
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-ink-secondary">
             Are you sure you want to confirm this reservation? The customer will
             be notified.
           </p>
           <div className="flex justify-end space-x-2">
             <Button
               onClick={() => setConfirmDialogOpen(false)}
-              className="bg-gray-200 text-gray-800 hover:bg-gray-300"
+              className="bg-inset text-ink hover:bg-inset-accent"
             >
               Cancel
             </Button>
@@ -555,16 +555,16 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
 
             {/* Reason Textarea */}
             <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">
+              <label className="text-sm font-medium text-ink-secondary">
                 Reason
               </label>
               <textarea
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                className={`w-full rounded-lg border p-3 text-sm outline-none focus:ring-2 ${
+                className={`w-full rounded-2xl border p-3 text-sm outline-none focus:ring-2 ${
                   reasonError
                     ? "border-red-500 ring-red-200"
-                    : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-200"
+                    : "border-line focus:border-brand focus:ring-indigo-200"
                 }`}
                 rows={4}
                 placeholder="Enter reason for cancellation..."
@@ -583,7 +583,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               </Button>
               <Button
                 onClick={() => setCancelDialogOpen(false)}
-                className="flex-1 bg-gray-200 font-semibold text-gray-800 hover:bg-gray-300"
+                className="flex-1 bg-inset font-semibold text-ink hover:bg-inset-accent"
               >
                 Close
               </Button>

@@ -29,13 +29,13 @@ export const OrderStatusFooter: React.FC<OrderStatusFooterProps> = ({
   const canCancel = availableOptions.includes("cancelled");
 
   return (
-    <div className="flex w-full flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#E8EDF3]">
+    <div className="flex w-full flex-wrap items-center justify-between gap-2 pt-2 border-t border-line-subtle">
       {canCancel && isEditable ? (
         <Button
           variant="outline"
           size="sm"
           onClick={() => onStatusChange("cancelled")}
-          className="border-[#FCA5A5] text-[#B91C1C] hover:bg-[#FEF2F2] hover:text-[#991B1B] h-10 px-4 rounded-[7px] text-xs font-medium"
+          className="border-red-300 text-red-700 hover:bg-red-50 hover:text-red-800 h-10 px-4 rounded-2xl text-xs font-medium"
         >
           <XCircle className="mr-1.5 h-4 w-4" />
           Cancel Order
@@ -49,7 +49,7 @@ export const OrderStatusFooter: React.FC<OrderStatusFooterProps> = ({
           variant="secondary"
           size="sm"
           onClick={onClose}
-          className="bg-[#E8EDF3] hover:bg-[#D9E0EA] text-[#30343B] h-10 px-4 rounded-[7px] text-xs font-medium"
+          className="bg-inset hover:bg-inset-accent text-ink-secondary h-10 px-4 rounded-2xl text-xs font-medium"
         >
           Close
         </Button>
@@ -58,7 +58,7 @@ export const OrderStatusFooter: React.FC<OrderStatusFooterProps> = ({
           <Button
             size="sm"
             onClick={() => onStatusChange(primaryNextStatus)}
-            className="bg-[#146BE8] hover:bg-[#0F5FD4] text-white h-10 px-5 rounded-[7px] text-xs font-semibold shadow-xs"
+            className="bg-primary hover:bg-brand-hover text-white h-10 px-5 rounded-2xl text-xs font-semibold shadow-button"
           >
             <span>{actionLabels[primaryNextStatus] || `Move to ${primaryNextStatus}`}</span>
             <ArrowRight className="ml-1.5 h-4 w-4" />

@@ -54,7 +54,7 @@ export function WaiterAssignmentPage() {
               <button
                 onClick={setUpForToday}
                 disabled={setupLoading || assignments.length > 0}
-                className="relative flex cursor-pointer items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="relative flex cursor-pointer items-center justify-center rounded-2xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {setupLoading && (
                   <svg
@@ -84,11 +84,11 @@ export function WaiterAssignmentPage() {
           </div>
 
           {setupError && (
-            <div className="flex flex-col gap-3 rounded-lg border border-red-200 bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-red-600">{setupError}</p>
               <button
                 onClick={setUpForToday}
-                className="flex-shrink-0 cursor-pointer rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+                className="flex-shrink-0 cursor-pointer rounded-2xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
               >
                 Retry
               </button>
@@ -97,17 +97,17 @@ export function WaiterAssignmentPage() {
 
           <div className="space-y-3">
             {loading && (
-              <div className="rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-600">
+              <div className="rounded-2xl border border-line bg-surface p-4 text-sm text-ink-secondary">
                 Loading waiter assignments…
               </div>
             )}
 
             {!loading && error && (
-              <div className="flex flex-col gap-3 rounded-lg border border-red-200 bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-sm text-red-600">{error}</p>
                 <button
                   onClick={() => fetchAssignments(true)}
-                  className="flex-shrink-0 cursor-pointer rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+                  className="flex-shrink-0 cursor-pointer rounded-2xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
                 >
                   Retry
                 </button>
@@ -115,10 +115,10 @@ export function WaiterAssignmentPage() {
             )}
 
             {!loading && !error && (
-              <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white p-4">
+              <div className="overflow-x-auto rounded-2xl border border-line bg-surface p-4">
                 <table className="w-full table-auto">
                   <thead>
-                    <tr className="bg-gray-100 text-left text-sm text-gray-700">
+                    <tr className="bg-inset text-left text-sm text-ink-secondary">
                       <th className="px-4 py-2">Waiter Name</th>
                       <th className="px-4 py-2">Email</th>
                       <th className="px-4 py-2">Phone</th>
@@ -130,7 +130,7 @@ export function WaiterAssignmentPage() {
                       <tr>
                         <td
                           colSpan={4}
-                          className="px-4 py-6 text-center text-sm text-gray-500"
+                          className="px-4 py-6 text-center text-sm text-ink-muted"
                         >
                           No assignments yet
                         </td>
@@ -139,18 +139,18 @@ export function WaiterAssignmentPage() {
                       assignments.map((assignment) => (
                         <tr
                           key={assignment.id}
-                          className="border-t border-gray-200"
+                          className="border-t border-line"
                         >
-                          <td className="px-4 py-2 font-medium text-gray-800">
+                          <td className="px-4 py-2 font-medium text-ink">
                             {assignment.waiter.name}
                           </td>
-                          <td className="px-4 py-2 text-gray-600">
+                          <td className="px-4 py-2 text-ink-secondary">
                             {assignment.waiter.email}
                           </td>
-                          <td className="px-4 py-2 text-gray-600">
+                          <td className="px-4 py-2 text-ink-secondary">
                             {assignment.waiter.phone}
                           </td>
-                          <td className="px-4 py-2 text-gray-600">
+                          <td className="px-4 py-2 text-ink-secondary">
                             {assignment.tables
                               .map((t) => `Table ${t.table_number}`)
                               .join(", ")}

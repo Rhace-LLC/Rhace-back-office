@@ -4,10 +4,16 @@
 
 /* =============================================================
    Rhace Design Tokens — source of truth:
-   design/master-design-token.json + design/component-shell.md
+   design/for-restaurant-management/visual-direction.md
+   (Modern Solid-Tactile; authoritative over master-design-token.json)
 
-   Palette, radii, shadows, type scale, spacing all reference the
-   master token file. Do NOT introduce new visual values below.
+   Rules:
+   - 100% opaque solid surfaces. NO backdrop-blur, NO bg-white/<n>,
+     NO bg-opacity overlays, NO gradients/glows for surfaces.
+   - Canvas #F4F6F9 → cards #FFFFFF → nested #F1F5F9 / #EBF1FF.
+   - Primary #2A66FF / hover #1D4ED8. Borders #E2E8F0.
+   - Radii: cards 28/20, buttons 16, pills 9999.
+   - Do NOT introduce new hex values in components — use tokens.
    ============================================================= */
 
 :root {
@@ -16,105 +22,107 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --radius: 0.625rem; /* kept for legacy var(--radius) consumers */
+  --radius: 1rem; /* legacy var(--radius) consumers → 16px button radius */
 }
 
 @theme {
-  /* ---- typography_matrix.font_family ---- */
+  /* ---- typography ---- */
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  /* ---- component_primitives.border_radius ---- */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  /* ---- radii: tactile scale (card 28/20, button 16, pill 9999) ---- */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 9999px;
 
-  /* ---- color_system.backgrounds ---- */
-  --color-page: #f6faff;
+  /* ---- surfaces (all opaque) ---- */
+  --color-page: #f4f6f9;
   --color-surface: #ffffff;
-  --color-cardfill: #f8fafd;
-  --color-overlay: rgba(255, 255, 255, 0.72);
+  --color-cardfill: #ffffff;
+  --color-inset: #f1f5f9;
+  --color-inset-accent: #ebf1ff;
 
-  /* ---- color_system.brand ---- */
-  --color-brand: #146be8;
-  --color-brand-secondary: #2f80ed;
-  --color-brand-accent: #4da3ff;
+  /* ---- brand ---- */
+  --color-brand: #2a66ff;
+  --color-brand-secondary: #2a66ff;
+  --color-brand-accent: #dce6fe;
 
-  /* ---- color_system.interactive_states ---- */
-  --color-brand-hover: #0f5fd4;
-  --color-brand-active: #0b55bf;
-  --color-disabled: #e7ecf2;
-  --color-disabled-foreground: #a0a7b0;
-  --color-focus-ring: rgba(20, 107, 232, 0.24);
+  /* ---- interactive states ---- */
+  --color-brand-hover: #1d4ed8;
+  --color-brand-active: #1e40af;
+  --color-disabled: #e2e8f0;
+  --color-disabled-foreground: #94a3b8;
+  --color-focus-ring: rgba(42, 102, 255, 0.24);
 
-  /* ---- color_system.typography ---- */
-  --color-ink: #0b0d10;
-  --color-ink-secondary: #30343b;
-  --color-ink-muted: #6b7280;
-  --color-ink-subtle: #9ca3af;
+  /* ---- typography colors ---- */
+  --color-ink: #0f172a;
+  --color-ink-secondary: #475569;
+  --color-ink-muted: #64748b;
+  --color-ink-subtle: #94a3b8;
   --color-ink-inverted: #ffffff;
 
-  /* ---- color_system.borders_and_dividers ---- */
-  --color-line: #d9e0ea;
-  --color-line-subtle: #e8edf3;
-  --color-line-strong: #c8d1de;
+  /* ---- borders (solid strokes) ---- */
+  --color-line: #e2e8f0;
+  --color-line-subtle: #eef2f7;
+  --color-line-strong: #cbd5e1;
 
-  /* ---- component_primitives.shadows ---- */
-  --shadow-sm: 0 2px 8px 0 rgb(15 23 42 / 0.06);
-  --shadow-md: 0 6px 18px 0 rgb(15 23 42 / 0.08);
-  --shadow-lg: 0 12px 32px 0 rgb(15 23 42 / 0.1);
-  --shadow-xl: 0 20px 48px 0 rgb(15 23 42 / 0.12);
+  /* ---- shadows (ambient, no blur filters) ---- */
+  --shadow-sm: 0px 8px 24px -4px rgb(15 23 42 / 0.05);
+  --shadow-md: 0px 8px 24px -4px rgb(15 23 42 / 0.05);
+  --shadow-lg: 0px 16px 32px -6px rgb(15 23 42 / 0.12);
+  --shadow-xl: 0px 16px 32px -6px rgb(15 23 42 / 0.12);
+  --shadow-dock: 0px 16px 32px -6px rgb(15 23 42 / 0.12);
+  --shadow-button: 0px 8px 16px -2px rgb(42 102 255 / 0.3);
 
-  /* ---- shadcn semantic mapping onto Rhace tokens ---- */
-  --color-background: #ffffff; /* color_system.backgrounds.surface */
-  --color-foreground: #0b0d10; /* color_system.typography.primary */
-  --color-card: #f8fafd; /* color_system.backgrounds.card */
-  --color-card-foreground: #0b0d10;
+  /* ---- shadcn semantic mapping onto tactile tokens ---- */
+  --color-background: #f4f6f9;
+  --color-foreground: #0f172a;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
   --color-popover: #ffffff;
-  --color-popover-foreground: #0b0d10;
-  --color-primary: #146be8; /* color_system.brand.primary */
-  --color-primary-foreground: #ffffff; /* color_system.typography.inverted */
-  --color-secondary: #e8edf3; /* color_system.borders_and_dividers.subtle */
-  --color-secondary-foreground: #30343b;
-  --color-muted: #e8edf3;
-  --color-muted-foreground: #6b7280; /* color_system.typography.muted */
-  --color-accent: #f8fafd;
-  --color-accent-foreground: #0b0d10;
+  --color-popover-foreground: #0f172a;
+  --color-primary: #2a66ff;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #475569;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-accent: #ebf1ff;
+  --color-accent-foreground: #0f172a;
   --color-destructive: oklch(0.577 0.245 27.325);
   --color-destructive-foreground: #ffffff;
-  --color-border: #d9e0ea; /* color_system.borders_and_dividers.default */
-  --color-input: #d9e0ea;
-  --color-ring: #146be8;
-  --color-chart-1: #146be8;
-  --color-chart-2: #2f80ed;
-  --color-chart-3: #4da3ff;
-  --color-chart-4: oklch(0.696 0.17 162.48);
-  --color-chart-5: oklch(0.769 0.188 70.08);
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #2a66ff;
+  --color-chart-1: #2a66ff;
+  --color-chart-2: #1d4ed8;
+  --color-chart-3: #93b4fd;
+  --color-chart-4: #0f172a;
+  --color-chart-5: #94a3b8;
   --color-sidebar: #ffffff;
-  --color-sidebar-foreground: #0b0d10;
-  --color-sidebar-primary: #146be8;
+  --color-sidebar-foreground: #0f172a;
+  --color-sidebar-primary: #2a66ff;
   --color-sidebar-primary-foreground: #ffffff;
-  --color-sidebar-accent: #f8fafd;
-  --color-sidebar-accent-foreground: #0b0d10;
-  --color-sidebar-border: #e8edf3;
-  --color-sidebar-ring: #146be8;
+  --color-sidebar-accent: #f1f5f9;
+  --color-sidebar-accent-foreground: #0f172a;
+  --color-sidebar-border: #e2e8f0;
+  --color-sidebar-ring: #2a66ff;
 
-  /* ---- legacy royalblue scale (kept for existing consumers) ---- */
-  --color-royalblue-100: #d9e0ff;
-  --color-royalblue-200: #a9baff;
-  --color-royalblue-300: #7a92f2;
-  --color-royalblue-400: #5977ef;
-  --color-royalblue-500: #3657d9;
-  --color-royalblue-600: #143ad0;
-  --color-royalblue-700: #0028c7;
-  --color-royalblue-800: #062ab8;
-  --color-royalblue-900: #092697;
-  --color-royalblue-950: #031a75;
-  --color-royalblue-960: #061659;
-  --color-royalblue-970: #0e1a4d;
-  --color-royalblue-980: #06113c;
-  --gradient-main: linear-gradient(to right, #0026bd, #ffffff);
+  /* ---- legacy royalblue scale (aliased to tactile blue; remove in cleanup) ---- */
+  --color-royalblue-100: #dce6fe;
+  --color-royalblue-200: #c3d5fe;
+  --color-royalblue-300: #93b4fd;
+  --color-royalblue-400: #5b8bfc;
+  --color-royalblue-500: #2a66ff;
+  --color-royalblue-600: #1d4ed8;
+  --color-royalblue-700: #1e40af;
+  --color-royalblue-800: #1e3a8a;
+  --color-royalblue-900: #172e6e;
+  --color-royalblue-950: #0f1f4d;
+  --color-royalblue-960: #0c1a42;
+  --color-royalblue-970: #0a1738;
+  --color-royalblue-980: #070f28;
 }
 
 /* ---- legacy component overrides ---- */
@@ -140,11 +148,6 @@
     width: 50px;
     height: 50px;
   }
-}
-
-/* global */
-.gradient-soft {
-  background-image: linear-gradient(45deg, #eaebff, #fffbfd);
 }
 
 @layer base {

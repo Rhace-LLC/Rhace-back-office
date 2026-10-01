@@ -35,10 +35,10 @@ const StaffFilters: React.FC<StaffFiltersProps> = ({
   onSearch,
 }) => {
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-gray-100 bg-gray-50 p-4 md:flex-row md:items-center md:gap-4">
+    <div className="flex flex-col gap-3 rounded-2xl border border-line-subtle bg-inset p-4 md:flex-row md:items-center md:gap-4">
       {/* Search */}
       <div className="flex w-full items-center gap-2 md:w-1/3">
-        <LucideSearch className="h-4 w-4 text-gray-400" />
+        <LucideSearch className="h-4 w-4 text-ink-subtle" />
         <Input
           placeholder="Search by name or email..."
           value={filters.searchTerm}
@@ -58,7 +58,7 @@ const StaffFilters: React.FC<StaffFiltersProps> = ({
           setFilters({ ...filters, role: value as UserRole | "all" })
         }
       >
-        <SelectTrigger className="w-full bg-white md:w-1/4">
+        <SelectTrigger className="w-full bg-surface md:w-1/4">
           <SelectValue placeholder="Filter by role" />
         </SelectTrigger>
         <SelectContent>

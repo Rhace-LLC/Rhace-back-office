@@ -76,7 +76,7 @@ export const AddTable: React.FC = () => {
       {/* Title Section with Icon */}
       <div className="mb-6 flex items-center space-x-3 border-b pb-4">
         <UtensilsCrossed className="h-6 w-6 text-indigo-600" />
-        <h2 className="text-xl font-bold text-gray-800">
+        <h2 className="text-xl font-bold text-ink">
           Add New Dining Table
         </h2>
       </div>
@@ -87,7 +87,7 @@ export const AddTable: React.FC = () => {
         <div className="space-y-2">
           <Label
             htmlFor="table_number"
-            className="text-sm font-medium text-gray-700"
+            className="text-sm font-medium text-ink-secondary"
           >
             Table Number
           </Label>
@@ -107,7 +107,7 @@ export const AddTable: React.FC = () => {
         <div className="space-y-2">
           <Label
             htmlFor="max_party_size"
-            className="text-sm font-medium text-gray-700"
+            className="text-sm font-medium text-ink-secondary"
           >
             Max Party Size
           </Label>

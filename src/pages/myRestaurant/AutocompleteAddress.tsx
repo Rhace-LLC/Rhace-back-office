@@ -52,16 +52,16 @@ export const AutocompleteAddress = ({ value, onChange, onSelect }: Props) => {
         placeholder="Street address, building name, etc."
       />
       {open && (
-        <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg border bg-white shadow-lg">
+        <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-2xl border bg-surface shadow-lg">
           {suggestions.map((s, i) => (
             <li
               key={i}
               onClick={() => handleSelect(s)}
-              className="cursor-pointer px-4 py-3 text-sm hover:bg-gray-100"
+              className="cursor-pointer px-4 py-3 text-sm hover:bg-inset"
             >
               <span className="block font-medium">{s.address}</span>
               {s.city && (
-                <span className="block text-xs text-gray-500">
+                <span className="block text-xs text-ink-muted">
                   {[s.city, s.state, s.country].filter(Boolean).join(", ")}
                 </span>
               )}

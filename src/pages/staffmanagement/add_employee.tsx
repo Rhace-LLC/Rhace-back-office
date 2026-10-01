@@ -75,7 +75,7 @@ const RegisterEmployeeForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto max-w-lg space-y-4 rounded-lg bg-white py-11"
+      className="mx-auto max-w-lg space-y-4 rounded-2xl bg-surface py-11"
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>

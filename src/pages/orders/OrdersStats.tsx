@@ -51,6 +51,11 @@ export function OrdersStats({ orders = [] }: OrdersStatsProps) {
     ),
     dineIn: safeOrders.filter((o) => o.order_type === "dine-in").length,
     delivery: safeOrders.filter((o) => o.order_type === "delivery").length,
+    awaitingConfirmation: safeOrders.filter(
+      (o) =>
+        String(o.status || "").toLowerCase() === "received" &&
+        !o.waiter_confirmed
+    ).length,
   };
 
   return (
@@ -90,6 +95,11 @@ export function OrdersStats({ orders = [] }: OrdersStatsProps) {
           </div>
           <p className="text-muted-foreground text-xs">
             Orders being processed
+            {stats.awaitingConfirmation > 0 && (
+              <span className="ml-1 font-medium text-amber-600">
+                • {stats.awaitingConfirmation} awaiting confirmation
+              </span>
+            )}
           </p>
         </CardContent>
       </Card>

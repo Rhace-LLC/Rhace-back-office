@@ -49,7 +49,7 @@ export const TableCard: React.FC<TableCardProps> = ({ table, waiterName }) => {
 
   return (
     <div>
-      <Card className="flex flex-col justify-between rounded-xl border border-gray-200 shadow-sm transition-all duration-200 hover:shadow-md">
+      <Card className="flex flex-col justify-between rounded-3xl border border-line shadow-sm transition-all duration-200 hover:shadow-md">
         <CardHeader className="p-4">
           <div className="flex items-center justify-between">
             <CardTitle className="text-md font-semibold">
@@ -66,13 +66,13 @@ export const TableCard: React.FC<TableCardProps> = ({ table, waiterName }) => {
             </span>
           </div>
 
-          <p className="text-xs text-gray-500">{restaurant_name}</p>
+          <p className="text-xs text-ink-muted">{restaurant_name}</p>
         </CardHeader>
 
         <CardContent className="p-3">
           <div className="grid grid-cols-2 gap-3">
             {/* Seats box */}
-            <div className="flex flex-col items-start rounded-lg bg-blue-50 p-3">
+            <div className="flex flex-col items-start rounded-2xl bg-blue-50 p-3">
               <span className="text-xs font-semibold tracking-wide text-blue-800 uppercase">
                 Seats
               </span>
@@ -84,7 +84,7 @@ export const TableCard: React.FC<TableCardProps> = ({ table, waiterName }) => {
             {/* Status box */}
             <div
               className={clsx(
-                "flex flex-col items-start rounded-lg p-3",
+                "flex flex-col items-start rounded-2xl p-3",
                 statusBoxColor
               )}
             >
@@ -96,7 +96,7 @@ export const TableCard: React.FC<TableCardProps> = ({ table, waiterName }) => {
           </div>
 
           {/* Waiter */}
-          <div className="mt-3 rounded-lg bg-purple-50 p-3">
+          <div className="mt-3 rounded-2xl bg-purple-50 p-3">
             <span className="text-xs font-semibold tracking-wide text-purple-800 uppercase">
               Waiter
             </span>
@@ -109,7 +109,7 @@ export const TableCard: React.FC<TableCardProps> = ({ table, waiterName }) => {
         <CardFooter className="flex flex-col gap-2 p-2">
           <Button
             variant="secondary"
-            className="w-full cursor-pointer bg-gray-100 text-gray-700 hover:bg-gray-200"
+            className="w-full cursor-pointer bg-inset text-ink-secondary hover:bg-inset-accent"
             onClick={() => setViewOpen(true)}
           >
             Manage Table

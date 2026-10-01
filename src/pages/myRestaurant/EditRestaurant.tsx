@@ -42,11 +42,11 @@ const FormField = memo(
     description?: string;
   }) => (
     <div className="space-y-1">
-      <label className="text-sm font-semibold tracking-wide text-gray-800">
+      <label className="text-sm font-semibold tracking-wide text-ink">
         {label}
       </label>
       {description && (
-        <p className="mb-2 text-xs text-gray-500">{description}</p>
+        <p className="mb-2 text-xs text-ink-muted">{description}</p>
       )}
       {children}
     </div>
@@ -137,7 +137,7 @@ export default function EditRestaurantProfile({
     <div className="space-y-8">
       {/* HEADER */}
       <div className="flex items-center justify-between border-b pb-4">
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+        <h2 className="text-3xl font-bold tracking-tight text-ink">
           Edit Restaurant Profile
         </h2>
         <Button
@@ -150,19 +150,19 @@ export default function EditRestaurantProfile({
       </div>
 
       {/* --- SECTION: BASIC INFORMATION --- */}
-      <section className="space-y-6 rounded-xl border border-gray-100 bg-white p-6 shadow-lg md:p-8">
-        <h3 className="text-xl font-bold text-gray-800">Basic Details</h3>
-        <p className="text-sm text-gray-500">
+      <section className="space-y-6 rounded-3xl border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
+        <h3 className="text-xl font-bold text-ink">Basic Details</h3>
+        <p className="text-sm text-ink-muted">
           Provide the fundamental information about your restaurant.
         </p>
 
         {/* Restaurant Name */}
         <div className="space-y-1">
-          <label className="text-sm font-semibold tracking-wide text-gray-800">
+          <label className="text-sm font-semibold tracking-wide text-ink">
             Restaurant Name
           </label>
           <Input
-            className="h-11 border-gray-300 transition-colors duration-150 focus:border-indigo-500 focus:ring-indigo-500"
+            className="h-11 border-line transition-colors duration-150 focus:border-brand focus:ring-focus-ring"
             value={form.name}
             onChange={(e) => updateField("name", e.target.value)}
           />
@@ -170,14 +170,14 @@ export default function EditRestaurantProfile({
 
         {/* Slogan */}
         <div className="space-y-1">
-          <label className="text-sm font-semibold tracking-wide text-gray-800">
+          <label className="text-sm font-semibold tracking-wide text-ink">
             Slogan
           </label>
-          <p className="mb-2 text-xs text-gray-500">
+          <p className="mb-2 text-xs text-ink-muted">
             A short, catchy phrase for marketing.
           </p>
           <Input
-            className="h-11 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+            className="h-11 border-line focus:border-brand focus:ring-focus-ring"
             value={form.slogan ?? ""}
             onChange={(e) => updateField("slogan", e.target.value)}
           />
@@ -185,14 +185,14 @@ export default function EditRestaurantProfile({
 
         {/* Description */}
         <div className="space-y-1">
-          <label className="text-sm font-semibold tracking-wide text-gray-800">
+          <label className="text-sm font-semibold tracking-wide text-ink">
             Description
           </label>
-          <p className="mb-2 text-xs text-gray-500">
+          <p className="mb-2 text-xs text-ink-muted">
             A detailed overview of your restaurant, cuisine, and atmosphere.
           </p>
           <Textarea
-            className="h-[120px] border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+            className="h-[120px] border-line focus:border-brand focus:ring-focus-ring"
             value={form.description ?? ""}
             onChange={(e) => updateField("description", e.target.value)}
           />
@@ -200,13 +200,13 @@ export default function EditRestaurantProfile({
       </section>
 
       {/* --- SECTION: LOCATION & CONTACT --- */}
-      <section className="space-y-6 rounded-xl border border-gray-100 bg-white p-6 shadow-lg md:p-8">
+      <section className="space-y-6 rounded-3xl border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
         <div className="flex justify-between">
           <div className="flex flex-col gap-1">
-            <h3 className="text-[22px] font-bold tracking-tight text-gray-900">
+            <h3 className="text-[22px] font-bold tracking-tight text-ink">
               Location & Contact
             </h3>
-            <p className="max-w-md text-[14px] leading-relaxed font-medium text-gray-400">
+            <p className="max-w-md text-[14px] leading-relaxed font-medium text-ink-subtle">
               Define your physical presence so customers can navigate to you
               effortlessly.
             </p>
@@ -216,18 +216,18 @@ export default function EditRestaurantProfile({
             type="button"
             onClick={() => setPickAddrFromMap((prev) => !prev)}
             className={cn(
-              "group flex items-center gap-2 rounded-full px-5 transition-all duration-500 ease-out active:scale-95",
+              "group flex items-center gap-2 rounded-full bg-inset px-5 transition-all duration-500 ease-out active:scale-95",
               pickAddrFromMap
-                ? "bg-black text-white shadow-xl shadow-black/10"
-                : "bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900"
+                ? "bg-ink text-white shadow-lg"
+                : "text-ink-muted hover:bg-inset-accent hover:text-ink"
             )}
           >
             <div
               className={cn(
                 "flex h-5 w-5 items-center justify-center rounded-full transition-all duration-500",
                 pickAddrFromMap
-                  ? "rotate-0 bg-white/20"
-                  : "-rotate-90 bg-gray-200"
+                  ? "rotate-0 bg-surface text-ink"
+                  : "-rotate-90 bg-surface text-ink-muted"
               )}
             >
               {pickAddrFromMap ? (
@@ -250,7 +250,7 @@ export default function EditRestaurantProfile({
           </button>
         </div>
 
-        <div className="relative overflow-hidden rounded-[2.5rem] bg-gray-50/50 ring-1 ring-gray-100">
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-inset/50 ring-1 ring-gray-100">
           {pickAddrFromMap && (
             <div className="animate-in fade-in zoom-in-95 duration-500">
               <MapPicker
@@ -266,7 +266,7 @@ export default function EditRestaurantProfile({
         </div>
 
         <div className="space-y-1">
-          <label className="text-sm font-semibold tracking-wide text-gray-800">
+          <label className="text-sm font-semibold tracking-wide text-ink">
             Full Address
           </label>
           <AutocompleteAddress
@@ -283,7 +283,7 @@ export default function EditRestaurantProfile({
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="space-y-1">
-            <label className="text-sm font-semibold tracking-wide text-gray-800">
+            <label className="text-sm font-semibold tracking-wide text-ink">
               City
             </label>
             <Input
@@ -293,7 +293,7 @@ export default function EditRestaurantProfile({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-semibold tracking-wide text-gray-800">
+            <label className="text-sm font-semibold tracking-wide text-ink">
               State/Province
             </label>
             <Input
@@ -303,7 +303,7 @@ export default function EditRestaurantProfile({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-semibold tracking-wide text-gray-800">
+            <label className="text-sm font-semibold tracking-wide text-ink">
               Country
             </label>
             <Input
@@ -316,7 +316,7 @@ export default function EditRestaurantProfile({
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-1">
-            <label className="text-sm font-semibold tracking-wide text-gray-800">
+            <label className="text-sm font-semibold tracking-wide text-ink">
               Email Address
             </label>
             <Input
@@ -327,7 +327,7 @@ export default function EditRestaurantProfile({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-semibold tracking-wide text-gray-800">
+            <label className="text-sm font-semibold tracking-wide text-ink">
               Phone Number
             </label>
             <Input
@@ -341,9 +341,9 @@ export default function EditRestaurantProfile({
       </section>
 
       {/* --- SECTION: BRANDING & MEDIA --- */}
-      <section className="space-y-6 rounded-xl border border-gray-100 bg-white p-6 shadow-lg md:p-8">
-        <h3 className="text-xl font-bold text-gray-800">Branding & Media</h3>
-        <p className="text-sm text-gray-500">
+      <section className="space-y-6 rounded-3xl border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
+        <h3 className="text-xl font-bold text-ink">Branding & Media</h3>
+        <p className="text-sm text-ink-muted">
           Upload high-quality images to attract visitors.
         </p>
 
@@ -357,13 +357,13 @@ export default function EditRestaurantProfile({
               <img
                 src={logoPreview}
                 alt="Logo Preview"
-                className="h-24 w-24 flex-shrink-0 rounded-xl border-4 border-white object-cover shadow-md"
+                className="h-24 w-24 flex-shrink-0 rounded-3xl border-4 border-white object-cover shadow-md"
               />
             )}
             <Input
               type="file"
               accept="image/*"
-              className="h-12 cursor-pointer p-2 file:rounded-md file:border-0 file:bg-gray-100 file:text-sm file:font-medium"
+              className="h-12 cursor-pointer p-2 file:rounded-2xl file:border-0 file:bg-inset file:text-sm file:font-medium"
               onChange={(e) => handleImageUpload(e, "logo")}
             />
           </div>
@@ -379,13 +379,13 @@ export default function EditRestaurantProfile({
               <img
                 src={coverPreview}
                 alt="Cover Preview"
-                className="h-48 w-full rounded-xl border object-cover shadow-md"
+                className="h-48 w-full rounded-3xl border object-cover shadow-md"
               />
             )}
             <Input
               type="file"
               accept="image/*"
-              className="h-12 cursor-pointer p-2 file:rounded-md file:border-0 file:bg-gray-100 file:text-sm file:font-medium"
+              className="h-12 cursor-pointer p-2 file:rounded-2xl file:border-0 file:bg-inset file:text-sm file:font-medium"
               onChange={(e) => handleImageUpload(e, "cover")}
             />
           </div>
@@ -402,7 +402,7 @@ export default function EditRestaurantProfile({
               {[
                 "#000000",
                 "#ffffff",
-                "#2542e3",
+                "#2A66FF",
                 "#f59e0b",
                 "#ef4444",
                 "#10b981",
@@ -417,8 +417,8 @@ export default function EditRestaurantProfile({
                   onClick={() => updateField("brand_color", color)}
                   className={`h-6 w-6 rounded-full border shadow-sm transition-all hover:scale-110 ${
                     form.brand_color === color
-                      ? "border-gray-900 ring-2 ring-gray-900 ring-offset-1"
-                      : "border-gray-200"
+                      ? "border-ink ring-2 ring-ink ring-offset-1"
+                      : "border-line"
                   }`}
                   style={{ backgroundColor: color }}
                   title={color}
@@ -426,10 +426,10 @@ export default function EditRestaurantProfile({
               ))}
 
               {/* Minimalist Color Picker Trigger Wrapper */}
-              <label className="relative flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-500 hover:border-gray-400 hover:bg-gray-100">
+              <label className="relative flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border border-dashed border-line bg-inset text-xs text-ink-muted hover:border-line-strong hover:bg-inset">
                 <input
                   type="color"
-                  value={form.brand_color || "#2542e3"}
+                  value={form.brand_color || "#2A66FF"}
                   onChange={(e) => updateField("brand_color", e.target.value)}
                   className="absolute inset-0 cursor-pointer opacity-0"
                 />
@@ -439,13 +439,13 @@ export default function EditRestaurantProfile({
 
             {/* Selected Value Indicator */}
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-400">Selected Color:</span>
+              <span className="text-xs font-medium text-ink-subtle">Selected Color:</span>
               <span
-                className="inline-block h-5 w-5 rounded-full border border-gray-300"
-                style={{ backgroundColor: form.brand_color || "#2542e3" }}
+                className="inline-block h-5 w-5 rounded-full border border-line"
+                style={{ backgroundColor: form.brand_color || "#2A66FF" }}
               />
-              <span className="font-mono text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 border border-gray-200 px-2 py-0.5 rounded-md">
-                {form.brand_color || "#2542e3"}
+              <span className="font-mono text-xs font-semibold text-ink-secondary uppercase tracking-wider bg-inset border border-line px-2 py-0.5 rounded-2xl">
+                {form.brand_color || "#2A66FF"}
               </span>
             </div>
           </div>
@@ -453,8 +453,8 @@ export default function EditRestaurantProfile({
       </section>
 
       {/* --- SECTION: TAGS --- */}
-      <section className="space-y-6 rounded-xl border border-gray-100 bg-white p-6 shadow-lg md:p-8">
-        <h3 className="text-xl font-bold text-gray-800">Tags & Categories</h3>
+      <section className="space-y-6 rounded-3xl border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
+        <h3 className="text-xl font-bold text-ink">Tags & Categories</h3>
         <FormField
           label="Tags"
           description="Enter keywords (e.g., cuisine, dietary, style) that describe your restaurant. Press Enter to add."
@@ -489,10 +489,10 @@ export default function EditRestaurantProfile({
       </section>
 
       {/* --- SECTION: OPENING HOURS --- */}
-      <section className="space-y-6 rounded-xl border border-gray-100 bg-white p-6 shadow-lg md:p-8">
-        <h3 className="text-xl font-bold text-gray-800">Operating Hours</h3>
-        <p className="text-sm text-gray-500">
-          <Calendar size={16} className="mr-2 inline-block text-gray-500" />
+      <section className="space-y-6 rounded-3xl border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
+        <h3 className="text-xl font-bold text-ink">Operating Hours</h3>
+        <p className="text-sm text-ink-muted">
+          <Calendar size={16} className="mr-2 inline-block text-ink-muted" />
           Select the days your restaurant is open, then specify the operating
           times for each.
         </p>
@@ -528,7 +528,7 @@ export default function EditRestaurantProfile({
                 className={`rounded-full border px-4 py-1.5 text-sm font-medium shadow-sm transition duration-200 ${
                   isActive
                     ? "border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700"
-                    : "border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    : "border-line bg-inset text-ink-secondary hover:bg-inset-accent"
                 } `}
               >
                 {day}
@@ -541,9 +541,9 @@ export default function EditRestaurantProfile({
           {(form.opening_hours ?? []).map((hour, idx) => (
             <div
               key={hour.day}
-              className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-inner md:flex-row"
+              className="flex flex-col gap-4 rounded-2xl border border-line bg-inset p-4 shadow-inner md:flex-row"
             >
-              <p className="w-full flex-shrink-0 self-center font-semibold text-gray-800 md:w-1/4">
+              <p className="w-full flex-shrink-0 self-center font-semibold text-ink md:w-1/4">
                 {hour.day}
               </p>
 
@@ -551,10 +551,10 @@ export default function EditRestaurantProfile({
                 <div className="relative flex-1">
                   <Clock
                     size={16}
-                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-ink-subtle"
                   />
                   <Input
-                    className="h-11 bg-white pl-10"
+                    className="h-11 bg-surface pl-10"
                     placeholder="Open Time (e.g. 09:00)"
                     value={hour.open_time}
                     onChange={(e) =>
@@ -567,10 +567,10 @@ export default function EditRestaurantProfile({
                 <div className="relative flex-1">
                   <Clock
                     size={16}
-                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-ink-subtle"
                   />
                   <Input
-                    className="h-11 bg-white pl-10"
+                    className="h-11 bg-surface pl-10"
                     placeholder="Close Time (e.g. 22:00)"
                     value={hour.close_time}
                     onChange={(e) =>
@@ -588,7 +588,7 @@ export default function EditRestaurantProfile({
       {/* SAVE BUTTON */}
       <div className="border-t pt-6">
         <Button
-          className="h-12 w-full rounded-lg bg-indigo-600 text-base font-semibold shadow-lg transition duration-200 hover:bg-indigo-700"
+          className="h-12 w-full rounded-2xl bg-indigo-600 text-base font-semibold shadow-lg transition duration-200 hover:bg-indigo-700"
           onClick={handleSave}
         >
           Save Changes

@@ -45,8 +45,8 @@ export const LoadingContent: React.FC<{ loadingText?: string }> = ({
   return (
     <Card>
       <CardContent className="p-8 text-center">
-        <div className="flex flex-col items-center justify-center space-y-4 text-gray-500">
-          <Loader2 className="h-12 w-12 animate-spin text-gray-300" />
+        <div className="flex flex-col items-center justify-center space-y-4 text-ink-muted">
+          <Loader2 className="h-12 w-12 animate-spin text-ink-subtle" />
           <h3 className="text-lg font-medium">
             {loadingText || "Loading content..."}
           </h3>
@@ -69,8 +69,8 @@ export const NoContent: React.FC<NoContentPropType> = ({
 }) => (
   <Card>
     <CardContent className="p-8 text-center">
-      <div className="text-gray-500">
-        <FileText className="mx-auto mb-4 h-12 w-12 text-gray-300" />
+      <div className="text-ink-muted">
+        <FileText className="mx-auto mb-4 h-12 w-12 text-ink-subtle" />
         <h3 className="mb-2 text-lg font-medium">{message}</h3>
         <p className="text-sm">{"Use the button below for further actions"}</p>
         {showContentBtn && (
@@ -103,7 +103,7 @@ export const ReqErr: React.FC<ReqErrProps> = ({
             <Button
               onClick={onAction}
               className={
-                "h-11 w-full cursor-pointer rounded-lg bg-red-600/80 text-white transition-colors hover:bg-red-600"
+                "h-11 w-full cursor-pointer rounded-2xl bg-red-600/80 text-white transition-colors hover:bg-red-600"
               }
             >
               {actionText}

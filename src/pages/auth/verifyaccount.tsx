@@ -74,7 +74,7 @@ export function VerifyOtp() {
         {/* Top Logo & Country */}
         <div className="mb-10 flex items-center justify-between">
           <img src={RhaceLogo} alt="Rhace" className="h-auto w-[88px]" />
-          <span className="rounded-md bg-cardfill px-2 py-1 text-xs font-medium tracking-tight text-ink-muted">
+          <span className="rounded-2xl bg-cardfill px-2 py-1 text-xs font-medium tracking-tight text-ink-muted">
             NG
           </span>
         </div>

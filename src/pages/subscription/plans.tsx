@@ -42,7 +42,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ plan, onSelect }) => {
   return (
     <div
       className={cn(
-        "relative flex flex-col rounded-[16px] p-6",
+        "relative flex flex-col rounded-[20px] p-6",
         featured
           ? "bg-gradient-to-br from-brand via-brand-secondary to-brand-accent shadow-md"
           : "border border-line bg-surface",
@@ -115,9 +115,9 @@ export const PlanCard: React.FC<PlanCardProps> = ({ plan, onSelect }) => {
         onClick={() => onSelect(plan)}
         disabled={!is_active}
         className={cn(
-          "mt-6 inline-flex h-12 w-full items-center justify-center rounded-[8px] text-sm font-medium transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50",
+          "mt-6 inline-flex h-12 w-full items-center justify-center rounded-2xl text-sm font-medium transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50",
           featured
-            ? "bg-white text-brand hover:bg-surface"
+            ? "bg-surface text-brand hover:bg-surface"
             : "border border-line bg-surface text-ink hover:border-ink hover:bg-cardfill"
         )}
       >

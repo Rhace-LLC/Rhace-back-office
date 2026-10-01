@@ -48,7 +48,7 @@ export function StatsWaiterDashboard() {
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="bg-muted text-muted-foreground flex animate-pulse flex-col gap-6 rounded-xl border"
+            className="bg-muted text-muted-foreground flex animate-pulse flex-col gap-6 rounded-3xl border"
           >
             <div className="p-4 [&:last-child]:pb-6">
               <div className="text-2xl font-bold">--</div>
@@ -61,14 +61,14 @@ export function StatsWaiterDashboard() {
 
   if (fetchSummaryError)
     return (
-      <div className="text-muted-foreground col-span-3 flex flex-col items-center justify-center gap-3 rounded-xl border border-red-100 bg-red-50 p-6">
+      <div className="text-muted-foreground col-span-3 flex flex-col items-center justify-center gap-3 rounded-3xl border border-red-100 bg-red-50 p-6">
         <div className="text-[18px] font-medium tracking-tight text-red-500">
           Unable to load summary data
         </div>
         <div className="tracking-tight text-red-500">{fetchSummaryError}</div>
         <button
           onClick={fetchSummary}
-          className="cursor-pointer rounded-lg bg-red-500 px-10 py-2 text-white transition hover:bg-red-600"
+          className="cursor-pointer rounded-2xl bg-red-500 px-10 py-2 text-white transition hover:bg-red-600"
         >
           Retry
         </button>

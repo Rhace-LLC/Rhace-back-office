@@ -58,7 +58,7 @@ export function TablesPage() {
         </div>
         <div className="mt-5 flex items-center gap-4 sm:mt-0">
           <button
-            className="cursor-pointer rounded-md bg-blue-100 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200"
+            className="cursor-pointer rounded-2xl bg-blue-100 px-4 py-2 text-sm font-medium text-ink hover:bg-inset-accent"
             onClick={() => setAddTableOpen(true)}
           >
             + Add Table

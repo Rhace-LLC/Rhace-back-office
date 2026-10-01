@@ -144,15 +144,15 @@ const InviteEmployeeForm: React.FC<Props> = ({ onSubmit }) => {
 
       {/* Invite Link Display */}
       {inviteLink && (
-        <div className="rounded border bg-gray-50 p-3 text-sm">
-          <p className="mb-2 text-gray-600">Invite Link:</p>
+        <div className="rounded border bg-inset p-3 text-sm">
+          <p className="mb-2 text-ink-secondary">Invite Link:</p>
           <p
             className="cursor-pointer break-all text-blue-600 underline"
             onClick={() => navigator.clipboard.writeText(inviteLink)}
           >
             {inviteLink}
           </p>
-          <p className="mt-1 text-xs text-gray-400">(Click to copy link)</p>
+          <p className="mt-1 text-xs text-ink-subtle">(Click to copy link)</p>
         </div>
       )}
 

@@ -53,7 +53,7 @@ const getStatusProps = (label: string) => {
     default:
       return {
         icon: Check,
-        color: "text-gray-600 bg-gray-50 border-gray-200 hover:bg-gray-100",
+        color: "text-ink-secondary bg-inset border-line hover:bg-inset",
         ring: "focus-within:ring-gray-500",
       };
   }
@@ -242,7 +242,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
     <div className="space-y-4 pt-5">
       <Tabs defaultValue="overview" className="w-full space-y-4">
         {/* --- TAB TRIGGERS --- */}
-        <TabsList className="grid w-full grid-cols-2 rounded-lg border-b border-gray-200 bg-gray-50 p-1">
+        <TabsList className="grid w-full grid-cols-2 rounded-2xl border-b border-line bg-inset p-1">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="qr">
             <QrCode className="h-4 w-4" />
@@ -253,31 +253,31 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
         <TabsContent value="overview">
           <div className="grid grid-cols-2 gap-4">
             {/* Seats */}
-            <div className="rounded-xl border border-indigo-100 bg-indigo-50/50 p-4 shadow-sm">
+            <div className="rounded-3xl border border-indigo-100 bg-indigo-50/50 p-4 shadow-sm">
               <p className="text-xs font-medium tracking-wide text-indigo-600 uppercase">
                 Available Seats
               </p>
-              <p className="mt-1 text-[18px] font-semibold text-gray-900">
+              <p className="mt-1 text-[18px] font-semibold text-ink">
                 {table.max_party_size}
               </p>
             </div>
 
             {/* Table Number */}
-            <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-4 shadow-sm">
+            <div className="rounded-3xl border border-blue-100 bg-blue-50/50 p-4 shadow-sm">
               <p className="text-xs font-medium tracking-wide text-blue-600 uppercase">
                 Table Number
               </p>
-              <p className="mt-1 text-[18px] font-semibold text-gray-900">
+              <p className="mt-1 text-[18px] font-semibold text-ink">
                 {table.table_number}
               </p>
             </div>
 
             {/* Current Status */}
-            <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4 shadow-sm">
+            <div className="rounded-3xl border border-emerald-100 bg-emerald-50/50 p-4 shadow-sm">
               <p className="text-xs font-medium tracking-wide text-emerald-600 uppercase">
                 Current Status
               </p>
-              <p className="mt-1 text-[18px] font-semibold text-gray-900 capitalize">
+              <p className="mt-1 text-[18px] font-semibold text-ink capitalize">
                 {table.status}
               </p>
             </div>
@@ -286,27 +286,27 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
           {/* Actions */}
           <div className="grid grid-cols-2 gap-3 space-y-2 pt-5">
             <Button
-              className="h-12 w-full cursor-pointer rounded-[10px] bg-indigo-600 text-white transition hover:bg-indigo-700"
+              className="h-12 w-full cursor-pointer rounded-2xl bg-indigo-600 text-white transition hover:bg-indigo-700"
               onClick={() => setStatusDialogOpen(true)}
             >
               Update Table Status
             </Button>
 
             <Button
-              className="h-12 w-full cursor-pointer rounded-[10px] bg-blue-600 text-white transition hover:bg-blue-700"
+              className="h-12 w-full cursor-pointer rounded-2xl bg-blue-600 text-white transition hover:bg-blue-700"
               onClick={() => setTableInfoDialogOpen(true)}
             >
               Update Table Info
             </Button>
           </div>
-          <div className="my-5 border-t border-gray-300" />
+          <div className="my-5 border-t border-line" />
           <div className="hidden w-full">
             {/* Header */}
             <div className="mb-6">
-              <h3 className="text-xl font-semibold tracking-tight text-[#262626]">
+              <h3 className="text-xl font-semibold tracking-tight text-ink">
                 Waiter Assignment
               </h3>
-              <p className="mt-1 text-sm text-[#636262]">
+              <p className="mt-1 text-sm text-ink-secondary">
                 Assign available waiters to tables to manage service flow and
                 improve customer experience.
               </p>
@@ -314,18 +314,18 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
 
             {/* Loading state */}
             {waiterReqLoading && (
-              <div className="rounded-lg border border-gray-200 bg-white p-4 text-sm text-[#636262]">
+              <div className="rounded-2xl border border-line bg-surface p-4 text-sm text-ink-secondary">
                 Loading waiters…
               </div>
             )}
 
             {/* Error state */}
             {!waiterReqLoading && waiterReqError && (
-              <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+              <div className="rounded-2xl border border-red-200 bg-red-50 p-4">
                 <p className="text-sm text-red-600">{waiterReqError}</p>
                 <button
                   onClick={fetchWaiters}
-                  className="mt-3 inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+                  className="mt-3 inline-flex items-center rounded-2xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
                 >
                   Retry
                 </button>
@@ -335,21 +335,21 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
             {!waiterReqLoading && !waiterReqError && (
               <div className="space-y-3">
                 {waiters.length === 0 ? (
-                  <p className="text-sm text-[#8a8a8a]">
+                  <p className="text-sm text-ink-muted">
                     No waiters available.
                   </p>
                 ) : (
                   waiters.map((waiter) => (
                     <div
                       key={waiter.id}
-                      className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4"
+                      className="flex items-center justify-between rounded-2xl border border-line bg-surface p-4"
                     >
                       {/* Waiter Info */}
                       <div>
-                        <p className="font-medium text-[#262626]">
+                        <p className="font-medium text-ink">
                           {waiter.full_name}
                         </p>
-                        <p className="text-sm text-[#636262]">
+                        <p className="text-sm text-ink-secondary">
                           {waiter.email} • {waiter.phone}
                         </p>
                       </div>
@@ -359,7 +359,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
                         onClick={() => {
                           // assign waiter to table logic here
                         }}
-                        className="rounded-md bg-[#262626] px-4 py-2 text-sm font-medium text-white transition hover:bg-black"
+                        className="rounded-2xl bg-ink px-4 py-2 text-sm font-medium text-white transition hover:bg-ink-secondary"
                       >
                         Assign to table
                       </button>
@@ -374,18 +374,18 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
         {/* --- QR TAB --- */}
         <TabsContent
           value="qr"
-          className="space-y-4 rounded-lg border border-gray-200 bg-white p-4"
+          className="space-y-4 rounded-2xl border border-line bg-surface p-4"
         >
           <h2 className="text-center text-lg font-semibold">Table QR Code</h2>
-          <p className="text-center text-sm text-gray-600">
+          <p className="text-center text-sm text-ink-secondary">
             Paste this on dining table {table.table_number}.
           </p>
-          <p className="text-center text-sm text-gray-600">
+          <p className="text-center text-sm text-ink-secondary">
             {qrValue}
           </p>
 
           <div className="flex flex-col items-center space-y-4">
-            <div className="rounded-lg border bg-gray-50 p-4">
+            <div className="rounded-2xl border bg-inset p-4">
               <QRCode value={qrValue} size={250} />
             </div>
 
@@ -397,7 +397,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
                 )}`}
                 download={`Table-${table.table_number}-QR.png`}
                 target="_blank"
-                className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                className="flex items-center gap-2 rounded-2xl bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
               >
                 <Download className="h-4 w-4" /> Download QR
               </a>
@@ -431,17 +431,17 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
         <div className="space-y-6 p-2">
           {/* Title */}
           <div>
-            <h2 className="text-2xl font-semibold text-gray-900">
+            <h2 className="text-2xl font-semibold text-ink">
               Change Table Status
             </h2>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-ink-muted">
               Update the current state for Table {table?.table_number || "—"}.
             </p>
           </div>
 
           {/* Status Options */}
           <div className="space-y-3">
-            <p className="text-sm font-semibold text-gray-700">
+            <p className="text-sm font-semibold text-ink-secondary">
               Choose a new status:
             </p>
 
@@ -454,7 +454,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
                   <label
                     key={label}
                     className={cn(
-                      "group relative flex cursor-pointer flex-col items-start rounded-xl border-2 p-4 transition-all duration-200",
+                      "group relative flex cursor-pointer flex-col items-start rounded-3xl border-2 p-4 transition-all duration-200",
                       color,
                       isSelected
                         ? `shadow-lg ${ring} ring-4 ring-offset-2`
@@ -476,8 +476,8 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
                     </div>
 
                     {isSelected && (
-                      <div className="absolute top-2 right-2 rounded-full bg-white p-1 shadow-sm">
-                        <Check className="h-4 w-4 text-gray-900" />
+                      <div className="absolute top-2 right-2 rounded-full bg-surface p-1 shadow-sm">
+                        <Check className="h-4 w-4 text-ink" />
                       </div>
                     )}
                   </label>
@@ -505,7 +505,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
 
             <Button
               variant="ghost"
-              className="w-full text-gray-600 hover:bg-gray-100"
+              className="w-full text-ink-secondary hover:bg-inset"
               onClick={() => setStatusDialogOpen(false)}
             >
               Cancel
@@ -523,10 +523,10 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
         <div className="space-y-6 p-2">
           {/* Title */}
           <div>
-            <h2 className="text-2xl font-semibold text-gray-900">
+            <h2 className="text-2xl font-semibold text-ink">
               Update Table Info
             </h2>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-ink-muted">
               Modify the table number or available seats for this table.
             </p>
           </div>
@@ -535,11 +535,11 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
           <div className="space-y-4">
             {/* Table Number */}
             <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">
+              <label className="text-sm font-medium text-ink-secondary">
                 Table Number
               </label>
               <Input
-                className="h-11 rounded-lg"
+                className="h-11 rounded-2xl"
                 value={editTableNumber}
                 onChange={(e) => {
                   let { value } = e.target;
@@ -555,12 +555,12 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
 
             {/* Maximum Seats */}
             <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">
+              <label className="text-sm font-medium text-ink-secondary">
                 Available Seats
               </label>
               <Input
                 type="number"
-                className="h-11 rounded-lg"
+                className="h-11 rounded-2xl"
                 value={String(editMaxSeats)}
                 onChange={(e) => setEditMaxSeats(Number(e.target.value))}
                 placeholder="Enter max seats"
@@ -594,7 +594,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
 
             <Button
               variant="ghost"
-              className="w-full text-gray-600 hover:bg-gray-100"
+              className="w-full text-ink-secondary hover:bg-inset"
               onClick={() => setTableInfoDialogOpen(false)}
             >
               Cancel

@@ -387,7 +387,7 @@ export const AddDish: React.FC<{
           </div>
 
           {showAddCategory && (
-            <div className="rounded-lg border bg-gray-50 p-3 space-y-2">
+            <div className="rounded-2xl border bg-inset p-3 space-y-2">
               <Input
                 placeholder="Category name"
                 value={newCategoryName}
@@ -433,7 +433,7 @@ export const AddDish: React.FC<{
           {!fetchCategoriesError &&
             !fetchCategoriesLoading &&
             allDataCategory.length === 0 && (
-              <div className="flex flex-col items-start gap-2 text-gray-600">
+              <div className="flex flex-col items-start gap-2 text-ink-secondary">
                 <p>No categories found. Add one above.</p>
               </div>
             )}
@@ -447,7 +447,7 @@ export const AddDish: React.FC<{
                 category_id: e.target.value,
               }))
             }
-            className="w-full rounded-md border p-2"
+            className="w-full rounded-2xl border p-2"
           >
             <option value="">Select a category</option>
             {allDataCategory.map((cat) => (
@@ -481,9 +481,9 @@ export const AddDish: React.FC<{
           </div>
 
           {showAddInventory && (
-            <div className="rounded-lg border bg-gray-50 p-3 space-y-3">
+            <div className="rounded-2xl border bg-inset p-3 space-y-3">
               <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-600">Item Name</label>
+                <label className="text-xs font-medium text-ink-secondary">Item Name</label>
                 <Input
                   placeholder="e.g. Chicken breast"
                   value={newInvName}
@@ -492,7 +492,7 @@ export const AddDish: React.FC<{
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-gray-600">Quantity</label>
+                  <label className="text-xs font-medium text-ink-secondary">Quantity</label>
                   <Input
                     type="number"
                     placeholder="0"
@@ -501,7 +501,7 @@ export const AddDish: React.FC<{
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-gray-600">Unit</label>
+                  <label className="text-xs font-medium text-ink-secondary">Unit</label>
                   <Input
                     placeholder="kg, pcs, litres"
                     value={newInvUnit}
@@ -510,7 +510,7 @@ export const AddDish: React.FC<{
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-600">Low Stock Threshold</label>
+                <label className="text-xs font-medium text-ink-secondary">Low Stock Threshold</label>
                 <Input
                   type="number"
                   placeholder="Minimum before reorder"
@@ -523,7 +523,7 @@ export const AddDish: React.FC<{
                   type="checkbox"
                   checked={newInvAllergen}
                   onChange={(e) => setNewInvAllergen(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                  className="h-4 w-4 rounded-lg border-line text-red-600 focus:ring-red-500"
                 />
                 <span className="text-xs font-medium text-red-600">Mark as Allergen</span>
               </label>
@@ -565,7 +565,7 @@ export const AddDish: React.FC<{
           {!inventoryError &&
             !inventoryLoading &&
             inventoryData.length === 0 && !showAddInventory && (
-              <div className="flex flex-col items-start gap-2 text-gray-600">
+              <div className="flex flex-col items-start gap-2 text-ink-secondary">
                 <p>No inventory items found. Add one above.</p>
               </div>
             )}
@@ -583,13 +583,13 @@ export const AddDish: React.FC<{
                 return (
                   <div
                     key={idx}
-                    className="flex items-center justify-between rounded-md border bg-gray-50 p-2"
+                    className="flex items-center justify-between rounded-2xl border bg-inset p-2"
                   >
                     <div className="flex flex-col">
                       <span className="font-medium">
                         {itemData ? itemData.name : "Unknown Item"}
                       </span>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-ink-muted">
                         Qty: {ing.quantity}
                       </span>
                     </div>
@@ -614,7 +614,7 @@ export const AddDish: React.FC<{
           )}
           {/* ------------------- SELECTED INGREDIENTS (EMPTY STATE) ------------------- */}
           {dishForm.ingredients_data.length === 0 && (
-            <div className="mb-4 rounded-md bg-gray-100 p-4 text-center text-sm text-gray-600">
+            <div className="mb-4 rounded-2xl bg-inset p-4 text-center text-sm text-ink-secondary">
               <p className="font-medium">No ingredients added yet.</p>
               <p className="mt-1">
                 Use the form below to add ingredients to this dish.
@@ -624,7 +624,7 @@ export const AddDish: React.FC<{
 
           {/* ------------------- ADD INGREDIENT SECTION ------------------- */}
           <div
-            className={`mt-0 space-y-4 rounded-xl bg-gray-100 p-4 ${validationErrors.ingredients && "border-1 border-red-300"}`}
+            className={`mt-0 space-y-4 rounded-3xl bg-inset p-4 ${validationErrors.ingredients && "border-1 border-red-300"}`}
           >
             {/* Label with improved typography */}
             <label className="w-full text-center text-sm font-medium tracking-tight text-slate-700">
@@ -643,7 +643,7 @@ export const AddDish: React.FC<{
                     }));
                     setValidationErrors({});
                   }}
-                  className="h-10 w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
+                  className="h-10 w-full appearance-none rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 transition-all focus:border-brand focus:ring-2 focus:ring-focus-ring/20 focus:outline-none"
                 >
                   <option value="">Select an item...</option>
                   {inventoryData
@@ -674,14 +674,14 @@ export const AddDish: React.FC<{
                       quantity: Number(e.target.value),
                     }))
                   }
-                  className="h-10 rounded-lg border-slate-200 bg-slate-50 focus:ring-2 focus:ring-blue-500/20"
+                  className="h-10 rounded-2xl border-slate-200 bg-slate-50 focus:ring-2 focus:ring-focus-ring/20"
                 />
               </div>
 
               {/* ADD BUTTON - Minimalist but high contrast */}
               <Button
                 size="sm"
-                className="flex h-10 items-center gap-2 rounded-lg bg-slate-900 px-4 text-white transition-colors hover:bg-slate-800"
+                className="flex h-10 items-center gap-2 rounded-2xl bg-slate-900 px-4 text-white transition-colors hover:bg-slate-800"
                 onClick={() => {
                   if (!tempIngredient.inventory_item) return;
                   setDishForm((prev) => ({
@@ -714,7 +714,7 @@ export const AddDish: React.FC<{
           onChange={(e) =>
             setDishForm((prev) => ({ ...prev, prep_time: e.target.value }))
           }
-          className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
+          className="h-10 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 transition-all focus:border-brand focus:ring-2 focus:ring-focus-ring/20 focus:outline-none"
         >
           <option value="">Select prep time</option>
           <option value="00:02:00">2 minutes</option>
@@ -759,7 +759,7 @@ export const AddDish: React.FC<{
             <img
               src={imagePreview}
               alt="preview"
-              className="h-32 w-32 rounded-md border object-cover"
+              className="h-32 w-32 rounded-2xl border object-cover"
             />
             <Button variant="destructive" size="sm" onClick={clearImage}>
               Remove Image
@@ -779,7 +779,7 @@ export const AddDish: React.FC<{
         >
           Save to Draft
         </Button>
-        <Button className="flex-1 bg-[#2542e3]" onClick={handleSubmit}>
+        <Button className="flex-1 bg-primary" onClick={handleSubmit}>
           Add Dish
         </Button>
       </div>

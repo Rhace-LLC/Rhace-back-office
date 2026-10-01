@@ -46,7 +46,7 @@ const GenericSheet: React.FC<GenericSheetProps> = ({
 
         {/* Body */}
         <div
-          className={` ${title && "mt-5 mb-5 border-t border-b border-dashed border-gray-400"}`}
+          className={` ${title && "mt-5 mb-5 border-t border-b border-dashed border-line-strong"}`}
         >
           {children ?? (
             <div className="flex min-h-[220px] items-center justify-center">

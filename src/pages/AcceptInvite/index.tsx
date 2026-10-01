@@ -59,7 +59,7 @@ export default function AcceptInvite() {
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-page px-4 py-10">
-      <div className="flex min-h-[60vh] w-full max-w-xl flex-col items-center justify-center space-y-6 rounded-[24px] border border-line bg-surface p-8 text-center shadow-md sm:p-10">
+      <div className="flex min-h-[60vh] w-full max-w-xl flex-col items-center justify-center space-y-6 rounded-[28px] border border-line bg-surface p-8 text-center shadow-md sm:p-10">
       {loading && (
         <div className="flex flex-col items-center gap-3">
           <Loader2Icon className="h-8 w-8 animate-spin text-brand" />

@@ -54,11 +54,11 @@ const EditProfile: React.FC<EditProfileProps> = ({ profile, onEdit }) => {
   return (
     <Card className="w-full rounded-2xl shadow-sm">
       <CardContent className="space-y-6 p-6">
-        <h2 className="text-xl font-semibold text-gray-800">Edit Profile</h2>
+        <h2 className="text-xl font-semibold text-ink">Edit Profile</h2>
 
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <p className="mb-1 text-sm text-gray-600">First Name</p>
+            <p className="mb-1 text-sm text-ink-secondary">First Name</p>
             <Input
               name="first_name"
               value={form.first_name}
@@ -67,7 +67,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ profile, onEdit }) => {
           </div>
 
           <div>
-            <p className="mb-1 text-sm text-gray-600">Last Name</p>
+            <p className="mb-1 text-sm text-ink-secondary">Last Name</p>
             <Input
               name="last_name"
               value={form.last_name}
@@ -76,7 +76,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ profile, onEdit }) => {
           </div>
 
           <div>
-            <p className="mb-1 text-sm text-gray-600">Phone</p>
+            <p className="mb-1 text-sm text-ink-secondary">Phone</p>
             <Input name="phone" value={form.phone} onChange={handleChange} />
           </div>
         </div>

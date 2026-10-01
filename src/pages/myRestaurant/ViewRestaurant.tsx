@@ -52,7 +52,7 @@ export default function ViewMyRestaurant({
       
       {/* Circular Logo/Avatar */}
       <div className="flex-shrink-0">
-        <div className="h-24 w-24 overflow-hidden rounded-full border-4 border-white bg-white/20 shadow-xl backdrop-blur-sm md:h-32 md:w-32">
+        <div className="h-24 w-24 overflow-hidden rounded-full border-4 border-white bg-surface shadow-lg md:h-32 md:w-32">
           <img
             src={profile.logo_url || fallbackAvatar}
             alt="Restaurant Logo"
@@ -73,7 +73,7 @@ export default function ViewMyRestaurant({
 
         {/* Badges & Rating */}
         <div className="mt-3 flex flex-wrap items-center gap-3 sm:gap-4">
-          <span className="inline-flex items-center rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white ring-1 ring-white/30 backdrop-blur-sm sm:text-sm">
+          <span className="inline-flex items-center rounded-full bg-ink/60 px-3 py-1 text-xs font-semibold text-white sm:text-sm">
             {display(profile.city)}, {display(profile.state)}
           </span>
 
@@ -106,7 +106,7 @@ export default function ViewMyRestaurant({
         <div className="mt-4 sm:mt-6">
           <Button
             onClick={() => onEdit(true)}
-            className="rounded-full bg-white px-6 py-2 text-sm font-semibold text-gray-900 shadow-lg transition duration-200 hover:bg-gray-100 hover:shadow-xl sm:px-8 sm:py-3 sm:text-base"
+            className="rounded-full bg-surface px-6 py-2 text-sm font-semibold text-ink shadow-lg transition duration-200 hover:bg-inset hover:shadow-xl sm:px-8 sm:py-3 sm:text-base"
           >
             Edit Profile
           </Button>
@@ -119,25 +119,25 @@ export default function ViewMyRestaurant({
       {/* Left Column: Overview, Tags, Hours (2/3 width on desktop) */}
       <div className="space-y-8">
         {/* Overview Card */}
-        <section className="rounded-xl border border-gray-100 bg-white p-6 shadow-md transition-shadow hover:shadow-lg md:p-8">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-800">
+        <section className="rounded-3xl border border-line-subtle bg-surface p-6 shadow-md transition-shadow hover:shadow-lg md:p-8">
+          <h2 className="text-2xl font-bold tracking-tight text-ink">
             Overview
           </h2>
-          <p className="mt-2 text-base text-gray-500">
+          <p className="mt-2 text-base text-ink-muted">
             Key information and background about your restaurant.
           </p>
 
           {/* Description */}
           <div className="mt-6">
-            <h3 className="text-lg font-semibold text-gray-700">Description</h3>
-            <p className="mt-2 text-base leading-relaxed text-gray-600">
+            <h3 className="text-lg font-semibold text-ink-secondary">Description</h3>
+            <p className="mt-2 text-base leading-relaxed text-ink-secondary">
               {display(profile.description)}
             </p>
           </div>
 
           {/* Tags/Cuisines */}
           <div className="mt-6">
-            <h3 className="mb-3 text-lg font-semibold text-gray-700">
+            <h3 className="mb-3 text-lg font-semibold text-ink-secondary">
               Cuisine & Tags
             </h3>
             <div className="flex flex-wrap items-center gap-3">
@@ -157,8 +157,8 @@ export default function ViewMyRestaurant({
           </div>
 
           {/* Opening Hours */}
-          <div className="mt-8 border-t border-gray-100 pt-6">
-            <h3 className="text-lg font-semibold text-gray-700">
+          <div className="mt-8 border-t border-line-subtle pt-6">
+            <h3 className="text-lg font-semibold text-ink-secondary">
               Operating Hours
             </h3>
             <div className="mt-4 grid grid-cols-2 gap-3 text-sm md:grid-cols-4 lg:grid-cols-5">
@@ -168,12 +168,12 @@ export default function ViewMyRestaurant({
               ).map((h, i) => (
                 <div
                   key={i}
-                  className="rounded-lg border bg-gray-50/50 p-3 shadow-sm transition-shadow hover:shadow-md"
+                  className="rounded-2xl border bg-inset/50 p-3 shadow-sm transition-shadow hover:shadow-md"
                 >
-                  <div className="font-semibold text-gray-800">
+                  <div className="font-semibold text-ink">
                     {h.day || "Not yet added"}
                   </div>
-                  <div className="mt-1 text-xs text-gray-500">
+                  <div className="mt-1 text-xs text-ink-muted">
                     {h.open_time && h.close_time
                       ? `${formatTime12(h.open_time)} - ${formatTime12(h.close_time)}`
                       : "Not yet added"}
@@ -185,12 +185,12 @@ export default function ViewMyRestaurant({
           
             {/* Selected Value Indicator */}
             <div className="flex items-center gap-2 mt-5 p-1">
-              <span className="text-base font-medium text-gray-600">Brand Color:</span>
+              <span className="text-base font-medium text-ink-secondary">Brand Color:</span>
               <span
-                className="inline-block h-5 w-5 rounded-full border border-gray-300"
+                className="inline-block h-5 w-5 rounded-full border border-line"
                 style={{ backgroundColor: profile?.brand_color || "#ffffff" }}
               />
-              <span className="font-mono text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 border border-gray-200 px-2 py-0.5 rounded-md">
+              <span className="font-mono text-xs font-semibold text-ink-secondary uppercase tracking-wider bg-inset border border-line px-2 py-0.5 rounded-2xl">
                 {profile?.brand_color || "Not yet added"}
               </span>
             </div>
@@ -198,14 +198,14 @@ export default function ViewMyRestaurant({
 
         {/* Right Column: Contact Info (1/3 width on desktop) */}
         <div className="">
-          <section className="sticky top-8 rounded-xl border border-gray-100 bg-white p-6 shadow-md transition-shadow hover:shadow-lg">
-            <h3 className="text-xl font-bold tracking-tight text-gray-800">
+          <section className="sticky top-8 rounded-3xl border border-line-subtle bg-surface p-6 shadow-md transition-shadow hover:shadow-lg">
+            <h3 className="text-xl font-bold tracking-tight text-ink">
               Contact Information
             </h3>
 
-            <div className="mt-4 space-y-3 text-base text-gray-600">
+            <div className="mt-4 space-y-3 text-base text-ink-secondary">
               <div className="flex items-start">
-                <span className="mt-1 mr-3 text-gray-400">
+                <span className="mt-1 mr-3 text-ink-subtle">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -221,7 +221,7 @@ export default function ViewMyRestaurant({
                   </svg>
                 </span>
                 <div>
-                  <strong className="block text-gray-800">Address</strong>
+                  <strong className="block text-ink">Address</strong>
                   <span>
                     {display(profile.address)}
                   </span>
@@ -229,7 +229,7 @@ export default function ViewMyRestaurant({
               </div>
 
               <div className="flex items-start">
-                <span className="mt-1 mr-3 text-gray-400">
+                <span className="mt-1 mr-3 text-ink-subtle">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -245,7 +245,7 @@ export default function ViewMyRestaurant({
                   </svg>
                 </span>
                 <div>
-                  <strong className="block text-gray-800">Email</strong>
+                  <strong className="block text-ink">Email</strong>
                   <a
                     href={`mailto:${profile.email}`}
                     className="text-blue-500 hover:underline"
@@ -256,7 +256,7 @@ export default function ViewMyRestaurant({
               </div>
 
               <div className="flex items-start">
-                <span className="mt-1 mr-3 text-gray-400">
+                <span className="mt-1 mr-3 text-ink-subtle">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -274,7 +274,7 @@ export default function ViewMyRestaurant({
                   </svg>
                 </span>
                 <div>
-                  <strong className="block text-gray-800">Phone</strong>
+                  <strong className="block text-ink">Phone</strong>
                   <a
                     href={`tel:${profile.phone}`}
                     className="text-blue-500 hover:underline"
@@ -288,11 +288,11 @@ export default function ViewMyRestaurant({
         </div>
 
         {/* Gallery Card */}
-        <section className="hidden rounded-xl border border-gray-100 bg-white p-6 shadow-md transition-shadow hover:shadow-lg md:p-8">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-800">
+        <section className="hidden rounded-3xl border border-line-subtle bg-surface p-6 shadow-md transition-shadow hover:shadow-lg md:p-8">
+          <h2 className="text-2xl font-bold tracking-tight text-ink">
             Gallery
           </h2>
-          <p className="mt-2 text-base text-gray-500">
+          <p className="mt-2 text-base text-ink-muted">
             Key photos and visual assets used across your listing.
           </p>
 
@@ -301,7 +301,7 @@ export default function ViewMyRestaurant({
               <div
                 key={i}
                 // Aspect ratio maintained for images, added hover effect
-                className="group aspect-square w-full cursor-pointer overflow-hidden rounded-xl border bg-gray-100 shadow-inner"
+                className="group aspect-square w-full cursor-pointer overflow-hidden rounded-3xl border bg-inset shadow-inner"
               >
                 <img
                   src={img || fallbackCover}
@@ -312,7 +312,7 @@ export default function ViewMyRestaurant({
             ))}
           </div>
           {/* Optional: Add a note if more images are needed */}
-          <p className="mt-4 text-sm text-gray-400 italic">
+          <p className="mt-4 text-sm text-ink-subtle italic">
             Showing Cover, Logo, and a Gallery image (if available).
           </p>
         </section>

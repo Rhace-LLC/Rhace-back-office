@@ -64,7 +64,7 @@ const tableTurnoverData = [
 ];
 
 const pieChartData = [
-  { name: "Appetizers", value: 25, color: "#2542e3" },
+  { name: "Appetizers", value: 25, color: "#2A66FF" },
   { name: "Main Courses", value: 45, color: "#3b82f6" },
   { name: "Desserts", value: 15, color: "#60a5fa" },
   { name: "Beverages", value: 15, color: "#93c5fd" },
@@ -221,7 +221,7 @@ export function Analytics() {
                 <Bar
                   yAxisId="left"
                   dataKey="revenue"
-                  fill="#2542e3"
+                  fill="#2A66FF"
                   name="revenue"
                 />
                 <Line

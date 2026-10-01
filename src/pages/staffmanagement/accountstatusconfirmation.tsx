@@ -34,7 +34,7 @@ const ConfirmActionDialog: React.FC<ConfirmActionDialogProps> = ({
           <DialogTitle className="text-lg font-semibold">
             {isDisable ? "Disable Account" : "Enable Account"}
           </DialogTitle>
-          <DialogDescription className="text-gray-500">
+          <DialogDescription className="text-ink-muted">
             {isDisable
               ? "Are you sure you want to disable this staff account? They will lose access immediately."
               : "Are you sure you want to enable this staff account? They will regain access immediately."}

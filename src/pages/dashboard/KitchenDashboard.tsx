@@ -121,14 +121,14 @@ export const KitchenDashboard = () => {
           </Card>
         </div>
       ) : error ? (
-        <div className="text-muted-foreground col-span-1 flex flex-col items-center justify-center gap-3 rounded-xl border border-red-100 bg-red-50 p-6">
+        <div className="text-muted-foreground col-span-1 flex flex-col items-center justify-center gap-3 rounded-3xl border border-red-100 bg-red-50 p-6">
           <div className="text-[18px] font-medium tracking-tight text-red-500">
             Unable to load kitchen data
           </div>
           <div className="tracking-tight text-red-500">{error}</div>
           <button
             onClick={simulateFetchKitchenData}
-            className="cursor-pointer rounded-lg bg-red-500 px-10 py-2 text-white transition hover:bg-red-600"
+            className="cursor-pointer rounded-2xl bg-red-500 px-10 py-2 text-white transition hover:bg-red-600"
           >
             Retry
           </button>
@@ -178,7 +178,7 @@ export const KitchenDashboard = () => {
                         <Button size="sm" variant="outline">
                           Start
                         </Button>
-                        <Button size="sm" className="bg-[#2542e3]">
+                        <Button size="sm" className="bg-primary">
                           Complete
                         </Button>
                       </div>

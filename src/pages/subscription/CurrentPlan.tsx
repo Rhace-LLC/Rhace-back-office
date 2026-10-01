@@ -30,14 +30,14 @@ export const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
   return (
     <Card className="mx-auto shadow-lg">
       <CardContent className="space-y-4 p-6">
-        <h2 className="text-2xl font-semibold text-gray-800">
+        <h2 className="text-2xl font-semibold text-ink">
           {details.plan_name}
         </h2>
-        <p className="text-gray-600">
+        <p className="text-ink-secondary">
           Restaurant:{" "}
           <span className="font-medium">{details.restaurant_name}</span>
         </p>
-        <p className="text-gray-600">
+        <p className="text-ink-secondary">
           Status:{" "}
           <span
             className={`font-medium ${details.is_active ? "text-green-600" : "text-red-600"}`}
@@ -45,18 +45,18 @@ export const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
             {details.status}
           </span>
         </p>
-        <p className="text-gray-600">
+        <p className="text-ink-secondary">
           Current Price:{" "}
           <span className="font-medium">
             {formatCurrency(details.current_price)}
           </span>
         </p>
-        <p className="text-gray-600">
+        <p className="text-ink-secondary">
           Staff Count at Billing:{" "}
           <span className="font-medium">{details.staff_count_at_billing}</span>
         </p>
 
-        <div className="grid grid-cols-2 gap-4 text-gray-600">
+        <div className="grid grid-cols-2 gap-4 text-ink-secondary">
           <div>
             <p>Start Date:</p>
             <p className="font-medium">{formatDate(details.start_date)}</p>

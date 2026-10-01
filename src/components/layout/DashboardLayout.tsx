@@ -68,7 +68,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col text-foreground">
+    <div className="flex min-h-screen w-full flex-col bg-page text-foreground">
       {/* ---------- Top Navigation (component-shell.md §1) ---------- */}
       <header
         className={cn(
@@ -83,7 +83,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               type="button"
               aria-label="Open menu"
               onClick={() => setMobileMenuOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-[10px] text-ink-muted transition-colors hover:bg-accent hover:text-ink md:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-2xl text-ink-muted transition-colors hover:bg-inset hover:text-ink md:hidden"
             >
               <Menu className="h-5 w-5" />
             </button>
@@ -95,7 +95,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               type="button"
               aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
               onClick={() => setSidebarCollapsed((prev) => !prev)}
-              className="hidden h-9 w-9 items-center justify-center rounded-[10px] text-ink-muted transition-colors hover:bg-accent hover:text-ink md:flex"
+              className="hidden h-9 w-9 items-center justify-center rounded-2xl text-ink-muted transition-colors hover:bg-inset hover:text-ink md:flex"
             >
               {sidebarCollapsed ? (
                 <PanelLeft className="h-5 w-5" />
@@ -120,7 +120,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <Link
             to="/notifications"
             aria-label="Notifications"
-            className="relative flex h-9 w-9 items-center justify-center rounded-[10px] text-ink-muted transition-colors hover:bg-accent hover:text-ink"
+            className="relative flex h-9 w-9 items-center justify-center rounded-2xl text-ink-muted transition-colors hover:bg-inset hover:text-ink"
           >
             <Bell className="h-5 w-5" />
           </Link>
@@ -129,7 +129,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
           <Link
             to="/profile"
-            className="flex items-center gap-2.5 rounded-[10px] p-1 transition-colors hover:bg-accent"
+            className="flex items-center gap-2.5 rounded-2xl p-1 transition-colors hover:bg-inset"
           >
             <Avatar className="h-8 w-8">
               <AvatarFallback className="bg-brand text-[11px] font-semibold text-white">
@@ -170,7 +170,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         )}
 
         {/* Main content (component-shell.md §3) */}
-        <main className="min-w-0 flex-1">{children}</main>
+        <main className="min-w-0 flex-1 bg-page">{children}</main>
       </div>
 
       {/* ---------- Mobile drawer (component-shell.md §2.6) ---------- */}
@@ -180,7 +180,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             aria-hidden={!mobileMenuOpen}
             onClick={() => setMobileMenuOpen(false)}
             className={cn(
-              "fixed inset-0 z-[90] bg-ink/40 backdrop-blur-[2px] transition-opacity duration-300 md:hidden",
+              "fixed inset-0 z-[90] bg-ink/40 transition-opacity duration-300 md:hidden",
               mobileMenuOpen ? "opacity-100" : "pointer-events-none opacity-0"
             )}
           />
@@ -188,7 +188,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <aside
             aria-hidden={!mobileMenuOpen}
             className={cn(
-              "fixed inset-y-0 left-0 z-[100] w-[280px] transform shadow-xl transition-transform duration-300 ease-in-out md:hidden",
+              "fixed inset-y-0 left-0 z-[100] w-[280px] transform shadow-dock transition-transform duration-300 ease-in-out md:hidden",
               mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
             )}
           >

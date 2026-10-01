@@ -67,7 +67,7 @@ export const PaystackCheckoutDialog: React.FC<PaystackCheckoutDialogProps> = ({
             Complete Payment{" "}
             <CheckCircle className="inline h-5 w-5 text-green-500" />
           </h2>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-1 text-sm text-ink-secondary">
             Follow the steps below to complete your subscription payment for{" "}
             <span className="font-medium">{plan?.name}</span> plan.
           </p>
@@ -84,7 +84,7 @@ export const PaystackCheckoutDialog: React.FC<PaystackCheckoutDialogProps> = ({
         </div>
 
         {/* Compact Footer */}
-        <div className="flex justify-center gap-2 border-t bg-gray-50 px-4 py-2">
+        <div className="flex justify-center gap-2 border-t bg-inset px-4 py-2">
           <Button
             variant="outline"
             onClick={handleVerifyPayment}

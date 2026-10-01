@@ -65,14 +65,14 @@ export const AssignWaiterDialog: React.FC<AssignWaiterDialogProps> = ({
             className="w-full"
           />
 
-          <ScrollArea className="h-48 rounded-md border p-2">
+          <ScrollArea className="h-48 rounded-2xl border p-2">
             {filteredWaiters.length > 0 ? (
               filteredWaiters.map((waiter) => (
                 <div
                   key={waiter.id}
                   onClick={() => setSelectedWaiter(waiter.id)}
                   className={cn(
-                    "flex cursor-pointer items-center justify-between rounded-md p-2 transition-colors",
+                    "flex cursor-pointer items-center justify-between rounded-2xl p-2 transition-colors",
                     "hover:bg-muted",
                     selectedWaiter === waiter.id ? "bg-muted" : ""
                   )}

@@ -16,6 +16,7 @@ import {
   RestaurantProfile,
 } from "@/api-services/restaurantProfile";
 import { createCategory, createMenuItem } from "@/api-services/menu.service";
+import { createInventoryItem } from "@/api-services/inventory.service";
 import { inviteStaff } from "@/api-services/auth.service";
 import { parseError } from "@/api-services/utils/parseError";
 import { StepProgress } from "./StepProgress";
@@ -66,6 +67,7 @@ export default function Onboarding() {
   );
   const finishingRef = useRef(false);
   const [saving, setSaving] = useState(false);
+  const [skipping, setSkipping] = useState(false);
   const [menuProgress, setMenuProgress] = useState<{
     done: number;
     total: number;
@@ -142,8 +144,10 @@ export default function Onboarding() {
     }
   };
 
-  /** Step 2 — create the chosen categories, then the menu items. */
-  const persistMenu = async (
+/** Step 2 — create the chosen categories, then the menu items. */
+const DEFAULT_PREP_TIME = "00:15:00";
+
+const persistMenu = async (
     menu?: MenuData,
     onProgress?: (done: number, total: number) => void
   ) => {
@@ -177,9 +181,40 @@ export default function Onboarding() {
     }
 
     let created = 0;
+    // Fresh restaurants have no inventory, but the menu-items endpoint
+    // rejects an empty ingredients_data list. Create one placeholder stock
+    // item and link every onboarding dish to it — the owner replaces it with
+    // real ingredients later in Menu.
+    let placeholderIngredientId: number | null = null;
+    try {
+      const placeholder = await createInventoryItem(
+        {
+          name: "General ingredient",
+          is_allergen: false,
+          unit: "portion",
+          threshold: 0,
+          restaurant: restaurantId,
+        },
+        auth.token
+      );
+      placeholderIngredientId = placeholder?.id ?? null;
+    } catch (error) {
+      console.error("Failed to create placeholder ingredient:", error);
+      toast.error(
+        parseError(error) ||
+          "Could not set up ingredients, so menu items were skipped. Categories were saved."
+      );
+    }
+    const ingredientsPayload =
+      placeholderIngredientId != null
+        ? JSON.stringify([
+            { inventory_item: placeholderIngredientId, quantity: 1 },
+          ])
+        : null;
+
     for (const item of menu.items) {
       const categoryId = categoryIds.get(item.category.trim());
-      if (!categoryId) {
+      if (!categoryId || !ingredientsPayload) {
         tick();
         continue;
       }
@@ -190,8 +225,13 @@ export default function Onboarding() {
         formData.append("price", String(Number.isFinite(parsed) ? parsed : ""));
         if (item.description) formData.append("description", item.description.trim());
         formData.append("category_id", categoryId);
+        // The menu-items endpoint requires prep_time and is_special alongside
+        // the quartet named in its validation error (see AddDish + debug probe).
+        // Onboarding has no prep-time input, so send a sensible default.
+        formData.append("prep_time", DEFAULT_PREP_TIME);
+        formData.append("is_special", "false");
         formData.append("available", item.available ? "true" : "false");
-        formData.append("ingredients_data", JSON.stringify([]));
+        formData.append("ingredients_data", ingredientsPayload);
         await createMenuItem(restaurantId, formData, auth.token);
         created++;
       } catch (error) {
@@ -253,6 +293,7 @@ export default function Onboarding() {
   };
 
   const next = async (payload?: Partial<OnboardingData>) => {
+    if (saving || skipping) return;
     if (payload) setData((prev) => ({ ...prev, ...payload }));
 
     setSaving(true);
@@ -279,6 +320,21 @@ export default function Onboarding() {
     } finally {
       setSaving(false);
       setMenuProgress(null);
+    }
+  };
+
+  /** Skip the current step without running its writes (no invites/menu). */
+  const skip = async (payload?: Partial<OnboardingData>) => {
+    if (saving || skipping) return;
+    if (payload) setData((prev) => ({ ...prev, ...payload }));
+
+    setSkipping(true);
+    try {
+      const nextStep = nextVisibleStep(step);
+      await persistStep(nextStep);
+      setStep(nextStep);
+    } finally {
+      setSkipping(false);
     }
   };
 
@@ -316,11 +372,11 @@ export default function Onboarding() {
       <div className="mx-auto w-full max-w-[920px]">
         {/* Top utility row */}
         <div className="mb-6 flex items-center justify-between">
-          {!isFirst && !isLast ? (
+          {!isFirst ? (
             <button
               type="button"
               onClick={() => setStep(backStep)}
-              className="inline-flex h-9 items-center gap-1.5 rounded-[10px] px-3 text-sm font-medium text-ink-muted transition-colors hover:bg-line-subtle hover:text-ink"
+              className="inline-flex h-9 items-center gap-1.5 rounded-2xl px-3 text-sm font-medium text-ink-muted transition-colors hover:bg-line-subtle hover:text-ink"
             >
               <ArrowLeft className="h-4 w-4" />
               {STEP_LABEL[backStep]}
@@ -332,7 +388,7 @@ export default function Onboarding() {
         </div>
 
         {/* Progress indicator */}
-        <div className="mb-8 rounded-[16px] border border-line bg-surface px-4 py-5 shadow-sm sm:px-6">
+        <div className="mb-8 rounded-[20px] border border-line bg-surface px-4 py-5 shadow-sm sm:px-6">
           <StepProgress current={step} />
         </div>
 
@@ -347,15 +403,21 @@ export default function Onboarding() {
           {step === 2 && (
             <Step2Menu
               saving={saving}
+              skipping={skipping}
               progress={menuProgress}
               onContinue={(d) => next({ menu: d })}
+              onSkip={() =>
+                skip({ menu: { mode: "later", categories: [], items: [] } })
+              }
             />
           )}
           {step === 4 && (
             <Step4Team
               ownerEmail={ownerEmail}
               saving={saving}
+              skipping={skipping}
               onContinue={(d) => next({ team: d })}
+              onSkip={() => skip({ team: { members: [] } })}
             />
           )}
           {step === 5 && (

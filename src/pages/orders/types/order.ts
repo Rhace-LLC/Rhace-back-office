@@ -7,6 +7,8 @@ export interface Order {
   total_price: string;
   status: OrderStatus;
   waiter: string; // UUID
+  waiter_name?: string;
+  waiter_confirmed?: boolean;
   customer_name: string;
   address: string;
   customer_phone: string;

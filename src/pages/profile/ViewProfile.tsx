@@ -14,7 +14,7 @@ const ViewProfile: React.FC<ViewProfileProps> = ({ profile, onEdit }) => {
     <Card className="w-full rounded-2xl shadow-sm">
       <CardContent className="space-y-4 p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-800">
+          <h2 className="text-xl font-semibold text-ink">
             Profile Details
           </h2>
           <Button
@@ -28,27 +28,27 @@ const ViewProfile: React.FC<ViewProfileProps> = ({ profile, onEdit }) => {
 
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <p className="text-sm text-gray-500">First Name</p>
+            <p className="text-sm text-ink-muted">First Name</p>
             <p className="font-medium">{profile.first_name}</p>
           </div>
 
           <div>
-            <p className="text-sm text-gray-500">Last Name</p>
+            <p className="text-sm text-ink-muted">Last Name</p>
             <p className="font-medium">{profile.last_name}</p>
           </div>
 
           <div>
-            <p className="text-sm text-gray-500">Email</p>
+            <p className="text-sm text-ink-muted">Email</p>
             <p className="font-medium">{profile.email}</p>
           </div>
 
           <div>
-            <p className="text-sm text-gray-500">Phone</p>
+            <p className="text-sm text-ink-muted">Phone</p>
             <p className="font-medium">{profile.phone}</p>
           </div>
 
           <div>
-            <p className="text-sm text-gray-500">Role</p>
+            <p className="text-sm text-ink-muted">Role</p>
             <p className="font-medium capitalize">{profile.role}</p>
           </div>
         </div>

@@ -37,13 +37,13 @@ export const MapLocationGate = ({
   if (permissionStatus !== "granted") {
     return (
       <MapCentered>
-        <div className="mb-4 rounded-3xl bg-gray-50 p-4">
-          <ShieldCheck size={32} strokeWidth={1.5} className="text-gray-400" />
+        <div className="mb-4 rounded-3xl bg-inset p-4">
+          <ShieldCheck size={32} strokeWidth={1.5} className="text-ink-subtle" />
         </div>
-        <h2 className="text-xl font-bold tracking-tight text-gray-900">
+        <h2 className="text-xl font-bold tracking-tight text-ink">
           Location Access
         </h2>
-        <p className="mb-6 max-w-[240px] text-center text-[14px] text-gray-400">
+        <p className="mb-6 max-w-[240px] text-center text-[14px] text-ink-subtle">
           We need your permission to show nearby addresses on the map.
         </p>
         <button
@@ -59,10 +59,10 @@ export const MapLocationGate = ({
   if (!locationEnabled) {
     return (
       <MapCentered>
-        <div className="mb-4 rounded-3xl bg-gray-50 p-4 text-gray-400">
+        <div className="mb-4 rounded-3xl bg-inset p-4 text-ink-subtle">
           <Navigation size={32} strokeWidth={1.5} />
         </div>
-        <p className="mb-6 text-[14px] font-medium text-gray-400">
+        <p className="mb-6 text-[14px] font-medium text-ink-subtle">
           GPS is currently disabled
         </p>
         <button

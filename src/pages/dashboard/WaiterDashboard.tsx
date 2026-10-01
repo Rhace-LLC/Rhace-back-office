@@ -105,14 +105,14 @@ export const WaiterDashboard = () => {
           ))}
         </div>
       ) : error ? (
-        <div className="text-muted-foreground col-span-1 flex flex-col items-center justify-center gap-3 rounded-xl border border-red-100 bg-red-50 p-6">
+        <div className="text-muted-foreground col-span-1 flex flex-col items-center justify-center gap-3 rounded-3xl border border-red-100 bg-red-50 p-6">
           <div className="text-[18px] font-medium tracking-tight text-red-500">
             Unable to load waiter data
           </div>
           <div className="tracking-tight text-red-500">{error}</div>
           <button
             onClick={simulateFetchWaiterData}
-            className="cursor-pointer rounded-lg bg-red-500 px-10 py-2 text-white transition hover:bg-red-600"
+            className="cursor-pointer rounded-2xl bg-red-500 px-10 py-2 text-white transition hover:bg-red-600"
           >
             Retry
           </button>
@@ -141,7 +141,7 @@ export const WaiterDashboard = () => {
                   return (
                     <div
                       key={table.id}
-                      className="flex items-center justify-between rounded-lg border p-3"
+                      className="flex items-center justify-between rounded-2xl border p-3"
                     >
                       <div className="flex items-center gap-3">
                         <div className="text-lg">
@@ -187,7 +187,7 @@ export const WaiterDashboard = () => {
                   .map((order) => (
                     <div
                       key={order.id}
-                      className="flex items-center justify-between rounded-lg border p-3"
+                      className="flex items-center justify-between rounded-2xl border p-3"
                     >
                       <div>
                         <div className="text-sm">{order.id}</div>

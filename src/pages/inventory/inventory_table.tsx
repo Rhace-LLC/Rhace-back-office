@@ -20,14 +20,14 @@ const RenderInventoryTableData: React.FC<Props> = ({ data, onView }) => {
   return (
     <Table className="w-full border-collapse text-sm">
       <TableHeader>
-        <TableRow className="bg-gray-50">
-          <TableHead className="font-medium text-gray-600">ID</TableHead>
-          <TableHead className="font-medium text-gray-600">Name</TableHead>
-          <TableHead className="font-medium text-gray-600">Quantity / Min Qty</TableHead>
-          <TableHead className="font-medium text-gray-600">Unit</TableHead>
-          <TableHead className="font-medium text-gray-600">Available</TableHead>
-          <TableHead className="font-medium text-gray-600">Allergen</TableHead>
-          <TableHead className="font-medium text-gray-600">Actions</TableHead>
+        <TableRow className="bg-inset">
+          <TableHead className="font-medium text-ink-secondary">ID</TableHead>
+          <TableHead className="font-medium text-ink-secondary">Name</TableHead>
+          <TableHead className="font-medium text-ink-secondary">Quantity / Min Qty</TableHead>
+          <TableHead className="font-medium text-ink-secondary">Unit</TableHead>
+          <TableHead className="font-medium text-ink-secondary">Available</TableHead>
+          <TableHead className="font-medium text-ink-secondary">Allergen</TableHead>
+          <TableHead className="font-medium text-ink-secondary">Actions</TableHead>
         </TableRow>
       </TableHeader>
 
@@ -35,20 +35,20 @@ const RenderInventoryTableData: React.FC<Props> = ({ data, onView }) => {
         {data.map((item) => (
           <TableRow
             key={item.id}
-            className="cursor-pointer transition hover:bg-gray-50"
+            className="cursor-pointer transition hover:bg-inset"
           >
             {/* ID */}
-            <TableCell className="text-gray-900">{item.id}</TableCell>
+            <TableCell className="text-ink">{item.id}</TableCell>
 
             {/* Name */}
-            <TableCell className="font-medium text-gray-900">
+            <TableCell className="font-medium text-ink">
               {item.name}
             </TableCell>
 
             {/* Quantity */}
             <TableCell>
               <div>Quantity: {item.quantity}</div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-ink-muted">
                 Minimum Quantity: {item.threshold}
               </div>
             </TableCell>
@@ -71,7 +71,7 @@ const RenderInventoryTableData: React.FC<Props> = ({ data, onView }) => {
             <TableCell>
               <span
                 className={`font-medium ${
-                  item.is_allergen ? "text-red-500" : "text-gray-600"
+                  item.is_allergen ? "text-red-500" : "text-ink-secondary"
                 }`}
               >
                 {item.is_allergen ? "Yes" : "No"}

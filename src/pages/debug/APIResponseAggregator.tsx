@@ -34,17 +34,17 @@ if (import.meta.env.DEV) {
 export function APIResponseAggregator() {
   return (
     <section className="space-y-4" aria-label="API service aggregators">
-      <div className="rounded-2xl border border-gray-200 bg-white px-5 py-4">
-        <h2 className="text-base font-semibold text-gray-800">
+      <div className="rounded-2xl border border-line bg-surface px-5 py-4">
+        <h2 className="text-base font-semibold text-ink">
           Service API aggregators
         </h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-ink-muted">
           Reads run with one click and never change data. Cards with write
           coverage can also fire mutating test requests once you opt in —
           those create clearly-tagged <span className="font-mono">[API-TEST]</span> records
           and clean them up.
         </p>
-        <p className="mt-2 text-xs text-gray-400">
+        <p className="mt-2 text-xs text-ink-subtle">
           {serviceAggregators.length} service aggregators configured
         </p>
       </div>

@@ -67,7 +67,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
             <h2 className="text-lg font-semibold">Bulk Upload Menu Items</h2>
             <button
               onClick={handleCancel}
-              className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+              className="rounded-full p-1 text-ink-subtle hover:bg-inset hover:text-ink-secondary"
             >
               <X className="h-5 w-5" />
             </button>
@@ -76,23 +76,23 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
           {!file ? (
             <div
               onClick={() => inputRef.current?.click()}
-              className="flex cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-dashed border-gray-300 p-8 text-center transition hover:border-blue-400 hover:bg-blue-50/50"
+              className="flex cursor-pointer flex-col items-center gap-3 rounded-3xl border-2 border-dashed border-line p-8 text-center transition hover:border-blue-400 hover:bg-blue-50/50"
             >
-              <Upload className="h-10 w-10 text-gray-400" />
+              <Upload className="h-10 w-10 text-ink-subtle" />
               <div>
-                <p className="font-medium text-gray-700">Upload your file</p>
-                <p className="text-sm text-gray-500">
+                <p className="font-medium text-ink-secondary">Upload your file</p>
+                <p className="text-sm text-ink-muted">
                   Accepted formats: .xlsx, .csv, .xls
                 </p>
               </div>
             </div>
           ) : (
-            <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <div className="rounded-3xl border border-line bg-inset p-4">
               <div className="flex items-center gap-3">
                 <FileSpreadsheet className="h-8 w-8 text-green-600" />
                 <div className="flex-1 truncate">
-                  <p className="font-medium text-gray-900">{file.name}</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="font-medium text-ink">{file.name}</p>
+                  <p className="text-xs text-ink-muted">
                     {(file.size / 1024).toFixed(1)} KB
                   </p>
                 </div>
@@ -139,7 +139,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
               variant="ghost"
               onClick={handleCancel}
               disabled={uploading}
-              className="w-full text-gray-500"
+              className="w-full text-ink-muted"
             >
               Cancel
             </Button>

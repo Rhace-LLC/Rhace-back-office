@@ -168,35 +168,35 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen p-6 md:p-12 font-sans text-[#0B0D10]">
+    <div className="min-h-screen p-6 md:p-12 font-sans text-ink">
       <div className="mx-auto space-y-6">
         
         {/* Page Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-[32px] md:text-[48px] font-semibold tracking-[-1.5px] leading-[1.04] text-[#0B0D10]">
+            <h1 className="text-[32px] md:text-[48px] font-semibold tracking-[-1.5px] leading-[1.04] text-ink">
               Staff Intelligence & Analytics
             </h1>
-            <p className="mt-2 text-[14px] leading-[21px] text-[#6B7280]">
+            <p className="mt-2 text-[14px] leading-[21px] text-ink-muted">
               Monitor staff performance reports, audit logs, and shift management in real-time.
             </p>
           </div>
         </div>
 
         {/* Global Filter Bar */}
-        <div className="bg-[#FFFFFF] border border-[#D9E0EA] rounded-[16px] p-5 shadow-[0_6px_18px_0_rgba(15,23,42,0.08)]">
+        <div className="bg-surface border border-line rounded-[20px] p-5 shadow-md">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end">
             
             {/* Staff Dropdown */}
             <div>
-              <label className="block text-[11px] font-medium leading-[15px] text-[#30343B] mb-1.5 uppercase tracking-wider">
+              <label className="block text-[11px] font-medium leading-[15px] text-ink-secondary mb-1.5 uppercase tracking-wider">
                 Staff
               </label>
               <select
                 value={staffId}
                 onChange={(e) => setStaffId(e.target.value)}
                 disabled={fetchLoading}
-                className="w-full h-[40px] px-3 bg-[#F8FAFD] border border-[#D9E0EA] rounded-[8px] text-[14px] text-[#0B0D10] focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-[#146BE8] transition-all cursor-pointer disabled:opacity-50"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-brand transition-all cursor-pointer disabled:opacity-50"
               >
                 <option value="">All Staff</option>
                 {toShow?.map((staff: StaffMember) => (
@@ -209,13 +209,13 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
 
             {/* Role Dropdown */}
             <div>
-              <label className="block text-[11px] font-medium leading-[15px] text-[#30343B] mb-1.5 uppercase tracking-wider">
+              <label className="block text-[11px] font-medium leading-[15px] text-ink-secondary mb-1.5 uppercase tracking-wider">
                 Role
               </label>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                className="w-full h-[40px] px-3 bg-[#F8FAFD] border border-[#D9E0EA] rounded-[8px] text-[14px] text-[#0B0D10] focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-[#146BE8] transition-all cursor-pointer"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-brand transition-all cursor-pointer"
               >
                 <option value="">All Roles</option>
                 <option value="waiter">Waiter</option>
@@ -227,13 +227,13 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
 
             {/* Action Type */}
             <div>
-              <label className="block text-[11px] font-medium leading-[15px] text-[#30343B] mb-1.5 uppercase tracking-wider">
+              <label className="block text-[11px] font-medium leading-[15px] text-ink-secondary mb-1.5 uppercase tracking-wider">
                 Action Type
               </label>
               <select
                 value={actionType}
                 onChange={(e) => setActionType(e.target.value as ActionType)}
-                className="w-full h-[40px] px-3 bg-[#F8FAFD] border border-[#D9E0EA] rounded-[8px] text-[14px] text-[#0B0D10] focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-[#146BE8] transition-all cursor-pointer"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-brand transition-all cursor-pointer"
               >
                 <option value="">All Actions</option>
                 <option value="order_status_updated">Order Status Updated</option>
@@ -248,27 +248,27 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
 
             {/* Start Date */}
             <div>
-              <label className="block text-[11px] font-medium leading-[15px] text-[#30343B] mb-1.5 uppercase tracking-wider">
+              <label className="block text-[11px] font-medium leading-[15px] text-ink-secondary mb-1.5 uppercase tracking-wider">
                 Start Date
               </label>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full h-[40px] px-3 bg-[#F8FAFD] border border-[#D9E0EA] rounded-[8px] text-[14px] text-[#0B0D10] focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-[#146BE8] transition-all"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-brand transition-all"
               />
             </div>
 
             {/* End Date */}
             <div>
-              <label className="block text-[11px] font-medium leading-[15px] text-[#30343B] mb-1.5 uppercase tracking-wider">
+              <label className="block text-[11px] font-medium leading-[15px] text-ink-secondary mb-1.5 uppercase tracking-wider">
                 End Date
               </label>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full h-[40px] px-3 bg-[#F8FAFD] border border-[#D9E0EA] rounded-[8px] text-[14px] text-[#0B0D10] focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-[#146BE8] transition-all"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-brand transition-all"
               />
             </div>
 
@@ -279,38 +279,38 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
         {summary && (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             
-            <div className="bg-[#F8FAFD] border border-[#D9E0EA] rounded-[16px] p-5 shadow-[0_2px_8px_0_rgba(15,23,42,0.06)]">
-              <span className="text-[12px] font-medium leading-[17px] text-[#6B7280]">Total Sales</span>
-              <div className="text-[24px] font-semibold tracking-[-0.4px] text-[#0B0D10] mt-1">
+            <div className="bg-surface border border-line rounded-[20px] p-5 shadow-sm">
+              <span className="text-[12px] font-medium leading-[17px] text-ink-muted">Total Sales</span>
+              <div className="text-[24px] font-semibold tracking-[-0.4px] text-ink mt-1">
                 {summary.total_sales}
               </div>
             </div>
 
-            <div className="bg-[#F8FAFD] border border-[#D9E0EA] rounded-[16px] p-5 shadow-[0_2px_8px_0_rgba(15,23,42,0.06)]">
-              <span className="text-[12px] font-medium leading-[17px] text-[#6B7280]">Total Orders</span>
-              <div className="text-[24px] font-semibold tracking-[-0.4px] text-[#0B0D10] mt-1">
+            <div className="bg-surface border border-line rounded-[20px] p-5 shadow-sm">
+              <span className="text-[12px] font-medium leading-[17px] text-ink-muted">Total Orders</span>
+              <div className="text-[24px] font-semibold tracking-[-0.4px] text-ink mt-1">
                 {summary.total_orders}
               </div>
             </div>
 
-            <div className="bg-[#F8FAFD] border border-[#D9E0EA] rounded-[16px] p-5 shadow-[0_2px_8px_0_rgba(15,23,42,0.06)]">
-              <span className="text-[12px] font-medium leading-[17px] text-[#6B7280]">Avg Order Value</span>
-              <div className="text-[24px] font-semibold tracking-[-0.4px] text-[#0B0D10] mt-1">
+            <div className="bg-surface border border-line rounded-[20px] p-5 shadow-sm">
+              <span className="text-[12px] font-medium leading-[17px] text-ink-muted">Avg Order Value</span>
+              <div className="text-[24px] font-semibold tracking-[-0.4px] text-ink mt-1">
                 {summary.avg_order_value}
               </div>
             </div>
 
-            <div className="bg-[#F8FAFD] border border-[#D9E0EA] rounded-[16px] p-5 shadow-[0_2px_8px_0_rgba(15,23,42,0.06)]">
-              <span className="text-[12px] font-medium leading-[17px] text-[#6B7280]">Voided Orders</span>
-              <div className="text-[24px] font-semibold tracking-[-0.4px] text-[#DC2626] mt-1">
+            <div className="bg-surface border border-line rounded-[20px] p-5 shadow-sm">
+              <span className="text-[12px] font-medium leading-[17px] text-ink-muted">Voided Orders</span>
+              <div className="text-[24px] font-semibold tracking-[-0.4px] text-destructive mt-1">
                 {summary.voided_orders}
               </div>
             </div>
 
-            <div className="bg-[#F8FAFD] border border-[#D9E0EA] rounded-[16px] p-5 shadow-[0_2px_8px_0_rgba(15,23,42,0.06)] col-span-2 lg:col-span-1">
-              <span className="text-[12px] font-medium leading-[17px] text-[#6B7280]">Avg Service Time</span>
-              <div className="text-[24px] font-semibold tracking-[-0.4px] text-[#0B0D10] mt-1">
-                {summary.avg_service_minutes} <span className="text-[14px] font-normal text-[#6B7280]">mins</span>
+            <div className="bg-surface border border-line rounded-[20px] p-5 shadow-sm col-span-2 lg:col-span-1">
+              <span className="text-[12px] font-medium leading-[17px] text-ink-muted">Avg Service Time</span>
+              <div className="text-[24px] font-semibold tracking-[-0.4px] text-ink mt-1">
+                {summary.avg_service_minutes} <span className="text-[14px] font-normal text-ink-muted">mins</span>
               </div>
             </div>
 
@@ -318,25 +318,25 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
         )}
 
         {/* Content Area */}
-        <div className="bg-[#FFFFFF] border border-[#D9E0EA] rounded-[16px] p-6 shadow-[0_6px_18px_0_rgba(15,23,42,0.08)] space-y-6">
+        <div className="bg-surface border border-line rounded-[20px] p-6 shadow-md space-y-6">
           
           {/* Tabs Control */}
-          <div className="flex border-b border-[#E8EDF3] gap-6">
+          <div className="flex border-b border-line-subtle gap-6">
             
             <button
               onClick={() => setActiveTab("performance")}
               className={`pb-3 text-[14px] font-medium transition-all relative ${
                 activeTab === "performance"
-                  ? "text-[#146BE8]"
-                  : "text-[#6B7280] hover:text-[#30343B]"
+                  ? "text-brand"
+                  : "text-ink-muted hover:text-ink-secondary"
               }`}
             >
               <span>Staff Performance Reports</span>
-              <span className="ml-2 px-2 py-0.5 text-[12px] rounded-full bg-[#E7ECF2] text-[#30343B]">
+              <span className="ml-2 px-2 py-0.5 text-[12px] rounded-full bg-inset text-ink-secondary">
                 {reports.length}
               </span>
               {activeTab === "performance" && (
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#146BE8] rounded-t-full" />
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary rounded-t-full" />
               )}
             </button>
 
@@ -344,16 +344,16 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
               onClick={() => setActiveTab("audit")}
               className={`pb-3 text-[14px] font-medium transition-all relative ${
                 activeTab === "audit"
-                  ? "text-[#146BE8]"
-                  : "text-[#6B7280] hover:text-[#30343B]"
+                  ? "text-brand"
+                  : "text-ink-muted hover:text-ink-secondary"
               }`}
             >
               <span>Audit Activities</span>
-              <span className="ml-2 px-2 py-0.5 text-[12px] rounded-full bg-[#E7ECF2] text-[#30343B]">
+              <span className="ml-2 px-2 py-0.5 text-[12px] rounded-full bg-inset text-ink-secondary">
                 {activityTotalCount}
               </span>
               {activeTab === "audit" && (
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#146BE8] rounded-t-full" />
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary rounded-t-full" />
               )}
             </button>
 
@@ -361,16 +361,16 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
               onClick={() => setActiveTab("shifts")}
               className={`pb-3 text-[14px] font-medium transition-all relative ${
                 activeTab === "shifts"
-                  ? "text-[#146BE8]"
-                  : "text-[#6B7280] hover:text-[#30343B]"
+                  ? "text-brand"
+                  : "text-ink-muted hover:text-ink-secondary"
               }`}
             >
               <span>Shift Logs</span>
-              <span className="ml-2 px-2 py-0.5 text-[12px] rounded-full bg-[#E7ECF2] text-[#30343B]">
+              <span className="ml-2 px-2 py-0.5 text-[12px] rounded-full bg-inset text-ink-secondary">
                 {shiftLogs.length}
               </span>
               {activeTab === "shifts" && (
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#146BE8] rounded-t-full" />
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary rounded-t-full" />
               )}
             </button>
 
@@ -378,24 +378,24 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
 
           {/* Error & Loading Indicators */}
           {(error || fetchError) && (
-            <div className="p-4 bg-[#FEF2F2] border border-[#FECACA] rounded-[8px] text-[14px] text-[#991B1B]">
+            <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-[14px] text-red-800">
               {error || fetchError}
             </div>
           )}
 
           {loading ? (
-            <div className="py-16 text-center text-[#6B7280] text-[14px]">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#146BE8] mb-3" />
+            <div className="py-16 text-center text-ink-muted text-[14px]">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand mb-3" />
               <p>Loading staff intelligence data...</p>
             </div>
           ) : (
             <div>
               {/* TAB 1: Staff Performance Reports */}
               {activeTab === "performance" && (
-                <div className="overflow-x-auto rounded-[10px] border border-[#E8EDF3]">
+                <div className="overflow-x-auto rounded-2xl border border-line-subtle">
                   <table className="w-full text-left text-[14px] border-collapse">
                     <thead>
-                      <tr className="bg-[#F8FAFD] border-b border-[#E8EDF3] text-[#6B7280] font-medium">
+                      <tr className="bg-surface border-b border-line-subtle text-ink-muted font-medium">
                         <th className="p-3.5">Staff Name</th>
                         <th className="p-3.5">Role</th>
                         <th className="p-3.5">Restaurant</th>
@@ -406,24 +406,24 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
                         <th className="p-3.5">Clocked Hours</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#E8EDF3]">
+                    <tbody className="divide-y divide-line-subtle">
                       {reports.length === 0 ? (
                         <tr>
-                          <td colSpan={8} className="p-8 text-center text-[#9CA3AF]">
+                          <td colSpan={8} className="p-8 text-center text-ink-subtle">
                             No staff reports found.
                           </td>
                         </tr>
                       ) : (
                         reports.map((item, index) => (
-                          <tr key={item.staff_id || index} className="hover:bg-[#F8FAFD]/60 transition-colors">
-                            <td className="p-3.5 font-medium text-[#0B0D10]">{item.staff_name}</td>
-                            <td className="p-3.5 text-[#30343B]">{item.staff_role}</td>
-                            <td className="p-3.5 text-[#30343B]">{item.restaurant_name}</td>
-                            <td className="p-3.5 text-[#0B0D10] font-medium">{item.sales_volume}</td>
-                            <td className="p-3.5 text-[#30343B]">{item.orders_handled}</td>
-                            <td className="p-3.5 text-[#30343B]">{item.avg_prep_time_minutes} mins</td>
-                            <td className="p-3.5 text-[#30343B]">{item.order_void_frequency}</td>
-                            <td className="p-3.5 text-[#30343B]">{item.clocked_hours} hrs</td>
+                          <tr key={item.staff_id || index} className="hover:bg-surface/60 transition-colors">
+                            <td className="p-3.5 font-medium text-ink">{item.staff_name}</td>
+                            <td className="p-3.5 text-ink-secondary">{item.staff_role}</td>
+                            <td className="p-3.5 text-ink-secondary">{item.restaurant_name}</td>
+                            <td className="p-3.5 text-ink font-medium">{item.sales_volume}</td>
+                            <td className="p-3.5 text-ink-secondary">{item.orders_handled}</td>
+                            <td className="p-3.5 text-ink-secondary">{item.avg_prep_time_minutes} mins</td>
+                            <td className="p-3.5 text-ink-secondary">{item.order_void_frequency}</td>
+                            <td className="p-3.5 text-ink-secondary">{item.clocked_hours} hrs</td>
                           </tr>
                         ))
                       )}
@@ -434,10 +434,10 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
 
               {/* TAB 2: Audit Activity Logs */}
               {activeTab === "audit" && (
-                <div className="overflow-x-auto rounded-[10px] border border-[#E8EDF3]">
+                <div className="overflow-x-auto rounded-2xl border border-line-subtle">
                   <table className="w-full text-left text-[14px] border-collapse">
                     <thead>
-                      <tr className="bg-[#F8FAFD] border-b border-[#E8EDF3] text-[#6B7280] font-medium">
+                      <tr className="bg-surface border-b border-line-subtle text-ink-muted font-medium">
                         <th className="p-3.5">Date & Time</th>
                         <th className="p-3.5">Staff</th>
                         <th className="p-3.5">Action</th>
@@ -446,28 +446,28 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
                         <th className="p-3.5">Target Staff</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#E8EDF3]">
+                    <tbody className="divide-y divide-line-subtle">
                       {activities.length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="p-8 text-center text-[#9CA3AF]">
+                          <td colSpan={6} className="p-8 text-center text-ink-subtle">
                             No audit activities recorded.
                           </td>
                         </tr>
                       ) : (
                         activities.map((act) => (
-                          <tr key={act.id} className="hover:bg-[#F8FAFD]/60 transition-colors">
-                            <td className="p-3.5 text-[#6B7280]">
+                          <tr key={act.id} className="hover:bg-surface/60 transition-colors">
+                            <td className="p-3.5 text-ink-muted">
                               {new Date(act.created_at).toLocaleString()}
                             </td>
-                            <td className="p-3.5 font-medium text-[#0B0D10]">{act.staff_name || act.staff}</td>
+                            <td className="p-3.5 font-medium text-ink">{act.staff_name || act.staff}</td>
                             <td className="p-3.5">
-                              <span className="inline-block px-2.5 py-1 text-[12px] font-medium rounded-[6px] bg-[#E0F2FE] text-[#0369A1]">
+                              <span className="inline-block px-2.5 py-1 text-[12px] font-medium rounded-full bg-sky-100 text-sky-700">
                                 {act.action_type}
                               </span>
                             </td>
-                            <td className="p-3.5 text-[#30343B]">{act.related_order || "-"}</td>
-                            <td className="p-3.5 text-[#30343B]">{act.related_table || "-"}</td>
-                            <td className="p-3.5 text-[#30343B]">{act.related_staff_name || act.related_staff || "-"}</td>
+                            <td className="p-3.5 text-ink-secondary">{act.related_order || "-"}</td>
+                            <td className="p-3.5 text-ink-secondary">{act.related_table || "-"}</td>
+                            <td className="p-3.5 text-ink-secondary">{act.related_staff_name || act.related_staff || "-"}</td>
                           </tr>
                         ))
                       )}
@@ -478,10 +478,10 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
 
               {/* TAB 3: Shift Logs */}
               {activeTab === "shifts" && (
-                <div className="overflow-x-auto rounded-[10px] border border-[#E8EDF3]">
+                <div className="overflow-x-auto rounded-2xl border border-line-subtle">
                   <table className="w-full text-left text-[14px] border-collapse">
                     <thead>
-                      <tr className="bg-[#F8FAFD] border-b border-[#E8EDF3] text-[#6B7280] font-medium">
+                      <tr className="bg-surface border-b border-line-subtle text-ink-muted font-medium">
                         <th className="p-3.5">Shift ID</th>
                         <th className="p-3.5">User</th>
                         <th className="p-3.5">Restaurant</th>
@@ -490,32 +490,32 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
                         <th className="p-3.5">Total Sales</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#E8EDF3]">
+                    <tbody className="divide-y divide-line-subtle">
                       {shiftLogs.length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="p-8 text-center text-[#9CA3AF]">
+                          <td colSpan={6} className="p-8 text-center text-ink-subtle">
                             No shift logs available.
                           </td>
                         </tr>
                       ) : (
                         shiftLogs.map((shift) => (
-                          <tr key={shift.id} className="hover:bg-[#F8FAFD]/60 transition-colors">
-                            <td className="p-3.5 text-[#6B7280]">#{shift.id}</td>
-                            <td className="p-3.5 font-medium text-[#0B0D10]">{shift.user}</td>
-                            <td className="p-3.5 text-[#30343B]">{shift.restaurant}</td>
-                            <td className="p-3.5 text-[#30343B]">{new Date(shift.clock_in).toLocaleString()}</td>
+                          <tr key={shift.id} className="hover:bg-surface/60 transition-colors">
+                            <td className="p-3.5 text-ink-muted">#{shift.id}</td>
+                            <td className="p-3.5 font-medium text-ink">{shift.user}</td>
+                            <td className="p-3.5 text-ink-secondary">{shift.restaurant}</td>
+                            <td className="p-3.5 text-ink-secondary">{new Date(shift.clock_in).toLocaleString()}</td>
                             <td className="p-3.5">
                               {shift.clock_out ? (
-                                <span className="text-[#30343B]">
+                                <span className="text-ink-secondary">
                                   {new Date(shift.clock_out).toLocaleString()}
                                 </span>
                               ) : (
-                                <span className="inline-block px-2.5 py-0.5 text-[12px] font-medium rounded-full bg-[#DCFCE7] text-[#15803D]">
+                                <span className="inline-block px-2.5 py-0.5 text-[12px] font-medium rounded-full bg-green-100 text-green-700">
                                   Active
                                 </span>
                               )}
                             </td>
-                            <td className="p-3.5 font-medium text-[#0B0D10]">{shift.total_sales}</td>
+                            <td className="p-3.5 font-medium text-ink">{shift.total_sales}</td>
                           </tr>
                         ))
                       )}

@@ -86,10 +86,10 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
             <img
               src={preview}
               alt="Dish"
-              className="h-[150px] w-full rounded-xl object-cover shadow-sm"
+              className="h-[150px] w-full rounded-3xl object-cover shadow-sm"
             />
           ) : (
-            <div className="flex h-[150px] w-full items-center justify-center rounded-xl border bg-gray-100 text-sm text-gray-400">
+            <div className="flex h-[150px] w-full items-center justify-center rounded-3xl border bg-inset text-sm text-ink-subtle">
               No Image
             </div>
           )}
@@ -97,24 +97,24 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
 
         {/* INFO */}
         <div className="space-y-4">
-          <div className="flex justify-between text-sm text-gray-500">
+          <div className="flex justify-between text-sm text-ink-muted">
             <span>Name</span>
-            <span className="font-semibold text-gray-900">{dish.name}</span>
+            <span className="font-semibold text-ink">{dish.name}</span>
           </div>
 
-          <div className="flex justify-between text-sm text-gray-500">
+          <div className="flex justify-between text-sm text-ink-muted">
             <span>Price</span>
-            <span className="font-medium text-gray-900">{formatPrice(dish.price)}</span>
+            <span className="font-medium text-ink">{formatPrice(dish.price)}</span>
           </div>
 
           <div className="space-y-1">
-            <span className="text-sm text-gray-500">Description</span>
-            <p className="text-[13px] leading-relaxed text-gray-700">
+            <span className="text-sm text-ink-muted">Description</span>
+            <p className="text-[13px] leading-relaxed text-ink-secondary">
               {dish.description}
             </p>
           </div>
 
-          <div className="flex justify-between text-sm text-gray-500">
+          <div className="flex justify-between text-sm text-ink-muted">
             <span>Status</span>
             <span
               className={`font-medium ${
@@ -127,7 +127,7 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
         </div>
 
         <Button
-          className="w-full bg-[#2542e3]"
+          className="w-full bg-primary"
           onClick={() => setEditMode(true)}
         >
           Edit Dish
@@ -143,20 +143,20 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
     <div className="animate-fadeIn space-y-8 py-6">
       {/* IMAGE UPLOAD */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-gray-700">Dish Image</Label>
+        <Label className="text-sm font-medium text-ink-secondary">Dish Image</Label>
 
         {preview ? (
           <div className="relative">
             <img
               src={preview}
-              className="h-[150px] w-full rounded-xl object-cover shadow-sm"
+              className="h-[150px] w-full rounded-3xl object-cover shadow-sm"
             />
             <button
               onClick={() => {
                 setPreview(null);
                 setDishForm((p) => ({ ...p, image: null }));
               }}
-              className="absolute top-2 right-2 rounded-lg bg-black/60 px-2 py-1 text-xs text-white"
+              className="absolute top-2 right-2 rounded-2xl bg-black/60 px-2 py-1 text-xs text-white"
             >
               Remove
             </button>
@@ -164,7 +164,7 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
         ) : (
           <label
             htmlFor="image"
-            className="flex h-[150px] w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed bg-gray-50 text-gray-400 transition hover:bg-gray-100"
+            className="flex h-[150px] w-full cursor-pointer flex-col items-center justify-center rounded-3xl border border-dashed bg-inset text-ink-subtle transition hover:bg-inset"
           >
             <p className="text-sm font-medium">Click to upload image</p>
           </label>
@@ -234,7 +234,7 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
 
       {/* ACTION BUTTONS */}
       <div className="space-y-3">
-        <Button className="w-full bg-[#2542e3]" onClick={handleSave}>
+        <Button className="w-full bg-primary" onClick={handleSave}>
           Save Changes
         </Button>
 

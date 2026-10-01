@@ -81,17 +81,17 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
     <div className="space-y-6 pt-7">
       {!isEditing ? (
         <>
-          <div className="grid grid-cols-1 gap-6 rounded-2xl border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
+          <div className="grid grid-cols-1 gap-6 rounded-2xl border-line bg-surface">
             {/* Image */}
             <div className="col-span-1">
               {data.image_url ? (
                 <img
                   src={data.image_url}
                   alt={data.name}
-                  className="h-56 w-full rounded-xl border border-gray-200 object-cover"
+                  className="h-56 w-full rounded-3xl border border-line object-cover"
                 />
               ) : (
-                <div className="flex h-56 w-full items-center justify-center rounded-xl border-2 border-dashed bg-gradient-to-r from-blue-100 via-pink-100 to-purple-100 font-medium text-gray-600">
+                <div className="flex h-56 w-full items-center justify-center rounded-3xl border-2 border-dashed bg-gradient-to-r from-blue-100 via-pink-100 to-purple-100 font-medium text-ink-secondary">
                   No Image Available
                 </div>
               )}
@@ -101,24 +101,24 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
             <div className="col-span-1 flex flex-col justify-between space-y-3">
               <div>
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Category Name</span>
-                  <span className="font-semibold text-gray-900 dark:text-gray-50">
+                  <span className="text-sm text-ink-muted">Category Name</span>
+                  <span className="font-semibold text-ink">
                     {data.name}
                   </span>
                 </div>
 
                 <div className="mb-2 flex items-start justify-between">
-                  <span className="text-sm text-gray-500">Description</span>
-                  <span className="max-w-[60%] text-right text-gray-800 dark:text-gray-200">
+                  <span className="text-sm text-ink-muted">Description</span>
+                  <span className="max-w-[60%] text-right text-ink">
                     {data.description || "No description provided"}
                   </span>
                 </div>
 
-                <div className="flex justify-between text-sm text-gray-500">
+                <div className="flex justify-between text-sm text-ink-muted">
                   <span>updated</span>
                   <span>{new Date(data.updated_at).toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-sm text-gray-500">
+                <div className="flex justify-between text-sm text-ink-muted">
                   <span>Updated</span>
                   <span>{new Date(data.updated_at).toLocaleString()}</span>
                 </div>
@@ -127,9 +127,9 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
                 <button
                   type="button"
                   onClick={() => setIsEditing(true)}
-                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-gray-200 bg-gray-50 py-2 text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900"
+                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border border-line bg-inset py-2 text-ink-secondary transition-colors hover:bg-inset hover:text-ink"
                 >
-                  <Edit3 size={16} className="text-gray-500" />
+                  <Edit3 size={16} className="text-ink-muted" />
                   Edit Category
                 </button>
               </div>
@@ -139,7 +139,7 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
       ) : (
         <form
           onSubmit={handleSave}
-          className="space-y-5 rounded-2xl bg-white dark:bg-gray-900"
+          className="space-y-5 rounded-2xl bg-surface"
         >
           <div className="space-y-2">
             <Label htmlFor="name">Category Name</Label>
@@ -166,7 +166,7 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
           {/* Cute Image Upload */}
           <div className="space-y-2">
             <Label htmlFor="image">Category Image</Label>
-            <div className="relative flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-3 transition-colors duration-200 hover:border-blue-400">
+            <div className="relative flex cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-line p-3 transition-colors duration-200 hover:border-blue-400">
               <input
                 id="image"
                 type="file"
@@ -179,18 +179,18 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
                   <img
                     src={form.image}
                     alt="Preview"
-                    className="h-56 w-full rounded-lg border border-gray-200 object-cover"
+                    className="h-56 w-full rounded-2xl border border-line object-cover"
                   />
 
                   <button
                     type="button"
-                    className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900"
+                    className="w-full rounded-2xl border border-line bg-inset py-2 text-sm font-medium text-ink-secondary transition-colors hover:bg-inset hover:text-ink"
                   >
                     Click to Change
                   </button>
                 </div>
               ) : (
-                <div className="flex flex-col items-center text-gray-500">
+                <div className="flex flex-col items-center text-ink-muted">
                   <ImagePlus size={36} className="mb-2 text-blue-400" />
                   <span className="text-sm">Click to upload an image</span>
                 </div>
@@ -202,7 +202,7 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
             <Button
               type="button"
               variant="outline"
-              className="flex cursor-pointer items-center gap-2 text-gray-700"
+              className="flex cursor-pointer items-center gap-2 text-ink-secondary"
               onClick={() => setIsEditing(false)}
             >
               <XCircle size={16} />

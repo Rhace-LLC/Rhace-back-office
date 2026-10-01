@@ -57,7 +57,7 @@ export function Step3Tables({
 
       {/* Table count */}
       <Field id="ob-tables" label="How many tables do you have?" required>
-        <div className="flex items-center justify-between rounded-[16px] border border-line bg-cardfill px-5 py-4">
+        <div className="flex items-center justify-between rounded-[20px] border border-line bg-cardfill px-5 py-4">
           <NumberStepper value={tableCount} onChange={setTableCount} min={0} />
           <span className="text-sm leading-5 text-ink-muted">
             tables in total
@@ -105,7 +105,7 @@ export function Step3Tables({
             aria-label="Add area"
             onClick={addArea}
             disabled={!newArea.trim()}
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[8px] border border-line bg-surface text-ink transition-colors hover:border-line-strong hover:bg-cardfill disabled:pointer-events-none disabled:opacity-40"
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-line bg-surface text-ink transition-colors hover:border-line-strong hover:bg-cardfill disabled:pointer-events-none disabled:opacity-40"
           >
             <Plus className="h-5 w-5" />
           </button>
@@ -118,7 +118,7 @@ export function Step3Tables({
               .map((area) => (
                 <span
                   key={area}
-                  className="inline-flex items-center gap-1.5 rounded-[8px] border border-brand bg-cardfill px-3 py-2 text-sm text-brand"
+                  className="inline-flex items-center gap-1.5 rounded-2xl border border-brand bg-cardfill px-3 py-2 text-sm text-brand"
                 >
                   {area}
                   <button
@@ -150,7 +150,7 @@ export function Step3Tables({
                 aria-pressed={active}
                 onClick={() => toggleMethod(method)}
                 className={cn(
-                  "flex items-center justify-between rounded-[16px] border p-4 text-left transition-colors duration-150",
+                  "flex items-center justify-between rounded-[20px] border p-4 text-left transition-colors duration-150",
                   active
                     ? "border-brand bg-brand/[0.04] ring-1 ring-brand"
                     : "border-line bg-surface hover:border-line-strong"
@@ -161,7 +161,7 @@ export function Step3Tables({
                 </span>
                 <span
                   className={cn(
-                    "flex h-5 w-5 items-center justify-center rounded-[6px] border transition-colors",
+                    "flex h-5 w-5 items-center justify-center rounded-full border transition-colors",
                     active ? "border-brand bg-brand" : "border-line-strong bg-surface"
                   )}
                 >

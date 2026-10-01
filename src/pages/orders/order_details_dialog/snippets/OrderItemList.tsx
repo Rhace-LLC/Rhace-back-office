@@ -46,7 +46,7 @@ export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
 
   if (!items || items.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-[#D9E0EA] bg-[#F8FAFD] p-6 text-center text-sm text-[#6B7280]">
+      <div className="rounded-3xl border border-dashed border-line bg-inset p-6 text-center text-sm text-ink-muted">
         No items in this order
       </div>
     );
@@ -54,7 +54,7 @@ export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
 
   return (
     <div className="space-y-3">
-      <h4 className="text-xs font-semibold uppercase tracking-wider text-[#6B7280]">
+      <h4 className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
         Items ({items.length})
       </h4>
       <div className="space-y-2">
@@ -64,15 +64,15 @@ export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
             return (
               <div
                 key={item.id || index}
-                className="flex items-center justify-between rounded-xl border border-[#D9E0EA] bg-[#FFFFFF] p-3 shadow-xs"
+                className="flex items-center justify-between rounded-[20px] border border-line bg-surface p-3 shadow-sm"
               >
                 <div>
-                  <p className="font-medium text-[#0B0D10]">{item.menu_item_name || "Unknown Item"}</p>
-                  <p className="text-xs text-[#6B7280]">
+                  <p className="font-medium text-ink">{item.menu_item_name || "Unknown Item"}</p>
+                  <p className="text-xs text-ink-muted">
                     Qty: {item.quantity} × {formatPrice(item.price || "0")}
                   </p>
                 </div>
-                <p className="text-sm font-semibold text-[#0B0D10]">{formatPrice(subtotal)}</p>
+                <p className="text-sm font-semibold text-ink">{formatPrice(subtotal)}</p>
               </div>
             );
           }
@@ -84,36 +84,36 @@ export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
             return (
               <div
                 key={item.id || index}
-                className="rounded-xl border border-[#D9E0EA] bg-[#FFFFFF] p-3.5 shadow-xs space-y-2.5"
+                className="rounded-[20px] border border-line bg-surface p-3.5 shadow-sm space-y-2.5"
               >
                 <div className="flex gap-3 items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <h5 className="font-semibold text-[#0B0D10] text-sm">{menuItem?.name || "Unknown Item"}</h5>
-                      <span className="font-semibold text-sm text-[#0B0D10]">{formatPrice(subtotal)}</span>
+                      <h5 className="font-semibold text-ink text-sm">{menuItem?.name || "Unknown Item"}</h5>
+                      <span className="font-semibold text-sm text-ink">{formatPrice(subtotal)}</span>
                     </div>
-                    <p className="text-xs text-[#6B7280] mt-0.5">
+                    <p className="text-xs text-ink-muted mt-0.5">
                       Quantity: {item.quantity} × {formatPrice(item.price || "0")}
                     </p>
                     {menuItem?.description && (
-                      <p className="text-xs text-[#30343B] mt-1 line-clamp-2">{menuItem.description}</p>
+                      <p className="text-xs text-ink-secondary mt-1 line-clamp-2">{menuItem.description}</p>
                     )}
                   </div>
                   {menuItem?.image_url && (
                     <img
                       src={menuItem.image_url}
                       alt={menuItem.name}
-                      className="h-14 w-14 rounded-lg object-cover border border-[#E8EDF3] shrink-0"
+                      className="h-14 w-14 rounded-2xl object-cover border border-line-subtle shrink-0"
                     />
                   )}
                 </div>
 
                 {menuItem?.display_ingredients && menuItem.display_ingredients.length > 0 && (
-                  <div className="flex items-start gap-1.5 text-xs text-[#30343B] pt-1">
-                    <Utensils className="h-3.5 w-3.5 text-[#146BE8] mt-0.5 shrink-0" />
+                  <div className="flex items-start gap-1.5 text-xs text-ink-secondary pt-1">
+                    <Utensils className="h-3.5 w-3.5 text-brand mt-0.5 shrink-0" />
                     <div className="flex flex-wrap gap-1">
                       {menuItem.display_ingredients.map((ing, i) => (
-                        <span key={i} className="inline-block rounded-md bg-[#F8FAFD] px-2 py-0.5 text-[11px] border border-[#E8EDF3]">
+                        <span key={i} className="inline-block rounded-2xl bg-inset px-2 py-0.5 text-[11px] border border-line-subtle">
                           {ing}
                         </span>
                       ))}
@@ -122,15 +122,15 @@ export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
                 )}
 
                 {menuItem?.allergens && menuItem.allergens.length > 0 && (
-                  <div className="flex items-center gap-1.5 text-xs text-[#B91C1C]">
+                  <div className="flex items-center gap-1.5 text-xs text-red-700">
                     <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
                     <span className="text-[11px] font-medium">Allergens: {menuItem.allergens.join(", ")}</span>
                   </div>
                 )}
 
                 {menuItem?.prep_time && (
-                  <div className="flex items-center gap-1 text-[11px] text-[#6B7280] pt-1 border-t border-[#E8EDF3]">
-                    <Clock className="h-3 w-3 text-[#9CA3AF]" />
+                  <div className="flex items-center gap-1 text-[11px] text-ink-muted pt-1 border-t border-line-subtle">
+                    <Clock className="h-3 w-3 text-ink-subtle" />
                     <span>Prep time: {menuItem.prep_time}</span>
                   </div>
                 )}

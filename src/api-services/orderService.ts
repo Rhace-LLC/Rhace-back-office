@@ -6,8 +6,16 @@ import { Order, UpdateOrderData } from "../pages/orders/types/order";
 // ========== ORDER OPERATIONS ==========
 
 // GET /orders/ - Get all orders
-export const getAllOrders = async (token: string): Promise<Order[]> => {
-  const config = getConfig("/orders/", "GET", token);
+export interface GetOrdersParams {
+  status?: string;
+  waiter_confirmed?: boolean;
+}
+
+export const getAllOrders = async (
+  token: string,
+  params?: GetOrdersParams
+): Promise<Order[]> => {
+  const config = getConfig("/orders/", "GET", token, undefined, params);
   const response = await bookiesAxiosInstance(config);
 
   let ordersData = response.data;
@@ -71,6 +79,22 @@ export const assignTableToOrder = async (
     table_id: tableId,
     order_id: orderId,
   });
+  const response = await bookiesAxiosInstance(config);
+  return response.data;
+};
+
+// POST /orders/{order_id}/waiter-confirm/ - Waiter confirms a received order.
+// No request body. Backend auto-assigns the waiter if unassigned and keeps
+// status as `received`. See ORDER_FLOW_FRONTEND.md.
+export const waiterConfirmOrder = async (
+  orderId: string,
+  token: string
+): Promise<Order> => {
+  const config = getConfig(
+    `/orders/${orderId}/waiter-confirm`,
+    "POST",
+    token
+  );
   const response = await bookiesAxiosInstance(config);
   return response.data;
 };

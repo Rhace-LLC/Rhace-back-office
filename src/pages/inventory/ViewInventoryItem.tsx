@@ -114,10 +114,10 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
   };
 
   return (
-    <div className="space-y-6 rounded-2xl bg-white p-6 shadow-sm">
+    <div className="space-y-6 rounded-2xl bg-surface p-6 shadow-sm">
       {/* Title */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-800">Inventory Item</h2>
+        <h2 className="text-lg font-semibold text-ink">Inventory Item</h2>
         <div className="flex gap-2">
           {!isEditingInfo && (
             <Button onClick={() => setIsEditingInfo(true)}>Edit Info</Button>
@@ -135,7 +135,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
         <div className="space-y-4">
           {/* Name */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-700">Name</Label>
+            <Label className="text-sm font-medium text-ink-secondary">Name</Label>
             <Input
               name="name"
               value={editableItem.name}
@@ -146,14 +146,14 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
 
           {/* Unit */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-700">Unit</Label>
+            <Label className="text-sm font-medium text-ink-secondary">Unit</Label>
             <select
               name="unit"
               value={editableItem.unit}
               onChange={(e) =>
                 setEditableItem((prev) => ({ ...prev, unit: e.target.value }))
               }
-              className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="h-10 w-full rounded-2xl border border-line bg-surface px-3 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-focus-ring"
             >
               {Object.values(Unit).map((u) => (
                 <option key={u} value={u}>
@@ -165,7 +165,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
 
           {/* Threshold */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-700">
+            <Label className="text-sm font-medium text-ink-secondary">
               Low Stock Threshold
             </Label>
             <Input
@@ -184,7 +184,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
               name="is_allergen"
               checked={editableItem.is_allergen}
               onChange={handleChange}
-              className="h-4 w-4 rounded border-gray-300 focus:ring-red-500"
+              className="h-4 w-4 rounded-lg border-line focus:ring-red-500"
             />
             <span className="text-sm font-medium text-red-600">
               This ingredient contains allergens
@@ -217,7 +217,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
         <div className="space-y-4">
           {/* Quantity */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-700">
+            <Label className="text-sm font-medium text-ink-secondary">
               Quantity
             </Label>
             <Input
@@ -231,7 +231,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
 
           {/* Transaction Type */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-700">
+            <Label className="text-sm font-medium text-ink-secondary">
               Transaction Type
             </Label>
             <select
@@ -239,7 +239,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
               onChange={(e) =>
                 setTransactionType(e.target.value as InventoryTransactionType)
               }
-              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200"
+              className="w-full rounded-2xl border border-line bg-surface px-3 py-2 shadow-sm focus:border-brand focus:ring focus:ring-indigo-200"
             >
               <option value="wastage">Wastage</option>
               <option value="restock">Restock</option>

@@ -72,7 +72,7 @@ export const Pagination: React.FC<PaginationProps> = ({
       <div className="flex items-center space-x-2">
         {paginationItems.map((page, idx) =>
           page === "..." ? (
-            <span key={`ellipsis-${idx}`} className="px-2 text-gray-500">
+            <span key={`ellipsis-${idx}`} className="px-2 text-ink-muted">
               ...
             </span>
           ) : (
@@ -82,7 +82,7 @@ export const Pagination: React.FC<PaginationProps> = ({
               className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
                 page === currentPage
                   ? "bg-black text-white"
-                  : "cursor-pointer bg-gray-200 text-black hover:bg-gray-300"
+                  : "cursor-pointer bg-inset text-ink hover:bg-inset-accent"
               }`}
             >
               {page}

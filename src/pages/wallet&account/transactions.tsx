@@ -82,7 +82,7 @@ export const TransactionsPage = () => {
   return (
     <div className="space-y-6">
       {/* TABLE */}
-      <div className="rounded-xl border bg-white">
+      <div className="rounded-3xl border bg-surface">
         <Table>
           <TableHeader>
             <TableRow>
@@ -201,7 +201,7 @@ export const TransactionsPage = () => {
 // =============== SMALL DETAIL COMPONENT ===============
 const Detail = ({ label, value }: { label: string; value: string }) => (
   <div className="flex justify-between gap-4">
-    <span className="font-medium text-gray-600">{label}</span>
-    <span className="text-gray-900">{value}</span>
+    <span className="font-medium text-ink-secondary">{label}</span>
+    <span className="text-ink">{value}</span>
   </div>
 );

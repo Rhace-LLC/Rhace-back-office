@@ -9,7 +9,7 @@ export default function RenderTableData({ data }: { data: CategoryData[] }) {
   const [selectedOpen, setSelectedOpen] = useState<boolean>(false);
 
   return (
-    <div className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border">
+    <div className="bg-card text-card-foreground flex flex-col gap-6 rounded-3xl border">
       <div className="p-0 [&:last-child]:pb-6">
         <div className="relative w-full overflow-x-auto">
           <table className="w-full caption-bottom text-sm">
@@ -35,7 +35,7 @@ export default function RenderTableData({ data }: { data: CategoryData[] }) {
                 >
                   <td className="px-3 py-2">
                     <img
-                      className="h-12 w-12 rounded-md object-cover"
+                      className="h-12 w-12 rounded-2xl object-cover"
                       src={item.image_url || "/placeholder.png"}
                       alt={item.name}
                     />
@@ -44,23 +44,23 @@ export default function RenderTableData({ data }: { data: CategoryData[] }) {
                   <td className="p-2 whitespace-nowrap">
                     <div className="flex flex-col">
                       <span className="font-medium">{item.name}</span>
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-ink-secondary">
                         {item.description}
                       </span>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-ink-muted">
                         ID: {item.id}
                       </span>
                     </div>
                   </td>
 
                   <td className="p-2 whitespace-nowrap">
-                    <span className="text-sm text-gray-700">
+                    <span className="text-sm text-ink-secondary">
                       {new Date(item.created_at).toLocaleDateString()}
                     </span>
                   </td>
 
                   <td className="p-2 whitespace-nowrap">
-                    <span className="text-sm text-gray-700">
+                    <span className="text-sm text-ink-secondary">
                       {new Date(item.updated_at).toLocaleDateString()}
                     </span>
                   </td>
@@ -84,7 +84,7 @@ export default function RenderTableData({ data }: { data: CategoryData[] }) {
                 <tr>
                   <td
                     colSpan={5}
-                    className="p-4 text-center text-sm text-gray-500"
+                    className="p-4 text-center text-sm text-ink-muted"
                   >
                     No Data found
                   </td>

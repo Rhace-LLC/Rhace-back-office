@@ -199,7 +199,7 @@ export function Step5Payments({
                 !bankCode ||
                 verifying
               }
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-[8px] bg-ink px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-ink-secondary focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 sm:w-auto sm:shrink-0"
+              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-ink px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-ink-secondary focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 sm:w-auto sm:shrink-0"
             >
               {verifying ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -211,7 +211,7 @@ export function Step5Payments({
           </div>
         </div>
       ) : (
-        <div className="rounded-[16px] border border-emerald-200 bg-emerald-50 p-5">
+        <div className="rounded-[20px] border border-emerald-200 bg-emerald-50 p-5">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-5 w-5 text-emerald-600" />
             <p className="text-sm font-semibold text-emerald-700">
@@ -237,14 +237,14 @@ export function Step5Payments({
             <button
               type="button"
               onClick={onComplete}
-              className="inline-flex h-12 w-full items-center justify-center rounded-[8px] bg-ink px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-ink-secondary focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none"
+              className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-ink px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-ink-secondary focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none"
             >
               Finish Setup
             </button>
             <button
               type="button"
               onClick={onExit}
-              className="inline-flex h-12 w-full items-center justify-center rounded-[8px] px-5 text-sm font-medium text-ink-muted transition-colors duration-150 hover:bg-line-subtle hover:text-ink"
+              className="inline-flex h-12 w-full items-center justify-center rounded-2xl px-5 text-sm font-medium text-ink-muted transition-colors duration-150 hover:bg-line-subtle hover:text-ink"
             >
               Back
             </button>

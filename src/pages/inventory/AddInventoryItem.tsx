@@ -97,7 +97,7 @@ export const AddInventoryItem: React.FC<{
       <div className="space-y-6">
         {/* Name Field (Full Width) */}
         <div className="space-y-2">
-          <Label htmlFor="name" className="text-sm font-medium text-gray-700">
+          <Label htmlFor="name" className="text-sm font-medium text-ink-secondary">
             Ingredient Name
           </Label>
           <Input
@@ -113,7 +113,7 @@ export const AddInventoryItem: React.FC<{
         {/* Quantity & Unit Fields (Two Columns/Grid) */}
         <div className="grid grid-cols-3 gap-4">
           <div className="col-span-1 space-y-2">
-            <Label htmlFor="unit" className="text-sm font-medium text-gray-700">
+            <Label htmlFor="unit" className="text-sm font-medium text-ink-secondary">
               Unit
             </Label>
             <select
@@ -121,7 +121,7 @@ export const AddInventoryItem: React.FC<{
               name="unit"
               value={formData.unit}
               onChange={(e) => setFormData((prev) => ({ ...prev, unit: e.target.value }))}
-              className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="h-10 w-full rounded-2xl border border-line bg-surface px-3 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-focus-ring"
             >
               <option value="" disabled>
                 Select unit
@@ -139,7 +139,7 @@ export const AddInventoryItem: React.FC<{
         <div className="space-y-2">
           <Label
             htmlFor="threshold"
-            className="text-sm font-medium text-gray-700"
+            className="text-sm font-medium text-ink-secondary"
           >
             Low Stock Threshold
           </Label>
@@ -165,7 +165,7 @@ export const AddInventoryItem: React.FC<{
             checked={formData.is_allergen}
             onChange={handleChange}
             // Using native input with custom Tailwind classes for modern look
-            className="h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+            className="h-4 w-4 rounded-lg border-line text-red-600 focus:ring-red-500"
           />
           <Label
             htmlFor="is_allergen"

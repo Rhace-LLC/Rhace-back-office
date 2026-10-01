@@ -102,7 +102,7 @@ export default function AddCategoryForm({ onSubmit }: AddCategoryFormProps) {
             <img
               src={previewUrl}
               alt="Preview"
-              className="h-48 w-full rounded-lg border object-cover"
+              className="h-48 w-full rounded-2xl border object-cover"
             />
             <button
               type="button"
@@ -116,10 +116,10 @@ export default function AddCategoryForm({ onSubmit }: AddCategoryFormProps) {
         ) : (
           <label
             htmlFor="imageUpload"
-            className="mt-2 flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 transition hover:bg-gray-50"
+            className="mt-2 flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-line transition hover:bg-inset"
           >
-            <ImagePlus className="h-8 w-8 text-gray-400" />
-            <p className="mt-2 text-sm text-gray-500">
+            <ImagePlus className="h-8 w-8 text-ink-subtle" />
+            <p className="mt-2 text-sm text-ink-muted">
               Click to upload category image
             </p>
             <Input

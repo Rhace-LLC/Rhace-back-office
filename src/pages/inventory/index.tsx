@@ -126,13 +126,13 @@ const ManageInventoryPage: React.FC = () => {
           <h1 className="text-2xl font-bold tracking-tight">
             Manage Inventory
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-ink-secondary">
             Track and manage your inventory items.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
-            className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium hover:bg-gray-200"
+            className="rounded-2xl bg-inset px-4 py-2 text-sm font-medium hover:bg-inset-accent"
             onClick={() => {
               setSelectedItem(null);
               setAddInventoryOpen(true);
@@ -195,7 +195,7 @@ const ManageInventoryPage: React.FC = () => {
       {/* ✅ Add Inventory Sheet */}
       <GenericSheet
         title={
-          <h2 className="text-lg font-bold text-gray-800">
+          <h2 className="text-lg font-bold text-ink">
             New Ingredient Entry{" "}
             <Book className="inline-block h-5 w-5 text-blue-500" />
           </h2>

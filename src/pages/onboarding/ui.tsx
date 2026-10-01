@@ -76,7 +76,7 @@ export function NumberStepper({
         type="button"
         aria-label="Decrease"
         onClick={() => onChange(Math.max(min, value - 1))}
-        className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-line bg-surface text-ink transition-colors hover:border-line-strong hover:bg-cardfill focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none disabled:opacity-40"
+        className="flex h-11 w-11 items-center justify-center rounded-2xl border border-line bg-surface text-ink transition-colors hover:border-line-strong hover:bg-cardfill focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none disabled:opacity-40"
         disabled={value <= min}
       >
         <Minus className="h-4 w-4" />
@@ -88,7 +88,7 @@ export function NumberStepper({
         type="button"
         aria-label="Increase"
         onClick={() => onChange(value + 1)}
-        className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-line bg-surface text-ink transition-colors hover:border-line-strong hover:bg-cardfill focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none"
+        className="flex h-11 w-11 items-center justify-center rounded-2xl border border-line bg-surface text-ink transition-colors hover:border-line-strong hover:bg-cardfill focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none"
       >
         <Plus className="h-4 w-4" />
       </button>
@@ -121,7 +121,7 @@ export function ChoiceCard({
     >
       <span
         className={cn(
-          "flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] transition-colors",
+          "flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl transition-colors",
           selected ? "bg-brand text-white" : "bg-cardfill text-ink-muted"
         )}
       >
@@ -149,6 +149,8 @@ export function StepActions({
   loadingLabel = "Saving…",
   onSecondary,
   secondaryLabel,
+  secondaryLoading,
+  secondaryLoadingLabel = "Skipping…",
 }: {
   onContinue: () => void;
   continueLabel?: string;
@@ -157,18 +159,22 @@ export function StepActions({
   loadingLabel?: string;
   onSecondary?: () => void;
   secondaryLabel?: string;
+  secondaryLoading?: boolean;
+  secondaryLoadingLabel?: string;
 }) {
-  const busy = Boolean(continueLoading);
+  const primaryBusy = Boolean(continueLoading);
+  const secondaryBusy = Boolean(secondaryLoading);
+  const busy = primaryBusy || secondaryBusy;
   return (
     <div className="mt-8 space-y-2 border-t border-line-subtle pt-6" aria-busy={busy}>
       <button
         type="button"
         disabled={continueDisabled || busy}
         onClick={onContinue}
-        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-[8px] bg-ink px-5 text-sm font-medium leading-5 text-white transition-colors duration-150 hover:bg-ink-secondary active:bg-ink focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-ink px-5 text-sm font-medium leading-5 text-white transition-colors duration-150 hover:bg-ink-secondary active:bg-ink focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
       >
-        {busy && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
-        <span aria-live="polite">{busy ? loadingLabel : continueLabel}</span>
+        {primaryBusy && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
+        <span aria-live="polite">{primaryBusy ? loadingLabel : continueLabel}</span>
       </button>
       {secondaryLabel && onSecondary && (
         <button
@@ -177,7 +183,8 @@ export function StepActions({
           disabled={busy}
           className={cn(obCtaGhost, "disabled:pointer-events-none disabled:opacity-50")}
         >
-          {secondaryLabel}
+          {secondaryBusy && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
+          <span aria-live="polite">{secondaryBusy ? secondaryLoadingLabel : secondaryLabel}</span>
         </button>
       )}
     </div>

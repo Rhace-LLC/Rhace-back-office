@@ -66,13 +66,13 @@ export default function ForgotPassword() {
 
   return (
     <div className={`${authPage} items-center px-4 py-10 sm:px-6 sm:py-14`}>
-      <div className={`${authPanel} max-w-[1080px] overflow-hidden bg-white`}>
+      <div className={`${authPanel} max-w-[1080px] overflow-hidden`}>
         <div className="grid grid-cols-1 lg:grid-cols-2  min-h-[85vh]">
           {/* ---------- Form column ---------- */}
           <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-14">
             <div className="mb-12 flex items-center justify-between">
               <img src={RhaceLogo} alt="Rhace" className="h-auto w-[88px]" />
-              <span className="rounded-md bg-cardfill px-2 py-1 text-xs font-medium tracking-tight text-ink-muted">
+              <span className="rounded-2xl bg-cardfill px-2 py-1 text-xs font-medium tracking-tight text-ink-muted">
                 NG
               </span>
             </div>
@@ -125,7 +125,7 @@ export default function ForgotPassword() {
               className="absolute inset-0 h-full w-full object-cover"
             />
             <div className="relative flex h-full min-h-[560px] flex-col items-start justify-end p-10">
-              <div className="max-w-sm rounded-2xl border border-white/60 bg-white/70 p-6 text-center shadow-md backdrop-blur-md">
+              <div className="max-w-sm rounded-[20px] border border-line bg-surface p-6 text-center shadow-md">
                 <AnimatePresence mode="wait">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}

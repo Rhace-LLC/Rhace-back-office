@@ -89,7 +89,7 @@ export function MenuManagement() {
       <div className="justify-between gap-4 sm:flex sm:flex-row">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Menu Management</h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-ink-muted">
             Manage dishes, availability, and menu items
           </p>
         </div>
@@ -134,16 +134,16 @@ export function MenuManagement() {
       >
         <Table className="w-full border-collapse text-sm">
           <TableHeader>
-            <TableRow className="bg-gray-50">
-              <TableHead className="w-14 font-medium text-gray-600">
+            <TableRow className="bg-inset">
+              <TableHead className="w-14 font-medium text-ink-secondary">
                 Image
               </TableHead>
-              <TableHead className="font-medium text-gray-600">Dish</TableHead>
-              <TableHead className="font-medium text-gray-600">Price</TableHead>
-              <TableHead className="font-medium text-gray-600">
+              <TableHead className="font-medium text-ink-secondary">Dish</TableHead>
+              <TableHead className="font-medium text-ink-secondary">Price</TableHead>
+              <TableHead className="font-medium text-ink-secondary">
                 Availability
               </TableHead>
-              <TableHead className="font-medium text-gray-600">
+              <TableHead className="font-medium text-ink-secondary">
                 Actions
               </TableHead>
             </TableRow>
@@ -153,21 +153,21 @@ export function MenuManagement() {
             {toShow.map((dish) => (
               <TableRow
                 key={dish.id}
-                className="cursor-pointer transition hover:bg-gray-50"
+                className="cursor-pointer transition hover:bg-inset"
               >
                 {/* Image Column */}
                 <TableCell className="py-2">
                   <img
                     src={dish.image_url || "/placeholder-dish.png"}
                     alt={dish.name}
-                    className="h-12 w-12 rounded-lg border object-cover"
+                    className="h-12 w-12 rounded-2xl border object-cover"
                   />
                 </TableCell>
 
                 {/* Dish Info */}
-                <TableCell className="font-medium text-gray-900">
+                <TableCell className="font-medium text-ink">
                   <div>{dish.name}</div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-ink-muted">
                     {dish.description}
                   </div>
                 </TableCell>

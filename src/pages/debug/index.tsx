@@ -5,7 +5,7 @@ export default function DebugPage() {
   return (
     <div className="mx-auto max-w-[1320px] px-5 py-8 md:px-8 lg:px-12">
       <header className="flex items-center gap-3">
-        <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-cardfill text-brand">
+        <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-cardfill text-brand">
           <Bug className="h-5 w-5" />
         </span>
         <div>

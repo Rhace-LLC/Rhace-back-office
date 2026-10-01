@@ -72,8 +72,8 @@ const RenderEmployeeTable: React.FC<Props> = ({ data, onRowClick }) => {
       <div className="w-full overflow-x-auto">
         <table className="min-w-full border-collapse text-sm">
           {/* Sticky Header */}
-          <thead className="sticky top-0 z-10 border-b bg-gray-50">
-            <tr className="text-gray-700">
+          <thead className="sticky top-0 z-10 border-b bg-inset">
+            <tr className="text-ink-secondary">
               <th className="p-3 font-medium">Name</th>
               <th className="p-3 font-medium">Email</th>
               <th className="p-3 font-medium">Phone</th>
@@ -88,7 +88,7 @@ const RenderEmployeeTable: React.FC<Props> = ({ data, onRowClick }) => {
               <tr>
                 <td
                   colSpan={6}
-                  className="p-6 text-center text-gray-500 italic"
+                  className="p-6 text-center text-ink-muted italic"
                 >
                   No staff members found
                 </td>
@@ -97,15 +97,15 @@ const RenderEmployeeTable: React.FC<Props> = ({ data, onRowClick }) => {
               data.map((employee) => (
                 <tr
                   key={employee.id}
-                  className="cursor-pointer border-b transition-colors last:border-none hover:bg-gray-50"
+                  className="cursor-pointer border-b transition-colors last:border-none hover:bg-inset"
                   onClick={() => onRowClick(employee)}
                 >
-                  <td className="p-3 font-medium text-gray-900">
+                  <td className="p-3 font-medium text-ink">
                     {employee.full_name}
                   </td>
 
-                  <td className="p-3 text-gray-600">{employee.email}</td>
-                  <td className="p-3 text-gray-600">{employee.phone}</td>
+                  <td className="p-3 text-ink-secondary">{employee.email}</td>
+                  <td className="p-3 text-ink-secondary">{employee.phone}</td>
                   <td className="p-3 capitalize">{employee.role}</td>
 
                   <td className="p-3">

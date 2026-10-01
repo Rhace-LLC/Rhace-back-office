@@ -8,7 +8,6 @@ import { registerRestaurant } from "@/api-services/auth.service";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RhaceImage from "../../assets/Rhace-10.png";
-import { AuthGlows } from "./AuthGlows";
 import {
   authButton,
   authField,
@@ -19,8 +18,6 @@ import {
   authTitle,
   authLink,
 } from "./authTokens";
-
-import "./auth.css";
 
 export interface BasicSignUpData {
   owner_first_name: string;
@@ -152,12 +149,9 @@ export function SignUp() {
 
   return (
     <div className={`${authPage} relative overflow-hidden py-10 sm:py-14`}>
-      {/* Soft atmospheric accents (soft SaaS background treatment) */}
-      <AuthGlows />
-
       <div className="relative z-10 flex w-full justify-center px-4 sm:px-6">
         <div
-          className={`${authPanel} flex max-w-[880px] flex-col gap-6 bg-white px-6 py-8 sm:gap-8 sm:p-12 justify-center`}
+          className={`${authPanel} flex max-w-[880px] flex-col gap-6 px-6 py-8 sm:gap-8 sm:p-12 justify-center`}
         >
           {/* Top brand */}
           <div className="flex items-center justify-between">

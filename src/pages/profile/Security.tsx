@@ -96,9 +96,9 @@ const SecuritySection: React.FC = () => {
         onClick={() => toggleShowPassword(id)}
       >
         {showPassword[id] ? (
-          <EyeOff className="relative top-2 h-4 w-4 text-gray-500" />
+          <EyeOff className="relative top-2 h-4 w-4 text-ink-muted" />
         ) : (
-          <Eye className="relative top-2 h-4 w-4 text-gray-500" />
+          <Eye className="relative top-2 h-4 w-4 text-ink-muted" />
         )}
       </button>
     </div>
@@ -144,7 +144,7 @@ const SecuritySection: React.FC = () => {
             )}
 
             <div className="flex gap-2">
-              <Button onClick={handleChangePassword} className="bg-[#2542e3]">
+              <Button onClick={handleChangePassword} className="bg-primary">
                 Update Password
               </Button>
 

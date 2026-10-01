@@ -59,7 +59,7 @@ export default function PromotionsPage() {
         <button
           type="button"
           onClick={fetchPromotions}
-          className="inline-flex h-10 w-max items-center gap-2 rounded-[10px] border border-line bg-surface px-4 text-sm font-medium text-ink transition-colors duration-150 hover:border-ink focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none"
+          className="inline-flex h-10 w-max items-center gap-2 rounded-2xl border border-line bg-surface px-4 text-sm font-medium text-ink transition-colors duration-150 hover:border-ink focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none"
         >
           <RefreshCcw className="h-4 w-4" />
           Refresh
@@ -83,7 +83,7 @@ export default function PromotionsPage() {
           {promotions.map((promotion) => (
             <article
               key={promotion.id}
-              className="flex flex-col rounded-[16px] border border-line bg-cardfill p-6 shadow-[0_6px_18px_0_rgba(15,23,42,0.08)]"
+              className="flex flex-col rounded-[20px] border border-line bg-cardfill p-6 shadow-md"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -96,7 +96,7 @@ export default function PromotionsPage() {
                 </div>
                 <span
                   className={cn(
-                    "shrink-0 rounded-[9999px] px-2.5 py-1 text-[10px] leading-[14px] font-semibold tracking-[0.08em] uppercase",
+                    "shrink-0 rounded-full px-2.5 py-1 text-[10px] leading-[14px] font-semibold tracking-[0.08em] uppercase",
                     promotion.is_active
                       ? "bg-brand text-white"
                       : "bg-line text-ink-muted"

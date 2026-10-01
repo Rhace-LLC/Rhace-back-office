@@ -50,7 +50,7 @@ const MapboxMap = ({
   }, [coords.lat, coords.lng]);
 
   return (
-    <div className="relative h-[50vh] w-full bg-gray-50">
+    <div className="relative h-[50vh] w-full bg-inset">
       <div ref={containerRef} className="h-full w-full grayscale-[0.2]" />
       <MapStatusBadge />
       {address && (

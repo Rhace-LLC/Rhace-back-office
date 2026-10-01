@@ -35,8 +35,8 @@ const DetailItem: React.FC<{
   <div className="flex items-start space-x-3">
     <span className="mt-0.5 text-indigo-400">{icon}</span>
     <div>
-      <p className="text-xs font-semibold text-gray-500 uppercase">{label}</p>
-      <p className="text-sm font-medium break-all text-gray-900">{value}</p>
+      <p className="text-xs font-semibold text-ink-muted uppercase">{label}</p>
+      <p className="text-sm font-medium break-all text-ink">{value}</p>
     </div>
   </div>
 );
@@ -47,7 +47,7 @@ const DetailItem: React.FC<{
 const ViewEmployeeDetails: React.FC<Props> = ({ employee }) => {
   if (!employee) {
     return (
-      <div className="rounded-xl bg-white p-8 text-center text-gray-500 shadow-lg">
+      <div className="rounded-3xl bg-surface p-8 text-center text-ink-muted shadow-lg">
         No employee data available.
       </div>
     );
@@ -58,7 +58,7 @@ const ViewEmployeeDetails: React.FC<Props> = ({ employee }) => {
       {/* Header and Status */}
       <div className="mb-6 flex items-start justify-between border-b pb-4">
         <div>
-          <h1 className="text-2xl leading-tight font-semibold text-gray-900">
+          <h1 className="text-2xl leading-tight font-semibold text-ink">
             {employee.first_name} {employee.last_name}
           </h1>
           <p className="text-md mt-1 font-normal text-indigo-600">
@@ -70,7 +70,7 @@ const ViewEmployeeDetails: React.FC<Props> = ({ employee }) => {
 
       {/* Contact Information Grid */}
       <div className="space-y-6">
-        <h2 className="mb-4 border-b pb-2 text-lg font-bold text-gray-700">
+        <h2 className="mb-4 border-b pb-2 text-lg font-bold text-ink-secondary">
           Contact & Role
         </h2>
 

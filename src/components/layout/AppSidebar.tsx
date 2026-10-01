@@ -33,12 +33,12 @@ export function AppSidebar({ collapsed = false, onNavigate }: AppSidebarProps) {
         )}
       >
         {collapsed ? (
-          <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-cardfill text-brand">
+          <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-inset-accent text-brand">
             <Building2 className="h-5 w-5" />
           </span>
         ) : (
           <>
-            <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-cardfill text-brand">
+            <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-inset-accent text-brand">
               <Building2 className="h-5 w-5" />
             </span>
             <div className="min-w-0">
@@ -65,7 +65,7 @@ export function AppSidebar({ collapsed = false, onNavigate }: AppSidebarProps) {
           onClick={() => setLogoutOpen(true)}
           title={collapsed ? "Logout" : undefined}
           className={cn(
-            "group flex h-10 w-full items-center gap-2 rounded-[10px] text-[14px] leading-5 text-ink-muted transition-colors duration-150",
+            "group flex h-10 w-full items-center gap-2 rounded-2xl text-[14px] leading-5 text-ink-muted transition-colors duration-150",
             "hover:bg-line-subtle hover:text-destructive",
             "focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none",
             collapsed ? "justify-center px-0" : "px-4"

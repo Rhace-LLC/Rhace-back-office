@@ -166,7 +166,7 @@ export const AdminDashboard = () => {
       case "down":
         return <TrendingDown className="h-4 w-4 text-red-600" />;
       default:
-        return <Minus className="h-4 w-4 text-gray-600" />;
+        return <Minus className="h-4 w-4 text-ink-secondary" />;
     }
   };
 
@@ -403,7 +403,7 @@ export const AdminDashboard = () => {
     const { active, payload, label } = props as any;
     if (active && payload && payload.length) {
       return (
-        <div className="rounded border border-gray-300 bg-white p-3 shadow-sm">
+        <div className="rounded border border-line bg-surface p-3 shadow-sm">
           <p className="font-medium">{`Day: ${label}`}</p>
           <p className="text-blue-600">
             {`Revenue: ₦${payload && payload[0] && payload[0].value ? payload[0].value.toLocaleString() : 0}`}
@@ -419,7 +419,7 @@ export const AdminDashboard = () => {
     const { active, payload } = props as any;
     if (active && payload && payload.length) {
       return (
-        <div className="rounded border border-gray-300 bg-white p-3 shadow-sm">
+        <div className="rounded border border-line bg-surface p-3 shadow-sm">
           <p className="font-medium">{payload[0].name}</p>
           <p className="text-blue-600">{`${payload[0].value} orders`}</p>
         </div>
@@ -563,7 +563,7 @@ export const AdminDashboard = () => {
           <p className="text-muted-foreground">
             Restaurant overview and performance metrics
             {dashboardCache && (
-              <span className="ml-2 text-xs text-gray-500">
+              <span className="ml-2 text-xs text-ink-muted">
                 • Updated {Math.round((Date.now() - lastUpdated) / 1000)}s ago
               </span>
             )}
@@ -606,17 +606,17 @@ export const AdminDashboard = () => {
             </CardHeader>
             <CardContent>
               <div
-                className={`text-2xl font-bold ${!stat.hasData ? "text-gray-500" : ""}`}
+                className={`text-2xl font-bold ${!stat.hasData ? "text-ink-muted" : ""}`}
               >
                 {stat.value}
               </div>
               <div className="text-muted-foreground mt-1 flex items-center gap-1 text-xs">
                 {!stat.hasData ? (
-                  <Minus className="h-3 w-3 text-gray-400" />
+                  <Minus className="h-3 w-3 text-ink-subtle" />
                 ) : (
                   getTrendIcon(stat.trend)
                 )}
-                <span className={!stat.hasData ? "text-gray-500" : ""}>
+                <span className={!stat.hasData ? "text-ink-muted" : ""}>
                   {stat.hasData && stat.change !== 0 && (
                     <span
                       className={
@@ -624,7 +624,7 @@ export const AdminDashboard = () => {
                           ? "text-green-600"
                           : stat.trend === "down"
                             ? "text-red-600"
-                            : "text-gray-600"
+                            : "text-ink-secondary"
                       }
                     >
                       {stat.change > 0 ? "+" : ""}
@@ -664,14 +664,14 @@ export const AdminDashboard = () => {
               <Bar
                 dataKey="revenue"
                 fill={
-                  hasData(dashboardData.weekly_revenue) ? "#2563eb" : "#9ca3af"
+                  hasData(dashboardData.weekly_revenue) ? "#2A66FF" : "#94A3B8"
                 }
                 radius={[4, 4, 0, 0]}
               />
             </BarChart>
           </ResponsiveContainer>
           {!hasData(dashboardData.weekly_revenue) && (
-            <div className="mt-2 text-center text-sm text-gray-500">
+            <div className="mt-2 text-center text-sm text-ink-muted">
               No revenue data recorded this week
             </div>
           )}
@@ -701,7 +701,7 @@ export const AdminDashboard = () => {
                       cy="50%"
                       labelLine={false}
                       outerRadius={80}
-                      fill="#8884d8"
+                      fill="#2A66FF"
                       dataKey="value"
                       label={({ name, percent }: any) =>
                         `${name} ${(percent * 100).toFixed(0)}%`
@@ -711,7 +711,7 @@ export const AdminDashboard = () => {
                         <Cell
                           key={`cell-${index}`}
                           fill={
-                            ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"][
+                            ["#2A66FF", "#93B4FD", "#0F172A", "#64748B"][
                               index % 4
                             ]
                           }
@@ -747,7 +747,7 @@ export const AdminDashboard = () => {
                 {dashboardStats.peak_hours.map((hour: any, index: number) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between rounded-lg border p-3"
+                    className="flex items-center justify-between rounded-2xl border p-3"
                   >
                     <span className="font-medium">{formatHour(hour.hour)}</span>
                     <Badge variant="secondary">
@@ -783,7 +783,7 @@ export const AdminDashboard = () => {
             {hasData(dashboardStats.average_order_value) ||
             hasData(dashboardStats.wait_time_accuracy?.avg_accuracy) ? (
               <>
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                <div className="flex items-center justify-between rounded-2xl bg-inset p-3">
                   <div className="flex items-center gap-2">
                     <Target className="h-4 w-4 text-blue-600" />
                     <span className="text-sm font-medium">
@@ -795,7 +795,7 @@ export const AdminDashboard = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                <div className="flex items-center justify-between rounded-2xl bg-inset p-3">
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-green-600" />
                     <span className="text-sm font-medium">
@@ -809,7 +809,7 @@ export const AdminDashboard = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                <div className="flex items-center justify-between rounded-2xl bg-inset p-3">
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4 text-purple-600" />
                     <span className="text-sm font-medium">Staff Coverage</span>
@@ -887,7 +887,7 @@ export const AdminDashboard = () => {
                       {dashboardData.table_occupancy.total}
                     </span>
                   </div>
-                  <div className="h-2 w-full rounded-full bg-gray-200">
+                  <div className="h-2 w-full rounded-full bg-inset">
                     <div
                       className="h-2 rounded-full bg-blue-600 transition-all duration-300"
                       style={{
@@ -923,7 +923,7 @@ export const AdminDashboard = () => {
               {dashboardData.staff_activity.map((staff, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between rounded-lg border p-4 transition-colors hover:bg-gray-50"
+                  className="flex items-center justify-between rounded-2xl border p-4 transition-colors hover:bg-inset"
                 >
                   <div>
                     <p className="font-medium">{staff.staff_name}</p>

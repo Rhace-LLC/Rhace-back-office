@@ -48,14 +48,14 @@ const CategoryPage: React.FC = () => {
               <h1 className="text-2xl font-bold tracking-tight">
                 Manage Menu Category
               </h1>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-ink-secondary">
                 Add unique categories of dishes.
               </p>
             </div>
 
             <button
               type="button"
-              className="cursor-pointer rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-800 transition hover:bg-gray-200"
+              className="cursor-pointer rounded-2xl bg-inset px-4 py-2 text-sm font-medium text-ink transition hover:bg-inset-accent"
               onClick={() => {
                 // open modal or navigate to create category
                 setAddSheetOpen(true);

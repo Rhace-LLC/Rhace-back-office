@@ -228,7 +228,7 @@ export default function BillingPage() {
       )}
 
       {!isSubscription && (
-        <div className="mx-auto rounded-xl border border-gray-200 bg-white/70 p-8 text-center shadow-sm transition duration-300">
+        <div className="mx-auto rounded-3xl border border-line bg-surface p-8 text-center shadow-sm transition duration-300">
           {/* Icon Placeholder (Optional: Add a cool icon like a sparkle or a lock here) */}
           <svg
             className="mx-auto mb-4 h-12 w-12 text-indigo-500"
@@ -245,11 +245,11 @@ export default function BillingPage() {
             ></path>
           </svg>
 
-          <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-800">
+          <h2 className="mb-2 text-2xl font-bold tracking-tight text-ink">
             Unlock The Full Experience
           </h2>
 
-          <p className="mt-4 text-lg text-gray-500">
+          <p className="mt-4 text-lg text-ink-muted">
             It looks like{" "}
             <span className="font-semibold">
               you don't have an active subscription
@@ -258,7 +258,7 @@ export default function BillingPage() {
           </p>
 
           <div className="mt-6 space-y-3">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-ink-secondary">
               Choosing a plan grants full access
             </p>
             <p className="text-sm font-medium text-indigo-600">

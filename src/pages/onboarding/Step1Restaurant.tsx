@@ -51,7 +51,7 @@ function ImageDrop({
         {label}
       </span>
       {value ? (
-        <div className="relative overflow-hidden rounded-[16px] border border-line">
+        <div className="relative overflow-hidden rounded-[20px] border border-line">
           <img src={value} alt="" className="h-28 w-full object-cover" />
           <button
             type="button"
@@ -63,7 +63,7 @@ function ImageDrop({
           </button>
         </div>
       ) : (
-        <label className="flex h-24 cursor-pointer items-center justify-center gap-2 rounded-[16px] border border-dashed border-line bg-cardfill text-sm text-ink-muted transition-colors hover:border-brand hover:text-brand">
+        <label className="flex h-24 cursor-pointer items-center justify-center gap-2 rounded-[20px] border border-dashed border-line bg-cardfill text-sm text-ink-muted transition-colors hover:border-brand hover:text-brand">
           <ImagePlus className="h-5 w-5" />
           Upload
           <input
@@ -179,7 +179,7 @@ export function Step1Restaurant({
                   aria-pressed={active}
                   onClick={() => toggleFeature(feature)}
                   className={cn(
-                    "rounded-[10px] border px-3 py-2.5 text-sm leading-5 transition-colors duration-150",
+                    "rounded-2xl border px-3 py-2.5 text-sm leading-5 transition-colors duration-150",
                     active
                       ? "border-brand bg-brand/[0.04] font-medium text-brand ring-1 ring-brand"
                       : "border-line bg-surface text-ink-muted hover:border-line-strong hover:text-ink"
@@ -217,7 +217,7 @@ export function Step1Restaurant({
         </div>
 
         {/* ------- Location & Contact ------- */}
-        <div className="rounded-[16px] border border-line bg-cardfill p-4 sm:p-5">
+        <div className="rounded-[20px] border border-line bg-cardfill p-4 sm:p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-sm font-medium leading-5 text-ink">
@@ -255,7 +255,7 @@ export function Step1Restaurant({
 
           {/* Map chooser (Mapbox or Google Maps) */}
           {pickAddrFromMap && (
-            <div className="mb-5 overflow-hidden rounded-[16px] border border-line bg-surface">
+            <div className="mb-5 overflow-hidden rounded-[20px] border border-line bg-surface">
               <MapPicker
                 onConfirm={(data: MapLocation) => {
                   applyLocation({

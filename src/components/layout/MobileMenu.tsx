@@ -23,7 +23,7 @@ export function MobileMenu({ onNavigate, onClose }: MobileMenuProps) {
   const roleLabel = UserRoleLabels[auth.accountType as UserRole];
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden rounded-r-2xl bg-surface shadow-md">
+    <div className="flex h-full w-full flex-col overflow-hidden rounded-r-3xl bg-surface shadow-dock">
       {/* Brand header */}
       <div className="flex h-16 shrink-0 items-center justify-between border-b border-line-subtle px-4">
         <img src={RhaceImg} alt="Rhace" className="h-auto w-[86px]" />
@@ -31,7 +31,7 @@ export function MobileMenu({ onNavigate, onClose }: MobileMenuProps) {
           type="button"
           aria-label="Close menu"
           onClick={onClose}
-          className="flex h-9 w-9 items-center justify-center rounded-[10px] text-ink-muted transition-colors hover:bg-accent hover:text-ink"
+          className="flex h-9 w-9 items-center justify-center rounded-2xl text-ink-muted transition-colors hover:bg-inset hover:text-ink"
         >
           <X className="h-5 w-5" />
         </button>
@@ -42,7 +42,7 @@ export function MobileMenu({ onNavigate, onClose }: MobileMenuProps) {
         <p className="min-w-0 truncate text-[14px] leading-5 font-medium text-ink">
           {auth.restaurants?.[0]?.name || "Back Office"}
         </p>
-        <span className="shrink-0 rounded-[6px] bg-cardfill px-2 py-1 text-[11px] leading-[15px] font-medium text-ink-secondary capitalize">
+        <span className="shrink-0 rounded-full bg-inset px-2 py-1 text-[11px] leading-[15px] font-medium text-ink-secondary capitalize">
           {roleLabel}
         </span>
       </div>
@@ -57,7 +57,7 @@ export function MobileMenu({ onNavigate, onClose }: MobileMenuProps) {
         <button
           type="button"
           onClick={() => setLogoutOpen(true)}
-          className="group flex h-10 w-full items-center gap-2 rounded-[10px] px-4 text-[14px] leading-5 text-ink-muted transition-colors duration-150 hover:bg-line-subtle hover:text-destructive focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none"
+          className="group flex h-10 w-full items-center gap-2 rounded-2xl px-4 text-[14px] leading-5 text-ink-muted transition-colors duration-150 hover:bg-line-subtle hover:text-destructive focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none"
         >
           <LogOut className="h-5 w-5 shrink-0" />
           <span className="truncate">Logout</span>

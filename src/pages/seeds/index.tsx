@@ -19,7 +19,7 @@ export default function SeedsPage() {
   return (
     <div className="mx-auto max-w-[1320px] px-5 py-8 md:px-8 lg:px-12">
       <header className="flex items-center gap-3">
-        <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-cardfill text-brand">
+        <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-cardfill text-brand">
           <Sprout className="h-5 w-5" />
         </span>
         <div>
@@ -47,7 +47,7 @@ export default function SeedsPage() {
             type="button"
             onClick={() => setTab(key)}
             className={cn(
-              "rounded-[8px] px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors",
+              "rounded-2xl px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors",
               tab === key
                 ? "bg-surface text-ink shadow-sm ring-1 ring-line"
                 : "text-ink-muted hover:text-ink"

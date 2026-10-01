@@ -36,10 +36,10 @@ export const LoadingProvider: React.FC<{ children: ReactNode }> = ({
     >
       {loading && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40">
-          <div className="flex flex-col items-center space-y-3 rounded-xl bg-white p-6 shadow-md">
-            <Loader2 className="h-4 w-4 animate-spin text-gray-600" />
+          <div className="flex flex-col items-center space-y-3 rounded-3xl bg-surface p-6 shadow-md">
+            <Loader2 className="h-4 w-4 animate-spin text-ink-secondary" />
             {loadingText && (
-              <p className="text-sm text-gray-700">{loadingText}</p>
+              <p className="text-sm text-ink-secondary">{loadingText}</p>
             )}
           </div>
         </div>

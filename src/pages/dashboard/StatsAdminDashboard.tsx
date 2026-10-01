@@ -27,7 +27,7 @@ const getTrendIcon = (trend: "up" | "down" | "stable") => {
     case "down":
       return <TrendingDown className="h-4 w-4 text-red-600" />;
     default:
-      return <Minus className="h-4 w-4 text-gray-600" />;
+      return <Minus className="h-4 w-4 text-ink-secondary" />;
   }
 };
 
@@ -131,7 +131,7 @@ export function StatsAdminDashboard({
                         ? "text-green-600"
                         : stat.trend === "down"
                           ? "text-red-600"
-                          : "text-gray-600"
+                          : "text-ink-secondary"
                     }
                   >
                     {stat.change > 0 ? "+" : ""}

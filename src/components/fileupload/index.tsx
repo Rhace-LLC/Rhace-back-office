@@ -45,11 +45,11 @@ export function FileUpload({
     if (!file) {
       return (
         <>
-          <UploadCloud className="mb-2 h-12 w-12 text-gray-400" />
-          <span className="text-sm font-medium text-gray-600">
+          <UploadCloud className="mb-2 h-12 w-12 text-ink-subtle" />
+          <span className="text-sm font-medium text-ink-secondary">
             Click to upload or drag and drop
           </span>
-          <span className="mt-1 text-xs text-gray-400">{label}</span>
+          <span className="mt-1 text-xs text-ink-subtle">{label}</span>
         </>
       );
     }
@@ -62,7 +62,7 @@ export function FileUpload({
           <img
             src={preview}
             alt="File preview"
-            className="max-h-32 max-w-full rounded-md object-contain"
+            className="max-h-32 max-w-full rounded-2xl object-contain"
           />
         </div>
       );
@@ -73,23 +73,23 @@ export function FileUpload({
         {file.type.includes("pdf") ? (
           <FileText className="mb-2 h-12 w-12 text-blue-500" />
         ) : (
-          <File className="mb-2 h-12 w-12 text-gray-500" />
+          <File className="mb-2 h-12 w-12 text-ink-muted" />
         )}
-        <p className="w-full truncate px-2 text-sm font-medium text-gray-700">
+        <p className="w-full truncate px-2 text-sm font-medium text-ink-secondary">
           {file.name}
         </p>
-        <p className="mt-1 text-xs text-gray-400">File Type: {fileType}</p>
+        <p className="mt-1 text-xs text-ink-subtle">File Type: {fileType}</p>
       </div>
     );
   };
 
   return (
     <div className="space-y-2">
-      {label && <label className="font-medium text-[#001360]">{label}</label>}
+      {label && <label className="font-medium text-brand">{label}</label>}
       <motion.div
         className={`relative w-full border-2 p-4 ${
-          error ? "border-red-300" : "border-dashed border-gray-300"
-        } rounded-xl transition-colors duration-300 hover:border-[#143ad0]`}
+          error ? "border-red-300" : "border-dashed border-line-strong"
+        } rounded-3xl transition-colors duration-300 hover:border-brand`}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}

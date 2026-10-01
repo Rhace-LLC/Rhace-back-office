@@ -17,7 +17,7 @@ export const DraftList: React.FC<DraftListProps> = ({ onSelect }) => {
 
   if (drafts.length === 0) {
     return (
-      <div className="flex min-h-[200px] items-center justify-center text-sm text-gray-500">
+      <div className="flex min-h-[200px] items-center justify-center text-sm text-ink-muted">
         No drafts saved.
       </div>
     );
@@ -28,13 +28,13 @@ export const DraftList: React.FC<DraftListProps> = ({ onSelect }) => {
       {drafts.map((draft) => (
         <div
           key={draft.id}
-          className="flex items-center justify-between rounded-lg border p-4"
+          className="flex items-center justify-between rounded-2xl border p-4"
         >
           <div className="flex-1 min-w-0">
             <p className="font-medium truncate">
               {draft.form.name.trim() || "Untitled"}
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-ink-muted">
               {new Date(draft.savedAt).toLocaleString()}
             </p>
           </div>

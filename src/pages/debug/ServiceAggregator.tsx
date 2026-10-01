@@ -8,7 +8,7 @@ import type {
 } from "./aggregator.types";
 
 const METHOD_STYLES: Record<HttpMethod, string> = {
-  GET: "bg-gray-200/70 text-gray-600",
+  GET: "bg-inset/70 text-ink-secondary",
   POST: "bg-blue-100 text-blue-700",
   PUT: "bg-amber-100 text-amber-700",
   PATCH: "bg-amber-100 text-amber-700",
@@ -27,7 +27,7 @@ function ResponseItem({ item }: { item: AggregatedResponse }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-gray-50/60 px-3 py-2.5">
+    <div className="rounded-3xl border border-line-subtle bg-inset/60 px-3 py-2.5">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
@@ -35,7 +35,7 @@ function ResponseItem({ item }: { item: AggregatedResponse }) {
         aria-expanded={open}
       >
         <span
-          className={`inline-flex shrink-0 items-center rounded-md px-1.5 py-0.5 text-[11px] font-semibold ${
+          className={`inline-flex shrink-0 items-center rounded-2xl px-1.5 py-0.5 text-[11px] font-semibold ${
             item.ok
               ? "bg-emerald-100 text-emerald-700"
               : "bg-red-100 text-red-700"
@@ -44,42 +44,42 @@ function ResponseItem({ item }: { item: AggregatedResponse }) {
           {item.ok ? "OK" : "FAIL"}
         </span>
         <span
-          className={`inline-flex shrink-0 items-center rounded-md px-1.5 py-0.5 text-[11px] font-semibold ${METHOD_STYLES[item.method]}`}
+          className={`inline-flex shrink-0 items-center rounded-2xl px-1.5 py-0.5 text-[11px] font-semibold ${METHOD_STYLES[item.method]}`}
         >
           {item.method}
         </span>
         {item.write && (
-          <span className="inline-flex shrink-0 items-center rounded-md bg-orange-100 px-1.5 py-0.5 text-[11px] font-semibold text-orange-700">
+          <span className="inline-flex shrink-0 items-center rounded-2xl bg-orange-100 px-1.5 py-0.5 text-[11px] font-semibold text-orange-700">
             WRITE
           </span>
         )}
-        <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-gray-700">
+        <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ink-secondary">
           {item.label}
         </span>
-        <span className="shrink-0 text-[11px] text-gray-400">
+        <span className="shrink-0 text-[11px] text-ink-subtle">
           {item.durationMs}ms
         </span>
-        <span className="shrink-0 text-[11px] text-gray-400">
+        <span className="shrink-0 text-[11px] text-ink-subtle">
           {open ? "Hide" : "Show"}
         </span>
       </button>
 
-      <p className="mt-1 truncate font-mono text-[11px] text-gray-400">
+      <p className="mt-1 truncate font-mono text-[11px] text-ink-subtle">
         {item.url}
       </p>
 
       {open && (
         <div className="mt-2">
           {item.error ? (
-            <p className="rounded-lg bg-red-50 px-2.5 py-2 text-xs text-red-600">
+            <p className="rounded-2xl bg-red-50 px-2.5 py-2 text-xs text-red-600">
               {item.error}
             </p>
           ) : (
-            <pre className="max-h-64 overflow-auto rounded-lg bg-gray-900 px-3 py-2.5 font-mono text-[11px] leading-4 text-gray-100">
+            <pre className="max-h-64 overflow-auto rounded-2xl bg-gray-900 px-3 py-2.5 font-mono text-[11px] leading-4 text-gray-100">
               {formatBody(item.response)}
             </pre>
           )}
-          <p className="mt-1 text-[11px] text-gray-400">{item.timestamp}</p>
+          <p className="mt-1 text-[11px] text-ink-subtle">{item.timestamp}</p>
         </div>
       )}
     </div>
@@ -112,14 +112,14 @@ export function ServiceAggregator({
   return (
     <article
       aria-label={`${definition.name} aggregator`}
-      className="flex flex-col rounded-2xl border border-gray-200 bg-white px-5 py-4"
+      className="flex flex-col rounded-2xl border border-line bg-surface px-5 py-4"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="text-[15px] font-semibold text-gray-800">
+          <h3 className="text-[15px] font-semibold text-ink">
             {definition.name}
           </h3>
-          <p className="mt-0.5 font-mono text-[11px] text-gray-400">
+          <p className="mt-0.5 font-mono text-[11px] text-ink-subtle">
             {definition.serviceFile}
           </p>
         </div>
@@ -134,11 +134,11 @@ export function ServiceAggregator({
         </span>
       </div>
 
-      <p className="mt-2 text-[13px] leading-5 text-gray-500">
+      <p className="mt-2 text-[13px] leading-5 text-ink-muted">
         {definition.description}
       </p>
 
-      <p className="mt-2 text-xs text-gray-400">
+      <p className="mt-2 text-xs text-ink-subtle">
         {readCount} read{readCount === 1 ? "" : "s"}
         {writeCount > 0 && ` · ${writeCount} write${writeCount === 1 ? "" : "s"}`}
         {responses.length > 0 &&
@@ -148,7 +148,7 @@ export function ServiceAggregator({
       </p>
 
       {writeCount > 0 && (
-        <label className="mt-3 flex cursor-pointer items-start gap-2 rounded-lg border border-orange-200 bg-orange-50/60 px-3 py-2 text-[13px] text-orange-800">
+        <label className="mt-3 flex cursor-pointer items-start gap-2 rounded-2xl border border-orange-200 bg-orange-50/60 px-3 py-2 text-[13px] text-orange-800">
           <input
             type="checkbox"
             checked={includeWrites}
@@ -169,7 +169,7 @@ export function ServiceAggregator({
           type="button"
           onClick={() => run({ includeWrites: willRunWrites })}
           disabled={running || !isReady || probeCount === 0}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-gray-900 px-3 py-1.5 text-[13px] font-medium text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 rounded-2xl bg-gray-900 px-3 py-1.5 text-[13px] font-medium text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-40"
         >
           <Play className="h-3.5 w-3.5" />
           {running ? "Running…" : willRunWrites ? "Run all" : "Run"}
@@ -178,7 +178,7 @@ export function ServiceAggregator({
           type="button"
           onClick={clear}
           disabled={running || responses.length === 0}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-[13px] font-medium text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 rounded-2xl border border-line px-3 py-1.5 text-[13px] font-medium text-ink-secondary transition hover:bg-inset disabled:cursor-not-allowed disabled:opacity-40"
         >
           <RotateCcw className="h-3.5 w-3.5" />
           Clear
@@ -187,7 +187,7 @@ export function ServiceAggregator({
           type="button"
           onClick={() => download("json")}
           disabled={running || responses.length === 0}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-[13px] font-medium text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 rounded-2xl border border-line px-3 py-1.5 text-[13px] font-medium text-ink-secondary transition hover:bg-inset disabled:cursor-not-allowed disabled:opacity-40"
         >
           <Download className="h-3.5 w-3.5" />
           JSON
@@ -196,7 +196,7 @@ export function ServiceAggregator({
           type="button"
           onClick={() => download("txt")}
           disabled={running || responses.length === 0}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-[13px] font-medium text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 rounded-2xl border border-line px-3 py-1.5 text-[13px] font-medium text-ink-secondary transition hover:bg-inset disabled:cursor-not-allowed disabled:opacity-40"
         >
           <Download className="h-3.5 w-3.5" />
           TXT
@@ -204,13 +204,13 @@ export function ServiceAggregator({
       </div>
 
       {error && (
-        <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-[13px] text-red-600">
+        <p className="mt-3 rounded-2xl bg-red-50 px-3 py-2 text-[13px] text-red-600">
           {error}
         </p>
       )}
 
       {probeCount === 0 && (
-        <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-[13px] text-amber-700">
+        <p className="mt-3 rounded-2xl bg-amber-50 px-3 py-2 text-[13px] text-amber-700">
           No probes are available for this service with the current account
           context.
         </p>

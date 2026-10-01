@@ -25,6 +25,7 @@ import {
   updateOrderStatus,
   assignTableToOrder,
   assignWaiterToOrder,
+  waiterConfirmOrder,
 } from "../../api-services/orderService";
 import { getActiveWaiters, Staff } from "../../api-services/staffService";
 import { getAvailableTables, Table } from "../../api-services/tableService";
@@ -76,8 +77,12 @@ export function Orders() {
   const [loading, setLoading] = useState(() => !isCacheValid());
 
   const [statusFilter, setStatusFilter] = useState("All");
+  const [confirmationFilter, setConfirmationFilter] = useState<
+    "All" | "Awaiting" | "Confirmed"
+  >("All");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [confirmingIds, setConfirmingIds] = useState<Set<string>>(new Set());
   const [refreshing, setRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<number>(
     () => ordersCache?.lastFetched ?? Date.now()
@@ -87,9 +92,20 @@ export function Orders() {
   // Get restaurant ID from auth context
   const restaurantId = restaurants?.[0]?.id;
 
-  const filteredOrders = (orders || []).filter(
-    (order) => statusFilter === "All" || order.status === statusFilter
-  );
+  const filteredOrders = (orders || []).filter((order) => {
+    if (statusFilter !== "All" && order.status !== statusFilter) return false;
+    // Confirmation is only meaningful while status is `received`.
+    // `waiter_confirmed` may be undefined on older payloads — treat as unconfirmed.
+    if (confirmationFilter === "Awaiting")
+      return order.status === "received" && !order.waiter_confirmed;
+    if (confirmationFilter === "Confirmed")
+      return order.status === "received" && !!order.waiter_confirmed;
+    return true;
+  });
+
+  const awaitingConfirmationCount = (orders || []).filter(
+    (order) => order.status === "received" && !order.waiter_confirmed
+  ).length;
 
   // Fetch tables function
   const fetchTables = async (restId: string, force = false) => {
@@ -301,6 +317,57 @@ export function Orders() {
     }
   };
 
+  const parseConfirmError = (err: unknown): string => {
+    const status = (err as { response?: { status?: number } })?.response?.status;
+    if (status === 400)
+      return "Order is no longer in received status. Refreshing…";
+    if (status === 401)
+      return "You are not permitted to confirm orders for this restaurant.";
+    if (status === 404) return "Order not found. Refreshing…";
+    return err instanceof Error ? err.message : "Failed to confirm order";
+  };
+
+  const handleWaiterConfirm = async (orderId: string) => {
+    if (!token || confirmingIds.has(orderId)) return;
+    try {
+      setError(null);
+      setConfirmingIds((prev) => new Set(prev).add(orderId));
+
+      const updated = await waiterConfirmOrder(orderId, token);
+
+      const applyUpdate = (list: Order[]) =>
+        list.map((order) =>
+          order.id === orderId
+            ? {
+                ...order,
+                ...updated,
+                // Confirmation never changes status; keep local status stable
+                // unless backend explicitly moved it.
+                status: updated?.status ?? order.status,
+              }
+            : order
+        );
+
+      const nextOrders = applyUpdate(orders || []);
+      setOrders(nextOrders);
+      updateCache(nextOrders);
+      if (selectedOrder?.id === orderId) {
+        setSelectedOrder((prev) =>
+          prev ? { ...prev, ...updated, status: updated?.status ?? prev.status } : prev
+        );
+      }
+    } catch (err) {
+      setError(parseConfirmError(err));
+      await fetchOrders(true);
+    } finally {
+      setConfirmingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(orderId);
+        return next;
+      });
+    }
+  };
+
   const handleOrderSelect = (order: Order) => setSelectedOrder(order);
   const handleCloseSheet = () => setSelectedOrder(null);
 
@@ -309,8 +376,8 @@ export function Orders() {
       <div className="mt-15 space-y-6 p-5 md:mt-0">
         <div className="flex h-64 items-center justify-center">
           <div className="flex flex-col items-center gap-2">
-            <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
-            <div className="text-lg text-gray-600">Loading orders...</div>
+            <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-ink"></div>
+            <div className="text-lg text-ink-secondary">Loading orders...</div>
           </div>
         </div>
       </div>
@@ -340,11 +407,11 @@ export function Orders() {
           <p className="text-muted-foreground">
             Manage restaurant orders and track order status
             {ordersCache && (
-              <span className="ml-2 text-xs text-gray-500">
+              <span className="ml-2 text-xs text-ink-muted">
                 • Updated {Math.round((Date.now() - lastUpdated) / 1000)}s ago
               </span>
             )}
-            <span className="ml-2 text-xs text-gray-500">
+            <span className="ml-2 text-xs text-ink-muted">
               • Tables: {tables.length} • Waiters: {waiters.length}
             </span>
           </p>
@@ -365,10 +432,34 @@ export function Orders() {
               </SelectContent>
             </Select>
           </div>
+          {(isWaiter || statusFilter === "All" || statusFilter === "received") && (
+            <div className="flex items-center gap-2">
+              <Select
+                value={confirmationFilter}
+                onValueChange={(v: "All" | "Awaiting" | "Confirmed") =>
+                  setConfirmationFilter(v)
+                }
+              >
+                <SelectTrigger className="w-44">
+                  <SelectValue placeholder="Confirmation" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="All">All confirmations</SelectItem>
+                  <SelectItem value="Awaiting">
+                    Awaiting confirmation
+                    {awaitingConfirmationCount > 0
+                      ? ` (${awaitingConfirmationCount})`
+                      : ""}
+                  </SelectItem>
+                  <SelectItem value="Confirmed">Confirmed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center gap-2 rounded bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700 disabled:bg-blue-400"
+            className="flex items-center gap-2 rounded-2xl bg-primary px-4 py-2.5 text-sm font-medium text-white shadow-button hover:bg-brand-hover disabled:opacity-60"
           >
             <RefreshCw
               className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
@@ -392,15 +483,15 @@ export function Orders() {
         <CardContent>
           {filteredOrders.length === 0 ? (
             <div className="py-8 text-center">
-              <div className="text-lg text-gray-500">No orders found</div>
-              <div className="mt-2 text-sm text-gray-400">
+              <div className="text-lg text-ink-muted">No orders found</div>
+              <div className="mt-2 text-sm text-ink-subtle">
                 {orders.length === 0
                   ? "No orders in the system"
                   : `No orders match the "${statusFilter}" filter`}
               </div>
               <button
                 onClick={handleRefresh}
-                className="mt-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                className="mt-4 rounded-2xl bg-primary px-5 py-2.5 font-medium text-white shadow-button hover:bg-brand-hover"
               >
                 Refresh Orders
               </button>
@@ -411,6 +502,9 @@ export function Orders() {
               onOrderSelect={handleOrderSelect}
               waiters={waiters}
               tables={tables}
+              isWaiter={!!isWaiter}
+              confirmingIds={confirmingIds}
+              onWaiterConfirm={handleWaiterConfirm}
             />
           )}
         </CardContent>
@@ -423,6 +517,8 @@ export function Orders() {
         onStatusChange={handleStatusChange}
         onAssignTable={handleAssignTable}
         onAssignWaiter={handleAssignWaiter}
+        onWaiterConfirm={handleWaiterConfirm}
+        isConfirming={selectedOrder ? confirmingIds.has(selectedOrder.id) : false}
         staff={waiters}
         tables={tables}
       />

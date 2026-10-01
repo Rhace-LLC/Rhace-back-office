@@ -72,7 +72,7 @@ export const OtpInput: React.FC<OtpInputProps> = ({
           }}
           className={cn(
             "h-13 w-13 text-center text-lg font-semibold tracking-widest",
-            "border-gray-300 focus-visible:ring-2 focus-visible:ring-blue-500"
+            "border-line focus-visible:ring-2 focus-visible:ring-blue-500"
           )}
         />
       ))}

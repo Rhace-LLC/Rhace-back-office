@@ -63,12 +63,12 @@ export const StaffShiftWidget = () => {
   const isClockedIn = !!activeShift;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div className="bg-surface rounded-3xl shadow-sm border border-line p-5 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div className="flex items-center gap-3">
         <div className={`w-3 h-3 rounded-full ${isClockedIn ? "bg-green-500 animate-pulse" : "bg-gray-300"}`} />
         <div>
-          <h2 className="text-lg font-semibold text-gray-800">Shift Status</h2>
-          <p className="text-sm text-gray-500">
+          <h2 className="text-lg font-semibold text-ink">Shift Status</h2>
+          <p className="text-sm text-ink-muted">
             {loading
               ? "Checking status..."
               : isClockedIn
@@ -83,7 +83,7 @@ export const StaffShiftWidget = () => {
       <button
         onClick={isClockedIn ? handleClockOut : handleClockIn}
         disabled={loading || actionLoading}
-        className={`px-6 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm ${
+        className={`px-6 py-2.5 rounded-2xl font-medium text-sm transition-all shadow-sm ${
           isClockedIn
             ? "bg-red-600 hover:bg-red-700 text-white disabled:bg-red-300"
             : "bg-emerald-600 hover:bg-emerald-700 text-white disabled:bg-emerald-300"

@@ -33,10 +33,10 @@ export const PlanSelectionModal: React.FC<PlanSelectionModalProps> = ({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       {/* Increased max-width slightly for better desktop feel, made width relative */}
-      <DialogContent className="w-[90%] max-w-lg rounded-xl p-6 sm:p-8">
+      <DialogContent className="w-[90%] max-w-lg rounded-3xl p-6 sm:p-8">
         <DialogHeader className="mb-4 border-b pb-4 !text-center">
           {/* Enhanced title style */}
-          <DialogTitle className="text-2xl font-bold tracking-tight text-gray-900">
+          <DialogTitle className="text-2xl font-bold tracking-tight text-ink">
             Confirm Subscription Choice
           </DialogTitle>
           {/* Added description for context */}
@@ -48,23 +48,23 @@ export const PlanSelectionModal: React.FC<PlanSelectionModalProps> = ({
         {/* Plan Details Section: Clean, structured layout */}
         <div className="space-y-4">
           {/* Detail Item Component */}
-          <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-            <span className="font-medium text-gray-500">Base Price</span>
-            <span className="text-xl font-bold text-gray-800">
+          <div className="flex items-center justify-between border-b border-line-subtle pb-2">
+            <span className="font-medium text-ink-muted">Base Price</span>
+            <span className="text-xl font-bold text-ink">
               {formatCurrency(plan.base_price)}
             </span>
           </div>
 
-          <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-            <span className="font-medium text-gray-500">Staff Threshold</span>
-            <span className="font-semibold text-gray-700">
+          <div className="flex items-center justify-between border-b border-line-subtle pb-2">
+            <span className="font-medium text-ink-muted">Staff Threshold</span>
+            <span className="font-semibold text-ink-secondary">
               {plan.staff_threshold} Staff
             </span>
           </div>
 
           {Number(plan.surcharge_percentage) > 0 && (
-            <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-              <span className="font-medium text-gray-500">
+            <div className="flex items-center justify-between border-b border-line-subtle pb-2">
+              <span className="font-medium text-ink-muted">
                 Over-Limit Surcharge
               </span>
               <span className="font-semibold text-red-500">
@@ -74,14 +74,14 @@ export const PlanSelectionModal: React.FC<PlanSelectionModalProps> = ({
           )}
 
           <div className="flex items-center justify-between">
-            <span className="font-medium text-gray-500">Grace Period</span>
-            <span className="text-gray-700">{plan.grace_period_days} days</span>
+            <span className="font-medium text-ink-muted">Grace Period</span>
+            <span className="text-ink-secondary">{plan.grace_period_days} days</span>
           </div>
 
           {plan.description && (
             <div className="mt-4 border-t pt-4">
-              <h4 className="mb-1 font-semibold text-gray-700">Description:</h4>
-              <p className="text-sm text-gray-500 italic">{plan.description}</p>
+              <h4 className="mb-1 font-semibold text-ink-secondary">Description:</h4>
+              <p className="text-sm text-ink-muted italic">{plan.description}</p>
             </div>
           )}
         </div>

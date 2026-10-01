@@ -13,7 +13,6 @@ import {
 } from "@/api-services/auth.service";
 import { parseError } from "@/api-services/utils/parseError";
 import RhaceImage from "../../assets/Rhace-10.png";
-import { AuthGlows } from "./AuthGlows";
 import { Button } from "@/components/ui/button";
 import {
   authButton,
@@ -25,8 +24,6 @@ import {
   authTitle,
   authLink,
 } from "./authTokens";
-
-import "./auth.css";
 
 const businessTalks = [
   {
@@ -155,16 +152,14 @@ export function Login() {
     <div
       className={`${authPage} relative items-center overflow-hidden px-4 py-10 sm:px-6 sm:py-14`}
     >
-      {/* Soft atmospheric accents (soft SaaS background treatment) */}
-      <AuthGlows />
       <div className={`${authPanel} relative z-10 max-w-[1080px] overflow-hidden`}>
         <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[85vh]">
           {/* ---------- Form column ---------- */}
-          <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-14 bg-white">
+          <div className="flex flex-col justify-center bg-surface p-6 sm:p-10 lg:p-14">
             {/* Top brand + country */}
             <div className="mb-10 flex items-center justify-between">
               <img src={RhaceImage} alt="Rhace" className="h-auto w-[88px]" />
-              <span className="rounded-md bg-cardfill px-2 py-1 text-xs font-medium tracking-tight text-ink-muted">
+              <span className="rounded-full bg-inset px-2 py-1 text-xs font-medium tracking-tight text-ink-muted">
                 NG
               </span>
             </div>
@@ -259,7 +254,7 @@ export function Login() {
               className="absolute inset-0 h-full w-full object-cover"
             />
             <div className="relative flex h-full min-h-[640px] flex-col items-start justify-end p-10">
-              <div className="max-w-sm rounded-2xl border border-white/60 bg-white/70 p-6 text-center shadow-md backdrop-blur-md">
+              <div className="max-w-sm rounded-[20px] border border-line bg-surface p-6 text-center shadow-md">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={visibleIndex}
