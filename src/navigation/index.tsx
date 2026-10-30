@@ -36,8 +36,6 @@ import BillingPage from "@/pages/subscription";
 import { WalletAndAccount } from "@/pages/wallet&account";
 import { MapLocationProvider } from "@/contexts/MapLocationContext";
 import Onboarding from "@/pages/onboarding";
-import PromotionsPage from "@/pages/promotions";
-import EntertainmentPage from "@/pages/entertainment";
 import DebugPage from "@/pages/debug";
 import SeedsPage from "@/pages/seeds";
 import { isLocalEnv } from "@/lib/env";
@@ -351,22 +349,6 @@ function NavigationContent() {
                   allowedRoles={["admin", "kitchen", "restaurant_owner"]}
                 >
                   <MenuManagement />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/promotions"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
-                  <PromotionsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/entertainment"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
-                  <EntertainmentPage />
                 </ProtectedRoute>
               }
             />

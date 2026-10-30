@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ClipboardList,
   FileUp,
@@ -14,6 +14,8 @@ import { Field, StepActions, StepHeader } from "./ui";
 import { obField } from "./tokens";
 import { MenuData, MenuDraftItem } from "./types";
 import { MENU_CATEGORIES, SAMPLE_MENU } from "./data_/menu-data";
+import { listSeedCategories, listSeedMenuItems } from "@/api-services/seeds";
+import { useAuth } from "@/contexts/AuthContext";
 
 const MODES = [
   {
@@ -36,8 +38,16 @@ const MODES = [
   },
 ];
 
-const CATEGORY_LABELS = MENU_CATEGORIES.map((c) => c.label);
-const CATEGORY_ORDER = new Map(CATEGORY_LABELS.map((label, i) => [label, i]));
+interface SeedDish {
+  name: string;
+  description: string;
+  price: string;
+  category: string;
+  image_url: string | null;
+  prep_time: string;
+  available: boolean;
+  is_special: boolean;
+}
 
 export function Step2Menu({
   onContinue,
@@ -52,6 +62,7 @@ export function Step2Menu({
   skipping?: boolean;
   progress?: { done: number; total: number } | null;
 }) {
+  const { token } = useAuth();
   const [mode, setMode] = useState<MenuData["mode"]>("sample");
   const [chosen, setChosen] = useState<string[]>([]);
 
@@ -59,26 +70,78 @@ export function Step2Menu({
   const [items, setItems] = useState<MenuDraftItem[]>([]);
   const [draft, setDraft] = useState<MenuDraftItem>({
     name: "",
-    category: CATEGORY_LABELS[0],
+    category: MENU_CATEGORIES[0]?.label ?? "",
     price: "",
     description: "",
     available: true,
   });
 
+  // Seed-backed sample data (fetched from /seeds, static fallback).
+  const [seedCategories, setSeedCategories] = useState<string[]>([]);
+  const [seedItems, setSeedItems] = useState<SeedDish[]>([]);
+  const [seedLoading, setSeedLoading] = useState(false);
+
+  const loadSeedData = useCallback(async () => {
+    if (!token) return;
+    setSeedLoading(true);
+    try {
+      const [cats, its] = await Promise.all([
+        listSeedCategories(token),
+        listSeedMenuItems(token),
+      ]);
+      const fetchedCats = Array.isArray(cats) ? cats : [];
+      const fetchedItems = Array.isArray(its) ? its : [];
+      setSeedCategories(
+        fetchedCats.map((c) => c.name)
+      );
+      setSeedItems(
+        fetchedItems.map((i) => ({
+          name: i.name,
+          description: i.description ?? "",
+          price: i.price ?? "",
+          category: i.category?.name ?? "",
+          image_url: i.image_url,
+          prep_time: i.prep_time ?? "",
+          available: i.available ?? true,
+          is_special: i.is_special ?? false,
+        }))
+      );
+    } catch (err) {
+      console.warn("Seed data unavailable, using static fallback.", err);
+    } finally {
+      setSeedLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    loadSeedData();
+  }, [loadSeedData]);
+
+  const hasSeedData = seedCategories.length > 0 && seedItems.length > 0;
+
+  const CATEGORY_LABELS = hasSeedData
+    ? seedCategories
+    : MENU_CATEGORIES.map((c) => c.label);
+  const CATEGORY_ORDER = new Map(
+    CATEGORY_LABELS.map((label, i) => [label, i])
+  );
+
   /** Categories derived from whichever dishes were picked. */
   const categories = useMemo(() => {
     const set = new Set<string>();
     chosen.forEach((name) => {
-      const dish = SAMPLE_MENU.find((d) => d.name === name);
+      const dish =
+        hasSeedData ? seedItems.find((d) => d.name === name) : SAMPLE_MENU.find((d) => d.name === name);
       if (dish) set.add(dish.category);
     });
     return [...set];
-  }, [chosen]);
+  }, [chosen, hasSeedData, seedItems]);
 
   /** Sample dishes grouped by category, in menu-category order. */
   const grouped = useMemo(() => {
-    const groups = new Map<string, (typeof SAMPLE_MENU)[number][]>();
-    SAMPLE_MENU.forEach((dish) => {
+    const source = hasSeedData ? seedItems : SAMPLE_MENU;
+    const groups = new Map<string, (typeof source)[number][]>();
+    source.forEach((dish) => {
       const list = groups.get(dish.category) ?? [];
       list.push(dish);
       groups.set(dish.category, list);
@@ -88,7 +151,7 @@ export function Step2Menu({
       const ib = CATEGORY_ORDER.get(b[0]) ?? Number.MAX_SAFE_INTEGER;
       return ia - ib;
     });
-  }, []);
+  }, [hasSeedData, seedItems, CATEGORY_ORDER]);
 
   const toggleDish = (name: string) =>
     setChosen((prev) =>
@@ -110,16 +173,25 @@ export function Step2Menu({
   const selectedDrafts = useMemo(
     () =>
       chosen
-        .map((name) => SAMPLE_MENU.find((d) => d.name === name))
-        .filter((d): d is (typeof SAMPLE_MENU)[number] => Boolean(d))
-        .map((d) => ({
-          name: d.name,
-          category: d.category,
-          price: String(d.price),
-          description: d.description,
-          available: d.available ?? true,
-        })),
-    [chosen]
+        .map((name) => {
+          const dish =
+            hasSeedData
+              ? seedItems.find((d) => d.name === name)
+              : SAMPLE_MENU.find((d) => d.name === name);
+          if (!dish) return null;
+          return {
+            name: dish.name,
+            category: dish.category,
+            price: String(dish.price),
+            description: dish.description,
+            available: dish.available ?? true,
+            ...(dish.image_url ? { image_url: dish.image_url } : {}),
+          };
+        })
+        .filter((d): d is { name: string; category: string; price: string; description: string; available: boolean; image_url?: string } =>
+          Boolean(d)
+        ),
+    [chosen, hasSeedData, seedItems]
   );
 
   const showProgress =
@@ -186,6 +258,22 @@ export function Step2Menu({
         ))}
       </div>
 
+      {/* Seed data status hint */}
+      {mode === "sample" && seedLoading && (
+        <p className="mt-4 text-xs leading-[17px] text-ink-subtle">
+          Loading seed menu items…
+        </p>
+      )}
+      {mode === "sample" && !seedLoading && !hasSeedData && (
+        <p className="mt-4 text-xs leading-[17px] text-ink-subtle">
+          No seed data available — add some on the{" "}
+          <a href="/seeds" className="text-brand font-medium hover:underline">
+            Seeds
+          </a>{" "}
+          page, or pick from the static sample below.
+        </p>
+      )}
+
       {/* ---------- SAMPLE FLOW: pick dishes, categories auto-follow ---------- */}
       {mode === "sample" && (
         <div className="mt-6">
@@ -243,6 +331,15 @@ export function Step2Menu({
                             : "border-line bg-surface hover:border-line-strong"
                         )}
                       >
+                        {dish.image_url && (
+                          <span className="shrink-0">
+                            <img
+                              src={dish.image_url}
+                              alt=""
+                              className="h-10 w-10 rounded-xl object-cover border border-line"
+                            />
+                          </span>
+                        )}
                         <span
                           className={cn(
                             "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors",
@@ -273,7 +370,7 @@ export function Step2Menu({
                               {dish.name}
                             </span>
                             <span className="shrink-0 text-sm leading-5 font-medium text-ink-secondary">
-                              ₦{dish.price.toLocaleString()}
+                              ₦{Number(dish.price).toLocaleString()}
                             </span>
                           </span>
                           {dish.description && (
@@ -312,8 +409,7 @@ export function Step2Menu({
                 className={`${obField} bg-surface`}
                 value={draft.category}
                 onChange={(e) =>
-                  setDraft((p) => ({ ...p, category: e.target.value }))
-                }
+                  setDraft((p) => ({ ...p, category: e.target.value }))}
               >
                 {CATEGORY_LABELS.map((c) => (
                   <option key={c} value={c}>
@@ -328,8 +424,7 @@ export function Step2Menu({
                 className={`${obField} bg-surface`}
                 value={draft.price}
                 onChange={(e) =>
-                  setDraft((p) => ({ ...p, price: e.target.value }))
-                }
+                  setDraft((p) => ({ ...p, price: e.target.value }))}
                 placeholder="₦ 0.00"
                 inputMode="decimal"
               />
@@ -340,8 +435,7 @@ export function Step2Menu({
                 className={`${obField} bg-surface`}
                 value={draft.description ?? ""}
                 onChange={(e) =>
-                  setDraft((p) => ({ ...p, description: e.target.value }))
-                }
+                  setDraft((p) => ({ ...p, description: e.target.value }))}
                 placeholder="A short description"
               />
             </Field>
@@ -395,7 +489,7 @@ export function Step2Menu({
           <p className="text-sm text-ink-muted">
             Upload a{" "}
             <span className="font-medium text-ink">PDF, Excel, CSV or image</span>{" "}
-            menu. We'll process it into categories, items, prices and modifiers.
+            menu. We'll process it into categories and items.
           </p>
           <button
             type="button"

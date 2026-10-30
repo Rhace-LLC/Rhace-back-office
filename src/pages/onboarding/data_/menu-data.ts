@@ -15,6 +15,7 @@ export interface SampleMenuItem {
   price: number;
   category: string;
   available?: boolean;
+  image_url?: string | null;
 }
 
 /** Dish categories served at a restaurant (multi-select). */

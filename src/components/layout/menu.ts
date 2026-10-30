@@ -15,8 +15,6 @@ import {
   CreditCard,
   Wallet,
   Sparkles,
-  Badge,
-  Gamepad2,
   LayoutGrid,
   UserCheck,
   Bug,
@@ -96,7 +94,6 @@ export function useRoleBasedMenu(): MenuItem[] {
         title: "Restaurant Experience",
         icon: Sparkles,
         items: [
-          { title: "Entertainment", url: "/entertainment", icon: Gamepad2 },
           { title: "Restaurant Profile", url: "/myrestaurant", icon: Store },
         ],
       },
