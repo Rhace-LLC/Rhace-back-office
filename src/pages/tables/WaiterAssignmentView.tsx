@@ -29,7 +29,6 @@ export const WaiterAssignmentView = ({
   }, [assignment]);
 
   const isRefreshing = loading || externalLoading;
-  console.log({externalLoading,loading})
 
   return (
     <div className="space-y-6">

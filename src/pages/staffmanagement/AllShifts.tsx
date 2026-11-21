@@ -1,3 +1,8 @@
+import { RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import formatPrice from "@/utils/formatPrice";
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { useState, useEffect } from "react";
 import { getShiftLogs, ShiftLog } from "@/api-services/shift.service";
 import { useAuth } from "@/contexts/AuthContext";
@@ -55,31 +60,28 @@ export const AllShiftsAdmin = () => {
   };
 
   return (
-    <div className="bg-surface rounded-3xl border border-line shadow-sm overflow-hidden">
-      {/* Header Bar */}
-      <div className="p-6 border-b border-line-subtle flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold text-ink">All Restaurant Shift Logs</h1>
-          <p className="text-sm text-ink-muted">
-            View and monitor all staff clock-ins, clock-outs, and logged sales.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <input
-            type="text"
-            placeholder="Search user ID or shift ID..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-4 py-2 border border-line rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-focus-ring"
-          />
-          <button
-            onClick={fetchShifts}
-            className="px-4 py-2 bg-inset hover:bg-inset-accent text-ink-secondary text-sm font-medium rounded-2xl"
-          >
-            Refresh
-          </button>
-        </div>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Shift Logs"
+        description="View and monitor all staff clock-ins, clock-outs, and logged sales."
+        actions={
+          <>
+            <Input
+              type="text"
+              placeholder="Search user ID or shift ID..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-64"
+            />
+            <Button variant="outline" onClick={fetchShifts} disabled={loading}>
+              <RefreshCw className={loading ? "animate-spin" : ""} />
+              Refresh
+            </Button>
+          </>
+        }
+      />
+
+      <div className="overflow-hidden rounded-3xl border border-line bg-surface shadow-sm">
 
       {/* Content area */}
       {loading ? (
@@ -95,10 +97,10 @@ export const AllShiftsAdmin = () => {
                 <th className="px-6 py-3">User ID</th>
                 <th className="px-6 py-3">Clock In</th>
                 <th className="px-6 py-3">Clock Out</th>
-                <th className="px-6 py-3 text-right">Total Sales ($)</th>
+                <th className="px-6 py-3 text-right">Total Sales</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 text-sm text-ink-secondary">
+            <tbody className="divide-y divide-line-subtle text-sm text-ink-secondary">
               {filteredShifts.length > 0 ? (
                 filteredShifts.map((shift) => (
                   <tr key={shift.id} className="hover:bg-inset/50">
@@ -115,7 +117,7 @@ export const AllShiftsAdmin = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 text-right font-medium text-ink">
-                      ${Number(shift.total_sales).toFixed(2)}
+                      {formatPrice(shift.total_sales ?? 0)}
                     </td>
                   </tr>
                 ))
@@ -131,5 +133,6 @@ export const AllShiftsAdmin = () => {
         </div>
       )}
     </div>
+    </PageContainer>
   );
 };

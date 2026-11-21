@@ -1,3 +1,4 @@
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -154,8 +155,7 @@ export default function BillingPage() {
     setProceedModalOpen(true);
   };
 
-  const handleProceed = async (plan: SubscriptionPlan) => {
-    console.log("User confirmed plan:", plan);
+  const handleProceed = async (_plan: SubscriptionPlan) => {
     setProceedModalOpen(false);
 
     try {
@@ -200,11 +200,11 @@ export default function BillingPage() {
   };
 
   return (
-    <div className="mx-auto px-5 py-10">
-      <h1 className="text-2xl font-bold tracking-tight">
-        Billing & Subscription
-      </h1>
-      <div className="py-2" />
+    <PageContainer>
+      <PageHeader
+        title="Billing & Subscription"
+        description="Your plan, renewal status and billing history"
+      />
       {isSubscription && (
         <ContentHOC
           loading={loading}
@@ -317,6 +317,6 @@ export default function BillingPage() {
           fetchStatus();
         }}
       />
-    </div>
+    </PageContainer>
   );
 }

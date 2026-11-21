@@ -1,3 +1,6 @@
+import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTableAssignments } from "./useTableAssignments";
 import { WaiterAssignmentView } from "./WaiterAssignmentView";
@@ -23,7 +26,27 @@ export function WaiterAssignmentPage() {
   const canManage = auth.isOwner || auth.isAdmin;
 
   return (
-    <div className="space-y-6 p-5 md:mt-0">
+    <PageContainer>
+      <PageHeader
+        title={canManage ? "Waiter Assignment" : "My Table Assignment"}
+        description={
+          canManage
+            ? "Assign waiters to tables, track shifts, and prepare for today’s service."
+            : "The tables you are looking after today."
+        }
+        actions={
+          canManage && (
+            <Button
+              onClick={setUpForToday}
+              disabled={setupLoading || assignments.length > 0}
+            >
+              {setupLoading && <Loader2 className="animate-spin" />}
+              {setupLoading ? "Setting up..." : "Setup for Today"}
+            </Button>
+          )
+        }
+      />
+
       {/* Waiters only see their own shift. */}
       {auth.isWaiter && (
         <WaiterAssignmentView
@@ -36,52 +59,6 @@ export function WaiterAssignmentPage() {
       {/* Owners/admins manage everyone. */}
       {canManage && (
         <>
-          <div
-            className="mb-6 flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-            id="waiter-assignment"
-          >
-            <div>
-              <h3 className="text-2xl font-bold tracking-tight">
-                Manage Waiters
-              </h3>
-              <p className="text-muted-foreground text-sm">
-                Assign waiters to tables, track shifts, and prepare for today’s
-                service.
-              </p>
-            </div>
-
-            <div className="flex flex-shrink-0 gap-2">
-              <button
-                onClick={setUpForToday}
-                disabled={setupLoading || assignments.length > 0}
-                className="relative flex cursor-pointer items-center justify-center rounded-2xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {setupLoading && (
-                  <svg
-                    className="mr-2 h-4 w-4 animate-spin text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                    ></path>
-                  </svg>
-                )}
-                {setupLoading ? "Setting up..." : "Setup for Today"}
-              </button>
-            </div>
-          </div>
 
           {setupError && (
             <div className="flex flex-col gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -165,7 +142,7 @@ export function WaiterAssignmentPage() {
           </div>
         </>
       )}
-    </div>
+    </PageContainer>
   );
 }
 

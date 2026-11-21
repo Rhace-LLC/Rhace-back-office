@@ -1,5 +1,6 @@
 "use client";
 
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Plus, Upload, FileText } from "lucide-react";
@@ -84,41 +85,29 @@ export function MenuManagement() {
   };
 
   return (
-    <div className="space-y-6 p-5">
-      {/* Header */}
-      <div className="justify-between gap-4 sm:flex sm:flex-row">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Menu Management</h1>
-          <p className="text-sm text-ink-muted">
-            Manage dishes, availability, and menu items
-          </p>
-        </div>
-        <div className="mt-4 flex items-center gap-2 sm:mt-0">
-          <Button
-            variant="outline"
-            onClick={() => setBulkUploadOpen(true)}
-            className="flex items-center gap-2"
-          >
-            <Upload className="h-4 w-4" /> Bulk Upload
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => setDraftsListOpen(true)}
-            className="flex items-center gap-2"
-          >
-            <FileText className="h-4 w-4" /> Draft Dishes
-          </Button>
-          <Button
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
-            onClick={() => {
-              setEditingDraftId(undefined);
-              setAddDishOpen(true);
-            }}
-          >
-            <Plus className="h-4 w-4" /> Add Dish
-          </Button>
-        </div>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Menu Management"
+        description="Manage dishes, availability, and menu items"
+        actions={
+          <>
+            <Button variant="outline" onClick={() => setBulkUploadOpen(true)}>
+              <Upload /> Bulk Upload
+            </Button>
+            <Button variant="outline" onClick={() => setDraftsListOpen(true)}>
+              <FileText /> Draft Dishes
+            </Button>
+            <Button
+              onClick={() => {
+                setEditingDraftId(undefined);
+                setAddDishOpen(true);
+              }}
+            >
+              <Plus /> Add Dish
+            </Button>
+          </>
+        }
+      />
 
       {/* Table / Content */}
       <ContentHOC
@@ -277,6 +266,6 @@ export function MenuManagement() {
         totalPages={page + 1}
         onPageChange={(p) => setPage(p)}
       />
-    </div>
+    </PageContainer>
   );
 }

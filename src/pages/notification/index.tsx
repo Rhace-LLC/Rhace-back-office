@@ -1,4 +1,6 @@
 // components/notifications/Notifications.tsx
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
+import { registerSessionCache } from "@/lib/sessionCache";
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -129,6 +131,10 @@ const priorityBadges = {
 const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes cache
 let notificationsCache: NotificationsCache | null = null;
 let backgroundFetchInProgress = false;
+registerSessionCache(() => {
+  notificationsCache = null;
+  backgroundFetchInProgress = false;
+});
 
 export function Notifications() {
   const auth = useAuth();
@@ -141,8 +147,7 @@ export function Notifications() {
   const [processing, setProcessing] = useState<number[]>([]);
   const [lastUpdated, setLastUpdated] = useState<number>(Date.now());
   const [unreadCount, setUnreadCount] = useState(0);
-  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
-  console.log("initialLoadComplete", initialLoadComplete);
+  const [, setInitialLoadComplete] = useState(false);
 
   // Check if cache is valid
   const isCacheValid = (): boolean => {
@@ -501,7 +506,7 @@ export function Notifications() {
   // Show loading only on initial load when no cache exists
   if (loading && !notificationsCache) {
     return (
-      <div className="mt-15 flex items-center justify-center p-5 md:mt-0">
+      <div className="flex items-center justify-center p-5">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
           <p className="text-muted-foreground">Loading notifications...</p>
@@ -511,11 +516,11 @@ export function Notifications() {
   }
 
   return (
-    <div className="mt-15 space-y-6 p-5 md:mt-0">
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 className="text-2xl font-medium tracking-tight">Notifications</h1>
-          <p className="text-muted-foreground">
+    <PageContainer>
+      <PageHeader
+        title="Notifications"
+        description={
+          <>
             Stay updated with restaurant activities and alerts
             {notificationsCache && (
               <span className="ml-2 text-xs text-ink-muted">
@@ -523,43 +528,34 @@ export function Notifications() {
                 {refreshing && " (refreshing...)"}
               </span>
             )}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefresh}
-            disabled={refreshing}
-          >
-            {refreshing ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <RefreshCw className="h-4 w-4" />
-            )}
-            Refresh
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={markAllAsRead}
-            disabled={unreadCount === 0}
-          >
-            Mark All Read
-          </Button>
-          <Button variant="outline" size="sm" onClick={clearAllRead}>
-            Clear Read
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={clearAllNotificationsHandler}
-            disabled={notifications.length === 0}
-          >
-            Clear All
-          </Button>
-        </div>
-      </div>
+          </>
+        }
+        actions={
+          <>
+            <Button variant="outline" onClick={handleRefresh} disabled={refreshing}>
+              {refreshing ? <Loader2 className="animate-spin" /> : <RefreshCw />}
+              Refresh
+            </Button>
+            <Button
+              variant="outline"
+              onClick={markAllAsRead}
+              disabled={unreadCount === 0}
+            >
+              Mark All Read
+            </Button>
+            <Button variant="outline" onClick={clearAllRead}>
+              Clear Read
+            </Button>
+            <Button
+              variant="outline"
+              onClick={clearAllNotificationsHandler}
+              disabled={notifications.length === 0}
+            >
+              Clear All
+            </Button>
+          </>
+        }
+      />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <Card>
@@ -741,6 +737,6 @@ export function Notifications() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 }

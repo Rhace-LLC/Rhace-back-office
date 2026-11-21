@@ -1,3 +1,4 @@
+import formatPrice from "@/utils/formatPrice";
 import { useCallback, useEffect, useState } from "react";
 import { ImagePlus, Pencil, Plus, RefreshCcw, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
@@ -501,7 +502,7 @@ export function SeedMenuItemsSection() {
                   {item.name}
                 </p>
                 <p className="mt-0.5 text-xs text-ink-muted">
-                  {item.category?.name ?? "—"} · ₦{item.price}
+                  {item.category?.name ?? "—"} · {formatPrice(item.price)}
                   {item.display_ingredients?.length
                     ? ` · ${item.display_ingredients.join(", ")}`
                     : ""}

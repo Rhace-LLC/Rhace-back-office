@@ -5,6 +5,7 @@ import {
   UserDataLogin,
 } from "@/api-services/auth.service";
 import { queryClient } from "@/lib/queryClient";
+import { resetSessionCaches } from "@/lib/sessionCache";
 
 // ------------------ USER ROLE TYPE ------------------
 export type UserRole =
@@ -199,6 +200,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     hasPayoutAccount: boolean,
     hasSubscribed: boolean
   ) => {
+    // Drop any page caches left over from a previous session in this tab.
+    resetSessionCaches();
     setToken(accessToken);
     setEmail(email);
     setAccountType(accountType);
@@ -230,6 +233,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     localStorage.clear();
     queryClient.clear();
+    resetSessionCaches();
   };
 
   const saveProfile = (profile: UserDataLogin) => {

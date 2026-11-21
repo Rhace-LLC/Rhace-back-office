@@ -1,24 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, DollarSign, Package } from "lucide-react";
+import { Clock, Banknote, Package } from "lucide-react";
 import type { Order } from "./types/order";
+import { formatPriceCompact } from "@/utils/formatPrice";
 
 interface OrdersStatsProps {
   orders: Order[];
 }
-
-// Format revenue specifically for Naira with proper formatting
-const formatRevenue = (amount: number): string => {
-  if (amount >= 1000000) {
-    return `₦${(amount / 1000000).toFixed(1)}M`;
-  } else if (amount >= 100000) {
-    return `₦${(amount / 1000).toFixed(0)}k`;
-  } else if (amount >= 1000) {
-    return `₦${(amount / 1000).toFixed(1)}k`;
-  } else {
-    return `₦${amount.toFixed(0)}`;
-  }
-};
 
 // Format regular counts (orders)
 const formatCount = (count: number): string => {
@@ -74,11 +62,11 @@ export function OrdersStats({ orders = [] }: OrdersStatsProps) {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Revenue</CardTitle>
-          <DollarSign className="text-muted-foreground h-4 w-4" />
+          <Banknote className="text-muted-foreground h-4 w-4" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {formatRevenue(stats.totalRevenue)}
+            {formatPriceCompact(stats.totalRevenue)}
           </div>
           <p className="text-muted-foreground text-xs">Total revenue</p>
         </CardContent>

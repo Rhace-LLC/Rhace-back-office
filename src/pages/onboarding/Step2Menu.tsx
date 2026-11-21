@@ -1,4 +1,5 @@
 "use client";
+import formatPrice from "@/utils/formatPrice";
 import { useMemo, useState } from "react";
 import {
   ClipboardList,
@@ -273,7 +274,7 @@ export function Step2Menu({
                               {dish.name}
                             </span>
                             <span className="shrink-0 text-sm leading-5 font-medium text-ink-secondary">
-                              ₦{dish.price.toLocaleString()}
+                              {formatPrice(dish.price)}
                             </span>
                           </span>
                           {dish.description && (
@@ -368,7 +369,7 @@ export function Step2Menu({
                       {item.name}
                     </p>
                     <p className="text-xs text-ink-muted">
-                      {item.category} · ₦{item.price}
+                      {item.category} · {formatPrice(item.price)}
                     </p>
                   </div>
                   <button

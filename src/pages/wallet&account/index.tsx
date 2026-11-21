@@ -1,5 +1,7 @@
 "use client";
 
+import formatPrice from "@/utils/formatPrice";
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -229,7 +231,11 @@ export const WalletAndAccount = () => {
         UI
   ============================================================ */
   return (
-    <div className="p-4">
+    <PageContainer>
+      <PageHeader
+        title="Payment Account"
+        description="Where your payouts are settled, and your transaction history"
+      />
       <Dialog open={editModal} onOpenChange={setEditModal}>
         <DialogContent>
           <DialogHeader>
@@ -306,7 +312,7 @@ export const WalletAndAccount = () => {
       ============================================================ */}
       {error === "No subaccount found for this restaurant" && (
         <div className="space-y-4 rounded-2xl border bg-surface p-6 shadow">
-          <h2 className="text-2xl font-bold tracking-tight text-ink">
+          <h2 className="text-lg font-semibold tracking-tight text-ink">
             Link Your Payout Account
           </h2>
 
@@ -399,7 +405,7 @@ export const WalletAndAccount = () => {
           actionFn={fetchSubAccount}
         >
           <div className="space-y-4">
-            <h2 className="text-2xl font-bold tracking-tight text-ink">
+            <h2 className="text-lg font-semibold tracking-tight text-ink">
               Wallet & Sub Account
             </h2>
 
@@ -414,8 +420,8 @@ export const WalletAndAccount = () => {
                 <strong>Account Number:</strong> {subaccount?.account_number}
               </p>
               <p className="hidden">
-                <strong>Available Balance:</strong> ₦
-                {Number(subaccount?.available_balance || 0).toLocaleString()}
+                <strong>Available Balance:</strong>{" "}
+                {formatPrice(subaccount?.available_balance ?? 0)}
               </p>
 
               <Button
@@ -476,16 +482,16 @@ export const WalletAndAccount = () => {
         </ContentHOC>
       )}
       {subaccount && (
-        <div className="mt-10 mb-6">
-          <h3 className="text-2xl font-bold tracking-tight text-ink">
+        <div>
+          <h2 className="text-lg font-semibold tracking-tight text-ink">
             Transactions History
-          </h3>
+          </h2>
           <p className="mt-1 text-sm text-ink-muted">
             View and manage all your transactions with detailed information.
           </p>
         </div>
       )}
       {subaccount && <TransactionsPage />}
-    </div>
+    </PageContainer>
   );
 };

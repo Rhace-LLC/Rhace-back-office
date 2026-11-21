@@ -1,3 +1,4 @@
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { useEffect, useMemo, useState } from "react";
 
 import { useSelector } from "react-redux";
@@ -9,7 +10,7 @@ import { ContentHOC } from "@/components/nocontent";
 import { Pagination } from "@/components/pagination";
 import { useTableData } from "./useTableData";
 import { Button } from "@/components/ui/button";
-import { RefreshCcw } from "lucide-react";
+import { RefreshCcw, Plus } from "lucide-react";
 import { useTableAssignments } from "./useTableAssignments";
 
 /**
@@ -46,33 +47,21 @@ export function TablesPage() {
   }, []);
 
   return (
-    <div className="space-y-6 p-5 md:mt-0">
-      <div className="items-center justify-between sm:flex">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            All Tables
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Click on any table to view details and manage assignments
-          </p>
-        </div>
-        <div className="mt-5 flex items-center gap-4 sm:mt-0">
-          <button
-            className="cursor-pointer rounded-2xl bg-blue-100 px-4 py-2 text-sm font-medium text-ink hover:bg-inset-accent"
-            onClick={() => setAddTableOpen(true)}
-          >
-            + Add Table
-          </button>
-          <Button
-            className="w-max cursor-pointer bg-blue-600 px-4 text-white"
-            variant="outline"
-            size="icon"
-            onClick={fetchAllData}
-          >
-            <RefreshCcw className="h-4 w-4" /> Refresh
-          </Button>
-        </div>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Tables"
+        description="Click on any table to view details and manage assignments"
+        actions={
+          <>
+            <Button onClick={() => setAddTableOpen(true)}>
+              <Plus /> Add Table
+            </Button>
+            <Button variant="outline" onClick={fetchAllData}>
+              <RefreshCcw /> Refresh
+            </Button>
+          </>
+        }
+      />
 
       <ContentHOC
         loading={fetchLoading}
@@ -82,12 +71,12 @@ export function TablesPage() {
         noContentMessage="Reload Table List"
         noContentBtnText="Reload Tables"
         noContentAction={fetchAllData}
-        errMessage={fetchError || "Failed to load borrowers."}
+        errMessage={fetchError || "Failed to load tables."}
         actionFn={fetchAllData}
       >
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {toShow.map((table) => (
-            <TableCard table={table} waiterName={tableWaiterMap[table.id]} />
+            <TableCard key={table.id} table={table} waiterName={tableWaiterMap[table.id]} />
           ))}
         </div>
       </ContentHOC>
@@ -107,6 +96,6 @@ export function TablesPage() {
       >
         <AddTable />
       </GenericSheet>
-    </div>
+    </PageContainer>
   );
 }

@@ -137,7 +137,7 @@ export default function EditRestaurantProfile({
     <div className="space-y-8">
       {/* HEADER */}
       <div className="flex items-center justify-between border-b pb-4">
-        <h2 className="text-3xl font-bold tracking-tight text-ink">
+        <h2 className="text-lg font-semibold tracking-tight text-ink">
           Edit Restaurant Profile
         </h2>
         <Button

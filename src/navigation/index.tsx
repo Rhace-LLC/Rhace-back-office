@@ -36,7 +36,6 @@ import BillingPage from "@/pages/subscription";
 import { WalletAndAccount } from "@/pages/wallet&account";
 import { MapLocationProvider } from "@/contexts/MapLocationContext";
 import Onboarding from "@/pages/onboarding";
-import PromotionsPage from "@/pages/promotions";
 import EntertainmentPage from "@/pages/entertainment";
 import DebugPage from "@/pages/debug";
 import SeedsPage from "@/pages/seeds";
@@ -221,7 +220,6 @@ function NavigationContent() {
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  console.log("auth", auth);
 
   useEffect(() => {
     if (
@@ -263,7 +261,16 @@ function NavigationContent() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/orders" element={<Orders />} />
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute
+                  allowedRoles={["admin", "waiter", "kitchen", "restaurant_owner"]}
+                >
+                  <Orders />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/tables"
               element={
@@ -351,14 +358,6 @@ function NavigationContent() {
                   allowedRoles={["admin", "kitchen", "restaurant_owner"]}
                 >
                   <MenuManagement />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/promotions"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "restaurant_owner"]}>
-                  <PromotionsPage />
                 </ProtectedRoute>
               }
             />

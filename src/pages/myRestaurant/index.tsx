@@ -1,3 +1,4 @@
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { ContentHOC } from "@/components/nocontent";
 import { useRestaurantProfile } from "./useRestaurantProfile";
 import ViewMyRestaurant from "./ViewRestaurant";
@@ -111,7 +112,11 @@ export default function RestaurantProfilePage() {
   };
 
   return (
-    <div className="px-4">
+    <PageContainer>
+      <PageHeader
+        title="Restaurant Profile"
+        description="How guests see your restaurant"
+      />
       <ContentHOC
         loading={loading}
         error={!!error}
@@ -141,6 +146,6 @@ export default function RestaurantProfilePage() {
           />
         )}
       </ContentHOC>
-    </div>
+    </PageContainer>
   );
 }

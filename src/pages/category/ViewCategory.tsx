@@ -211,7 +211,7 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
             <Button
               type="submit"
               disabled={loading}
-              className="flex cursor-pointer items-center gap-2 bg-blue-600 text-white hover:bg-blue-700"
+              className="flex cursor-pointer items-center gap-2"
             >
               <Save size={16} />
               {loading ? "Saving Changes..." : "Save Changes"}

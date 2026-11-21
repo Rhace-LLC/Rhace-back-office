@@ -1,3 +1,4 @@
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { useState } from "react";
 import { Sprout } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -17,22 +18,16 @@ export default function SeedsPage() {
   const [tab, setTab] = useState<TabKey>("categories");
 
   return (
-    <div className="mx-auto max-w-[1320px] px-5 py-8 md:px-8 lg:px-12">
-      <header className="flex items-center gap-3">
-        <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-cardfill text-brand">
-          <Sprout className="h-5 w-5" />
-        </span>
-        <div>
-          <h1 className="text-[24px] leading-[29px] font-semibold tracking-[-0.4px] text-ink">
-            Seed Data
-          </h1>
-          <p className="mt-1 text-sm leading-5 text-ink-muted">
-            Local-only tools. Not available in production.
-          </p>
-        </div>
-      </header>
-
-      <div className="py-4" />
+    <PageContainer>
+      <PageHeader
+        leading={
+          <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-cardfill text-brand">
+            <Sprout className="h-5 w-5" />
+          </span>
+        }
+        title="Seed Data"
+        description="Local-only tools. Not available in production."
+      />
 
       <div
         role="tablist"
@@ -61,6 +56,6 @@ export default function SeedsPage() {
       {tab === "categories" && <SeedCategoriesSection />}
       {tab === "menu-items" && <SeedMenuItemsSection />}
       {tab === "inventory" && <SeedInventorySection />}
-    </div>
+    </PageContainer>
   );
 }

@@ -15,7 +15,6 @@ import {
   CreditCard,
   Wallet,
   Sparkles,
-  Badge,
   Gamepad2,
   LayoutGrid,
   UserCheck,

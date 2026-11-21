@@ -1,3 +1,4 @@
+import formatPrice from "@/utils/formatPrice";
 import React from "react";
 import {
   Dialog,
@@ -27,7 +28,7 @@ export const PlanSelectionModal: React.FC<PlanSelectionModalProps> = ({
 
   // Helper for formatting currency (assuming 'plan.base_price' is a number)
   const formatCurrency = (price: string | number) =>
-    `₦${Number(price).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+    formatPrice(price);
 
   // --- Start of Presentation Changes ---
   return (

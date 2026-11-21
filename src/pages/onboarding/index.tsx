@@ -364,7 +364,6 @@ const persistMenu = async (
   };
 
   const isFirst = step === VISIBLE_STEPS[0];
-  const isLast = step === VISIBLE_STEPS[VISIBLE_STEPS.length - 1];
   const backStep = prevVisibleStep(step);
 
   return (

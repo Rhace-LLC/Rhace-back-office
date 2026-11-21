@@ -1,3 +1,4 @@
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { parseError } from "@/api-services/utils/parseError";
@@ -17,7 +18,7 @@ import GenericSheet from "@/components/generic_sheet_overlay";
 import { AddInventoryItem } from "./AddInventoryItem";
 import { ViewInventoryItem } from "./ViewInventoryItem";
 import { useInventory } from "./useInventory";
-import { Book, RefreshCcw } from "lucide-react";
+import { Book, RefreshCcw, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const ManageInventoryPage: React.FC = () => {
@@ -119,37 +120,26 @@ const ManageInventoryPage: React.FC = () => {
   }, [filters.category, filters.searchTerm]);
 
   return (
-    <div className="space-y-6 p-5 md:mt-0">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            Manage Inventory
-          </h1>
-          <p className="text-ink-secondary">
-            Track and manage your inventory items.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            className="rounded-2xl bg-inset px-4 py-2 text-sm font-medium hover:bg-inset-accent"
-            onClick={() => {
-              setSelectedItem(null);
-              setAddInventoryOpen(true);
-            }}
-          >
-            + Add Inventory Item
-          </button>
-          <Button
-            className="w-max cursor-pointer bg-blue-600 px-4 text-white"
-            variant="outline"
-            size="icon"
-            onClick={fetchAllData}
-          >
-            <RefreshCcw className="h-4 w-4" /> Refresh
-          </Button>
-        </div>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Inventory"
+        description="Track and manage your inventory items."
+        actions={
+          <>
+            <Button
+              onClick={() => {
+                setSelectedItem(null);
+                setAddInventoryOpen(true);
+              }}
+            >
+              <Plus /> Add Inventory Item
+            </Button>
+            <Button variant="outline" onClick={fetchAllData}>
+              <RefreshCcw /> Refresh
+            </Button>
+          </>
+        }
+      />
 
       {/* Inventory Table */}
       {viewState === "normal" ? (
@@ -221,7 +211,7 @@ const ManageInventoryPage: React.FC = () => {
           <ViewInventoryItem item={selectedItem} />
         </GenericSheet>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

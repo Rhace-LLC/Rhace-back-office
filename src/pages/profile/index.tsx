@@ -1,3 +1,4 @@
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { useState } from "react";
 import EditProfile from "./EditProfile";
 import { useProfile } from "./useProfileData";
@@ -10,7 +11,11 @@ export const Profile = () => {
   const [editing, setEditing] = useState(false);
 
   return (
-    <div className="mt-3 space-y-10 px-6">
+    <PageContainer>
+      <PageHeader
+        title="Profile"
+        description="Your personal details and account security"
+      />
       <ContentHOC
         loading={loading}
         error={!!error}
@@ -31,6 +36,6 @@ export const Profile = () => {
 
       {/* Security section is independent of ContentHOC */}
       <SecuritySection />
-    </div>
+    </PageContainer>
   );
 };

@@ -194,7 +194,6 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
           {/* Save/Cancel */}
           <div className="flex gap-2">
             <Button
-              className="bg-blue-600 hover:bg-blue-700"
               onClick={handleUpdateInfo}
               disabled={isSavingInfo}
             >

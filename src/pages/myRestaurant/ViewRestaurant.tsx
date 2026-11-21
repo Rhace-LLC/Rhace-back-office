@@ -64,9 +64,9 @@ export default function ViewMyRestaurant({
       {/* Title and Info Block */}
       <div className="flex-grow text-white drop-shadow-md">
         {/* Name and Slogan */}
-        <h1 className="text-2xl font-medium tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
+        <h2 className="text-2xl font-medium tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
           {display(profile.name)}
-        </h1>
+        </h2>
         <p className="mt-1 text-base font-light opacity-90 sm:text-lg">
           {display(profile.slogan)}
         </p>

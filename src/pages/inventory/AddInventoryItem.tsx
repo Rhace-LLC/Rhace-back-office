@@ -178,7 +178,7 @@ export const AddInventoryItem: React.FC<{
         {/* Submit Button (Primary action, full width) */}
         <Button
           onClick={handleSubmit}
-          className="font-md mt-8 w-full cursor-pointer bg-blue-600 py-3 text-[15px] transition-colors hover:bg-blue-700"
+          className="font-md mt-8 w-full cursor-pointer py-3 text-[15px] transition-colors"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Adding Item..." : "Add Item to Inventory"}

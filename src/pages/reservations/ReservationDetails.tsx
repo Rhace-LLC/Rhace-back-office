@@ -451,7 +451,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 </p>
                 <Button
                   onClick={handleComplete}
-                  className="w-full bg-blue-600 font-semibold text-white shadow-md transition-all hover:bg-blue-700"
+                  className="w-full font-semibold shadow-md transition-all"
                 >
                   Complete
                 </Button>

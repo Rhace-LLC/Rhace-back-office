@@ -98,8 +98,16 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
 
     switch (currentStatus) {
       case "paid":
-      case "received":
         if (isKitchen || isOwner) return ["preparing", "cancelled"];
+        if (isWaiter) return ["cancelled"];
+        return [];
+
+      case "received":
+        // A waiter must confirm a received order before preparation begins.
+        if (isKitchen || isOwner)
+          return order.waiter_confirmed
+            ? ["preparing", "cancelled"]
+            : ["cancelled"];
         if (isWaiter) return ["cancelled"];
         return [];
 

@@ -1,3 +1,4 @@
+import formatPrice from "@/utils/formatPrice";
 import React from "react";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -37,7 +38,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ plan, onSelect }) => {
     features.push(`${grace_period_days}-day grace period`);
   if (features.length === 0) features.push("A plan built for your restaurant.");
 
-  const price = `₦${amount.toLocaleString()}`;
+  const price = formatPrice(amount);
 
   return (
     <div

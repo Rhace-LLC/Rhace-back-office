@@ -114,7 +114,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
                 <Button
                   onClick={handleProceed}
                   disabled={uploading}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
+                  className="w-full"
                 >
                   {uploading ? (
                     <>

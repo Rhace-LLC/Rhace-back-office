@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { useCallback, useEffect, useState } from "react";
 import { Lightbulb, RefreshCcw, Sparkles, UtensilsCrossed } from "lucide-react";
 import { ContentHOC } from "@/components/nocontent";
@@ -48,29 +50,16 @@ export default function EntertainmentPage() {
   );
 
   return (
-    <div className="mx-auto max-w-[1320px] px-5 py-8 md:px-8 lg:px-12">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-[24px] leading-[29px] font-semibold tracking-[-0.4px] text-ink">
-            Entertainment
-          </h1>
-          <p className="mt-1 text-sm leading-5 text-ink-muted">
-            Guest-facing content that keeps diners engaged while they order.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={fetchAll}
-          className="inline-flex h-10 w-max items-center gap-2 rounded-2xl border border-line bg-surface px-4 text-sm font-medium text-ink transition-colors duration-150 hover:border-ink focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none"
-        >
-          <RefreshCcw className="h-4 w-4" />
-          Refresh
-        </button>
-      </header>
-
-      <div className="py-4" />
-
+    <PageContainer>
+      <PageHeader
+        title="Entertainment"
+        description="Guest-facing content that keeps diners engaged while they order."
+        actions={
+          <Button variant="outline" onClick={fetchAll}>
+            <RefreshCcw /> Refresh
+          </Button>
+        }
+      />
       <ContentHOC
         loading={loading}
         error={!!error}
@@ -158,6 +147,6 @@ export default function EntertainmentPage() {
           </section>
         </div>
       </ContentHOC>
-    </div>
+    </PageContainer>
   );
 }

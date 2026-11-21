@@ -196,7 +196,6 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
 
     try {
       const byRole = await getStaffByRole(auth.token, "waiter");
-      console.log("byRole", byRole);
       setWaiters(byRole);
     } catch (error: any) {
       const errorMessage = parseError(error);
@@ -293,7 +292,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
             </Button>
 
             <Button
-              className="h-12 w-full cursor-pointer rounded-2xl bg-blue-600 text-white transition hover:bg-blue-700"
+              className="h-12 w-full cursor-pointer rounded-2xl transition"
               onClick={() => setTableInfoDialogOpen(true)}
             >
               Update Table Info
@@ -397,7 +396,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
                 )}`}
                 download={`Table-${table.table_number}-QR.png`}
                 target="_blank"
-                className="flex items-center gap-2 rounded-2xl bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                className="flex items-center gap-2 rounded-2xl bg-primary px-4 py-2 text-sm font-medium text-white shadow-button hover:bg-brand-hover"
               >
                 <Download className="h-4 w-4" /> Download QR
               </a>
@@ -571,7 +570,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
           {/* Footer */}
           <div className="flex flex-col gap-3 pt-4">
             <Button
-              className="h-12 w-full bg-blue-600 text-base font-semibold shadow-md hover:bg-blue-700"
+              className="h-12 w-full text-base font-semibold shadow-md"
               onClick={() => {
                 if (!editTableNumber || Number(editTableNumber) <= 0) {
                   toast.error("Table number must be a valid positive number");

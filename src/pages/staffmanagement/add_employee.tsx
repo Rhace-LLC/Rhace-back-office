@@ -49,9 +49,8 @@ const RegisterEmployeeForm: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await registerEmployee(formData);
+      await registerEmployee(formData);
       toast.success("Employee registered successfully!");
-      console.log("✅ Response:", response);
       setFormData({
         id: "-1",
         email: "",
@@ -173,7 +172,7 @@ const RegisterEmployeeForm: React.FC = () => {
       <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-700"
+        className="w-full"
       >
         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
         {loading ? "Registering..." : "Register Employee"}

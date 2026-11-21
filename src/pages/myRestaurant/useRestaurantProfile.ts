@@ -28,7 +28,6 @@ export const useRestaurantProfile = () => {
         auth.restaurants[0].id,
         auth.token
       );
-      console.log("profile res", res);
       dispatch(setProfile(res));
     } catch (err) {
       setError(parseError(err) || "Failed to fetch restaurant profile.");

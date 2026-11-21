@@ -1,3 +1,6 @@
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -39,50 +42,30 @@ const CategoryPage: React.FC = () => {
   }, [page, allData]);
 
   return (
-    <div className="space-y-6 p-5 md:mt-0">
-      <div className="mx-auto space-y-6">
-        <div className="space-y-6">
-          {/* Header */}
-          <div className="mt-4 mb-8 flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight">
-                Manage Menu Category
-              </h1>
-              <p className="text-ink-secondary">
-                Add unique categories of dishes.
-              </p>
-            </div>
+    <PageContainer>
+      <PageHeader
+        title="Menu Categories"
+        description="Add unique categories of dishes."
+        actions={
+          <Button onClick={() => setAddSheetOpen(true)}>
+            <Plus /> Add Category
+          </Button>
+        }
+      />
 
-            <button
-              type="button"
-              className="cursor-pointer rounded-2xl bg-inset px-4 py-2 text-sm font-medium text-ink transition hover:bg-inset-accent"
-              onClick={() => {
-                // open modal or navigate to create category
-                setAddSheetOpen(true);
-                console.log("Add Category clicked");
-              }}
-            >
-              + Add Category
-            </button>
-          </div>
-
-          <ContentHOC
-            loading={fetchAllDataLoading}
-            error={!!fetchAllDataError}
-            noContent={toShow.length === 0}
-            loadingText="Fetching Categories. Please Wait."
-            noContentMessage="Reload Categories List"
-            noContentBtnText="Reload Categories"
-            noContentAction={fetchAllData}
-            errMessage={fetchAllDataError || "Failed to load borrowers."}
-            actionFn={fetchAllData}
-          >
-            <RenderTableData data={toShow} />
-          </ContentHOC>
-
-          {/* Categorie Table or Empty State*/}
-        </div>
-      </div>
+      <ContentHOC
+        loading={fetchAllDataLoading}
+        error={!!fetchAllDataError}
+        noContent={toShow.length === 0}
+        loadingText="Fetching Categories. Please Wait."
+        noContentMessage="Reload Categories List"
+        noContentBtnText="Reload Categories"
+        noContentAction={fetchAllData}
+        errMessage={fetchAllDataError || "Failed to load categories."}
+        actionFn={fetchAllData}
+      >
+        <RenderTableData data={toShow} />
+      </ContentHOC>
 
       {/* Pagination */}
       <Pagination
@@ -101,7 +84,7 @@ const CategoryPage: React.FC = () => {
           <AddCategoryForm onSubmit={() => setAddSheetOpen(false)} />
         </GenericSheet>
       }
-    </div>
+    </PageContainer>
   );
 };
 

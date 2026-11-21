@@ -1,3 +1,4 @@
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import {
   Card,
   CardContent,
@@ -16,7 +17,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import {
   TrendingUp,
-  DollarSign,
+  Banknote,
   Users,
   Clock,
   UtensilsCrossed,
@@ -35,7 +36,6 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { useAuth } from "@/contexts/AuthContext";
 
 const dailyRevenueData = [
   { day: "Mon", revenue: 2400, orders: 45 },
@@ -110,37 +110,21 @@ const staffPerformanceData = [
 ];
 
 export function Analytics() {
-  const auth = useAuth();
-
-  // Only admins can access analytics
-  if (auth.isAdmin) {
-    return (
-      <div className="flex min-h-[400px] items-center justify-center p-5">
-        <div className="text-center">
-          <h2>Access Restricted</h2>
-          <p className="text-muted-foreground">
-            Only administrators can access analytics.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
+  // Access is enforced by the route guard (admin + restaurant_owner).
+  // NOTE: every chart below still renders hard-coded sample data.
   return (
-    <div className="space-y-6 p-5">
-      <div>
-        <h1>Analytics Dashboard</h1>
-        <p className="text-muted-foreground">
-          Comprehensive restaurant performance insights
-        </p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Analytics"
+        description="Preview with sample data — live analytics are not wired up yet."
+      />
 
       {/* Key Performance Indicators */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm">Today's Revenue</CardTitle>
-            <DollarSign className="text-muted-foreground h-4 w-4" />
+            <Banknote className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl">₦4,847</div>
@@ -165,7 +149,7 @@ export function Analytics() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm">Avg Order Value</CardTitle>
-            <DollarSign className="text-muted-foreground h-4 w-4" />
+            <Banknote className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl">₦54.45</div>
@@ -400,6 +384,6 @@ export function Analytics() {
           </Table>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 }

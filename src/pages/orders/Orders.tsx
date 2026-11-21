@@ -1,4 +1,5 @@
 // components/Orders.tsx
+import { registerSessionCache } from "@/lib/sessionCache";
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -15,11 +16,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Filter, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { Order, OrderStatus, UpdateOrderData } from "./types/order";
 import { OrdersStats } from "./OrdersStats";
 import { OrdersTable } from "./OrdersTable";
 import { OrderDetailsDialog } from "./order_details_dialog/OrderDetailsDialog";
 import { useAuth } from "../../contexts/AuthContext";
+import { getErrorMessage } from "@/utils/orderHelpers";
 import {
   getAllOrders,
   updateOrderStatus,
@@ -36,6 +40,7 @@ const statusOptions = [
   "received",
   "preparing",
   "ready",
+  "served",
   "completed",
   "cancelled",
   "delivered",
@@ -53,6 +58,9 @@ interface OrdersCache {
 }
 
 let ordersCache: OrdersCache | null = null;
+registerSessionCache(() => {
+  ordersCache = null;
+});
 
 const isCacheValid = (): boolean => {
   if (!ordersCache) return false;
@@ -108,7 +116,12 @@ export function Orders() {
   ).length;
 
   // Fetch tables function
-  const fetchTables = async (restId: string, force = false) => {
+  // Returns the freshly fetched tables, or undefined if nothing was fetched,
+  // so callers can write them to the cache instead of stale `tables` state.
+  const fetchTables = async (
+    restId: string,
+    force = false
+  ): Promise<Table[] | undefined> => {
     if (!token) return;
 
     // Skip if already fetched and not forcing
@@ -117,17 +130,19 @@ export function Orders() {
     }
 
     try {
-      const tablesData = await getAvailableTables(token, restId);
-      setTables(tablesData || []);
+      const tablesData = (await getAvailableTables(token, restId)) || [];
+      setTables(tablesData);
       setTablesFetched(true);
 
       // Update cache
       if (ordersCache) {
-        ordersCache.tables = tablesData || [];
+        ordersCache.tables = tablesData;
         ordersCache.restaurantId = restId;
       }
+      return tablesData;
     } catch (err) {
       setTables([]);
+      return [];
     }
   };
 
@@ -136,6 +151,7 @@ export function Orders() {
     if (!token || !restaurantId) return;
 
     try {
+      let freshTables: Table[] | undefined;
       const [ordersData, waitersData] = await Promise.all([
         getAllOrders(token),
         !isWaiter ? getActiveWaiters(token) : Promise.resolve([]),
@@ -146,14 +162,14 @@ export function Orders() {
 
       // Fetch tables using restaurantId from auth
       if (restaurantId) {
-        await fetchTables(restaurantId, true);
+        freshTables = await fetchTables(restaurantId, true);
       }
 
       // Update cache
       ordersCache = {
         orders: ordersData || [],
         waiters: waitersData || [],
-        tables: tables,
+        tables: freshTables ?? tables,
         lastFetched: Date.now(),
         restaurantId: restaurantId,
       };
@@ -190,6 +206,7 @@ export function Orders() {
     }
 
     try {
+      let freshTables: Table[] | undefined;
       setError(null);
 
       const [ordersData, waitersData] = await Promise.all([
@@ -202,14 +219,14 @@ export function Orders() {
 
       if (restaurantId) {
         // Force fetch tables on initial load or refresh
-        await fetchTables(restaurantId, forceRefresh);
+        freshTables = await fetchTables(restaurantId, forceRefresh);
       }
 
       // Update cache
       ordersCache = {
         orders: ordersData || [],
         waiters: waitersData || [],
-        tables: tables,
+        tables: freshTables ?? tables,
         lastFetched: Date.now(),
         restaurantId: restaurantId,
       };
@@ -220,7 +237,7 @@ export function Orders() {
         setWaiters(ordersCache.waiters);
         setTables(ordersCache.tables);
       } else {
-        setError(err instanceof Error ? err.message : "Failed to fetch orders");
+        setError(getErrorMessage(err, "Failed to fetch orders"));
         setOrders([]);
       }
     } finally {
@@ -285,7 +302,7 @@ export function Orders() {
       const updateData: UpdateOrderData = { status: newStatus };
       await updateOrderStatus(orderId, updateData, token);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update status");
+      setError(getErrorMessage(err, "Failed to update status"));
       await fetchOrders(true);
     }
   };
@@ -301,7 +318,7 @@ export function Orders() {
         await fetchTables(restaurantId, true);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to assign table");
+      setError(getErrorMessage(err, "Failed to assign table"));
     }
   };
 
@@ -313,18 +330,20 @@ export function Orders() {
       await assignWaiterToOrder(orderId, waiterId, token);
       await fetchOrders(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to assign waiter");
+      setError(getErrorMessage(err, "Failed to assign waiter"));
     }
   };
 
   const parseConfirmError = (err: unknown): string => {
-    const status = (err as { response?: { status?: number } })?.response?.status;
+    // The axios interceptor rejects with the response body and attaches the
+    // HTTP status to it (see api-services/utils/baseUrl.ts).
+    const status = (err as { status?: number } | undefined)?.status;
     if (status === 400)
       return "Order is no longer in received status. Refreshing…";
-    if (status === 401)
+    if (status === 401 || status === 403)
       return "You are not permitted to confirm orders for this restaurant.";
     if (status === 404) return "Order not found. Refreshing…";
-    return err instanceof Error ? err.message : "Failed to confirm order";
+    return getErrorMessage(err, "Failed to confirm order");
   };
 
   const handleWaiterConfirm = async (orderId: string) => {
@@ -373,67 +392,62 @@ export function Orders() {
 
   if (loading && !ordersCache) {
     return (
-      <div className="mt-15 space-y-6 p-5 md:mt-0">
+      <PageContainer>
         <div className="flex h-64 items-center justify-center">
           <div className="flex flex-col items-center gap-2">
             <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-ink"></div>
             <div className="text-lg text-ink-secondary">Loading orders...</div>
           </div>
         </div>
-      </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="space-y-6 p-5 md:mt-0">
+    <PageContainer>
       {error && (
-        <div className="relative rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
-          <strong className="font-bold">Error: </strong>
-          <span className="block sm:inline">{error}</span>
+        <div className="relative rounded-2xl border border-red-200 bg-red-50 px-4 py-3 pr-12 text-sm text-red-700">
+          {error}
           <button
             onClick={() => setError(null)}
-            className="absolute top-0 right-0 bottom-0 px-4 py-3"
+            aria-label="Dismiss error"
+            className="absolute top-0 right-0 bottom-0 px-4"
           >
             <span className="text-xl">&times;</span>
           </button>
         </div>
       )}
 
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 className="text-2xl font-medium tracking-tight">
-            Orders Management
-          </h1>
-          <p className="text-muted-foreground">
+      <PageHeader
+        title="Orders"
+        description={
+          <>
             Manage restaurant orders and track order status
             {ordersCache && (
               <span className="ml-2 text-xs text-ink-muted">
                 • Updated {Math.round((Date.now() - lastUpdated) / 1000)}s ago
               </span>
             )}
-            <span className="ml-2 text-xs text-ink-muted">
-              • Tables: {tables.length} • Waiters: {waiters.length}
-            </span>
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <Filter className="text-muted-foreground h-4 w-4" />
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-32">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {statusOptions.map((status) => (
-                  <SelectItem key={status} value={status}>
-                    {status === "All" ? "All" : status.toUpperCase()}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          {(isWaiter || statusFilter === "All" || statusFilter === "received") && (
+          </>
+        }
+        actions={
+          <>
             <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-ink-muted" />
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusOptions.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {status === "All" ? "All" : status.toUpperCase()}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {(isWaiter || statusFilter === "All" || statusFilter === "received") && (
               <Select
                 value={confirmationFilter}
                 onValueChange={(v: "All" | "Awaiting" | "Confirmed") =>
@@ -454,20 +468,14 @@ export function Orders() {
                   <SelectItem value="Confirmed">Confirmed</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-          )}
-          <button
-            onClick={handleRefresh}
-            disabled={refreshing}
-            className="flex items-center gap-2 rounded-2xl bg-primary px-4 py-2.5 text-sm font-medium text-white shadow-button hover:bg-brand-hover disabled:opacity-60"
-          >
-            <RefreshCw
-              className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
-            />
-            Refresh
-          </button>
-        </div>
-      </div>
+            )}
+            <Button variant="outline" onClick={handleRefresh} disabled={refreshing}>
+              <RefreshCw className={refreshing ? "animate-spin" : ""} />
+              Refresh
+            </Button>
+          </>
+        }
+      />
 
       <OrdersStats orders={orders} />
 
@@ -489,12 +497,9 @@ export function Orders() {
                   ? "No orders in the system"
                   : `No orders match the "${statusFilter}" filter`}
               </div>
-              <button
-                onClick={handleRefresh}
-                className="mt-4 rounded-2xl bg-primary px-5 py-2.5 font-medium text-white shadow-button hover:bg-brand-hover"
-              >
+              <Button variant="outline" className="mt-4" onClick={handleRefresh}>
                 Refresh Orders
-              </button>
+              </Button>
             </div>
           ) : (
             <OrdersTable
@@ -522,6 +527,6 @@ export function Orders() {
         staff={waiters}
         tables={tables}
       />
-    </div>
+    </PageContainer>
   );
 }

@@ -10,19 +10,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Eye, Clock, Truck, User, Table as TableIcon, Check } from "lucide-react";
-import type { Order } from "./types/order";
+import type { Order, OrderStatus } from "./types/order";
 import { Staff } from "../../api-services/staffService";
 import { Table as TableType } from "../../api-services/tableService";
 import formatPrice from "@/utils/formatPrice";
 
-// Define OrderStatus locally to avoid import issues
-type OrderStatus =
-  | "received"
-  | "preparing"
-  | "ready"
-  | "completed"
-  | "cancelled"
-  | "delivered";
 
 interface OrdersTableProps {
   orders: Order[];
@@ -35,12 +27,14 @@ interface OrdersTableProps {
 }
 
 const statusColors: Record<OrderStatus, string> = {
+  paid: "bg-emerald-100 text-emerald-800 border-emerald-200",
   received: "bg-blue-100 text-blue-800 border-blue-200",
   preparing: "bg-yellow-100 text-yellow-800 border-yellow-200",
   ready: "bg-green-100 text-green-800 border-green-200",
   completed: "bg-inset text-ink border-line",
   cancelled: "bg-red-100 text-red-800 border-red-200",
   delivered: "bg-purple-100 text-purple-800 border-purple-200",
+  served: "bg-indigo-100 text-indigo-800 border-indigo-200",
 };
 
 export function OrdersTable({

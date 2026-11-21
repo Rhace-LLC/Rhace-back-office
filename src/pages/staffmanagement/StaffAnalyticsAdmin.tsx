@@ -1,3 +1,4 @@
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import React, { useState, useEffect, useCallback } from "react";
 import {
   getAuditSummary,
@@ -168,20 +169,12 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen p-6 md:p-12 font-sans text-ink">
-      <div className="mx-auto space-y-6">
-        
-        {/* Page Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-[32px] md:text-[48px] font-semibold tracking-[-1.5px] leading-[1.04] text-ink">
-              Staff Intelligence & Analytics
-            </h1>
-            <p className="mt-2 text-[14px] leading-[21px] text-ink-muted">
-              Monitor staff performance reports, audit logs, and shift management in real-time.
-            </p>
-          </div>
-        </div>
+    <PageContainer>
+      <div className="space-y-6">
+        <PageHeader
+          title="Staff Report"
+          description="Monitor staff performance reports, audit logs, and shift management in real-time."
+        />
 
         {/* Global Filter Bar */}
         <div className="bg-surface border border-line rounded-[20px] p-5 shadow-md">
@@ -529,7 +522,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
         </div>
 
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

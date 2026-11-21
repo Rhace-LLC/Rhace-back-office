@@ -2,7 +2,7 @@
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { UtensilsCrossed, DollarSign } from "lucide-react";
+import { UtensilsCrossed, Banknote } from "lucide-react";
 import formatPrice from "@/utils/formatPrice";
 
 interface MenuStatsProps {
@@ -68,7 +68,7 @@ export const MenuStats: React.FC<MenuStatsProps> = ({
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm">Avg Price</CardTitle>
-          <DollarSign className="text-muted-foreground h-4 w-4" />
+          <Banknote className="text-muted-foreground h-4 w-4" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-semibold">

@@ -14,7 +14,15 @@ export const bookiesAxiosInstance = axios.create({
 const handleResponse = (response: AxiosResponse) => response.data;
 
 const handleError = (error: AxiosError) => {
-  if (error.response) return Promise.reject(error.response.data);
+  if (error.response) {
+    const { data, status } = error.response;
+    // Expose the HTTP status to callers without changing the body's shape.
+    // Non-enumerable so parseError's key-scanning fallback ignores it.
+    if (data && typeof data === "object" && !("status" in data)) {
+      Object.defineProperty(data, "status", { value: status, enumerable: false });
+    }
+    return Promise.reject(data);
+  }
   return Promise.reject({ message: "Network error or server not reachable" })
 }
 

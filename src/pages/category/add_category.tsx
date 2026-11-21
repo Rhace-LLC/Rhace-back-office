@@ -55,7 +55,6 @@ export default function AddCategoryForm({ onSubmit }: AddCategoryFormProps) {
         formData,
         auth.token
       );
-      console.log("Response:", res);
       dispatch(appendCategoryToPage({ key: "1", item: res }));
 
       toast.success("Category created successfully!");

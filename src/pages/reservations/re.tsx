@@ -1,3 +1,4 @@
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { getReservations, Reservation } from "@/api-services/order.service";
 import { parseError } from "@/api-services/utils/parseError";
 import { useAuth } from "@/contexts/AuthContext";
@@ -90,44 +91,30 @@ export const ManageReservation: React.FC = () => {
   useEffect(() => setPage(1), [viewState]);
 
   return (
-    <>
-      <div className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
-        <div className="mx-auto space-y-6">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-2xl font-bold tracking-tight">
-                  Reservations
-                </h3>
-                <p>Manage reservations, assign tables and update statuses.</p>
-              </div>
+    <PageContainer>
+      <PageHeader
+        title="Reservations"
+        description="Manage reservations, assign tables and update statuses."
+        actions={
+          <Button variant="outline" onClick={fetchAllReservations}>
+            <RefreshCcw /> Refresh
+          </Button>
+        }
+      />
 
-              <Button
-                className="w-max cursor-pointer bg-blue-600 px-4 text-white"
-                variant="outline"
-                size="icon"
-                onClick={fetchAllReservations}
-              >
-                <RefreshCcw className="h-4 w-4" /> Refresh
-              </Button>
-            </div>
-
-            <ContentHOC
-              loading={loading}
-              error={!!error}
-              noContent={toShow.length === 0}
-              loadingText="Fetching reservations. Please wait."
-              noContentMessage="No reservations found"
-              noContentBtnText="Reload"
-              noContentAction={fetchAllReservations}
-              errMessage={error || "Failed to load reservations."}
-              actionFn={fetchAllReservations}
-            >
-              <RenderReservationTableData data={toShow} />
-            </ContentHOC>
-          </div>
-        </div>
-      </div>
-    </>
+      <ContentHOC
+        loading={loading}
+        error={!!error}
+        noContent={toShow.length === 0}
+        loadingText="Fetching reservations. Please wait."
+        noContentMessage="No reservations found"
+        noContentBtnText="Reload"
+        noContentAction={fetchAllReservations}
+        errMessage={error || "Failed to load reservations."}
+        actionFn={fetchAllReservations}
+      >
+        <RenderReservationTableData data={toShow} />
+      </ContentHOC>
+    </PageContainer>
   );
 };

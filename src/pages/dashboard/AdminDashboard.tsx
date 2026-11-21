@@ -1,4 +1,7 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
+import { registerSessionCache } from "@/lib/sessionCache";
 import {
   Card,
   CardContent,
@@ -42,7 +45,7 @@ import {
   DashboardData,
   DashboardStats,
 } from "../../api-services/dashboardService";
-import formatPrice from "@/utils/formatPrice";
+import formatPrice, { formatPriceCompact } from "@/utils/formatPrice";
 
 // Empty data structure
 const emptyData: DashboardData = {
@@ -84,6 +87,9 @@ interface DashboardCache {
 }
 
 let dashboardCache: DashboardCache | null = null;
+registerSessionCache(() => {
+  dashboardCache = null;
+});
 
 const isCacheValid = (): boolean => {
   if (!dashboardCache) return false;
@@ -91,21 +97,8 @@ const isCacheValid = (): boolean => {
 };
 // =========================================
 
-// Format Naira with k notation for large numbers
-const formatNaira = (amount: number): string => {
-  if (amount >= 1000000) {
-    return `₦${(amount / 1000000).toFixed(1)}M`;
-  } else if (amount >= 1000) {
-    return `₦${(amount / 1000).toFixed(1)}k`;
-  }
-
-  return new Intl.NumberFormat("en-NG", {
-    style: "currency",
-    currency: "NGN",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
-};
+// Naira amounts use the shared compact formatter (₦12.5K, ₦1.2M).
+const formatNaira = (amount: number): string => formatPriceCompact(amount);
 
 // Format regular numbers with k notation
 const formatCount = (count: number): string => {
@@ -406,7 +399,7 @@ export const AdminDashboard = () => {
         <div className="rounded border border-line bg-surface p-3 shadow-sm">
           <p className="font-medium">{`Day: ${label}`}</p>
           <p className="text-blue-600">
-            {`Revenue: ₦${payload && payload[0] && payload[0].value ? payload[0].value.toLocaleString() : 0}`}
+            {`Revenue: ${formatPrice(payload?.[0]?.value ?? 0)}`}
           </p>
         </div>
       );
@@ -553,37 +546,30 @@ export const AdminDashboard = () => {
   }
 
   return (
-    <div className="space-y-6 p-6">
-      {/* Header */}
-      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight"> Dashboard</h1>
-          </div>
-          <p className="text-muted-foreground">
+    <PageContainer>
+      <PageHeader
+        title="Dashboard"
+        description={
+          <>
             Restaurant overview and performance metrics
             {dashboardCache && (
               <span className="ml-2 text-xs text-ink-muted">
                 • Updated {Math.round((Date.now() - lastUpdated) / 1000)}s ago
               </span>
             )}
-          </p>
-        </div>
-        <button
-          onClick={handleRefresh}
-          disabled={refreshing}
-          className="flex items-center gap-2 rounded bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700 disabled:bg-blue-400"
-        >
-          <RefreshCw
-            className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
-          />
-          Refresh
-        </button>
-      </div>
+          </>
+        }
+        actions={
+          <Button variant="outline" onClick={handleRefresh} disabled={refreshing}>
+            <RefreshCw className={refreshing ? "animate-spin" : ""} />
+            Refresh
+          </Button>
+        }
+      />
 
       {/* Error Message */}
       {error && (
-        <div className="rounded border border-red-400 bg-red-100 p-4 text-red-700">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-red-700">
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4" />
             <span>{error}</span>
@@ -950,6 +936,6 @@ export const AdminDashboard = () => {
           )}
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 };

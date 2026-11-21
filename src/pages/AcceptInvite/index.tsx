@@ -26,8 +26,7 @@ export default function AcceptInvite() {
       setError("");
       setSuccess(false);
 
-      const response = await acceptInvite(inviteToken);
-      console.log("Invite Accepted:", response);
+      await acceptInvite(inviteToken);
 
       setSuccess(true);
     } catch (err: unknown) {

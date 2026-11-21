@@ -1,3 +1,4 @@
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import React, { useEffect, useState } from "react";
 import { LucideUserPlus, RefreshCcw } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -69,37 +70,22 @@ const ManageStaff: React.FC = () => {
 
   // ---------------- UI ----------------
   return (
-    <div className="space-y-6 p-5 md:mt-0">
+    <PageContainer>
       <div className="space-y-6">
-        {/* Header */}
-        <div className="mt-4 mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Manage Staffs</h1>
-            <p className="text-ink-secondary">
-              View, filter, and manage Staff roles and invitations.
-            </p>
-          </div>
-
-          <div className="flex gap-3">
-            <Button
-              variant="outline"
-              className="gap-2"
-              onClick={() => setInviteSheetOpen(true)}
-            >
-              <LucideUserPlus className="h-4 w-4" />
-              Invite New Staff
-            </Button>
-
-            <Button
-              className="w-max cursor-pointer bg-blue-600 px-4 text-white"
-              variant="outline"
-              size="icon"
-              onClick={fetchAllStaffs}
-            >
-              <RefreshCcw className="h-4 w-4" /> Refresh
-            </Button>
-          </div>
-        </div>
+        <PageHeader
+          title="Staff"
+          description="View, filter, and manage staff roles and invitations."
+          actions={
+            <>
+              <Button onClick={() => setInviteSheetOpen(true)}>
+                <LucideUserPlus /> Invite Staff
+              </Button>
+              <Button variant="outline" onClick={fetchAllStaffs}>
+                <RefreshCcw /> Refresh
+              </Button>
+            </>
+          }
+        />
 
         {/*
           <StaffFilters filters={filters} setFilters={setFilters} onSearch={handleSearch} />
@@ -145,7 +131,7 @@ const ManageStaff: React.FC = () => {
           <ViewEmployeeDetails employee={selectedStaff} />
         </GenericSheet>
       )}
-    </div>
+    </PageContainer>
   );
 };
 
