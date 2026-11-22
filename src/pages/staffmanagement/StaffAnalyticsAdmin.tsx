@@ -1,3 +1,4 @@
+import { TableSkeleton } from "@/components/ui/loading-skeletons";
 import { useStableCallback } from "@/hooks/useStableCallback";
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import React, { useState, useEffect, useCallback } from "react";
@@ -379,10 +380,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
           )}
 
           {loading ? (
-            <div className="py-16 text-center text-ink-muted text-[14px]">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand mb-3" />
-              <p>Loading staff intelligence data...</p>
-            </div>
+            <TableSkeleton rows={6} columns={5} label="Loading staff report…" />
           ) : (
             <div>
               {/* TAB 1: Staff Performance Reports */}

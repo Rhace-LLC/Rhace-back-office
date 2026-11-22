@@ -3,6 +3,7 @@ import { useStableCallback } from "@/hooks/useStableCallback";
 import { CHART, CHART_SERIES } from "@/lib/chartColors";
 import { Button } from "@/components/ui/button";
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
+import { PageHeaderSkeleton } from "@/components/ui/loading-skeletons";
 import { registerSessionCache } from "@/lib/sessionCache";
 import {
   Card,
@@ -510,14 +511,9 @@ export const AdminDashboard = () => {
 
   if (loading && !dashboardCache) {
     return (
-      <div className="space-y-6 p-6">
-        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <div>
-            <Skeleton className="mb-2 h-8 w-48" />
-            <Skeleton className="h-4 w-64" />
-          </div>
-          <Skeleton className="h-10 w-32" />
-        </div>
+      <PageContainer>
+        <span className="sr-only">Loading dashboard…</span>
+        <PageHeaderSkeleton actions={1} />
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -547,7 +543,7 @@ export const AdminDashboard = () => {
             </Card>
           ))}
         </div>
-      </div>
+      </PageContainer>
     );
   }
 

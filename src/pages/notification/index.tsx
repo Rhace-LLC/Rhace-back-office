@@ -1,6 +1,7 @@
 // components/notifications/Notifications.tsx
 import { useStableCallback } from "@/hooks/useStableCallback";
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
+import { PageSkeleton } from "@/components/ui/loading-skeletons";
 import { registerSessionCache } from "@/lib/sessionCache";
 import { useState, useEffect } from "react";
 import {
@@ -506,13 +507,14 @@ export function Notifications() {
 
   // Show loading only on initial load when no cache exists
   if (loading && !notificationsCache) {
+    // Same loading pattern as every other page: header + 4 stat tiles + list.
     return (
-      <div className="flex items-center justify-center p-5">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-brand" />
-          <p className="text-muted-foreground">Loading notifications...</p>
-        </div>
-      </div>
+      <PageSkeleton
+        variant="list"
+        stats={4}
+        headerActions={4}
+        label="Loading notifications…"
+      />
     );
   }
 

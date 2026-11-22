@@ -1,3 +1,4 @@
+import { TableSkeleton } from "@/components/ui/loading-skeletons";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,7 +86,7 @@ export const AllShiftsAdmin = () => {
 
       {/* Content area */}
       {loading ? (
-        <div className="p-12 text-center text-ink-muted">Loading shift logs...</div>
+        <TableSkeleton bare rows={6} columns={5} label="Loading shift logs…" />
       ) : error ? (
         <div className="p-12 text-center text-danger">{error}</div>
       ) : (

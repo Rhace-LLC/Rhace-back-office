@@ -19,6 +19,7 @@ import {
 import { Filter, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
+import { PageSkeleton } from "@/components/ui/loading-skeletons";
 import { Order, OrderStatus, UpdateOrderData } from "./types/order";
 import { OrdersStats } from "./OrdersStats";
 import { OrdersTable } from "./OrdersTable";
@@ -402,15 +403,9 @@ export function Orders() {
   const handleCloseSheet = () => setSelectedOrder(null);
 
   if (loading && !ordersCache) {
+    // Same loading pattern as every other page: header + 4 stat tiles + table.
     return (
-      <PageContainer>
-        <div className="flex h-64 items-center justify-center">
-          <div className="flex flex-col items-center gap-2">
-            <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-ink"></div>
-            <div className="text-lg text-ink-secondary">Loading orders...</div>
-          </div>
-        </div>
-      </PageContainer>
+      <PageSkeleton stats={4} headerActions={3} label="Loading orders…" />
     );
   }
 

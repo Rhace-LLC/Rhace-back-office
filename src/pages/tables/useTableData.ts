@@ -2,7 +2,14 @@ import { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { parseError } from "@/api-services/utils/parseError";
 import { getTables } from "@/api-services/menu.service";
-import { updateTableData } from "@/store/table.slice";
+import { updateTableData, updateTableTotal } from "@/store/table.slice";
+
+/**
+ * Store key holding the FULL table list. The tables endpoint is not paginated
+ * (it returns every table), so the list lives under one key and pages
+ * paginate client-side. ReservationDetails also reads this key.
+ */
+export const TABLE_LIST_KEY = "1";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface UseTableDataProps {
@@ -29,7 +36,9 @@ export const useTableData = ({
         { page, page_size },
         auth.token
       );
-      dispatch(updateTableData({ key: String(page), data: res }));
+      const list = Array.isArray(res) ? res : [];
+      dispatch(updateTableData({ key: TABLE_LIST_KEY, data: list }));
+      dispatch(updateTableTotal({ data_total: list.length }));
     } catch (error) {
       setFetchError(parseError(error) || "Failed to fetch table data.");
     } finally {

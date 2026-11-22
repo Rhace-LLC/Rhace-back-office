@@ -1,6 +1,6 @@
 "use client";
 import formatPrice from "@/utils/formatPrice";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ClipboardList,
   FileUp,
@@ -120,11 +120,14 @@ export function Step2Menu({
 
   const hasSeedData = seedCategories.length > 0 && seedItems.length > 0;
 
-  const CATEGORY_LABELS = hasSeedData
-    ? seedCategories
-    : MENU_CATEGORIES.map((c) => c.label);
-  const CATEGORY_ORDER = new Map(
-    CATEGORY_LABELS.map((label, i) => [label, i])
+  // Memoised so the useMemo below doesn't recompute on every render.
+  const CATEGORY_LABELS = useMemo(
+    () => (hasSeedData ? seedCategories : MENU_CATEGORIES.map((c) => c.label)),
+    [hasSeedData, seedCategories]
+  );
+  const CATEGORY_ORDER = useMemo(
+    () => new Map(CATEGORY_LABELS.map((label, i) => [label, i])),
+    [CATEGORY_LABELS]
   );
 
   /** Categories derived from whichever dishes were picked. */

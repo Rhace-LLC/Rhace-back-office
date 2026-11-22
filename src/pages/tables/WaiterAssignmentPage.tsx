@@ -1,3 +1,4 @@
+import { ListSkeleton } from "@/components/ui/loading-skeletons";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
@@ -74,9 +75,7 @@ export function WaiterAssignmentPage() {
 
           <div className="space-y-3">
             {loading && (
-              <div className="rounded-2xl border border-line bg-surface p-4 text-sm text-ink-secondary">
-                Loading waiter assignments…
-              </div>
+              <ListSkeleton rows={3} label="Loading waiter assignments…" />
             )}
 
             {!loading && error && (

@@ -61,6 +61,7 @@ export default function EntertainmentPage() {
         }
       />
       <ContentHOC
+        skeleton="grid"
         loading={loading}
         error={!!error}
         noContent={!hasContent}

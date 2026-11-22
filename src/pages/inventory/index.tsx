@@ -22,6 +22,9 @@ import { useInventory } from "./useInventory";
 import { Book, RefreshCcw, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+/** Items per page — must match what useInventory requests from the API. */
+const PAGE_SIZE = 10;
+
 const ManageInventoryPage: React.FC = () => {
   const auth = useAuth();
 
@@ -40,7 +43,9 @@ const ManageInventoryPage: React.FC = () => {
   );
 
   const [page, setPage] = useState(1);
-  const page_size = 8;
+  const page_size = PAGE_SIZE;
+  // Filter/search mode keeps its own total (from the same paginated endpoint).
+  const [filterTotal, setFilterTotal] = useState(0);
 
   const [fetchLoading, setFetchLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
@@ -52,7 +57,12 @@ const ManageInventoryPage: React.FC = () => {
     searchTerm: "",
     category: "",
   });
-  const { loading, error, fetchAllData } = useInventory({ page: 1 });
+  // Fetches the CURRENT page (it used to be hard-coded to page 1, so page 2+
+  // never loaded) and re-fetches when the page changes.
+  const { loading, error, fetchAllData } = useInventory({
+    page,
+    page_size: PAGE_SIZE,
+  });
   const dataStore = useSelector((state: RootState) => state.inventory);
   const allData = dataStore.data;
 
@@ -73,6 +83,7 @@ const ManageInventoryPage: React.FC = () => {
       setFetchLoading(true);
       setFetchError("");
       const res = await getInventoryItems({ page, page_size }, auth.token);
+      setFilterTotal(res.count ?? res.results.length);
 
       setDataDisposable((prev) => {
         const existing = prev[String(page)] ?? [];
@@ -99,10 +110,17 @@ const ManageInventoryPage: React.FC = () => {
   };
 
   // Pagination & Effects
+  // Normal mode: useInventory fetches the current page itself when it changes.
+
+  // Real page count from the API total (it used to be `page + 1`, which
+  // always offered a next page).
+  const totalItems = viewState === "normal" ? dataStore.data_total : filterTotal;
+  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+
+  // Keep the current page valid if the total shrinks (e.g. items deleted).
   useEffect(() => {
-    if (viewState !== "normal") return;
-    if (!allData[String(page)]) fetchAllData();
-  }, [page, viewState, allData, fetchAllData]);
+    if (totalItems > 0 && page > totalPages) setPage(totalPages);
+  }, [page, totalPages, totalItems]);
 
   useEffect(() => {
     if (viewState !== "search" && viewState !== "filter") return;
@@ -176,12 +194,14 @@ const ManageInventoryPage: React.FC = () => {
         </ContentHOC>
       )}
 
-      {/* Pagination */}
-      <Pagination
-        currentPage={page}
-        totalPages={page + 1}
-        onPageChange={(p) => setPage(p)}
-      />
+      {/* Pagination (hidden when everything fits on one page) */}
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
+      )}
 
       {/* ✅ Add Inventory Sheet */}
       <GenericSheet

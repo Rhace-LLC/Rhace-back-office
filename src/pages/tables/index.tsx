@@ -8,7 +8,7 @@ import { AddTable } from "./AddTable";
 import { TableCard } from "./TableCard";
 import { ContentHOC } from "@/components/nocontent";
 import { Pagination } from "@/components/pagination";
-import { useTableData } from "./useTableData";
+import { TABLE_LIST_KEY, useTableData } from "./useTableData";
 import { Button } from "@/components/ui/button";
 import { RefreshCcw, Plus } from "lucide-react";
 import { useTableAssignments } from "./useTableAssignments";
@@ -17,34 +17,42 @@ import { useTableAssignments } from "./useTableAssignments";
  * Table management page — floor layout only.
  * Waiter assignment lives on its own route (`/tables/waiter-assignment`).
  */
+/** Tables per page (divisible by 2 and 3 so grid rows stay full). */
+const PAGE_SIZE = 9;
+
 export function TablesPage() {
   const [addTableOpen, setAddTableOpen] = useState(false);
 
-  const [totalItems, setTotalItems] = useState(0);
   const [page, setPage] = useState(1);
-  const page_size = 8;
-  const total_pages = Math.ceil(totalItems / page_size);
 
   const dataStore = useSelector((state: RootState) => state.table);
-  const allData = dataStore.data;
+  const allTables = dataStore.data[TABLE_LIST_KEY];
 
-  const toShow = useMemo(() => allData[String(page)] ?? [], [allData, page]);
+  const { fetchLoading, fetchError, fetchAllData } = useTableData({});
 
-  const { fetchLoading, fetchError, fetchAllData } = useTableData({
-    page,
-    page_size,
-  });
+  // The endpoint returns every table, so paginate client-side with a real page
+  // count (data_total was never set, so the old count was always 0).
+  const totalPages = Math.max(
+    1,
+    Math.ceil((allTables?.length ?? 0) / PAGE_SIZE)
+  );
+  const toShow = useMemo(
+    () => (allTables ?? []).slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [allTables, page]
+  );
 
   // Read-only: used to badge each table with its assigned waiter.
   const { tableWaiterMap } = useTableAssignments();
 
-  useEffect(() => setTotalItems(dataStore?.data_total || 0), [dataStore]);
-
+  // Fetch once; the list is kept in the store afterwards.
   useEffect(() => {
-    if (!toShow || toShow.length === 0) {
-      fetchAllData();
-    }
-  }, []);
+    if (!allTables) fetchAllData();
+  }, [allTables, fetchAllData]);
+
+  // Keep the current page valid if the list shrinks.
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
 
   return (
     <PageContainer>
@@ -64,6 +72,7 @@ export function TablesPage() {
       />
 
       <ContentHOC
+        skeleton="grid"
         loading={fetchLoading}
         error={!!fetchError}
         noContent={toShow.length === 0}
@@ -81,12 +90,14 @@ export function TablesPage() {
         </div>
       </ContentHOC>
 
-      {/* Pagination */}
-      <Pagination
-        currentPage={page}
-        totalPages={total_pages}
-        onPageChange={(p) => setPage(p)}
-      />
+      {/* Pagination (hidden when everything fits on one page) */}
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
+      )}
 
       <GenericSheet
         title="Table"

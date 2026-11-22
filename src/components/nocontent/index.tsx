@@ -1,8 +1,11 @@
 import React from "react";
-import { FileText, Loader2, Plus } from "lucide-react";
+import { FileText, Plus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import {
+  ContentSkeleton,
+  type SkeletonVariant,
+} from "@/components/ui/loading-skeletons";
 
 interface ContentHOCProps {
   loading: boolean;
@@ -18,6 +21,8 @@ interface ContentHOCProps {
   loadingText?: string;
   minHScreen?: boolean;
   showContentBtn?: boolean;
+  /** Shape of the loading skeleton (default "table"). */
+  skeleton?: SkeletonVariant;
 }
 
 interface NoContentPropType {
@@ -39,27 +44,14 @@ export interface NoContentData {
   actionText: string;
 }
 
-export const LoadingContent: React.FC<{ loadingText?: string }> = ({
-  loadingText,
-}) => {
-  return (
-    <Card>
-      <CardContent className="p-8 text-center">
-        <div className="flex flex-col items-center justify-center space-y-4 text-ink-muted">
-          <Loader2 className="h-12 w-12 animate-spin text-ink-subtle" />
-          <h3 className="text-lg font-medium">
-            {loadingText || "Loading content..."}
-          </h3>
-          <div className="mt-6 flex w-full flex-col space-y-3">
-            <Skeleton className="mx-auto h-4 w-3/4" />
-            <Skeleton className="mx-auto h-4 w-1/2" />
-            <Skeleton className="mx-auto h-4 w-2/3" />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
+/** Shared loading state: a skeleton shaped like the content it replaces.
+ * `loadingText` is announced to screen readers only. */
+export const LoadingContent: React.FC<{
+  loadingText?: string;
+  variant?: SkeletonVariant;
+}> = ({ loadingText, variant = "table" }) => (
+  <ContentSkeleton variant={variant} label={loadingText} />
+);
 
 export const NoContent: React.FC<NoContentPropType> = ({
   message = "No content available",
@@ -128,9 +120,10 @@ export const ContentHOC: React.FC<ContentHOCProps> = ({
   loadingText,
   children,
   showContentBtn = true,
+  skeleton = "table",
 }) => {
   if (loading) {
-    return <LoadingContent loadingText={loadingText || ""} />;
+    return <LoadingContent loadingText={loadingText} variant={skeleton} />;
   }
 
   if (error) {

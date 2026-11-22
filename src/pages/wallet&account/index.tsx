@@ -398,6 +398,7 @@ export const WalletAndAccount = () => {
       ============================================================ */}
       {error !== "No subaccount found for this restaurant" && (
         <ContentHOC
+          skeleton="detail"
           loading={loading}
           error={!!error}
           noContent={!subaccount}

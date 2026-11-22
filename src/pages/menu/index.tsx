@@ -7,7 +7,7 @@ import { Plus, Upload, FileText } from "lucide-react";
 
 import { RootState } from "@/store/store";
 import { useAuth } from "@/contexts/AuthContext";
-import { useMenuItemsData } from "./useMenuItemData";
+import { MENU_LIST_KEY, useMenuItemsData } from "./useMenuItemData";
 
 import GenericSheet from "@/components/generic_sheet_overlay";
 import { ContentHOC } from "@/components/nocontent";
@@ -35,6 +35,9 @@ import { AddDish } from "./AddDish";
 import { DraftList } from "./DraftList";
 import { BulkUploadModal } from "./BulkUploadModal";
 
+/** Dishes per page (divisible by 2, 3 and 4 so grid rows stay full). */
+const PAGE_SIZE = 12;
+
 export function MenuManagement() {
   const auth = useAuth();
   const dispatch = useDispatch();
@@ -49,20 +52,34 @@ export function MenuManagement() {
   const [editingDraftId, setEditingDraftId] = useState<string | undefined>(undefined);
 
   // Selected dish
-  const [selectedDish, setSelectedDish] = useState<any>(null);
+  const [selectedDish, setSelectedDish] = useState<MenuItem | null>(null);
 
   // MenuItems state from Redux
   const dataStore = useSelector((state: RootState) => state.menu);
-  const allData = dataStore.data;
+  const allMenuItems = dataStore.data[MENU_LIST_KEY];
 
-  const toShow = useMemo(() => allData[String(page)] ?? [], [allData, page]);
+  const { loading, error, fetchAllData } = useMenuItemsData();
 
-  const { loading, error, fetchAllData } = useMenuItemsData(page);
+  // The endpoint returns every menu item, so paginate client-side with a real
+  // page count (it used to be `page + 1`, which always offered a next page).
+  const totalPages = Math.max(
+    1,
+    Math.ceil((allMenuItems?.length ?? 0) / PAGE_SIZE)
+  );
+  const toShow = useMemo(
+    () => (allMenuItems ?? []).slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [allMenuItems, page]
+  );
 
-  // Fetch data on mount or page change
+  // Fetch once; the list is kept in the store afterwards.
   useEffect(() => {
-    if (toShow.length == 0) fetchAllData();
-  }, [page]);
+    if (!allMenuItems) fetchAllData();
+  }, [allMenuItems, fetchAllData]);
+
+  // Keep the current page valid if the list shrinks.
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
 
   // Toggle availability handler
   const handleToggleAvailability = async (dish: MenuItem) => {
@@ -79,7 +96,7 @@ export function MenuManagement() {
           updatedDish?.available ? "Available" : "Unavailable"
         }`
       );
-    } catch (err) {
+    } catch {
       toast.error("Failed to update dish availability.");
     }
   };
@@ -111,6 +128,7 @@ export function MenuManagement() {
 
       {/* Table / Content */}
       <ContentHOC
+        skeleton="grid"
         loading={loading}
         error={!!error}
         noContent={toShow.length === 0}
@@ -216,7 +234,7 @@ export function MenuManagement() {
       >
         <AddDish
           key={editingDraftId ?? "new-dish"}
-          currentPage={String(page)}
+          currentPage={MENU_LIST_KEY}
           onComplete={() => {
             setAddDishOpen(false);
             setEditingDraftId(undefined);
@@ -261,11 +279,13 @@ export function MenuManagement() {
       />
 
       {/* Pagination */}
-      <Pagination
-        currentPage={page}
-        totalPages={page + 1}
-        onPageChange={(p) => setPage(p)}
-      />
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
+      )}
     </PageContainer>
   );
 }

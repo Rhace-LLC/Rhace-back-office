@@ -1,4 +1,5 @@
 // useRestaurantProfile.ts
+import { useStableCallback } from "@/hooks/useStableCallback";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { parseError } from "@/api-services/utils/parseError";
@@ -20,7 +21,7 @@ export const useRestaurantProfile = () => {
     (state: RootState) => state.restaurantProfile.profile
   );
 
-  const fetchProfile = async () => {
+  const fetchProfile = useStableCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -34,7 +35,7 @@ export const useRestaurantProfile = () => {
     } finally {
       setLoading(false);
     }
-  };
+  });
 
   return {
     profile,

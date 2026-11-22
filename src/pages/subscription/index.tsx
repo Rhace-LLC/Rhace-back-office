@@ -208,6 +208,7 @@ export default function BillingPage() {
       />
       {isSubscription && (
         <ContentHOC
+          skeleton="detail"
           loading={loading}
           error={!!error}
           noContent={false}
@@ -273,6 +274,7 @@ export default function BillingPage() {
 
       {!isSubscription && (
         <ContentHOC
+          skeleton="grid"
           loading={plansLoading}
           error={!!plansError}
           noContent={false}

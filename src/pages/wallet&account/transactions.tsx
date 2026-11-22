@@ -1,3 +1,5 @@
+import { useStableCallback } from "@/hooks/useStableCallback";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -39,7 +41,6 @@ export const TransactionsPage = () => {
 
   const [page, setPage] = useState(1);
   const pageSize = 50;
-  const [total, setTotal] = useState(0);
 
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<Transaction | null>(null);
@@ -47,7 +48,7 @@ export const TransactionsPage = () => {
   const transactions = allTranx[String(page)] ?? [];
 
   // Fetch transactions
-  const fetchTransactions = async () => {
+  const fetchTransactions = useStableCallback(async () => {
     setLoading(true);
     try {
       const res = await getTransactionHistory(auth.token, {
@@ -63,21 +64,21 @@ export const TransactionsPage = () => {
       );
       dispatch(setPagination(res.data.pagination));
 
-      setTotal(res.data.pagination.total);
     } catch (err) {
       console.error(err);
     }
     setLoading(false);
-  };
+  });
 
   useEffect(() => {
     const existing = allTranx[String(page)];
     if (!existing) fetchTransactions();
-  }, [page]);
+  }, [page, allTranx, fetchTransactions]);
 
-  useEffect(() => {
-    setTotal(dataFromStore.pagination.page_count);
-  }, [dataFromStore]);
+  // Pages come from the API's `page_count`. (Previously the fetch set this to
+  // `pagination.total` — the ITEM count — so the pager showed far too many
+  // pages until the store effect overwrote it.)
+  const totalPages = Math.max(1, dataFromStore.pagination?.page_count ?? 1);
 
   return (
     <div className="space-y-6">
@@ -96,13 +97,18 @@ export const TransactionsPage = () => {
           </TableHeader>
 
           <TableBody>
-            {loading && (
-              <TableRow>
-                <TableCell colSpan={6} className="py-6 text-center">
-                  Loading...
-                </TableCell>
-              </TableRow>
-            )}
+            {loading &&
+              // Skeleton rows under the real header (same loading pattern as
+              // every other page).
+              Array.from({ length: 5 }).map((_, r) => (
+                <TableRow key={`skeleton-${r}`} aria-busy="true">
+                  {Array.from({ length: 6 }).map((_, c) => (
+                    <TableCell key={c} className="py-4">
+                      <Skeleton className="h-4 w-full max-w-[140px]" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
 
             {!loading &&
               transactions.map((tx) => (
@@ -186,14 +192,16 @@ export const TransactionsPage = () => {
         </Table>
       </div>
 
-      {/* PAGINATION */}
-      <div className="flex justify-end gap-4">
-        <Pagination
-          currentPage={page}
-          onPageChange={setPage}
-          totalPages={total}
-        />
-      </div>
+      {/* PAGINATION (hidden when everything fits on one page) */}
+      {totalPages > 1 && (
+        <div className="flex justify-end gap-4">
+          <Pagination
+            currentPage={page}
+            onPageChange={setPage}
+            totalPages={totalPages}
+          />
+        </div>
+      )}
     </div>
   );
 };

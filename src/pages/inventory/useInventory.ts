@@ -4,7 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { parseError } from "@/api-services/utils/parseError";
 import { getInventoryItems } from "@/api-services/inventory.service";
 import { RootState } from "@/store/store";
-import { updateInventoryData } from "@/store/inventory.slice";
+import {
+  updateInventoryData,
+  updateInventoryTotal,
+} from "@/store/inventory.slice";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface UseInventoryProps {
@@ -27,6 +30,8 @@ export const useInventory = ({ page, page_size = 10 }: UseInventoryProps) => {
       setError("");
       const res = await getInventoryItems({ page, page_size }, auth.token);
       dispatch(updateInventoryData({ key: String(page), data: res.results }));
+      // Total item count across all pages (paginated endpoint) for the pager.
+      dispatch(updateInventoryTotal(res.count ?? res.results.length));
     } catch (err) {
       setError(parseError(err) || "Failed to fetch inventory.");
     } finally {

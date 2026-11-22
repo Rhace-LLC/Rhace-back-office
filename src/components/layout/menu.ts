@@ -20,7 +20,6 @@ import {
   CreditCard,
   Wallet,
   Sparkles,
-  Gamepad2,
   LayoutGrid,
   UserCheck,
   Bug,

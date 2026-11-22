@@ -17,6 +17,7 @@ export const Profile = () => {
         description="Your personal details and account security"
       />
       <ContentHOC
+        skeleton="detail"
         loading={loading}
         error={!!error}
         noContent={!profile}

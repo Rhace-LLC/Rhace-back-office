@@ -1,3 +1,4 @@
+import { CardGridSkeleton } from "@/components/ui/loading-skeletons";
 import { Assignment } from "@/api-services/menu.service";
 import { cn } from "@/lib/utils";
 import {
@@ -37,12 +38,7 @@ export const WaiterAssignmentView = ({
 
       {/* --- LOADING STATE --- */}
       {isRefreshing ? (
-        <div className="flex flex-col items-center justify-center rounded-3xl bg-inset p-12 text-center ring-1 ring-line-subtle">
-          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-surface shadow-sm ring-1 ring-line-subtle">
-            <RefreshCcw size={32} strokeWidth={1.2} className="text-ink-subtle animate-spin" />
-          </div>
-          <p className="text-[14px] font-medium text-ink-subtle">Loading assignment details...</p>
-        </div>
+        <CardGridSkeleton count={3} label="Loading assignment details…" />
       ) : !assignment ? (
         /* --- EMPTY STATE: NO ASSIGNMENT --- */
         <div className="flex flex-col items-center justify-center rounded-3xl bg-inset p-12 text-center ring-1 ring-line-subtle">

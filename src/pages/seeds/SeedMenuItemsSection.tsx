@@ -1,3 +1,4 @@
+import { ListSkeleton } from "@/components/ui/loading-skeletons";
 import formatPrice from "@/utils/formatPrice";
 import { useCallback, useEffect, useState } from "react";
 import { ImagePlus, Pencil, Plus, RefreshCcw, Trash2, X } from "lucide-react";
@@ -477,7 +478,7 @@ export function SeedMenuItemsSection() {
       )}
 
       {loading && items.length === 0 ? (
-        <p className="py-8 text-center text-sm text-ink-muted">Loading…</p>
+        <ListSkeleton rows={3} />
       ) : items.length === 0 ? (
         <p className="rounded-[20px] border border-dashed border-line py-10 text-center text-sm text-ink-muted">
           No seed dishes yet. Create the first one above.

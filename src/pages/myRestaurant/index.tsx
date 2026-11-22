@@ -27,7 +27,7 @@ export default function RestaurantProfilePage() {
     if (!profile) {
       fetchProfile();
     }
-  }, [profile]);
+  }, [profile, fetchProfile]);
 
   const handleSaveUpdate = async (data: RestaurantProfile) => {
     try {
@@ -59,7 +59,7 @@ export default function RestaurantProfilePage() {
         opening_hours: sortedOpeningHours,
       }; // replace opening_hours with sorted array
 
-      let update1 = await updateRestaurantProfile(
+      const update1 = await updateRestaurantProfile(
         String(profile?.id),
         profileData,
         auth.token
@@ -75,7 +75,7 @@ export default function RestaurantProfilePage() {
 
         const appendImage = async (
           field: "logo" | "cover_image",
-          value: any
+          value: unknown
         ) => {
           if (!value) return;
 
@@ -93,7 +93,7 @@ export default function RestaurantProfilePage() {
         await appendImage("cover_image", cover_image);
 
         // Call the API again with FormData
-        let update1 = await patchRestaurantProfile(
+        const update1 = await patchRestaurantProfile(
           String(profile?.id),
           formData,
           auth.token
@@ -118,6 +118,7 @@ export default function RestaurantProfilePage() {
         description="How guests see your restaurant"
       />
       <ContentHOC
+        skeleton="detail"
         loading={loading}
         error={!!error}
         noContent={!profile && !loading}
