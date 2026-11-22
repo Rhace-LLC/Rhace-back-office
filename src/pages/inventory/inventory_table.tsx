@@ -60,7 +60,7 @@ const RenderInventoryTableData: React.FC<Props> = ({ data, onView }) => {
             <TableCell>
               <span
                 className={`font-medium ${
-                  item.available ? "text-green-600" : "text-red-500"
+                  item.available ? "text-success" : "text-danger"
                 }`}
               >
                 {item.available ? "Yes" : "No"}
@@ -71,7 +71,7 @@ const RenderInventoryTableData: React.FC<Props> = ({ data, onView }) => {
             <TableCell>
               <span
                 className={`font-medium ${
-                  item.is_allergen ? "text-red-500" : "text-ink-secondary"
+                  item.is_allergen ? "text-danger" : "text-ink-secondary"
                 }`}
               >
                 {item.is_allergen ? "Yes" : "No"}

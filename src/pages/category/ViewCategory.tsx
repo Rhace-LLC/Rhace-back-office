@@ -67,7 +67,7 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
       dispatch(updateCategoryDataById(res));
 
       toast.success("Category updated successfully!");
-    } catch (error: any) {
+    } catch (error) {
       const errorMessage = parseError(error) || "Failed to update category.";
       console.error(errorMessage);
       toast.error(errorMessage);
@@ -91,7 +91,7 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
                   className="h-56 w-full rounded-3xl border border-line object-cover"
                 />
               ) : (
-                <div className="flex h-56 w-full items-center justify-center rounded-3xl border-2 border-dashed bg-gradient-to-r from-blue-100 via-pink-100 to-purple-100 font-medium text-ink-secondary">
+                <div className="flex h-56 w-full items-center justify-center rounded-3xl border-2 border-dashed border-line bg-inset font-medium text-ink-secondary">
                   No Image Available
                 </div>
               )}
@@ -166,7 +166,7 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
           {/* Cute Image Upload */}
           <div className="space-y-2">
             <Label htmlFor="image">Category Image</Label>
-            <div className="relative flex cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-line p-3 transition-colors duration-200 hover:border-blue-400">
+            <div className="relative flex cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-line p-3 transition-colors duration-200 hover:border-brand">
               <input
                 id="image"
                 type="file"
@@ -191,7 +191,7 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
                 </div>
               ) : (
                 <div className="flex flex-col items-center text-ink-muted">
-                  <ImagePlus size={36} className="mb-2 text-blue-400" />
+                  <ImagePlus size={36} className="mb-2 text-brand" />
                   <span className="text-sm">Click to upload an image</span>
                 </div>
               )}

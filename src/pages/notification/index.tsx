@@ -1,4 +1,5 @@
 // components/notifications/Notifications.tsx
+import { useStableCallback } from "@/hooks/useStableCallback";
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { registerSessionCache } from "@/lib/sessionCache";
 import { useState, useEffect } from "react";
@@ -95,21 +96,21 @@ const getNotificationIcon = (
 ): { icon: LucideIcon; color: string } => {
   switch (type) {
     case "new_order":
-      return { icon: UtensilsCrossed, color: "text-blue-600" };
+      return { icon: UtensilsCrossed, color: "text-brand" };
     case "table_assigned":
-      return { icon: Users, color: "text-green-600" };
+      return { icon: Users, color: "text-success" };
     case "low_inventory":
-      return { icon: AlertTriangle, color: "text-red-600" };
+      return { icon: AlertTriangle, color: "text-danger" };
     case "order_ready":
-      return { icon: CheckCircle, color: "text-green-600" };
+      return { icon: CheckCircle, color: "text-success" };
     case "table_cleaning":
-      return { icon: Users, color: "text-yellow-600" };
+      return { icon: Users, color: "text-warning" };
     case "shift_reminder":
       return { icon: Clock, color: "text-ink-secondary" };
     case "kitchen_delay":
-      return { icon: AlertTriangle, color: "text-red-600" };
+      return { icon: AlertTriangle, color: "text-danger" };
     case "customer_request":
-      return { icon: Bell, color: "text-blue-600" };
+      return { icon: Bell, color: "text-brand" };
     default:
       return { icon: Bell, color: "text-ink-secondary" };
   }
@@ -156,7 +157,7 @@ export function Notifications() {
   };
 
   // Background refresh function
-  const backgroundRefresh = async () => {
+  const backgroundRefresh = useStableCallback(async () => {
     if (!token || backgroundFetchInProgress) return;
 
     try {
@@ -202,10 +203,10 @@ export function Notifications() {
     } finally {
       backgroundFetchInProgress = false;
     }
-  };
+  });
 
   // Main fetch function with cache - FIXED to prevent loading flash
-  const fetchNotifications = async (forceRefresh = false) => {
+  const fetchNotifications = useStableCallback(async (forceRefresh = false) => {
     if (!token) {
       setLoading(false);
       setInitialLoadComplete(true);
@@ -285,7 +286,7 @@ export function Notifications() {
       setRefreshing(false);
       setInitialLoadComplete(true);
     }
-  };
+  });
 
   // Manual refresh function
   const handleRefresh = async () => {
@@ -294,7 +295,7 @@ export function Notifications() {
   };
 
   // Fetch unread count separately if needed
-  const fetchUnreadCount = async () => {
+  const fetchUnreadCount = useStableCallback(async () => {
     if (!token) return;
 
     try {
@@ -303,7 +304,7 @@ export function Notifications() {
     } catch (error) {
       console.error("🔔 Notifications - Error fetching unread count:", error);
     }
-  };
+  });
 
   // Initial load and background refresh setup
   useEffect(() => {
@@ -323,7 +324,7 @@ export function Notifications() {
       setLoading(false);
       setInitialLoadComplete(true);
     }
-  }, [token]);
+  }, [token, backgroundRefresh, fetchNotifications, fetchUnreadCount]);
 
   // Update local state when marking as read
   const markAsRead = async (id: number) => {
@@ -508,7 +509,7 @@ export function Notifications() {
     return (
       <div className="flex items-center justify-center p-5">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+          <Loader2 className="h-8 w-8 animate-spin text-brand" />
           <p className="text-muted-foreground">Loading notifications...</p>
         </div>
       </div>
@@ -661,7 +662,7 @@ export function Notifications() {
                 return (
                   <div
                     key={notification.id}
-                    className={`flex items-start gap-3 rounded-2xl border border-l-4 p-4 transition-all ${priorityColors[notification.priority]} ${notification.read ? "bg-muted/20" : "bg-background border"} ${!notification.read ? "shadow-sm" : ""} `}
+                    className={`flex items-start gap-3 rounded-2xl border border-l-4 p-4 transition-all ${priorityColors[notification.priority]} ${notification.read ? "bg-inset" : "bg-background border"} ${!notification.read ? "shadow-sm" : ""} `}
                   >
                     <div className={`mt-1 ${notification.color}`}>
                       <IconComponent className="h-5 w-5" />
@@ -685,7 +686,7 @@ export function Notifications() {
                               {priorityBadges[notification.priority].text}
                             </Badge>
                             {!notification.read && (
-                              <div className="h-2 w-2 rounded-full bg-blue-600"></div>
+                              <div className="h-2 w-2 rounded-full bg-brand"></div>
                             )}
                           </div>
                           <p

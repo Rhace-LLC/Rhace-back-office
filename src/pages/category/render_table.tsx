@@ -14,7 +14,7 @@ export default function RenderTableData({ data }: { data: CategoryData[] }) {
         <div className="relative w-full overflow-x-auto">
           <table className="w-full caption-bottom text-sm">
             <thead className="[&_tr]:border-b">
-              <tr className="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors">
+              <tr className="hover:bg-inset data-[state=selected]:bg-muted border-b transition-colors">
                 <th className="h-10 px-2 text-left font-medium">Image</th>
                 <th className="h-10 px-2 text-left font-medium">
                   Category Name
@@ -31,7 +31,7 @@ export default function RenderTableData({ data }: { data: CategoryData[] }) {
               {data.map((item, index) => (
                 <tr
                   key={index}
-                  className="hover:bg-muted/50 border-b transition-colors"
+                  className="hover:bg-inset border-b transition-colors"
                 >
                   <td className="px-3 py-2">
                     <img

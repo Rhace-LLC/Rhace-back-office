@@ -23,9 +23,9 @@ interface StatsAdminDashboardProps {
 const getTrendIcon = (trend: "up" | "down" | "stable") => {
   switch (trend) {
     case "up":
-      return <TrendingUp className="h-4 w-4 text-green-600" />;
+      return <TrendingUp className="h-4 w-4 text-success" />;
     case "down":
-      return <TrendingDown className="h-4 w-4 text-red-600" />;
+      return <TrendingDown className="h-4 w-4 text-danger" />;
     default:
       return <Minus className="h-4 w-4 text-ink-secondary" />;
   }
@@ -57,7 +57,7 @@ export function StatsAdminDashboard({
       trend: active_orders.trend,
       period: active_orders.period,
       icon: <Coffee className="text-muted-foreground h-4 w-4" />,
-      color: "text-blue-600",
+      color: "text-brand",
     },
     {
       title: "Today's Revenue",
@@ -66,7 +66,7 @@ export function StatsAdminDashboard({
       trend: todays_revenue.trend,
       period: todays_revenue.period,
       icon: <CreditCard className="text-muted-foreground h-4 w-4" />,
-      color: "text-green-600",
+      color: "text-success",
     },
     {
       title: "Table Occupancy",
@@ -75,7 +75,7 @@ export function StatsAdminDashboard({
       trend: "stable" as const,
       period: `${table_occupancy.occupied}/${table_occupancy.total} tables`,
       icon: <Utensils className="text-muted-foreground h-4 w-4" />,
-      color: "text-purple-600",
+      color: "text-brand",
     },
     {
       title: "Active Staff",
@@ -84,7 +84,7 @@ export function StatsAdminDashboard({
       trend: "stable" as const,
       period: staff_active.coverage,
       icon: <Users className="text-muted-foreground h-4 w-4" />,
-      color: "text-orange-600",
+      color: "text-warning",
     },
     {
       title: "Avg Order Value",
@@ -93,7 +93,7 @@ export function StatsAdminDashboard({
       trend: "stable" as const,
       period: "per order",
       icon: <Target className="text-muted-foreground h-4 w-4" />,
-      color: "text-red-600",
+      color: "text-danger",
     },
     {
       title: "Wait Time Accuracy",
@@ -104,7 +104,7 @@ export function StatsAdminDashboard({
       trend: "stable" as const,
       period: "average accuracy",
       icon: <Clock className="text-muted-foreground h-4 w-4" />,
-      color: "text-indigo-600",
+      color: "text-brand",
     },
   ];
 
@@ -128,9 +128,9 @@ export function StatsAdminDashboard({
                   <span
                     className={
                       stat.trend === "up"
-                        ? "text-green-600"
+                        ? "text-success"
                         : stat.trend === "down"
-                          ? "text-red-600"
+                          ? "text-danger"
                           : "text-ink-secondary"
                     }
                   >

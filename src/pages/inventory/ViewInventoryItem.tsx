@@ -184,9 +184,9 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
               name="is_allergen"
               checked={editableItem.is_allergen}
               onChange={handleChange}
-              className="h-4 w-4 rounded-lg border-line focus:ring-red-500"
+              className="h-4 w-4 rounded-lg border-line focus:ring-danger"
             />
-            <span className="text-sm font-medium text-red-600">
+            <span className="text-sm font-medium text-danger">
               This ingredient contains allergens
             </span>
           </div>
@@ -238,7 +238,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
               onChange={(e) =>
                 setTransactionType(e.target.value as InventoryTransactionType)
               }
-              className="w-full rounded-2xl border border-line bg-surface px-3 py-2 shadow-sm focus:border-brand focus:ring focus:ring-indigo-200"
+              className="w-full rounded-2xl border border-line bg-surface px-3 py-2 shadow-sm focus:border-brand focus:ring focus:ring-brand-accent"
             >
               <option value="wastage">Wastage</option>
               <option value="restock">Restock</option>
@@ -251,7 +251,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
           {/* Save / Cancel */}
           <div className="flex gap-2">
             <Button
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-success-strong hover:bg-success"
               onClick={() => handleUpdateQuantity()}
               disabled={isSavingQuantity}
             >

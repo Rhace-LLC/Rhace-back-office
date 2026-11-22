@@ -8,35 +8,40 @@ import {
 
 import { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
-// adjust path
 
-export function useCategoryData(page: number) {
+/**
+ * The store key holding the full category list. The categories endpoint is
+ * not paginated (it returns every category), so we keep the whole list under
+ * one key and paginate client-side. `appendCategoryToPage({ key: "1" })` in
+ * the add-category flows relies on this key.
+ */
+export const CATEGORY_LIST_KEY = "1";
+
+export function useCategoryData() {
   const dispatch = useDispatch();
-
-  const auth = useAuth();
+  const { restaurants, token } = useAuth();
+  const restaurantId = restaurants?.[0]?.id;
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const fetchAllData = useCallback(async () => {
+    if (!restaurantId) return;
     try {
       setLoading(true);
       setError("");
 
-      const res = await getAllCategories(auth.restaurants[0].id, auth.token);
+      const res = await getAllCategories(restaurantId, token);
+      const list = Array.isArray(res) ? res : [];
 
-      // store paginated data
-      dispatch(updateCategoryData({ key: String(page), data: res }));
-
-      // update total (if you want dynamic total, replace 69)
-      dispatch(updateCategoryTotal({ data_total: 69 }));
+      dispatch(updateCategoryData({ key: CATEGORY_LIST_KEY, data: list }));
+      dispatch(updateCategoryTotal({ data_total: list.length }));
     } catch (err) {
-      console.error(err);
       setError(parseError(err) || "Failed to fetch categories.");
     } finally {
       setLoading(false);
     }
-  }, [auth, dispatch, page]);
+  }, [restaurantId, token, dispatch]);
 
   return {
     loading,

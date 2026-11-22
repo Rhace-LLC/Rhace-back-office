@@ -145,7 +145,7 @@ export function SignUp() {
   };
 
   const inputError = (field: string) =>
-    `${authField} ${errors[field] ? "border-red-400" : ""}`;
+    `${authField} ${errors[field] ? "border-danger" : ""}`;
 
   return (
     <div className={`${authPage} relative overflow-hidden py-10 sm:py-14`}>
@@ -186,7 +186,7 @@ export function SignUp() {
                   }
                 />
                 {errors.owner_first_name && (
-                  <p className="mt-1 text-xs text-red-500">
+                  <p className="mt-1 text-xs text-danger">
                     {errors.owner_first_name}
                   </p>
                 )}
@@ -202,7 +202,7 @@ export function SignUp() {
                   }
                 />
                 {errors.owner_last_name && (
-                  <p className="mt-1 text-xs text-red-500">
+                  <p className="mt-1 text-xs text-danger">
                     {errors.owner_last_name}
                   </p>
                 )}
@@ -220,7 +220,7 @@ export function SignUp() {
                   onChange={(e) => handleChange("owner_email", e.target.value)}
                 />
                 {errors.owner_email && (
-                  <p className="mt-1 text-xs text-red-500">{errors.owner_email}</p>
+                  <p className="mt-1 text-xs text-danger">{errors.owner_email}</p>
                 )}
               </div>
 
@@ -233,7 +233,7 @@ export function SignUp() {
                   onChange={(e) => handleChange("owner_phone", e.target.value)}
                 />
                 {errors.owner_phone && (
-                  <p className="mt-1 text-xs text-red-500">{errors.owner_phone}</p>
+                  <p className="mt-1 text-xs text-danger">{errors.owner_phone}</p>
                 )}
               </div>
             </div>
@@ -259,7 +259,7 @@ export function SignUp() {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="mt-1 text-xs text-red-500">{errors.password}</p>
+                  <p className="mt-1 text-xs text-danger">{errors.password}</p>
                 )}
               </div>
 
@@ -293,7 +293,7 @@ export function SignUp() {
                   </button>
                 </div>
                 {errors.confirm_password && (
-                  <p className="mt-1 text-xs text-red-500">
+                  <p className="mt-1 text-xs text-danger">
                     {errors.confirm_password}
                   </p>
                 )}

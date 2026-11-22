@@ -11,7 +11,7 @@ export const MapCentered = ({ children }: { children: ReactNode }) => (
 export const MapStatusBadge = () => (
   <div className="pointer-events-none absolute top-6 right-6 left-6 flex justify-center">
     <div className="flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 shadow-md">
-      <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
+      <div className="h-2 w-2 animate-pulse rounded-full bg-success-strong" />
       <span className="text-[11px] font-bold tracking-wider text-ink-muted uppercase">
         Live GPS Active
       </span>

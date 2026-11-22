@@ -1,3 +1,4 @@
+import { orderStatusClass } from "@/utils/orderStatus";
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
@@ -31,16 +32,6 @@ interface OrderDetailsDialogProps {
   tables: Table[];
 }
 
-const statusBadgeStyles: Record<OrderStatus, string> = {
-  paid: "bg-inset-accent text-brand border-brand",
-  received: "bg-inset-accent text-brand border-brand",
-  preparing: "bg-[#FEF3C7] text-[#D97706] border-[#FCD34D]",
-  ready: "bg-[#D1FAE5] text-emerald-600 border-[#6EE7B7]",
-  served: "bg-[#E0E7FF] text-[#4338CA] border-[#A5B4FC]",
-  completed: "bg-[#F3F4F6] text-[#374151] border-[#D1D5DB]",
-  cancelled: "bg-[#FEE2E2] text-[#DC2626] border-[#FCA5A5]",
-  delivered: "bg-[#F3E8FF] text-[#7E22CE] border-[#D8B4FE]",
-};
 
 const statusIcons: Record<OrderStatus, React.ReactNode> = {
   paid: <CheckCircle className="h-3.5 w-3.5" />,
@@ -147,7 +138,7 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
     if (!onWaiterConfirm || isConfirming) return;
     await onWaiterConfirm(order.id);
     toast.success("Order confirmed", {
-      icon: <Check className="h-4 w-4 text-emerald-600" />,
+      icon: <Check className="h-4 w-4 text-success" />,
     });
   };
 
@@ -183,13 +174,13 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
         <div className="flex items-center justify-between pb-3 border-b border-line-subtle">
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-bold tracking-tight">Order #{order.id}</h3>
-            {isKitchen && <Badge className="bg-[#FFF7ED] text-[#C2410C] border-[#FFEDD5]">Kitchen</Badge>}
-            {isWaiter && <Badge className="bg-[#EFF6FF] text-[#1D4ED8] border-[#DBEAFE]">Waiter</Badge>}
-            {isOwner && <Badge className="bg-[#ECFDF5] text-[#047857] border-[#D1FAE5]">Owner</Badge>}
+            {isKitchen && <Badge className="bg-warning-soft text-warning border-warning-line">Kitchen</Badge>}
+            {isWaiter && <Badge className="bg-inset-accent text-brand border-brand-accent">Waiter</Badge>}
+            {isOwner && <Badge className="bg-success-soft text-success border-success-line">Owner</Badge>}
           </div>
           <Badge
             variant="outline"
-            className={`${statusBadgeStyles[order.status as OrderStatus]} flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold capitalize`}
+            className={`${orderStatusClass(order.status)} flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold capitalize`}
           >
             {statusIcons[order.status as OrderStatus]}
             {order.status}
@@ -202,20 +193,20 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
             <div
               className={`flex items-center justify-between gap-3 rounded-3xl border p-3 text-sm ${
                 isConfirmed
-                  ? "border-[#6EE7B7] bg-[#ECFDF5]"
-                  : "border-[#FCD34D] bg-[#FFFBEB]"
+                  ? "border-success-line bg-success-soft"
+                  : "border-warning-line bg-warning-soft"
               }`}
             >
               <div className="flex items-center gap-2">
                 {isConfirmed ? (
-                  <CheckCircle className="h-4 w-4 text-emerald-600" />
+                  <CheckCircle className="h-4 w-4 text-success" />
                 ) : (
-                  <Clock className="h-4 w-4 text-[#D97706]" />
+                  <Clock className="h-4 w-4 text-warning-strong" />
                 )}
                 <div>
                   <div
                     className={`font-semibold ${
-                      isConfirmed ? "text-[#065F46]" : "text-[#92400E]"
+                      isConfirmed ? "text-success" : "text-warning"
                     }`}
                   >
                     {isConfirmed ? "Confirmed by waiter" : "Awaiting waiter confirmation"}
@@ -233,7 +224,7 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
                 <button
                   onClick={handleWaiterConfirmClick}
                   disabled={isConfirming}
-                  className="flex h-9 items-center gap-1.5 rounded-2xl bg-[#059669] px-4 text-xs font-semibold text-white hover:bg-[#047857] disabled:opacity-60"
+                  className="flex h-9 items-center gap-1.5 rounded-2xl bg-success-strong px-4 text-xs font-semibold text-white hover:bg-success disabled:opacity-60"
                 >
                   <Check className="h-4 w-4" />
                   {isConfirming ? "Confirming…" : "Confirm Order"}

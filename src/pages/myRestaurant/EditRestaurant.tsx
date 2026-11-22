@@ -69,8 +69,10 @@ export default function EditRestaurantProfile({
   );
 
   /** Update text fields */
-  const updateField = (key: keyof RestaurantProfile, value: any) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  // `value` is unknown because logo / cover_image temporarily hold a File
+  // (sent as multipart on save) while the profile type declares strings.
+  const updateField = (key: keyof RestaurantProfile, value: unknown) => {
+    setForm((prev) => ({ ...prev, [key]: value }) as RestaurantProfile);
   };
 
   /** Handle image upload */
@@ -95,10 +97,10 @@ export default function EditRestaurantProfile({
 
     if (type === "logo") {
       setLogoPreview(url);
-      updateField("logo", file as any);
+      updateField("logo", file);
     } else {
       setCoverPreview(url);
-      updateField("cover_image", file as any);
+      updateField("cover_image", file);
     }
   };
 
@@ -243,14 +245,14 @@ export default function EditRestaurantProfile({
 
             {!pickAddrFromMap && (
               <div className="relative ml-1 flex h-2 w-2">
-                <div className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
-                <div className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
+                <div className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-75" />
+                <div className="relative inline-flex h-2 w-2 rounded-full bg-brand" />
               </div>
             )}
           </button>
         </div>
 
-        <div className="relative overflow-hidden rounded-[2.5rem] bg-inset/50 ring-1 ring-gray-100">
+        <div className="relative overflow-hidden rounded-3xl bg-inset ring-1 ring-line-subtle">
           {pickAddrFromMap && (
             <div className="animate-in fade-in zoom-in-95 duration-500">
               <MapPicker
@@ -475,12 +477,12 @@ export default function EditRestaurantProfile({
           {(form.tags ?? []).map((tag: string) => (
             <div
               key={tag}
-              className="flex cursor-default items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 transition duration-200 hover:bg-indigo-100"
+              className="flex cursor-default items-center gap-1 rounded-full bg-inset-accent px-3 py-1 text-sm font-medium text-brand-active transition duration-200 hover:bg-inset-accent"
             >
               <span>{tag}</span>
               <X
                 size={12}
-                className="cursor-pointer text-indigo-500 transition hover:text-indigo-700"
+                className="cursor-pointer text-brand transition hover:text-brand-active"
                 onClick={() => updateTag(tag)}
               />
             </div>
@@ -527,7 +529,7 @@ export default function EditRestaurantProfile({
                 }}
                 className={`rounded-full border px-4 py-1.5 text-sm font-medium shadow-sm transition duration-200 ${
                   isActive
-                    ? "border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700"
+                    ? "border-brand bg-brand text-white hover:bg-brand-hover"
                     : "border-line bg-inset text-ink-secondary hover:bg-inset-accent"
                 } `}
               >
@@ -588,7 +590,7 @@ export default function EditRestaurantProfile({
       {/* SAVE BUTTON */}
       <div className="border-t pt-6">
         <Button
-          className="h-12 w-full rounded-2xl bg-indigo-600 text-base font-semibold shadow-lg transition duration-200 hover:bg-indigo-700"
+          className="h-12 w-full rounded-2xl bg-brand text-base font-semibold shadow-lg transition duration-200 hover:bg-brand-hover"
           onClick={handleSave}
         >
           Save Changes

@@ -122,7 +122,7 @@ export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
                 )}
 
                 {menuItem?.allergens && menuItem.allergens.length > 0 && (
-                  <div className="flex items-center gap-1.5 text-xs text-red-700">
+                  <div className="flex items-center gap-1.5 text-xs text-danger-strong">
                     <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
                     <span className="text-[11px] font-medium">Allergens: {menuItem.allergens.join(", ")}</span>
                   </div>

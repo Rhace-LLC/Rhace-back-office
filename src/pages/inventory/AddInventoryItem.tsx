@@ -80,7 +80,7 @@ export const AddInventoryItem: React.FC<{
       toast.success(`${formData.name} added successfully!`);
       setFormData(initialFormData); // Reset form to initial state
       onSuccess();
-    } catch (error: any) {
+    } catch (error) {
       toast.error("Failed to add item. Check console for details.");
       console.error("Inventory item creation failed:", error);
     } finally {
@@ -165,11 +165,11 @@ export const AddInventoryItem: React.FC<{
             checked={formData.is_allergen}
             onChange={handleChange}
             // Using native input with custom Tailwind classes for modern look
-            className="h-4 w-4 rounded-lg border-line text-red-600 focus:ring-red-500"
+            className="h-4 w-4 rounded-lg border-line text-danger focus:ring-danger"
           />
           <Label
             htmlFor="is_allergen"
-            className="text-sm font-medium text-red-600"
+            className="text-sm font-medium text-danger"
           >
             Designate as Allergen
           </Label>

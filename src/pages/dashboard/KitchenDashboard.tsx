@@ -162,7 +162,7 @@ export const KitchenDashboard = () => {
       </div>
 
       {error && (
-        <div className="flex items-center justify-between gap-3 rounded-3xl border border-red-100 bg-red-50 p-4 text-sm text-red-600">
+        <div className="flex items-center justify-between gap-3 rounded-3xl border border-danger-line bg-danger-soft p-4 text-sm text-danger">
           <span>{error}</span>
           <Button variant="outline" size="sm" onClick={() => fetchOrders()}>
             Retry

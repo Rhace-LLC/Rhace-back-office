@@ -157,7 +157,7 @@ export const WaiterDashboard = () => {
       </div>
 
       {error && (
-        <div className="flex items-center justify-between gap-3 rounded-3xl border border-red-100 bg-red-50 p-4 text-sm text-red-600">
+        <div className="flex items-center justify-between gap-3 rounded-3xl border border-danger-line bg-danger-soft p-4 text-sm text-danger">
           <span>{error}</span>
           <Button variant="outline" size="sm" onClick={() => fetchOrders()}>
             Retry
@@ -220,7 +220,7 @@ export const WaiterDashboard = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="border-green-200 bg-green-50 text-green-700 hover:bg-green-100"
+                          className="border-success-line bg-success-soft text-success hover:bg-success-soft"
                           disabled={isConfirming}
                           onClick={() => handleConfirm(order.id)}
                         >
@@ -256,7 +256,7 @@ export const WaiterDashboard = () => {
                 ))}
 
               {!tablesLoading && tablesError && (
-                <div className="rounded-2xl border border-red-100 bg-red-50 p-4 text-sm text-red-600">
+                <div className="rounded-2xl border border-danger-line bg-danger-soft p-4 text-sm text-danger">
                   {tablesError}
                 </div>
               )}

@@ -10,7 +10,9 @@ import RenderTableData from "./render_table";
 import { ContentHOC } from "@/components/nocontent";
 import GenericSheet from "@/components/generic_sheet_overlay";
 import AddCategoryForm from "./add_category";
-import { useCategoryData } from "./useCategoryData";
+import { CATEGORY_LIST_KEY, useCategoryData } from "./useCategoryData";
+
+const PAGE_SIZE = 10;
 
 const CategoryPage: React.FC = () => {
   const [addSheetOpen, setAddSheetOpen] = useState<boolean>(false);
@@ -18,28 +20,33 @@ const CategoryPage: React.FC = () => {
   const [page, setPage] = useState(1);
 
   const dataStore = useSelector((state: RootState) => state.category);
-  const allData = dataStore.data;
+  const allCategories = dataStore.data[CATEGORY_LIST_KEY];
 
-  // Hook for fetching categories
   const {
     fetchAllData,
     loading: fetchAllDataLoading,
     error: fetchAllDataError,
-  } = useCategoryData(page);
+  } = useCategoryData();
 
-  // ========== Normal Mode Slice ==========
-  const toShow = React.useMemo(() => {
-    return allData[String(page)] ?? [];
-  }, [allData, page]);
+  // The endpoint returns every category, so paginate client-side.
+  const totalPages = Math.max(
+    1,
+    Math.ceil((allCategories?.length ?? 0) / PAGE_SIZE)
+  );
+  const toShow = React.useMemo(
+    () => (allCategories ?? []).slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [allCategories, page]
+  );
 
-  // Normal mode pagination
+  // Fetch once; the list is kept in the store afterwards.
   useEffect(() => {
-    const pageData = allData[String(page)];
+    if (!allCategories) fetchAllData();
+  }, [allCategories, fetchAllData]);
 
-    if (!pageData) {
-      fetchAllData();
-    }
-  }, [page, allData]);
+  // Keep the current page valid if the list shrinks.
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
 
   return (
     <PageContainer>
@@ -67,12 +74,14 @@ const CategoryPage: React.FC = () => {
         <RenderTableData data={toShow} />
       </ContentHOC>
 
-      {/* Pagination */}
-      <Pagination
-        currentPage={page}
-        totalPages={page + 1}
-        onPageChange={(p) => setPage(p)}
-      />
+      {/* Pagination (hidden when everything fits on one page) */}
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
+      )}
 
       {
         <GenericSheet

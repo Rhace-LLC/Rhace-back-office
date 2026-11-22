@@ -34,6 +34,8 @@
   --radius-md: 16px;
   --radius-lg: 20px;
   --radius-xl: 28px;
+  --radius-2xl: 16px; /* buttons, inputs, chips (--radius-button) */
+  --radius-3xl: 28px; /* base cards (--radius-card-lg) */
   --radius-full: 9999px;
 
   /* ---- surfaces (all opaque) ---- */
@@ -67,6 +69,23 @@
   --color-line-subtle: #eef2f7;
   --color-line-strong: #cbd5e1;
 
+  /* ---- semantic status (status chips, alerts, validation) ----
+     Each has: base (text / solid fill), -soft (tinted well), -line (border).
+     Use these instead of raw red/green/amber palette classes.
+     "info" is the brand blue: use text-brand / bg-inset-accent / border-brand-accent. */
+  --color-success: #15803d;
+  --color-success-strong: #16a34a;
+  --color-success-soft: #ecfdf3;
+  --color-success-line: #bbf7d0;
+  --color-warning: #b45309;
+  --color-warning-strong: #d97706;
+  --color-warning-soft: #fffbeb;
+  --color-warning-line: #fde68a;
+  --color-danger: #dc2626;
+  --color-danger-strong: #b91c1c;
+  --color-danger-soft: #fef2f2;
+  --color-danger-line: #fecaca;
+
   /* ---- shadows (ambient, no blur filters) ---- */
   --shadow-sm: 0px 8px 24px -4px rgb(15 23 42 / 0.05);
   --shadow-md: 0px 8px 24px -4px rgb(15 23 42 / 0.05);
@@ -90,7 +109,7 @@
   --color-muted-foreground: #64748b;
   --color-accent: #ebf1ff;
   --color-accent-foreground: #0f172a;
-  --color-destructive: oklch(0.577 0.245 27.325);
+  --color-destructive: #dc2626;
   --color-destructive-foreground: #ffffff;
   --color-border: #e2e8f0;
   --color-input: #e2e8f0;
@@ -166,4 +185,12 @@
 html body[data-scroll-locked] {
   margin-right: var(--removed-body-scrollbar-size, 0px) !important;
   padding-right: 0 !important;
+}
+
+/* Iconography (master-design-token.json → iconography_and_graphics):
+   minimal rounded-line icons, 1.75px stroke, round caps/joins. */
+svg.lucide {
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }

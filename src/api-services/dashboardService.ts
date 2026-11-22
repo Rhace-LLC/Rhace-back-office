@@ -39,10 +39,28 @@ export interface DashboardData {
   }>;
 }
 
+/** Peak-hour entry. The backend has used both `order_count` and `count`. */
+export interface PeakHour {
+  hour: number;
+  order_count?: number;
+  count?: number;
+}
+
+/** Order-type breakdown entry. Field names have varied across backend versions. */
+export interface OrderTypeBreakdownItem {
+  order_type?: string;
+  type?: string;
+  name?: string;
+  category?: string;
+  count?: number;
+  value?: number;
+  total?: number;
+}
+
 export interface DashboardStats {
-  peak_hours: any[];
+  peak_hours: PeakHour[];
   average_order_value: number;
-  order_type_breakdown: any[];
+  order_type_breakdown: OrderTypeBreakdownItem[];
   wait_time_accuracy: {
     avg_accuracy: number | null;
   };
@@ -52,44 +70,36 @@ export interface DashboardStats {
 export const getDashboardData = async (
   token: string
 ): Promise<DashboardData> => {
-  try {
-    if (!token) {
-      throw new Error("No token provided");
-    }
-
-    const config = getConfig("/dashboard/dashboard/", "GET", token);
-    const response = await bookiesAxiosInstance(config);
-
-    if (!response) {
-      throw new Error("No response received from dashboard API");
-    }
-
-    const responseData = response.data || response;
-    return responseData;
-  } catch (error: any) {
-    throw error;
+  if (!token) {
+    throw new Error("No token provided");
   }
+
+  const config = getConfig("/dashboard/dashboard/", "GET", token);
+  const response = await bookiesAxiosInstance(config);
+
+  if (!response) {
+    throw new Error("No response received from dashboard API");
+  }
+
+  const responseData = response.data || response;
+  return responseData;
 };
 
 // GET /dashboard/dashboard/stats/ - Get dashboard stats
 export const getDashboardStats = async (
   token: string
 ): Promise<DashboardStats> => {
-  try {
-    if (!token) {
-      throw new Error("No token provided");
-    }
-
-    const config = getConfig("/dashboard/dashboard/stats/", "GET", token);
-    const response = await bookiesAxiosInstance(config);
-
-    if (!response) {
-      throw new Error("No response received from stats API");
-    }
-
-    const responseData = response.data || response;
-    return responseData;
-  } catch (error: any) {
-    throw error;
+  if (!token) {
+    throw new Error("No token provided");
   }
+
+  const config = getConfig("/dashboard/dashboard/stats/", "GET", token);
+  const response = await bookiesAxiosInstance(config);
+
+  if (!response) {
+    throw new Error("No response received from stats API");
+  }
+
+  const responseData = response.data || response;
+  return responseData;
 };

@@ -13,7 +13,7 @@ export function parseError(error: unknown): string {
 
   // Case 3: API error object
   if (typeof error === "object" && error !== null) {
-    const errObj = error as Record<string, any>;
+    const errObj = error as Record<string, unknown>;
 
     // direct message or detail
     if (typeof errObj.message === "string") return errObj.message;
@@ -21,7 +21,7 @@ export function parseError(error: unknown): string {
 
     // handle "errors" object (like { errors: { field: ["msg1", "msg2"] } })
     if (errObj.errors && typeof errObj.errors === "object") {
-      const fieldErrors = errObj.errors;
+      const fieldErrors = errObj.errors as Record<string, unknown>;
       const messages: string[] = [];
 
       for (const key in fieldErrors) {
@@ -51,4 +51,11 @@ export function parseError(error: unknown): string {
   }
 
   return "An unknown error occurred";
+}
+
+/** `parseError` with a context-specific fallback instead of the generic
+ * "An unknown error occurred". */
+export function parseErrorOr(error: unknown, fallback: string): string {
+  const message = parseError(error);
+  return message === "An unknown error occurred" ? fallback : message;
 }

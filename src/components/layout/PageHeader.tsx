@@ -20,7 +20,15 @@ interface PageContainerProps {
 
 export function PageContainer({ children, className }: PageContainerProps) {
   return (
-    <div className={cn("space-y-6 p-5 md:p-6", className)}>{children}</div>
+    <div
+      className={cn(
+        // container: max 1320px; padding 20 / 32 / 48 (mobile / tablet / desktop)
+        "mx-auto w-full max-w-[1320px] space-y-6 px-5 py-6 md:px-8 md:py-8 lg:px-12",
+        className
+      )}
+    >
+      {children}
+    </div>
   );
 }
 
@@ -51,11 +59,14 @@ export function PageHeader({
       <div className="flex min-w-0 items-start gap-3">
         {leading}
         <div className="min-w-0">
-          <h1 className="text-2xl font-semibold tracking-tight text-ink">
+          {/* type scale h3: 24px / 29px / 600 / -0.4px */}
+          <h1 className="text-[24px] leading-[29px] font-semibold tracking-[-0.4px] text-ink">
             {title}
           </h1>
           {description && (
-            <p className="mt-1 text-sm text-ink-secondary">{description}</p>
+            <p className="mt-1 text-sm leading-[21px] text-ink-muted">
+              {description}
+            </p>
           )}
         </div>
       </div>

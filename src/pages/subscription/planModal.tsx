@@ -41,7 +41,7 @@ export const PlanSelectionModal: React.FC<PlanSelectionModalProps> = ({
             Confirm Subscription Choice
           </DialogTitle>
           {/* Added description for context */}
-          <DialogDescription className="pt-1 text-lg font-medium text-indigo-600">
+          <DialogDescription className="pt-1 text-lg font-medium text-brand">
             {plan.name} Plan
           </DialogDescription>
         </DialogHeader>
@@ -68,7 +68,7 @@ export const PlanSelectionModal: React.FC<PlanSelectionModalProps> = ({
               <span className="font-medium text-ink-muted">
                 Over-Limit Surcharge
               </span>
-              <span className="font-semibold text-red-500">
+              <span className="font-semibold text-danger">
                 {plan.surcharge_percentage}%
               </span>
             </div>

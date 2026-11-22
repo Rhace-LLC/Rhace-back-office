@@ -21,7 +21,8 @@ export const AddTable: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false); // Added for button state
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let { name, value } = e.target;
+    const { name } = e.target;
+    let { value } = e.target;
     // Note: The original logic converts the value to a Number directly.
     // This is preserved.
     // Limit to max 3 characters
@@ -62,7 +63,7 @@ export const AddTable: React.FC = () => {
         max_party_size: 0,
         table_number: "",
       });
-    } catch (error: any) {
+    } catch (error) {
       toast.error("Failed to add table");
       console.error(error);
     } finally {
@@ -75,7 +76,7 @@ export const AddTable: React.FC = () => {
     <div className="py-8">
       {/* Title Section with Icon */}
       <div className="mb-6 flex items-center space-x-3 border-b pb-4">
-        <UtensilsCrossed className="h-6 w-6 text-indigo-600" />
+        <UtensilsCrossed className="h-6 w-6 text-brand" />
         <h2 className="text-xl font-bold text-ink">
           Add New Dining Table
         </h2>
@@ -127,7 +128,7 @@ export const AddTable: React.FC = () => {
       {/* Submit Button - Full width, primary color, modern styling */}
       <Button
         onClick={handleSubmit}
-        className="mt-6 w-full cursor-pointer bg-indigo-600 py-3 text-base font-semibold shadow-md transition-colors hover:bg-indigo-700"
+        className="mt-6 w-full cursor-pointer bg-brand py-3 text-base font-semibold shadow-md transition-colors hover:bg-brand-hover"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Adding Table..." : "Add Table"}

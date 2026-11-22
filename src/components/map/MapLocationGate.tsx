@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Navigation, ShieldCheck } from "lucide-react";
-import { useMapLocationContext } from "@/contexts/MapLocationContext";
+import { useMapLocationContext } from "@/contexts/useMapLocation";
 import { MapCentered, MapLoading } from "./MapUI";
 import type { LatLng } from "./types";
 
@@ -21,7 +21,7 @@ export const MapLocationGate = ({
 
   useEffect(() => {
     checkLocationEnabled();
-  }, []);
+  }, [checkLocationEnabled]);
 
   useEffect(() => {
     if (permissionStatus === "granted" && locationEnabled) {
@@ -48,7 +48,7 @@ export const MapLocationGate = ({
         </p>
         <button
           onClick={requestPermission}
-          className="h-12 rounded-2xl bg-black px-8 text-[14px] font-bold text-white transition-all active:scale-95"
+          className="h-12 rounded-2xl bg-ink px-8 text-[14px] font-bold text-white transition-all active:scale-95"
         >
           Allow Access
         </button>
@@ -67,7 +67,7 @@ export const MapLocationGate = ({
         </p>
         <button
           onClick={checkLocationEnabled}
-          className="h-12 rounded-2xl bg-black px-8 text-[14px] font-bold text-white transition-all active:scale-95"
+          className="h-12 rounded-2xl bg-ink px-8 text-[14px] font-bold text-white transition-all active:scale-95"
         >
           I’ve turned it on
         </button>

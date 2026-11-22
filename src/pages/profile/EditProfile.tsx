@@ -1,3 +1,4 @@
+import { parseErrorOr } from "@/api-services/utils/parseError";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -44,8 +45,8 @@ const EditProfile: React.FC<EditProfileProps> = ({ profile, onEdit }) => {
 
       toast.success("Profile updated successfully");
       onEdit(false);
-    } catch (err: any) {
-      toast.error(err?.message || "An error occurred");
+    } catch (err) {
+      toast.error(parseErrorOr(err, "An error occurred"));
     } finally {
       setLoading(false);
     }

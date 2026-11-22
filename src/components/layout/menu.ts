@@ -6,7 +6,12 @@ import {
   ShoppingCart,
   Bell,
   User,
-  ListOrdered,
+  Armchair,
+  CalendarDays,
+  ChartColumn,
+  ChartLine,
+  Clock,
+  Contact,
   Layers3,
   Package,
   Utensils,
@@ -53,7 +58,7 @@ export function useRoleBasedMenu(): MenuItem[] {
       ...baseMenu.slice(0, 2),
       {
         title: "Tables",
-        icon: ListOrdered,
+        icon: Armchair,
         items: [
           {
             title: "Table Management",
@@ -67,27 +72,29 @@ export function useRoleBasedMenu(): MenuItem[] {
           },
         ],
       },
+      { title: "Reservations", url: "/reservations", icon: CalendarDays },
       { title: "Categories", url: "/category", icon: Layers3 },
       { title: "Inventory", url: "/inventory", icon: Package },
       { title: "Menu Management", url: "/menu", icon: Utensils },
-            {
+      { title: "Analytics", url: "/analytics", icon: ChartLine },
+      {
         title: "Staff Management",
         icon: Users,
         items: [
           {
-            title: "All Staffs",
+            title: "All Staff",
             url: "/staff",
-            icon: ListOrdered,
+            icon: Contact,
           },
           {
             title: "Shift Logs",
             url: "/staff/shifts",
-            icon: ListOrdered,
+            icon: Clock,
           },
           {
             title: "Report",
             url: "/staff/report",
-            icon: UserCheck,
+            icon: ChartColumn,
           },
         ],
       },
@@ -112,7 +119,7 @@ export function useRoleBasedMenu(): MenuItem[] {
       ...baseMenu.slice(0, 2),
       {
         title: "Tables",
-        icon: ListOrdered,
+        icon: Armchair,
         items: [
           {
             title: "Table Management",
@@ -126,6 +133,7 @@ export function useRoleBasedMenu(): MenuItem[] {
           },
         ],
       },
+      { title: "Reservations", url: "/reservations", icon: CalendarDays },
       ...baseMenu.slice(2),
     ];
   } else if (auth.isInventoryMgr) {

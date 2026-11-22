@@ -1,3 +1,4 @@
+import { CHART, CHART_SERIES } from "@/lib/chartColors";
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import {
   Card,
@@ -64,10 +65,10 @@ const tableTurnoverData = [
 ];
 
 const pieChartData = [
-  { name: "Appetizers", value: 25, color: "#2A66FF" },
-  { name: "Main Courses", value: 45, color: "#3b82f6" },
-  { name: "Desserts", value: 15, color: "#60a5fa" },
-  { name: "Beverages", value: 15, color: "#93c5fd" },
+  { name: "Appetizers", value: 25, color: CHART_SERIES[0] },
+  { name: "Main Courses", value: 45, color: CHART_SERIES[1] },
+  { name: "Desserts", value: 15, color: CHART_SERIES[2] },
+  { name: "Beverages", value: 15, color: CHART_SERIES[3] },
 ];
 
 const staffPerformanceData = [
@@ -129,7 +130,7 @@ export function Analytics() {
           <CardContent>
             <div className="text-2xl">₦4,847</div>
             <p className="text-muted-foreground flex items-center text-xs">
-              <TrendingUp className="mr-1 h-3 w-3 text-green-600" />
+              <TrendingUp className="mr-1 h-3 w-3 text-success" />
               +12% from yesterday
             </p>
           </CardContent>
@@ -205,14 +206,14 @@ export function Analytics() {
                 <Bar
                   yAxisId="left"
                   dataKey="revenue"
-                  fill="#2A66FF"
+                  fill={CHART.primary}
                   name="revenue"
                 />
                 <Line
                   yAxisId="right"
                   type="monotone"
                   dataKey="orders"
-                  stroke="#f59e0b"
+                  stroke={CHART.highlight}
                   strokeWidth={2}
                   name="orders"
                 />
@@ -359,7 +360,7 @@ export function Analytics() {
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <span>{staff.customerRating}</span>
-                      <span className="text-yellow-500">★</span>
+                      <span className="text-warning">★</span>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -371,8 +372,8 @@ export function Analytics() {
                       }
                       className={
                         staff.performance === "Excellent"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-yellow-100 text-yellow-800"
+                          ? "bg-success-soft text-success"
+                          : "bg-warning-soft text-warning"
                       }
                     >
                       {staff.performance}

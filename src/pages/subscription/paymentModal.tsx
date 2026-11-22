@@ -39,7 +39,7 @@ export const PaystackCheckoutDialog: React.FC<PaystackCheckoutDialogProps> = ({
       toast.success("Subscription payment verified successfully!");
       onVerified();
       onClose();
-    } catch (error: any) {
+    } catch (error) {
       const message = parseError(error);
       toast.error(message || "Failed to verify payment.");
     } finally {
@@ -65,7 +65,7 @@ export const PaystackCheckoutDialog: React.FC<PaystackCheckoutDialogProps> = ({
         <div className="border-b px-4 py-2 text-center">
           <h2 className="text-md flex items-center justify-center gap-1 font-semibold">
             Complete Payment{" "}
-            <CheckCircle className="inline h-5 w-5 text-green-500" />
+            <CheckCircle className="inline h-5 w-5 text-success" />
           </h2>
           <p className="mt-1 text-sm text-ink-secondary">
             Follow the steps below to complete your subscription payment for{" "}

@@ -13,9 +13,9 @@ interface Props {
 const StatusBadge: React.FC<{ isActive: boolean }> = ({ isActive }) => {
   const statusText = isActive ? "Active" : "Inactive";
   const statusColor = isActive
-    ? "bg-green-100 text-green-700"
-    : "bg-red-100 text-red-700";
-  const dotColor = isActive ? "bg-green-500" : "bg-red-500";
+    ? "bg-success-soft text-success"
+    : "bg-danger-soft text-danger-strong";
+  const dotColor = isActive ? "bg-success-strong" : "bg-danger";
 
   return (
     <div
@@ -33,7 +33,7 @@ const DetailItem: React.FC<{
   value: string;
 }> = ({ icon, label, value }) => (
   <div className="flex items-start space-x-3">
-    <span className="mt-0.5 text-indigo-400">{icon}</span>
+    <span className="mt-0.5 text-brand">{icon}</span>
     <div>
       <p className="text-xs font-semibold text-ink-muted uppercase">{label}</p>
       <p className="text-sm font-medium break-all text-ink">{value}</p>
@@ -61,7 +61,7 @@ const ViewEmployeeDetails: React.FC<Props> = ({ employee }) => {
           <h1 className="text-2xl leading-tight font-semibold text-ink">
             {employee.first_name} {employee.last_name}
           </h1>
-          <p className="text-md mt-1 font-normal text-indigo-600">
+          <p className="text-md mt-1 font-normal text-brand">
             {employee.role}
           </p>
         </div>

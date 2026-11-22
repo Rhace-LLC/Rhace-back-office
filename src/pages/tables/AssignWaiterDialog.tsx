@@ -85,8 +85,8 @@ export const AssignWaiterDialog: React.FC<AssignWaiterDialogProps> = ({
                     className={cn(
                       "rounded-full px-2 py-1 text-xs capitalize",
                       waiter.status === "busy"
-                        ? "bg-yellow-100 text-yellow-700"
-                        : "bg-green-100 text-green-700"
+                        ? "bg-warning-soft text-warning"
+                        : "bg-success-soft text-success"
                     )}
                   >
                     {waiter.status || "available"}

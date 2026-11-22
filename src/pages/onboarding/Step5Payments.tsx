@@ -211,14 +211,14 @@ export function Step5Payments({
           </div>
         </div>
       ) : (
-        <div className="rounded-[20px] border border-emerald-200 bg-emerald-50 p-5">
+        <div className="rounded-[20px] border border-success-line bg-success-soft p-5">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-            <p className="text-sm font-semibold text-emerald-700">
+            <CheckCircle2 className="h-5 w-5 text-success" />
+            <p className="text-sm font-semibold text-success">
               Account verified
             </p>
           </div>
-          <div className="mt-3 rounded-[12px] bg-surface px-4 py-3 ring-1 ring-line">
+          <div className="mt-3 rounded-2xl bg-surface px-4 py-3 ring-1 ring-line">
             <p className="text-sm font-semibold text-ink">{accountName}</p>
             <p className="text-xs text-ink-muted">
               {bankName} · {masked}
@@ -229,7 +229,7 @@ export function Step5Payments({
 
       {verified && (
         <>
-          <p className="mt-4 rounded-[12px] border border-line bg-cardfill px-4 py-3 text-xs leading-[17px] text-ink-subtle">
+          <p className="mt-4 rounded-2xl border border-line bg-cardfill px-4 py-3 text-xs leading-[17px] text-ink-subtle">
             Your bank details are encrypted and used only for payment
             settlement.
           </p>

@@ -52,7 +52,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
       setFile(null);
       onOpenChange(false);
       onComplete();
-    } catch (err: any) {
+    } catch (err) {
       toast.error(parseError(err) || "Bulk upload failed. Please try again.");
     } finally {
       setUploading(false);
@@ -76,7 +76,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
           {!file ? (
             <div
               onClick={() => inputRef.current?.click()}
-              className="flex cursor-pointer flex-col items-center gap-3 rounded-3xl border-2 border-dashed border-line p-8 text-center transition hover:border-blue-400 hover:bg-blue-50/50"
+              className="flex cursor-pointer flex-col items-center gap-3 rounded-3xl border-2 border-dashed border-line p-8 text-center transition hover:border-brand hover:bg-inset-accent"
             >
               <Upload className="h-10 w-10 text-ink-subtle" />
               <div>
@@ -89,7 +89,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
           ) : (
             <div className="rounded-3xl border border-line bg-inset p-4">
               <div className="flex items-center gap-3">
-                <FileSpreadsheet className="h-8 w-8 text-green-600" />
+                <FileSpreadsheet className="h-8 w-8 text-success" />
                 <div className="flex-1 truncate">
                   <p className="font-medium text-ink">{file.name}</p>
                   <p className="text-xs text-ink-muted">

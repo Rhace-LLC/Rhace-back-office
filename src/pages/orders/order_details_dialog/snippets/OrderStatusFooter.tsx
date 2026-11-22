@@ -35,7 +35,7 @@ export const OrderStatusFooter: React.FC<OrderStatusFooterProps> = ({
           variant="outline"
           size="sm"
           onClick={() => onStatusChange("cancelled")}
-          className="border-red-300 text-red-700 hover:bg-red-50 hover:text-red-800 h-10 px-4 rounded-2xl text-xs font-medium"
+          className="border-danger-line text-danger-strong hover:bg-danger-soft hover:text-danger-strong h-10 px-4 rounded-2xl text-xs font-medium"
         >
           <XCircle className="mr-1.5 h-4 w-4" />
           Cancel Order

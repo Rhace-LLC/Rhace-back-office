@@ -58,7 +58,7 @@ const SecuritySection: React.FC = () => {
         confirm_password: "",
       });
       setShowPasswordForm(false);
-    } catch (error: any) {
+    } catch (error) {
       const errMsg = parseError(error);
       toast.error(errMsg || "Failed to update password");
     } finally {

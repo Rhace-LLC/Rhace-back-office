@@ -1,3 +1,4 @@
+import { useStableCallback } from "@/hooks/useStableCallback";
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -26,10 +27,10 @@ const ManageInventoryPage: React.FC = () => {
 
   const [viewInventoryOpen, setViewInventoryOpen] = useState(false);
   const [addInventoryOpen, setAddInventoryOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
 
-  // Example click handler to simulate opening the view sheet
-  const handleViewItem = (item: any) => {
+  // Opens the view sheet for an inventory item
+  const handleViewItem = (item: InventoryItem) => {
     setSelectedItem(item);
     setViewInventoryOpen(true);
   };
@@ -47,7 +48,7 @@ const ManageInventoryPage: React.FC = () => {
     Record<string, InventoryItem[]>
   >({});
 
-  const [filters, setFilters] = useState<any>({
+  const [filters, setFilters] = useState<{ searchTerm: string; category: string }>({
     searchTerm: "",
     category: "",
   });
@@ -67,7 +68,7 @@ const ManageInventoryPage: React.FC = () => {
     [page, dataDisposable]
   );
 
-  const fetchDataWithFiltersAndSearch = async () => {
+  const fetchDataWithFiltersAndSearch = useStableCallback(async () => {
     try {
       setFetchLoading(true);
       setFetchError("");
@@ -87,7 +88,7 @@ const ManageInventoryPage: React.FC = () => {
     } finally {
       setFetchLoading(false);
     }
-  };
+  });
 
   const handleBack = () => {
     setFilters({ searchTerm: "", category: "" });
@@ -101,12 +102,12 @@ const ManageInventoryPage: React.FC = () => {
   useEffect(() => {
     if (viewState !== "normal") return;
     if (!allData[String(page)]) fetchAllData();
-  }, [page, viewState, allData]);
+  }, [page, viewState, allData, fetchAllData]);
 
   useEffect(() => {
     if (viewState !== "search" && viewState !== "filter") return;
     if (!dataDisposable[String(page)]) fetchDataWithFiltersAndSearch();
-  }, [page, viewState, dataDisposable, filters]);
+  }, [page, viewState, dataDisposable, filters, fetchDataWithFiltersAndSearch]);
 
   useEffect(() => setPage(1), [viewState]);
 
@@ -117,7 +118,7 @@ const ManageInventoryPage: React.FC = () => {
       setDataDisposable({});
       fetchDataWithFiltersAndSearch();
     } else handleBack();
-  }, [filters.category, filters.searchTerm]);
+  }, [filters.category, filters.searchTerm, fetchDataWithFiltersAndSearch]);
 
   return (
     <PageContainer>
@@ -187,7 +188,7 @@ const ManageInventoryPage: React.FC = () => {
         title={
           <h2 className="text-lg font-bold text-ink">
             New Ingredient Entry{" "}
-            <Book className="inline-block h-5 w-5 text-blue-500" />
+            <Book className="inline-block h-5 w-5 text-brand" />
           </h2>
         }
         subtitle="Add new inventory item"

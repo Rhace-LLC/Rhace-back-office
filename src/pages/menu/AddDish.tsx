@@ -10,7 +10,7 @@ import { createMenuItem, createCategory } from "@/api-services/menu.service";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { parseError } from "@/api-services/utils/parseError";
-import { useCategoryData } from "../category/useCategoryData";
+import { CATEGORY_LIST_KEY, useCategoryData } from "../category/useCategoryData";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useInventory } from "../inventory/useInventory";
@@ -68,7 +68,7 @@ export const AddDish: React.FC<{
       });
       setImagePreview(draft.form.imagePreview);
     }
-  }, []);
+  }, [draftId]);
 
   // ---------------- INLINE ADD STATES ----------------
   const [showAddCategory, setShowAddCategory] = useState(false);
@@ -106,7 +106,7 @@ export const AddDish: React.FC<{
       setShowAddCategory(false);
       setNewCategoryName("");
       setNewCategoryDesc("");
-    } catch (err: any) {
+    } catch (err) {
       toast.error(parseError(err) || "Failed to add category.");
     } finally {
       setAddingCategory(false);
@@ -136,7 +136,7 @@ export const AddDish: React.FC<{
       setNewInvUnit("");
       setNewInvThreshold(0);
       setNewInvAllergen(false);
-    } catch (err: any) {
+    } catch (err) {
       toast.error(parseError(err) || "Failed to add inventory item.");
     } finally {
       setAddingInventory(false);
@@ -159,15 +159,14 @@ export const AddDish: React.FC<{
   // ---------------- CATEGORY DATA ----------------
 
   // --- Categories ---
-  const page = 1;
   const categoryStore = useSelector((state: RootState) => state.category);
-  const allDataCategory = categoryStore.data[String(page)] ?? [];
+  const allDataCategory = categoryStore.data[CATEGORY_LIST_KEY] ?? [];
 
   const {
     fetchAllData: fetchCategories,
     loading: fetchCategoriesLoading,
     error: fetchCategoriesError,
-  } = useCategoryData(page);
+  } = useCategoryData();
   // ---------------- INVENTORY DATA ----------------
   const inventoryHook = useInventory({ page: 1 });
   const inventoryData = inventoryHook.allData;
@@ -313,7 +312,7 @@ export const AddDish: React.FC<{
 
       setImagePreview(null);
       setValidationErrors({});
-    } catch (error: any) {
+    } catch (error) {
       toast.error(parseError(error) || "Failed to add dish.");
     } finally {
       setLoading(false);
@@ -333,7 +332,7 @@ export const AddDish: React.FC<{
           placeholder="Enter dish name"
         />
         {validationErrors.name && (
-          <p className="mt-1 text-xs text-red-600">{validationErrors.name}</p>
+          <p className="mt-1 text-xs text-danger">{validationErrors.name}</p>
         )}
       </div>
 
@@ -349,7 +348,7 @@ export const AddDish: React.FC<{
           placeholder="1500"
         />
         {validationErrors.price && (
-          <p className="mt-1 text-xs text-red-600">{validationErrors.price}</p>
+          <p className="mt-1 text-xs text-danger">{validationErrors.price}</p>
         )}
       </div>
 
@@ -364,7 +363,7 @@ export const AddDish: React.FC<{
           rows={3}
         />
         {validationErrors.description && (
-          <p className="mt-1 text-xs text-red-600">
+          <p className="mt-1 text-xs text-danger">
             {validationErrors.description}
           </p>
         )}
@@ -380,7 +379,7 @@ export const AddDish: React.FC<{
               variant="ghost"
               size="sm"
               onClick={() => setShowAddCategory(!showAddCategory)}
-              className="text-blue-600 hover:text-blue-800"
+              className="text-brand hover:text-brand-active"
             >
               + Add Category
             </Button>
@@ -422,7 +421,7 @@ export const AddDish: React.FC<{
           )}
 
           {fetchCategoriesError && (
-            <div className="flex flex-col items-start gap-2 text-red-600">
+            <div className="flex flex-col items-start gap-2 text-danger">
               <p>Error loading categories: {fetchCategoriesError}</p>
               <Button size="sm" variant="outline" onClick={fetchCategories}>
                 Reload Categories
@@ -458,7 +457,7 @@ export const AddDish: React.FC<{
           </select>
         </div>
         {validationErrors.category_id && (
-          <p className="mt-1 text-xs text-red-600">
+          <p className="mt-1 text-xs text-danger">
             {validationErrors.category_id}
           </p>
         )}
@@ -474,7 +473,7 @@ export const AddDish: React.FC<{
               variant="ghost"
               size="sm"
               onClick={() => setShowAddInventory(!showAddInventory)}
-              className="text-blue-600 hover:text-blue-800"
+              className="text-brand hover:text-brand-active"
             >
               + Add Inventory Item
             </Button>
@@ -523,9 +522,9 @@ export const AddDish: React.FC<{
                   type="checkbox"
                   checked={newInvAllergen}
                   onChange={(e) => setNewInvAllergen(e.target.checked)}
-                  className="h-4 w-4 rounded-lg border-line text-red-600 focus:ring-red-500"
+                  className="h-4 w-4 rounded-lg border-line text-danger focus:ring-danger"
                 />
-                <span className="text-xs font-medium text-red-600">Mark as Allergen</span>
+                <span className="text-xs font-medium text-danger">Mark as Allergen</span>
               </label>
               <div className="flex gap-2 pt-1">
                 <Button
@@ -554,7 +553,7 @@ export const AddDish: React.FC<{
           )}
 
           {inventoryError && (
-            <div className="flex flex-col items-start gap-2 text-red-600">
+            <div className="flex flex-col items-start gap-2 text-danger">
               <p>Error loading inventory: {inventoryError}</p>
               <Button size="sm" variant="outline" onClick={fetchInventory}>
                 Reload Inventory
@@ -603,7 +602,7 @@ export const AddDish: React.FC<{
                           ),
                         }))
                       }
-                      className="font-bold text-red-500 hover:text-red-700"
+                      className="font-bold text-danger hover:text-danger-strong"
                     >
                       ✕
                     </button>
@@ -624,10 +623,10 @@ export const AddDish: React.FC<{
 
           {/* ------------------- ADD INGREDIENT SECTION ------------------- */}
           <div
-            className={`mt-0 space-y-4 rounded-3xl bg-inset p-4 ${validationErrors.ingredients && "border-1 border-red-300"}`}
+            className={`mt-0 space-y-4 rounded-3xl bg-inset p-4 ${validationErrors.ingredients && "border-1 border-danger-line"}`}
           >
             {/* Label with improved typography */}
-            <label className="w-full text-center text-sm font-medium tracking-tight text-slate-700">
+            <label className="w-full text-center text-sm font-medium tracking-tight text-ink-secondary">
               Add Ingredient
             </label>
 
@@ -643,7 +642,7 @@ export const AddDish: React.FC<{
                     }));
                     setValidationErrors({});
                   }}
-                  className="h-10 w-full appearance-none rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 transition-all focus:border-brand focus:ring-2 focus:ring-focus-ring/20 focus:outline-none"
+                  className="h-10 w-full appearance-none rounded-2xl border border-line bg-inset px-3 py-2 text-sm text-ink transition-all focus:border-brand focus:ring-2 focus:ring-focus-ring/20 focus:outline-none"
                 >
                   <option value="">Select an item...</option>
                   {inventoryData
@@ -674,14 +673,14 @@ export const AddDish: React.FC<{
                       quantity: Number(e.target.value),
                     }))
                   }
-                  className="h-10 rounded-2xl border-slate-200 bg-slate-50 focus:ring-2 focus:ring-focus-ring/20"
+                  className="h-10 rounded-2xl border-line bg-inset focus:ring-2 focus:ring-focus-ring/20"
                 />
               </div>
 
               {/* ADD BUTTON - Minimalist but high contrast */}
               <Button
                 size="sm"
-                className="flex h-10 items-center gap-2 rounded-2xl bg-slate-900 px-4 text-white transition-colors hover:bg-slate-800"
+                className="flex h-10 items-center gap-2 rounded-2xl bg-ink px-4 text-white transition-colors hover:bg-ink"
                 onClick={() => {
                   if (!tempIngredient.inventory_item) return;
                   setDishForm((prev) => ({
@@ -702,7 +701,7 @@ export const AddDish: React.FC<{
         </div>
 
         {validationErrors.ingredients && (
-          <p className="text-xs text-red-600">{validationErrors.ingredients}</p>
+          <p className="text-xs text-danger">{validationErrors.ingredients}</p>
         )}
       </div>
 
@@ -714,7 +713,7 @@ export const AddDish: React.FC<{
           onChange={(e) =>
             setDishForm((prev) => ({ ...prev, prep_time: e.target.value }))
           }
-          className="h-10 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 transition-all focus:border-brand focus:ring-2 focus:ring-focus-ring/20 focus:outline-none"
+          className="h-10 w-full rounded-2xl border border-line bg-inset px-3 py-2 text-sm text-ink transition-all focus:border-brand focus:ring-2 focus:ring-focus-ring/20 focus:outline-none"
         >
           <option value="">Select prep time</option>
           <option value="00:02:00">2 minutes</option>
@@ -739,7 +738,7 @@ export const AddDish: React.FC<{
           <option value="02:00:00">2hrs</option>
         </select>
         {validationErrors.prep_time && (
-          <p className="mt-1 text-xs text-red-600">
+          <p className="mt-1 text-xs text-danger">
             {validationErrors.prep_time}
           </p>
         )}
@@ -751,7 +750,7 @@ export const AddDish: React.FC<{
         <Input type="file" accept="image/*" onChange={handleFileChange} />
 
         {validationErrors.image && (
-          <p className="mt-1 text-xs text-red-600">{validationErrors.image}</p>
+          <p className="mt-1 text-xs text-danger">{validationErrors.image}</p>
         )}
 
         {imagePreview && (

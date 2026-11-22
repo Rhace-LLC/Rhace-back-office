@@ -114,7 +114,7 @@ export function VerifyOtp() {
               className={`${authField} text-center text-xl tracking-[0.5em]`}
             />
             {errors?.otp && (
-              <small className="mt-1 block text-xs text-red-500">
+              <small className="mt-1 block text-xs text-danger">
                 {errors.otp}
               </small>
             )}

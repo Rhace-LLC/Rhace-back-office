@@ -53,8 +53,8 @@ const ConfirmActionDialog: React.FC<ConfirmActionDialogProps> = ({
             disabled={loading}
             className={`${
               isDisable
-                ? "bg-red-600 text-white hover:bg-red-700"
-                : "bg-green-600 text-white hover:bg-green-700"
+                ? "bg-danger text-white hover:bg-danger-strong"
+                : "bg-success-strong text-white hover:bg-success"
             }`}
           >
             {loading

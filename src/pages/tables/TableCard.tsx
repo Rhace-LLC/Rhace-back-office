@@ -32,8 +32,8 @@ export const TableCard: React.FC<TableCardProps> = ({ table, waiterName }) => {
   const availabilityLabel = is_available ? "Available" : "Unavailable";
 
   const availabilityColor = is_available
-    ? "text-green-700 bg-green-100/50"
-    : "text-red-700 bg-red-100/50";
+    ? "text-success bg-success-soft"
+    : "text-danger-strong bg-danger-soft";
 
   // Status box (free, occupied, reserved, etc.)
   const statusLabel = status
@@ -42,10 +42,10 @@ export const TableCard: React.FC<TableCardProps> = ({ table, waiterName }) => {
 
   const statusBoxColor =
     status === "free"
-      ? "bg-green-50 text-green-800"
+      ? "bg-success-soft text-success"
       : status === "occupied"
-        ? "bg-red-50 text-red-800"
-        : "bg-amber-50 text-amber-800";
+        ? "bg-danger-soft text-danger-strong"
+        : "bg-warning-soft text-warning";
 
   return (
     <div>
@@ -72,11 +72,11 @@ export const TableCard: React.FC<TableCardProps> = ({ table, waiterName }) => {
         <CardContent className="p-3">
           <div className="grid grid-cols-2 gap-3">
             {/* Seats box */}
-            <div className="flex flex-col items-start rounded-2xl bg-blue-50 p-3">
-              <span className="text-xs font-semibold tracking-wide text-blue-800 uppercase">
+            <div className="flex flex-col items-start rounded-2xl bg-inset-accent p-3">
+              <span className="text-xs font-semibold tracking-wide text-brand-active uppercase">
                 Seats
               </span>
-              <span className="text-lg font-bold text-blue-900">
+              <span className="text-lg font-bold text-brand-active">
                 {max_party_size}
               </span>
             </div>
@@ -96,11 +96,11 @@ export const TableCard: React.FC<TableCardProps> = ({ table, waiterName }) => {
           </div>
 
           {/* Waiter */}
-          <div className="mt-3 rounded-2xl bg-purple-50 p-3">
-            <span className="text-xs font-semibold tracking-wide text-purple-800 uppercase">
+          <div className="mt-3 rounded-2xl bg-inset-accent p-3">
+            <span className="text-xs font-semibold tracking-wide text-brand-active uppercase">
               Waiter
             </span>
-            <span className="block text-sm font-bold text-purple-900">
+            <span className="block text-sm font-bold text-brand-active">
               {waiterName || "No waiter assigned for today"}
             </span>
           </div>

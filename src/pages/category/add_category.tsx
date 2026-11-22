@@ -59,7 +59,7 @@ export default function AddCategoryForm({ onSubmit }: AddCategoryFormProps) {
 
       toast.success("Category created successfully!");
       onSubmit(formData);
-    } catch (error: any) {
+    } catch (error) {
       const errorMessage = parseError(error) || "Failed to create category.";
       console.error(errorMessage);
       toast.error(errorMessage);
@@ -106,7 +106,7 @@ export default function AddCategoryForm({ onSubmit }: AddCategoryFormProps) {
             <button
               type="button"
               onClick={handleRemoveImage}
-              className="absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black/80"
+              className="absolute top-2 right-2 rounded-full bg-ink/60 p-1 text-white hover:bg-ink/80"
               title="Remove image"
             >
               <X size={16} />
@@ -135,7 +135,7 @@ export default function AddCategoryForm({ onSubmit }: AddCategoryFormProps) {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full cursor-pointer bg-blue-100 text-blue-700 hover:bg-blue-200"
+          className="w-full cursor-pointer bg-inset-accent text-brand-active hover:bg-brand-accent"
         >
           {loading ? "Saving Category... Please Wait" : "Save Category"}
         </Button>

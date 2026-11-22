@@ -70,7 +70,7 @@ export default function AcceptInvite() {
 
       {!loading && error && (
         <div className="flex flex-col items-center gap-3">
-          <AlertCircle className="h-10 w-10 text-red-500" />
+          <AlertCircle className="h-10 w-10 text-danger" />
           <p className="font-medium text-ink-secondary">{error}</p>
           <Button variant="outline" onClick={handleAccept}>
             Retry
@@ -80,7 +80,7 @@ export default function AcceptInvite() {
 
       {!loading && success && (
         <div className="flex flex-col items-center gap-3">
-          <CheckCircle className="h-10 w-10 text-emerald-500" />
+          <CheckCircle className="h-10 w-10 text-success" />
           <p className="font-medium text-ink-secondary">
             Invite accepted successfully! You may now log in.
           </p>

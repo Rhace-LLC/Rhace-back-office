@@ -61,11 +61,11 @@ export function WaiterAssignmentPage() {
         <>
 
           {setupError && (
-            <div className="flex flex-col gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-red-600">{setupError}</p>
+            <div className="flex flex-col gap-3 rounded-2xl border border-danger-line bg-danger-soft p-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-danger">{setupError}</p>
               <button
                 onClick={setUpForToday}
-                className="flex-shrink-0 cursor-pointer rounded-2xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+                className="flex-shrink-0 cursor-pointer rounded-2xl bg-danger px-4 py-2 text-sm font-medium text-white transition hover:bg-danger-strong"
               >
                 Retry
               </button>
@@ -80,11 +80,11 @@ export function WaiterAssignmentPage() {
             )}
 
             {!loading && error && (
-              <div className="flex flex-col gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm text-red-600">{error}</p>
+              <div className="flex flex-col gap-3 rounded-2xl border border-danger-line bg-danger-soft p-4 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm text-danger">{error}</p>
                 <button
                   onClick={() => fetchAssignments(true)}
-                  className="flex-shrink-0 cursor-pointer rounded-2xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+                  className="flex-shrink-0 cursor-pointer rounded-2xl bg-danger px-4 py-2 text-sm font-medium text-white transition hover:bg-danger-strong"
                 >
                   Retry
                 </button>

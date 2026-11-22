@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LogOut } from "lucide-react";
+import { useLogout } from "@/components/layout";
+import { LogoutDialog } from "@/components/layout/logoutdialog";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -59,6 +61,8 @@ const STEP_LABEL: Record<number, string> = {
 export default function Onboarding() {
   const auth = useAuth();
   const navigate = useNavigate();
+  const { logout } = useLogout();
+  const [logoutOpen, setLogoutOpen] = useState(false);
   const queryClient = useQueryClient();
   const { data: profile } = useRestaurantProfileQuery();
 
@@ -383,8 +387,22 @@ const persistMenu = async (
           ) : (
             <span />
           )}
-          <span />
+          {/* Side navigation is hidden during onboarding, so offer a way out. */}
+          <button
+            type="button"
+            onClick={() => setLogoutOpen(true)}
+            className="inline-flex h-9 items-center gap-1.5 rounded-2xl px-3 text-sm font-medium text-ink-muted transition-colors hover:bg-danger-soft hover:text-danger"
+          >
+            <LogOut className="h-4 w-4" />
+            Log out
+          </button>
         </div>
+
+        <LogoutDialog
+          isOpen={logoutOpen}
+          onOpenChange={setLogoutOpen}
+          onConfirm={logout}
+        />
 
         {/* Progress indicator */}
         <div className="mb-8 rounded-[20px] border border-line bg-surface px-4 py-5 shadow-sm sm:px-6">

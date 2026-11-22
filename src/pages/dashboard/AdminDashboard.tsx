@@ -1,4 +1,6 @@
 "use client";
+import { useStableCallback } from "@/hooks/useStableCallback";
+import { CHART, CHART_SERIES } from "@/lib/chartColors";
 import { Button } from "@/components/ui/button";
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { registerSessionCache } from "@/lib/sessionCache";
@@ -21,6 +23,8 @@ import {
   PieChart,
   Pie,
   Cell,
+  type PieLabelRenderProps,
+  type TooltipContentProps,
 } from "recharts";
 import { useEffect, useState, ReactElement } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -44,6 +48,8 @@ import {
   getDashboardStats,
   DashboardData,
   DashboardStats,
+  type OrderTypeBreakdownItem,
+  type PeakHour,
 } from "../../api-services/dashboardService";
 import formatPrice, { formatPriceCompact } from "@/utils/formatPrice";
 
@@ -124,7 +130,7 @@ interface OrderTypeData {
   name: string;
   value: number;
   count: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface WeeklyRevenueData {
@@ -155,9 +161,9 @@ export const AdminDashboard = () => {
   const getTrendIcon = (trend: string) => {
     switch (trend) {
       case "up":
-        return <TrendingUp className="h-4 w-4 text-green-600" />;
+        return <TrendingUp className="h-4 w-4 text-success" />;
       case "down":
-        return <TrendingDown className="h-4 w-4 text-red-600" />;
+        return <TrendingDown className="h-4 w-4 text-danger" />;
       default:
         return <Minus className="h-4 w-4 text-ink-secondary" />;
     }
@@ -199,7 +205,7 @@ export const AdminDashboard = () => {
       return [];
     }
 
-    return dashboardStats.order_type_breakdown.map((item: any) => {
+    return dashboardStats.order_type_breakdown.map((item: OrderTypeBreakdownItem) => {
       // Safely get order type from various possible property names
       const orderType =
         item.order_type || item.type || item.name || item.category || "Unknown";
@@ -248,7 +254,7 @@ export const AdminDashboard = () => {
   };
 
   // Background refresh (no loading state)
-  const backgroundRefresh = async (): Promise<void> => {
+  const backgroundRefresh = useStableCallback(async (): Promise<void> => {
     if (!token) return;
 
     try {
@@ -283,10 +289,10 @@ export const AdminDashboard = () => {
     } catch (err) {
       console.error("❌ Dashboard - Background refresh failed:", err);
     }
-  };
+  });
 
   // Main fetch with cache support
-  const fetchDashboardData = async (forceRefresh = false): Promise<void> => {
+  const fetchDashboardData = useStableCallback(async (forceRefresh = false): Promise<void> => {
     if (!token) {
       setError("Please log in to view dashboard");
       setLoading(false);
@@ -368,7 +374,7 @@ export const AdminDashboard = () => {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  });
 
   const handleRefresh = (): void => {
     setRefreshing(true);
@@ -381,7 +387,7 @@ export const AdminDashboard = () => {
     } else {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, fetchDashboardData]);
 
   // Background refresh interval
   useEffect(() => {
@@ -389,16 +395,16 @@ export const AdminDashboard = () => {
 
     const interval = setInterval(backgroundRefresh, 30000);
     return () => clearInterval(interval);
-  }, [token]);
+  }, [token, backgroundRefresh]);
 
   // Custom tooltip for bar chart
-  const renderBarTooltip = (props: any) => {
-    const { active, payload, label } = props as any;
+  const renderBarTooltip = (props: TooltipContentProps<number, string>) => {
+    const { active, payload, label } = props;
     if (active && payload && payload.length) {
       return (
-        <div className="rounded border border-line bg-surface p-3 shadow-sm">
+        <div className="rounded-2xl border border-line bg-surface p-3 shadow-sm">
           <p className="font-medium">{`Day: ${label}`}</p>
-          <p className="text-blue-600">
+          <p className="text-brand">
             {`Revenue: ${formatPrice(payload?.[0]?.value ?? 0)}`}
           </p>
         </div>
@@ -408,13 +414,13 @@ export const AdminDashboard = () => {
   };
 
   // Custom tooltip for pie chart
-  const renderPieTooltip = (props: any) => {
-    const { active, payload } = props as any;
+  const renderPieTooltip = (props: TooltipContentProps<number, string>) => {
+    const { active, payload } = props;
     if (active && payload && payload.length) {
       return (
-        <div className="rounded border border-line bg-surface p-3 shadow-sm">
+        <div className="rounded-2xl border border-line bg-surface p-3 shadow-sm">
           <p className="font-medium">{payload[0].name}</p>
-          <p className="text-blue-600">{`${payload[0].value} orders`}</p>
+          <p className="text-brand">{`${payload[0].value} orders`}</p>
         </div>
       );
     }
@@ -569,7 +575,7 @@ export const AdminDashboard = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-red-700">
+        <div className="rounded-2xl border border-danger-line bg-danger-soft p-4 text-danger-strong">
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4" />
             <span>{error}</span>
@@ -607,9 +613,9 @@ export const AdminDashboard = () => {
                     <span
                       className={
                         stat.trend === "up"
-                          ? "text-green-600"
+                          ? "text-success"
                           : stat.trend === "down"
-                            ? "text-red-600"
+                            ? "text-danger"
                             : "text-ink-secondary"
                       }
                     >
@@ -650,7 +656,7 @@ export const AdminDashboard = () => {
               <Bar
                 dataKey="revenue"
                 fill={
-                  hasData(dashboardData.weekly_revenue) ? "#2A66FF" : "#94A3B8"
+                  hasData(dashboardData.weekly_revenue) ? CHART.primary : CHART.empty
                 }
                 radius={[4, 4, 0, 0]}
               />
@@ -687,18 +693,18 @@ export const AdminDashboard = () => {
                       cy="50%"
                       labelLine={false}
                       outerRadius={80}
-                      fill="#2A66FF"
+                      fill={CHART.primary}
                       dataKey="value"
-                      label={({ name, percent }: any) =>
-                        `${name} ${(percent * 100).toFixed(0)}%`
+                      label={({ name, percent }: PieLabelRenderProps) =>
+                        `${name} ${(Number(percent ?? 0) * 100).toFixed(0)}%`
                       }
                     >
                       {getOrderTypeData().map((_, index) => (
                         <Cell
                           key={`cell-${index}`}
                           fill={
-                            ["#2A66FF", "#93B4FD", "#0F172A", "#64748B"][
-                              index % 4
+                            CHART_SERIES[
+                              index % CHART_SERIES.length
                             ]
                           }
                         />
@@ -730,7 +736,7 @@ export const AdminDashboard = () => {
           <CardContent>
             {hasData(dashboardStats.peak_hours) ? (
               <div className="space-y-3">
-                {dashboardStats.peak_hours.map((hour: any, index: number) => (
+                {dashboardStats.peak_hours.map((hour: PeakHour, index: number) => (
                   <div
                     key={index}
                     className="flex items-center justify-between rounded-2xl border p-3"
@@ -771,7 +777,7 @@ export const AdminDashboard = () => {
               <>
                 <div className="flex items-center justify-between rounded-2xl bg-inset p-3">
                   <div className="flex items-center gap-2">
-                    <Target className="h-4 w-4 text-blue-600" />
+                    <Target className="h-4 w-4 text-brand" />
                     <span className="text-sm font-medium">
                       Average Order Value
                     </span>
@@ -783,7 +789,7 @@ export const AdminDashboard = () => {
 
                 <div className="flex items-center justify-between rounded-2xl bg-inset p-3">
                   <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-green-600" />
+                    <Clock className="h-4 w-4 text-success" />
                     <span className="text-sm font-medium">
                       Wait Time Accuracy
                     </span>
@@ -797,7 +803,7 @@ export const AdminDashboard = () => {
 
                 <div className="flex items-center justify-between rounded-2xl bg-inset p-3">
                   <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-purple-600" />
+                    <Users className="h-4 w-4 text-brand" />
                     <span className="text-sm font-medium">Staff Coverage</span>
                   </div>
                   <span className="font-bold">
@@ -875,7 +881,7 @@ export const AdminDashboard = () => {
                   </div>
                   <div className="h-2 w-full rounded-full bg-inset">
                     <div
-                      className="h-2 rounded-full bg-blue-600 transition-all duration-300"
+                      className="h-2 rounded-full bg-brand transition-all duration-300"
                       style={{
                         width: `${dashboardData.table_occupancy.percentage}%`,
                       }}

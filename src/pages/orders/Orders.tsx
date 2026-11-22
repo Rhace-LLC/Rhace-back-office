@@ -1,4 +1,5 @@
 // components/Orders.tsx
+import { useStableCallback } from "@/hooks/useStableCallback";
 import { registerSessionCache } from "@/lib/sessionCache";
 import { useState, useEffect } from "react";
 import {
@@ -118,7 +119,7 @@ export function Orders() {
   // Fetch tables function
   // Returns the freshly fetched tables, or undefined if nothing was fetched,
   // so callers can write them to the cache instead of stale `tables` state.
-  const fetchTables = async (
+  const fetchTables = useStableCallback(async (
     restId: string,
     force = false
   ): Promise<Table[] | undefined> => {
@@ -140,14 +141,14 @@ export function Orders() {
         ordersCache.restaurantId = restId;
       }
       return tablesData;
-    } catch (err) {
+    } catch {
       setTables([]);
       return [];
     }
-  };
+  });
 
   // Background refresh (no loading state)
-  const backgroundRefresh = async () => {
+  const backgroundRefresh = useStableCallback(async () => {
     if (!token || !restaurantId) return;
 
     try {
@@ -174,13 +175,13 @@ export function Orders() {
         restaurantId: restaurantId,
       };
       setLastUpdated(Date.now());
-    } catch (err) {
+    } catch {
       // Silent fail for background refresh
     }
-  };
+  });
 
   // Main fetch with cache support
-  const fetchOrders = async (forceRefresh = false) => {
+  const fetchOrders = useStableCallback(async (forceRefresh = false) => {
     if (!token) {
       setLoading(false);
       return;
@@ -244,21 +245,21 @@ export function Orders() {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  });
 
   // Initial load
   useEffect(() => {
     if (token) {
       fetchOrders();
     }
-  }, [token]);
+  }, [token, fetchOrders]);
 
   // Fetch tables when restaurantId becomes available (only if not already fetched)
   useEffect(() => {
     if (token && restaurantId && !tablesFetched) {
       fetchTables(restaurantId);
     }
-  }, [token, restaurantId, tablesFetched]);
+  }, [token, restaurantId, tablesFetched, fetchTables]);
 
   // Background refresh interval
   useEffect(() => {
@@ -266,7 +267,7 @@ export function Orders() {
 
     const interval = setInterval(backgroundRefresh, 30000);
     return () => clearInterval(interval);
-  }, [token]);
+  }, [token, backgroundRefresh]);
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -406,7 +407,7 @@ export function Orders() {
   return (
     <PageContainer>
       {error && (
-        <div className="relative rounded-2xl border border-red-200 bg-red-50 px-4 py-3 pr-12 text-sm text-red-700">
+        <div className="relative rounded-2xl border border-danger-line bg-danger-soft px-4 py-3 pr-12 text-sm text-danger-strong">
           {error}
           <button
             onClick={() => setError(null)}

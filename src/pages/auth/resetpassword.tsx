@@ -155,7 +155,7 @@ export default function ResetPassword() {
                 <label className={authLabel}>Enter OTP</label>
                 <OtpInput value={otp} onChange={setOtp} />
                 {errors.otp && (
-                  <small className="mt-1 block text-xs text-red-500">
+                  <small className="mt-1 block text-xs text-danger">
                     {errors.otp}
                   </small>
                 )}
@@ -197,7 +197,7 @@ export default function ResetPassword() {
                   </button>
                 </div>
                 {errors.password && (
-                  <small className="mt-1 block text-xs text-red-500">
+                  <small className="mt-1 block text-xs text-danger">
                     {errors.password}
                   </small>
                 )}
@@ -237,7 +237,7 @@ export default function ResetPassword() {
                   </button>
                 </div>
                 {errors.confirm_password && (
-                  <small className="mt-1 block text-xs text-red-500">
+                  <small className="mt-1 block text-xs text-danger">
                     {errors.confirm_password}
                   </small>
                 )}

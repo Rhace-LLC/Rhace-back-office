@@ -67,7 +67,7 @@ const InviteEmployeeForm: React.FC<Props> = ({ onSubmit }) => {
       } else {
         toast.success("Invitation sent successfully!");
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       const message = parseError(error)
       toast.error(message || "Failed to generate invite link");
@@ -144,10 +144,10 @@ const InviteEmployeeForm: React.FC<Props> = ({ onSubmit }) => {
 
       {/* Invite Link Display */}
       {inviteLink && (
-        <div className="rounded border bg-inset p-3 text-sm">
+        <div className="rounded-2xl border bg-inset p-3 text-sm">
           <p className="mb-2 text-ink-secondary">Invite Link:</p>
           <p
-            className="cursor-pointer break-all text-blue-600 underline"
+            className="cursor-pointer break-all text-brand underline"
             onClick={() => navigator.clipboard.writeText(inviteLink)}
           >
             {inviteLink}

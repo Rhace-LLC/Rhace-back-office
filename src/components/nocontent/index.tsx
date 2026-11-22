@@ -91,19 +91,19 @@ export const ReqErr: React.FC<ReqErrProps> = ({
 }) => {
   return (
     <div className="flex w-full items-center justify-center">
-      <Card className="w-full border-none bg-red-50 text-center shadow">
+      <Card className="w-full border-none bg-danger-soft text-center shadow">
         <CardHeader>
-          <CardTitle className="text-xl font-medium text-red-800">
+          <CardTitle className="text-xl font-medium text-danger-strong">
             An Error Occured. Details Below
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="mb-6 text-sm text-red-700">{errorMessage}</p>
+          <p className="mb-6 text-sm text-danger-strong">{errorMessage}</p>
           {onAction && (
             <Button
               onClick={onAction}
               className={
-                "h-11 w-full cursor-pointer rounded-2xl bg-red-600/80 text-white transition-colors hover:bg-red-600"
+                "h-11 w-full cursor-pointer rounded-2xl bg-danger text-white transition-colors hover:bg-danger"
               }
             >
               {actionText}

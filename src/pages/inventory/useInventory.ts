@@ -1,3 +1,4 @@
+import { useStableCallback } from "@/hooks/useStableCallback";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { parseError } from "@/api-services/utils/parseError";
@@ -20,7 +21,7 @@ export const useInventory = ({ page, page_size = 10 }: UseInventoryProps) => {
   const dataStore = useSelector((state: RootState) => state.inventory);
   const allData = dataStore.data[String(page)] || [];
 
-  const fetchAllData = async () => {
+  const fetchAllData = useStableCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -31,13 +32,13 @@ export const useInventory = ({ page, page_size = 10 }: UseInventoryProps) => {
     } finally {
       setLoading(false);
     }
-  };
+  });
 
   useEffect(() => {
     if (!allData.length) {
       fetchAllData();
     }
-  }, [page]);
+  }, [page, allData.length, fetchAllData]);
 
   return {
     allData,

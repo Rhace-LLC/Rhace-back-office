@@ -1,4 +1,5 @@
 // components/OrdersTable.tsx
+import { orderStatusClass } from "@/utils/orderStatus";
 import {
   Table,
   TableBody,
@@ -26,16 +27,6 @@ interface OrdersTableProps {
   onWaiterConfirm?: (orderId: string) => void;
 }
 
-const statusColors: Record<OrderStatus, string> = {
-  paid: "bg-emerald-100 text-emerald-800 border-emerald-200",
-  received: "bg-blue-100 text-blue-800 border-blue-200",
-  preparing: "bg-yellow-100 text-yellow-800 border-yellow-200",
-  ready: "bg-green-100 text-green-800 border-green-200",
-  completed: "bg-inset text-ink border-line",
-  cancelled: "bg-red-100 text-red-800 border-red-200",
-  delivered: "bg-purple-100 text-purple-800 border-purple-200",
-  served: "bg-indigo-100 text-indigo-800 border-indigo-200",
-};
 
 export function OrdersTable({
   orders,
@@ -209,7 +200,7 @@ export function OrdersTable({
           {orders.map((order) => (
             <TableRow
               key={order.id}
-              className="cursor-pointer border-b border-line-subtle hover:bg-inset/80"
+              className="cursor-pointer border-b border-line-subtle hover:bg-inset"
               onClick={() => onOrderSelect(order)}
             >
               <TableCell className="py-2.5">
@@ -236,7 +227,7 @@ export function OrdersTable({
                 <div className="flex flex-col gap-1">
                   <Badge
                     variant="outline"
-                    className={`${statusColors[order.status as OrderStatus]} flex h-5 w-fit items-center border px-1.5 py-0 text-xs font-normal`}
+                    className={`${orderStatusClass(order.status)} flex h-5 w-fit items-center border px-1.5 py-0 text-xs font-normal`}
                   >
                     {getStatusIcon(order.status as OrderStatus)}
                     <span className="max-w-[80px] truncate">
@@ -247,7 +238,7 @@ export function OrdersTable({
                   {needsConfirmation(order) && (
                     <Badge
                       variant="outline"
-                      className="flex h-5 w-fit items-center border border-amber-200 bg-amber-50 px-1.5 py-0 text-xs font-normal text-amber-700"
+                      className="flex h-5 w-fit items-center border border-warning-line bg-warning-soft px-1.5 py-0 text-xs font-normal text-warning"
                     >
                       <Clock className="mr-1 h-3 w-3" />
                       Awaiting confirm
@@ -256,7 +247,7 @@ export function OrdersTable({
                   {isConfirmed(order) && (
                     <Badge
                       variant="outline"
-                      className="flex h-5 w-fit items-center border border-green-200 bg-green-50 px-1.5 py-0 text-xs font-normal text-green-700"
+                      className="flex h-5 w-fit items-center border border-success-line bg-success-soft px-1.5 py-0 text-xs font-normal text-success"
                     >
                       <Check className="mr-1 h-3 w-3" />
                       Confirmed
@@ -268,7 +259,7 @@ export function OrdersTable({
                 <div className="flex items-center gap-1.5">
                   {hasWaiterAssigned(order) ? (
                     <>
-                      <User className="h-3.5 w-3.5 text-green-500" />
+                      <User className="h-3.5 w-3.5 text-success" />
                       <span className="max-w-[80px] truncate text-sm text-ink-secondary">
                         {getAssignedWaiterName(order)}
                       </span>
@@ -287,7 +278,7 @@ export function OrdersTable({
                 <div className="flex items-center gap-1.5">
                   {hasTableAssigned(order) ? (
                     <>
-                      <TableIcon className="h-3.5 w-3.5 text-green-500" />
+                      <TableIcon className="h-3.5 w-3.5 text-success" />
                       <div className="flex flex-col">
                         <span className="text-sm text-ink-secondary">
                           {getAssignedTableInfo(order)}
@@ -297,8 +288,8 @@ export function OrdersTable({
                             variant="outline"
                             className={`px-1 py-0 text-xs ${
                               getTableAvailabilityStatus(order) === "available"
-                                ? "border-green-200 bg-green-50 text-green-700"
-                                : "border-amber-200 bg-amber-50 text-amber-700"
+                                ? "border-success-line bg-success-soft text-success"
+                                : "border-warning-line bg-warning-soft text-warning"
                             }`}
                           >
                             {getTableAvailabilityStatus(order) === "available"
@@ -343,7 +334,7 @@ export function OrdersTable({
                       <Button
                         variant="outline"
                         size="sm"
-                        className="h-7 border-green-200 bg-green-50 px-2 text-xs text-green-700 hover:bg-green-100"
+                        className="h-7 border-success-line bg-success-soft px-2 text-xs text-success hover:bg-success-soft"
                         disabled={confirmingIds?.has(order.id)}
                         onClick={(e) => {
                           e.stopPropagation();

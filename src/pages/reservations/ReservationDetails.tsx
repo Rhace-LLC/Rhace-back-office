@@ -32,14 +32,14 @@ import { Table } from "@/api-services/tableService";
 const getStatusColor = (status: ReservationStatus) => {
   switch (status) {
     case "confirmed":
-      return "text-green-700 bg-green-100 border-green-200";
+      return "text-success bg-success-soft border-success-line";
     case "cancelled":
-      return "text-red-700 bg-red-100 border-red-200";
+      return "text-danger-strong bg-danger-soft border-danger-line";
     case "completed":
-      return "text-blue-700 bg-blue-100 border-blue-200";
+      return "text-brand-active bg-inset-accent border-brand-accent";
     case "pending":
     default:
-      return "text-amber-700 bg-amber-100 border-amber-200";
+      return "text-warning bg-warning-soft border-warning-line";
   }
 };
 
@@ -115,7 +115,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
       }
       toast.success("Table assigned successfully");
       setAssignDialogOpen(false);
-    } catch (error: any) {
+    } catch (error) {
       toast.error(parseError(error) || "Failed to assign table");
     } finally {
       setLoading(false);
@@ -137,7 +137,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
       );
       toast.success("Reservation confirmed");
       setConfirmDialogOpen(false);
-    } catch (error: any) {
+    } catch (error) {
       toast.error(parseError(error) || "Failed to confirm reservation");
     } finally {
       setLoading(false);
@@ -172,7 +172,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
 
       toast.success("Reservation cancelled");
       setCancelDialogOpen(false);
-    } catch (error: any) {
+    } catch (error) {
       toast.error(parseError(error) || "Failed to cancel reservation");
     } finally {
       setLoading(false);
@@ -200,7 +200,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
       setActiveTab("details");
 
       toast.success("Reservation marked as completed");
-    } catch (error: any) {
+    } catch (error) {
       toast.error(parseError(error) || "Failed to complete reservation");
     } finally {
       setLoading(false);
@@ -250,13 +250,13 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
             {/* Booking Time Section */}
             <section className="space-y-4 rounded-2xl bg-surface py-4">
               <h3 className="flex items-center text-lg font-semibold text-ink">
-                <Calendar className="mr-2 h-5 w-5 text-indigo-600" /> Booking
+                <Calendar className="mr-2 h-5 w-5 text-brand" /> Booking
                 Time
               </h3>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="flex items-center space-x-3">
-                  <Calendar className="h-5 w-5 text-indigo-500" />
+                  <Calendar className="h-5 w-5 text-brand" />
                   <div className="flex flex-col">
                     <span className="text-xs text-ink-muted">Date</span>
                     <span className="text-sm font-medium text-ink">
@@ -266,7 +266,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <Clock className="h-5 w-5 text-indigo-500" />
+                  <Clock className="h-5 w-5 text-brand" />
                   <div className="flex flex-col">
                     <span className="text-xs text-ink-muted">Time</span>
                     <span className="text-sm font-medium text-ink">
@@ -282,12 +282,12 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
             {/* Customer Info Section */}
             <section className="space-y-4 rounded-2xl bg-surface py-4">
               <h3 className="flex items-center text-lg font-semibold text-ink">
-                <User className="mr-2 h-5 w-5 text-indigo-600" /> Customer Info
+                <User className="mr-2 h-5 w-5 text-brand" /> Customer Info
               </h3>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="flex items-center space-x-3">
-                  <User className="h-5 w-5 text-green-500" />
+                  <User className="h-5 w-5 text-success" />
                   <div className="flex flex-col">
                     <span className="text-xs text-ink-muted">Full Name</span>
                     <span className="text-sm font-medium text-ink">
@@ -298,7 +298,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <Users className="h-5 w-5 text-green-500" />
+                  <Users className="h-5 w-5 text-success" />
                   <div className="flex flex-col">
                     <span className="text-xs text-ink-muted">Party Size</span>
                     <span className="text-sm font-medium text-ink">
@@ -308,7 +308,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <Phone className="h-5 w-5 text-green-500" />
+                  <Phone className="h-5 w-5 text-success" />
                   <div className="flex flex-col">
                     <span className="text-xs text-ink-muted">Phone</span>
                     <span className="text-sm font-medium text-ink">
@@ -318,7 +318,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 </div>
 
                 <div className="flex min-w-0 items-center space-x-3">
-                  <Mail className="h-5 w-5 text-green-500" />
+                  <Mail className="h-5 w-5 text-success" />
                   <div className="flex flex-col truncate">
                     <span className="text-xs text-ink-muted">Email</span>
                     <span className="truncate text-sm font-medium text-ink">
@@ -336,7 +336,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
             {reservation.status === "cancelled" && (
               <div className="mt-6 rounded-3xl border border-line bg-inset p-5 shadow-sm">
                 <div className="flex items-center space-x-3">
-                  <XCircle className="h-6 w-6 text-red-600" />
+                  <XCircle className="h-6 w-6 text-danger" />
                   <h4 className="text-lg font-semibold text-ink">
                     Reservation Cancelled
                   </h4>
@@ -364,17 +364,17 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 </div>
               )}
             {reservation.status === "pending" && (
-              <div className="space-y-3 rounded-3xl border border-green-200 bg-green-50 p-5 shadow-sm">
-                <h4 className="flex items-center text-lg font-semibold text-green-800">
+              <div className="space-y-3 rounded-3xl border border-success-line bg-success-soft p-5 shadow-sm">
+                <h4 className="flex items-center text-lg font-semibold text-success">
                   <CheckCircle className="mr-2 h-5 w-5" /> Confirm Reservation
                 </h4>
-                <p className="text-sm text-green-700">
+                <p className="text-sm text-success">
                   Confirm this reservation to notify the customer and make it
                   officially active.
                 </p>
                 <Button
                   onClick={() => setConfirmDialogOpen(true)}
-                  className="w-full bg-green-600 font-semibold text-white shadow-md transition-all hover:bg-green-700"
+                  className="w-full bg-success-strong font-semibold text-white shadow-md transition-all hover:bg-success"
                 >
                   Confirm Reservation
                 </Button>
@@ -399,10 +399,10 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                     </div>
                   ) : fetchError ? (
                     <div className="space-y-2">
-                      <div className="text-sm text-red-600">{fetchError}</div>
+                      <div className="text-sm text-danger">{fetchError}</div>
                       <Button
                         onClick={fetchAllData}
-                        className="bg-red-600 font-semibold text-white hover:bg-red-700"
+                        className="bg-danger font-semibold text-white hover:bg-danger-strong"
                       >
                         Retry
                       </Button>
@@ -431,7 +431,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                       <Button
                         onClick={() => setAssignDialogOpen(true)}
                         disabled={!selectedTable}
-                        className="bg-indigo-600 font-semibold text-white shadow-md transition-all hover:bg-indigo-700"
+                        className="bg-brand font-semibold text-white shadow-md transition-all hover:bg-brand-hover"
                       >
                         Assign
                       </Button>
@@ -441,11 +441,11 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               )}
 
             {reservation.status == "confirmed" && (
-              <div className="space-y-2 rounded-3xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
-                <h4 className="flex items-center text-lg font-semibold text-blue-800">
+              <div className="space-y-2 rounded-3xl border border-brand-accent bg-inset-accent p-5 shadow-sm">
+                <h4 className="flex items-center text-lg font-semibold text-brand-active">
                   <CheckCircle className="mr-2 h-5 w-5" /> Complete Reservation
                 </h4>
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-brand-active">
                   Mark this reservation as completed after the party has
                   finished.
                 </p>
@@ -501,7 +501,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
             </Button>
             <Button
               onClick={handleAssignTable}
-              className="bg-indigo-600 text-white hover:bg-indigo-700"
+              className="bg-brand text-white hover:bg-brand-hover"
             >
               Confirm
             </Button>
@@ -530,7 +530,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
             </Button>
             <Button
               onClick={handleConfirm}
-              className="bg-green-600 text-white hover:bg-green-700"
+              className="bg-success-strong text-white hover:bg-success"
             >
               Confirm
             </Button>
@@ -544,11 +544,11 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
           onOpenChange={setCancelDialogOpen}
         >
           <div className="space-y-5 p-5">
-            <h4 className="flex items-center text-lg font-semibold text-red-800">
+            <h4 className="flex items-center text-lg font-semibold text-danger-strong">
               <XCircle className="mr-2 h-5 w-5" /> Cancel Reservation
             </h4>
 
-            <p className="text-sm text-red-700">
+            <p className="text-sm text-danger-strong">
               Provide a reason for cancelling this reservation. The customer
               will be notified immediately.
             </p>
@@ -563,21 +563,21 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 onChange={(e) => setReason(e.target.value)}
                 className={`w-full rounded-2xl border p-3 text-sm outline-none focus:ring-2 ${
                   reasonError
-                    ? "border-red-500 ring-red-200"
-                    : "border-line focus:border-brand focus:ring-indigo-200"
+                    ? "border-danger ring-danger-line"
+                    : "border-line focus:border-brand focus:ring-brand-accent"
                 }`}
                 rows={4}
                 placeholder="Enter reason for cancellation..."
               />
               {reasonError && (
-                <p className="text-xs text-red-600">{reasonError}</p>
+                <p className="text-xs text-danger">{reasonError}</p>
               )}
             </div>
 
             <div className="flex space-x-3">
               <Button
                 onClick={handleCancel}
-                className="flex-1 bg-red-600 font-semibold text-white shadow-md hover:bg-red-700"
+                className="flex-1 bg-danger font-semibold text-white shadow-md hover:bg-danger-strong"
               >
                 Confirm Cancel
               </Button>

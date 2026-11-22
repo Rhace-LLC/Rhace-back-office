@@ -40,7 +40,7 @@ export const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
         <p className="text-ink-secondary">
           Status:{" "}
           <span
-            className={`font-medium ${details.is_active ? "text-green-600" : "text-red-600"}`}
+            className={`font-medium ${details.is_active ? "text-success" : "text-danger"}`}
           >
             {details.status}
           </span>
@@ -80,7 +80,7 @@ export const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
         </div>
 
         {details.failed_payment_attempts > 0 && (
-          <p className="font-medium text-red-600">
+          <p className="font-medium text-danger">
             Failed Payment Attempts: {details.failed_payment_attempts}
           </p>
         )}
@@ -88,7 +88,7 @@ export const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
         {showRenew && onRenew && (
           <div className="mt-10 flex justify-center">
             <Button
-              className="h-12 w-full cursor-pointer rounded-[12px]"
+              className="h-12 w-full cursor-pointer rounded-2xl"
               onClick={() => onRenew(details)}
             >
               Renew Subscription

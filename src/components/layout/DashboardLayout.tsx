@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useAuth, UserRole, UserRoleLabels } from "@/contexts/AuthContext";
 import { AppSidebar } from "./AppSidebar";
 import { MobileMenu } from "./MobileMenu";
-import { Avatar, AvatarFallback } from "../ui/avatar";
+import { UserMenu } from "./UserMenu";
 import RhaceImg from "../../assets/Rhace-10.png";
 
 interface DashboardLayoutProps {
@@ -127,24 +127,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
           <div className="hidden h-6 w-px bg-line-subtle sm:block" />
 
-          <Link
-            to="/profile"
-            className="flex items-center gap-2.5 rounded-2xl p-1 transition-colors hover:bg-inset"
-          >
-            <Avatar className="h-8 w-8">
-              <AvatarFallback className="bg-brand text-[11px] font-semibold text-white">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
-            <span className="hidden text-left lg:block">
-              <span className="block max-w-[160px] truncate text-[13px] leading-4 font-medium text-ink">
-                {displayName}
-              </span>
-              <span className="block max-w-[160px] truncate text-[11px] leading-4 text-ink-muted capitalize">
-                {roleLabel}
-              </span>
-            </span>
-          </Link>
+          <UserMenu
+            displayName={displayName}
+            email={auth.email}
+            roleLabel={roleLabel}
+            initials={initials}
+          />
         </div>
       </header>
 

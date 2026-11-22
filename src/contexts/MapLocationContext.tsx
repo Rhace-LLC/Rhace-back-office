@@ -1,15 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  MapLocationContext,
+  type PermissionStatus,
+} from "./useMapLocation";
 
-type PermissionStatus = "granted" | "denied" | "prompt";
 
-interface MapLocationContextState {
-  permissionStatus: PermissionStatus;
-  locationEnabled: boolean;
-  requestPermission: () => Promise<void>;
-  checkLocationEnabled: () => void;
-}
-
-const MapLocationContext = createContext<MapLocationContextState | null>(null);
 
 export const MapLocationProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -18,7 +13,7 @@ export const MapLocationProvider: React.FC<{ children: React.ReactNode }> = ({
     useState<PermissionStatus>("prompt");
   const [locationEnabled, setLocationEnabled] = useState(false);
 
-  const requestPermission = async () => {
+  const requestPermission = useCallback(async () => {
     if (!navigator.geolocation) {
       setPermissionStatus("denied");
       return;
@@ -33,9 +28,10 @@ export const MapLocationProvider: React.FC<{ children: React.ReactNode }> = ({
         setPermissionStatus("denied");
       }
     );
-  };
+  }, []);
 
-  const checkLocationEnabled = () => {
+  // Stable identity so consumers can list it as an effect dependency.
+  const checkLocationEnabled = useCallback(() => {
     if (!navigator.geolocation) {
       setLocationEnabled(false);
       return;
@@ -45,7 +41,7 @@ export const MapLocationProvider: React.FC<{ children: React.ReactNode }> = ({
       () => setLocationEnabled(true),
       () => setLocationEnabled(false)
     );
-  };
+  }, []);
 
   useEffect(() => {
     if (navigator.permissions) {
@@ -67,14 +63,4 @@ export const MapLocationProvider: React.FC<{ children: React.ReactNode }> = ({
       {children}
     </MapLocationContext.Provider>
   );
-};
-
-export const useMapLocationContext = () => {
-  const ctx = useContext(MapLocationContext);
-  if (!ctx) {
-    throw new Error(
-      "useMapLocationContext must be used inside MapLocationProvider"
-    );
-  }
-  return ctx;
 };

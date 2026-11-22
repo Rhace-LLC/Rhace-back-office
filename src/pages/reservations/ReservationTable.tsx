@@ -52,24 +52,24 @@ const formatRelativeDate = (dateString: string) => {
 const getStatusBadgeProps = (status: Reservation["status"]) => {
   switch (status) {
     case "confirmed":
-      // Accent color (e.g., green/indigo) for positive status
+      // Upcoming, confirmed booking → brand (info)
       return {
         className:
-          "bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-100 font-medium",
+          "bg-inset-accent text-brand border-brand-accent hover:bg-inset-accent font-medium",
         variant: "default",
       };
-    case "confirmed":
-      // Primary action/in-progress color (e.g., blue/teal)
+    case "completed":
+      // Finished booking → success
       return {
         className:
-          "bg-teal-50 text-teal-600 border-teal-200 hover:bg-teal-100 font-medium",
+          "bg-success-soft text-success border-success-line hover:bg-success-soft font-medium",
         variant: "default",
       };
     case "cancelled":
       // Destructive color (red)
       return {
         className:
-          "bg-red-50 text-red-600 border-red-200 hover:bg-red-100 font-medium",
+          "bg-danger-soft text-danger border-danger-line hover:bg-danger-soft font-medium",
         variant: "default",
       };
     case "pending":
@@ -131,7 +131,7 @@ export const RenderReservationTableData: React.FC<
               <TableRow
                 key={index}
                 onClick={() => setSelectedReservation(r.id)}
-                className="cursor-pointer transition-colors duration-150 hover:bg-indigo-50/50"
+                className="cursor-pointer transition-colors duration-150 hover:bg-inset-accent"
               >
                 {/* Reference ID */}
                 <TableCell className="font-mono text-xs text-ink-secondary">

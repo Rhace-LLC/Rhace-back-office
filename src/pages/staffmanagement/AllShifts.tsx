@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import formatPrice from "@/utils/formatPrice";
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getShiftLogs, ShiftLog } from "@/api-services/shift.service";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -17,23 +17,23 @@ export const AllShiftsAdmin = () => {
   const [error, setError] = useState<string | null>(null);
 
 
-  const fetchShifts = async () => {
+  const fetchShifts = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const response = await getShiftLogs(token);
       setShifts(response || []);
       setFilteredShifts(response || []);
-    } catch (err: any) {
+    } catch {
       setError("Failed to load shift records");
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchShifts();
-  }, [token]);
+  }, [fetchShifts]);
 
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -87,7 +87,7 @@ export const AllShiftsAdmin = () => {
       {loading ? (
         <div className="p-12 text-center text-ink-muted">Loading shift logs...</div>
       ) : error ? (
-        <div className="p-12 text-center text-red-500">{error}</div>
+        <div className="p-12 text-center text-danger">{error}</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -103,7 +103,7 @@ export const AllShiftsAdmin = () => {
             <tbody className="divide-y divide-line-subtle text-sm text-ink-secondary">
               {filteredShifts.length > 0 ? (
                 filteredShifts.map((shift) => (
-                  <tr key={shift.id} className="hover:bg-inset/50">
+                  <tr key={shift.id} className="hover:bg-inset">
                     <td className="px-6 py-4 font-medium text-ink">#{shift.id}</td>
                     <td className="px-6 py-4 font-mono text-xs text-ink-secondary">{shift.user}</td>
                     <td className="px-6 py-4">{formatDate(shift.clock_in)}</td>
@@ -111,7 +111,7 @@ export const AllShiftsAdmin = () => {
                       {shift.clock_out ? (
                         formatDate(shift.clock_out)
                       ) : (
-                        <span className="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
+                        <span className="px-2 py-1 text-xs font-semibold text-success bg-success-soft rounded-full">
                           Active
                         </span>
                       )}

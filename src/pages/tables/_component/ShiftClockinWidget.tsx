@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getShiftLogs, clockInShift, clockOutShift, ShiftLog } from "@/api-services/shift.service";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -13,7 +13,7 @@ export const StaffShiftWidget = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Fetch shift logs on mount to determine current clock-in state
-  const fetchCurrentStatus = async () => {
+  const fetchCurrentStatus = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -23,16 +23,16 @@ export const StaffShiftWidget = () => {
       // Find shift where user is currently clocked in (clock_out is null or equals clock_in)
       const current = shifts.find((shift) => !shift.clock_out) || null;
       setActiveShift(current);
-    } catch (err: any) {
+    } catch {
       setError("Failed to fetch shift status");
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchCurrentStatus();
-  }, [token]);
+  }, [fetchCurrentStatus]);
 
   const handleClockIn = async () => {
     setActionLoading(true);
@@ -40,7 +40,7 @@ export const StaffShiftWidget = () => {
     try {
       const res = await clockInShift({}, token);
       setActiveShift(res);
-    } catch (err: any) {
+    } catch {
       setError("Failed to clock in");
     } finally {
       setActionLoading(false);
@@ -53,7 +53,7 @@ export const StaffShiftWidget = () => {
     try {
       await clockOutShift({}, token);
       setActiveShift(null);
-    } catch (err: any) {
+    } catch {
       setError("Failed to clock out");
     } finally {
       setActionLoading(false);
@@ -65,7 +65,7 @@ export const StaffShiftWidget = () => {
   return (
     <div className="bg-surface rounded-3xl shadow-sm border border-line p-5 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div className="flex items-center gap-3">
-        <div className={`w-3 h-3 rounded-full ${isClockedIn ? "bg-green-500 animate-pulse" : "bg-gray-300"}`} />
+        <div className={`w-3 h-3 rounded-full ${isClockedIn ? "bg-success-strong animate-pulse" : "bg-line-strong"}`} />
         <div>
           <h2 className="text-lg font-semibold text-ink">Shift Status</h2>
           <p className="text-sm text-ink-muted">
@@ -78,15 +78,15 @@ export const StaffShiftWidget = () => {
         </div>
       </div>
 
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p className="text-xs text-danger">{error}</p>}
 
       <button
         onClick={isClockedIn ? handleClockOut : handleClockIn}
         disabled={loading || actionLoading}
         className={`px-6 py-2.5 rounded-2xl font-medium text-sm transition-all shadow-sm ${
           isClockedIn
-            ? "bg-red-600 hover:bg-red-700 text-white disabled:bg-red-300"
-            : "bg-emerald-600 hover:bg-emerald-700 text-white disabled:bg-emerald-300"
+            ? "bg-danger hover:bg-danger-strong text-white disabled:bg-danger-line"
+            : "bg-success-strong hover:bg-success text-white disabled:bg-success-line"
         }`}
       >
         {actionLoading

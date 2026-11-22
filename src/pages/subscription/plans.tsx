@@ -45,7 +45,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ plan, onSelect }) => {
       className={cn(
         "relative flex flex-col rounded-[20px] p-6",
         featured
-          ? "bg-gradient-to-br from-brand via-brand-secondary to-brand-accent shadow-md"
+          ? "bg-brand shadow-button" // solid focal block (visual-direction L4)
           : "border border-line bg-surface",
         !is_active && "opacity-60"
       )}

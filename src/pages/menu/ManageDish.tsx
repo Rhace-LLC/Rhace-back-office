@@ -118,7 +118,7 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
             <span>Status</span>
             <span
               className={`font-medium ${
-                dish.available ? "text-green-600" : "text-red-500"
+                dish.available ? "text-success" : "text-danger"
               }`}
             >
               {dish.available ? "Available" : "Unavailable"}
@@ -156,7 +156,7 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
                 setPreview(null);
                 setDishForm((p) => ({ ...p, image: null }));
               }}
-              className="absolute top-2 right-2 rounded-2xl bg-black/60 px-2 py-1 text-xs text-white"
+              className="absolute top-2 right-2 rounded-2xl bg-ink/60 px-2 py-1 text-xs text-white"
             >
               Remove
             </button>

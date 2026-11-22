@@ -1,4 +1,3 @@
-import { parseError } from "@/api-services/utils/parseError";
 import type { Order } from "@/pages/orders/types/order";
 
 // Shared helpers for the role dashboards (waiter / kitchen).
@@ -12,12 +11,7 @@ export const needsWaiterConfirmation = (o: Order) =>
 export const isConfirmedForKitchen = (o: Order) =>
   o.status === "received" && !!o.waiter_confirmed;
 
-/** `parseError` with a context-specific fallback instead of the generic
- * "An unknown error occurred". */
-export const getErrorMessage = (err: unknown, fallback: string): string => {
-  const message = parseError(err);
-  return message === "An unknown error occurred" ? fallback : message;
-};
+export { parseErrorOr as getErrorMessage } from "@/api-services/utils/parseError";
 
 export const formatOrderType = (type?: string) => {
   switch (type) {

@@ -71,7 +71,7 @@ export function FileUpload({
     return (
       <div className="flex flex-col items-center p-4 text-center">
         {file.type.includes("pdf") ? (
-          <FileText className="mb-2 h-12 w-12 text-blue-500" />
+          <FileText className="mb-2 h-12 w-12 text-brand" />
         ) : (
           <File className="mb-2 h-12 w-12 text-ink-muted" />
         )}
@@ -88,7 +88,7 @@ export function FileUpload({
       {label && <label className="font-medium text-brand">{label}</label>}
       <motion.div
         className={`relative w-full border-2 p-4 ${
-          error ? "border-red-300" : "border-dashed border-line-strong"
+          error ? "border-danger-line" : "border-dashed border-line-strong"
         } rounded-3xl transition-colors duration-300 hover:border-brand`}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -113,7 +113,7 @@ export function FileUpload({
           <motion.button
             type="button"
             onClick={handleRemoveFile}
-            className="absolute top-2 right-2 rounded-full bg-red-500 p-1 text-white shadow-md transition-colors hover:bg-red-600"
+            className="absolute top-2 right-2 rounded-full bg-danger p-1 text-white shadow-md transition-colors hover:bg-danger"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >
@@ -126,7 +126,7 @@ export function FileUpload({
         <motion.p
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-sm text-red-500"
+          className="text-sm text-danger"
         >
           {error}
         </motion.p>

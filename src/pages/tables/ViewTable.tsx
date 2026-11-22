@@ -1,3 +1,4 @@
+import { useStableCallback } from "@/hooks/useStableCallback";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -20,7 +21,7 @@ import { useDispatch } from "react-redux";
 import { Input } from "@/components/ui/input";
 import { getStaffByRole, Staff } from "@/api-services/staffService";
 //  import { getAllStaff } from "@/api-services/auth.service";
-import { parseError } from "@/api-services/utils/parseError";
+import { parseError, parseErrorOr } from "@/api-services/utils/parseError";
 
 export type TableStatus = "free" | "occupied" | "needs_cleaning";
 const StatusLabelToValue: Record<string, TableStatus> = {
@@ -35,26 +36,26 @@ const getStatusProps = (label: string) => {
     case "Open":
       return {
         icon: Table,
-        color: "text-green-600 bg-green-50 border-green-200 hover:bg-green-100",
-        ring: "focus-within:ring-green-500",
+        color: "text-success bg-success-soft border-success-line hover:bg-success-soft",
+        ring: "focus-within:ring-success",
       };
     case "Occupied":
       return {
         icon: Utensils,
-        color: "text-red-600 bg-red-50 border-red-200 hover:bg-red-100",
-        ring: "focus-within:ring-red-500",
+        color: "text-danger bg-danger-soft border-danger-line hover:bg-danger-soft",
+        ring: "focus-within:ring-danger",
       };
     case "Needs Cleaning":
       return {
         icon: X,
-        color: "text-amber-600 bg-amber-50 border-amber-200 hover:bg-amber-100",
-        ring: "focus-within:ring-amber-500",
+        color: "text-warning bg-warning-soft border-warning-line hover:bg-warning-soft",
+        ring: "focus-within:ring-warning",
       };
     default:
       return {
         icon: Check,
         color: "text-ink-secondary bg-inset border-line hover:bg-inset",
-        ring: "focus-within:ring-gray-500",
+        ring: "focus-within:ring-line-strong",
       };
   }
 };
@@ -126,12 +127,11 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
       setStatusDialogOpen(false);
 
       // Optional: Refresh table lis
-    } catch (error: any) {
+    } catch (error) {
       console.error("Update table error:", error);
 
       toast.error(
-        error?.response?.data?.message ||
-          "Failed to update table status. Please try again."
+        parseErrorOr(error, "Failed to update table status. Please try again.")
       );
     } finally {
       setLoadingState(false);
@@ -173,12 +173,11 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
       setTableInfoDialogOpen(false);
 
       // Optional: Refresh table lis
-    } catch (error: any) {
+    } catch (error) {
       console.error("Update table error:", error);
 
       toast.error(
-        error?.response?.data?.message ||
-          "Failed to update table status. Please try again."
+        parseErrorOr(error, "Failed to update table status. Please try again.")
       );
     } finally {
       setLoadingState(false);
@@ -190,14 +189,14 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
   const [waiterReqLoading, setWaiterReqLoading] = useState(false);
   const [waiterReqError, setWaiterReqError] = useState<string | null>(null);
 
-  const fetchWaiters = async () => {
+  const fetchWaiters = useStableCallback(async () => {
     setWaiterReqLoading(true);
     setWaiterReqError(null);
 
     try {
       const byRole = await getStaffByRole(auth.token, "waiter");
       setWaiters(byRole);
-    } catch (error: any) {
+    } catch (error) {
       const errorMessage = parseError(error);
       setWaiterReqError(
         errorMessage || "Unable to fetch waiters at the moment"
@@ -205,7 +204,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
     } finally {
       setWaiterReqLoading(false);
     }
-  };
+  });
   /*
 
   const [waiterAssignmentReqLoading, setWaiterAssignmentReqLoading] =
@@ -221,7 +220,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
     try {
       const response = await getWaitersTableAssignments({}, {}, auth?.token);
       return response;
-    } catch (error: any) {
+    } catch (error) {
       const errorMessage = parseError(error);
       setWaiterAssignmentReqError(
         errorMessage || "Unable to fetch waiters at the moment"
@@ -235,7 +234,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
 
   useEffect(() => {
     fetchWaiters();
-  }, []); // <-- run only once
+  }, [fetchWaiters]); // <-- run only once
 
   return (
     <div className="space-y-4 pt-5">
@@ -252,8 +251,8 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
         <TabsContent value="overview">
           <div className="grid grid-cols-2 gap-4">
             {/* Seats */}
-            <div className="rounded-3xl border border-indigo-100 bg-indigo-50/50 p-4 shadow-sm">
-              <p className="text-xs font-medium tracking-wide text-indigo-600 uppercase">
+            <div className="rounded-3xl border border-brand-accent bg-inset-accent p-4 shadow-sm">
+              <p className="text-xs font-medium tracking-wide text-brand uppercase">
                 Available Seats
               </p>
               <p className="mt-1 text-[18px] font-semibold text-ink">
@@ -262,8 +261,8 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
             </div>
 
             {/* Table Number */}
-            <div className="rounded-3xl border border-blue-100 bg-blue-50/50 p-4 shadow-sm">
-              <p className="text-xs font-medium tracking-wide text-blue-600 uppercase">
+            <div className="rounded-3xl border border-brand-accent bg-inset-accent p-4 shadow-sm">
+              <p className="text-xs font-medium tracking-wide text-brand uppercase">
                 Table Number
               </p>
               <p className="mt-1 text-[18px] font-semibold text-ink">
@@ -272,8 +271,8 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
             </div>
 
             {/* Current Status */}
-            <div className="rounded-3xl border border-emerald-100 bg-emerald-50/50 p-4 shadow-sm">
-              <p className="text-xs font-medium tracking-wide text-emerald-600 uppercase">
+            <div className="rounded-3xl border border-success-line bg-success-soft p-4 shadow-sm">
+              <p className="text-xs font-medium tracking-wide text-success uppercase">
                 Current Status
               </p>
               <p className="mt-1 text-[18px] font-semibold text-ink capitalize">
@@ -285,7 +284,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
           {/* Actions */}
           <div className="grid grid-cols-2 gap-3 space-y-2 pt-5">
             <Button
-              className="h-12 w-full cursor-pointer rounded-2xl bg-indigo-600 text-white transition hover:bg-indigo-700"
+              className="h-12 w-full cursor-pointer rounded-2xl bg-brand text-white transition hover:bg-brand-hover"
               onClick={() => setStatusDialogOpen(true)}
             >
               Update Table Status
@@ -320,11 +319,11 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
 
             {/* Error state */}
             {!waiterReqLoading && waiterReqError && (
-              <div className="rounded-2xl border border-red-200 bg-red-50 p-4">
-                <p className="text-sm text-red-600">{waiterReqError}</p>
+              <div className="rounded-2xl border border-danger-line bg-danger-soft p-4">
+                <p className="text-sm text-danger">{waiterReqError}</p>
                 <button
                   onClick={fetchWaiters}
-                  className="mt-3 inline-flex items-center rounded-2xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+                  className="mt-3 inline-flex items-center rounded-2xl bg-danger px-4 py-2 text-sm font-medium text-white transition hover:bg-danger-strong"
                 >
                   Retry
                 </button>
@@ -403,7 +402,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
 
               {/* Regenerate */}
               <Button
-                className="hidden items-center gap-2 bg-gray-800 text-white hover:bg-gray-900"
+                className="hidden items-center gap-2 bg-ink text-white hover:bg-ink"
                 disabled={loading}
                 onClick={() => {
                   setLoading(true);
@@ -488,7 +487,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
           {/* Footer */}
           <div className="flex flex-col gap-3 pt-4">
             <Button
-              className="h-12 w-full bg-indigo-600 text-base font-semibold shadow-md hover:bg-indigo-700"
+              className="h-12 w-full bg-brand text-base font-semibold shadow-md hover:bg-brand-hover"
               onClick={() => {
                 if (!selectedStatus) {
                   toast.error("Please select a status");

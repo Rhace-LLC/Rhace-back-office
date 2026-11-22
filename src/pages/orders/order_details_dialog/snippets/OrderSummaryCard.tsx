@@ -43,7 +43,7 @@ export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = ({ order, items
         </div>
       </div>
       {order.delay_reason && (
-        <div className="mt-2 rounded-2xl bg-red-50 border border-red-200 p-2.5 text-xs text-red-800">
+        <div className="mt-2 rounded-2xl bg-danger-soft border border-danger-line p-2.5 text-xs text-danger-strong">
           <span className="font-semibold block">Delay Reason:</span>
           {order.delay_reason}
         </div>

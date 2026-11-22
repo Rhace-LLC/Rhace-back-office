@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "recharts";
+import { Label } from "@/components/ui/label";
 
 // ---------------------- Reservation Filters Component ----------------------
 interface ReservationFiltersProps {
   filters: { searchTerm: string; status: string; date?: string };
-  setFilters: (f: any) => void;
+  setFilters: (f: ReservationFiltersProps["filters"]) => void;
   onSearch: () => void;
 }
 
@@ -30,7 +30,7 @@ export const ReservationFilters: React.FC<ReservationFiltersProps> = ({
       <div className="w-48">
         <Label>Status</Label>
         <select
-          className="mt-1 w-full rounded border p-2"
+          className="mt-1 w-full rounded-2xl border p-2"
           value={filters.status}
           onChange={(e) => setFilters({ ...filters, status: e.target.value })}
         >

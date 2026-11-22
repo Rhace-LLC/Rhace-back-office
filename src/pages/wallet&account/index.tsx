@@ -1,5 +1,6 @@
 "use client";
 
+import { useStableCallback } from "@/hooks/useStableCallback";
 import formatPrice from "@/utils/formatPrice";
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { useEffect, useState } from "react";
@@ -30,6 +31,7 @@ import {
   withdrawFromSubaccount,
   createSubaccount,
   getSubaccountBanks,
+  type BankItem,
 } from "@/api-services/subaccount.service";
 
 import { setSubaccountDetails } from "@/store/subaccount.slice";
@@ -81,7 +83,7 @@ export const WalletAndAccount = () => {
       setEditModal(false);
 
       fetchSubAccount(); // reload updated data
-    } catch (err: any) {
+    } catch (err) {
       toast.error(parseError(err));
     } finally {
       setEditing(false);
@@ -96,21 +98,21 @@ export const WalletAndAccount = () => {
   const [creating, setCreating] = useState(false);
 
   // BANK LIST
-  const [banks, setBanks] = useState<any[]>([]);
+  const [banks, setBanks] = useState<BankItem[]>([]);
   const [banksLoading, setBanksLoading] = useState(false);
   const [banksError, setBanksError] = useState("");
 
   /* ============================================================
         FETCH SUBACCOUNT
   ============================================================ */
-  const fetchSubAccount = async () => {
+  const fetchSubAccount = useStableCallback(async () => {
     try {
       setLoadingState(true);
       setError("");
       const res = await getSubaccount(auth.token);
       dispatch(setSubaccountDetails(res.data));
-    } catch (err: any) {
-      let message = parseError(err);
+    } catch (err) {
+      const message = parseError(err);
       setError(message);
       if (message !== "No subaccount found for this restaurant") {
         toast.error(message);
@@ -118,35 +120,35 @@ export const WalletAndAccount = () => {
     } finally {
       setLoadingState(false);
     }
-  };
+  });
 
   useEffect(() => {
     if (!subaccount) fetchSubAccount();
-  }, []);
+  }, [subaccount, fetchSubAccount]);
 
   /* ============================================================
         FETCH BANKS
   ============================================================ */
-  const fetchBanks = async () => {
+  const fetchBanks = useStableCallback(async () => {
     try {
       setBanksLoading(true);
       setBanksError("");
 
       const response = await getSubaccountBanks(auth.token);
       setBanks(response.data);
-    } catch (err: any) {
+    } catch (err) {
       setBanksError(parseError(err));
     } finally {
       setBanksLoading(false);
     }
-  };
+  });
 
   // Fetch banks ONLY when creating subaccount UI appears
   useEffect(() => {
     if (error === "No subaccount found for this restaurant") {
       fetchBanks();
     }
-  }, [error]);
+  }, [error, fetchBanks]);
 
   /* ============================================================
         HANDLE WITHDRAW
@@ -185,7 +187,7 @@ export const WalletAndAccount = () => {
 
       setWithdrawalAmount("");
       setWithdrawalModal(false);
-    } catch (err: any) {
+    } catch (err) {
       toast.error(parseError(err));
     } finally {
       setLoading(false);
@@ -215,7 +217,7 @@ export const WalletAndAccount = () => {
 
       fetchSubAccount();
       auth.setHasPayoutAccount(true);
-    } catch (err: any) {
+    } catch (err) {
       toast.error(parseError(err));
     } finally {
       setCreating(false);
@@ -268,6 +270,7 @@ export const WalletAndAccount = () => {
               <Select
                 onValueChange={(val) => {
                   const bank = banks.find((b) => b.code === val);
+                  if (!bank) return;
                   setEditData((prev) => ({
                     ...prev,
                     bank_code: bank.code,
@@ -341,7 +344,7 @@ export const WalletAndAccount = () => {
 
             {banksError && (
               <div className="space-y-2">
-                <p className="text-sm text-red-500">{banksError}</p>
+                <p className="text-sm text-danger">{banksError}</p>
                 <Button size="sm" onClick={fetchBanks}>
                   Retry
                 </Button>
@@ -352,6 +355,7 @@ export const WalletAndAccount = () => {
               <Select
                 onValueChange={(val) => {
                   const bank = banks.find((b) => b.code === val);
+                  if (!bank) return;
                   setCreateData((prev) => ({
                     ...prev,
                     bank_code: bank.code,

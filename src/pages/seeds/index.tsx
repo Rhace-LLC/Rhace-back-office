@@ -32,7 +32,7 @@ export default function SeedsPage() {
       <div
         role="tablist"
         aria-label="Seed data sections"
-        className="mb-5 flex w-max max-w-full gap-1 overflow-x-auto rounded-[12px] border border-line bg-cardfill p-1"
+        className="mb-5 flex w-max max-w-full gap-1 overflow-x-auto rounded-2xl border border-line bg-cardfill p-1"
       >
         {TABS.map(({ key, label }) => (
           <button

@@ -1,3 +1,4 @@
+import { useStableCallback } from "@/hooks/useStableCallback";
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import React, { useState, useEffect, useCallback } from "react";
 import {
@@ -17,7 +18,7 @@ import { RootState } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { flattenStaffByRole } from "./extras";
 import { updateStaffData } from "@/store/staff.slice";
-import { parseError } from "@/api-services/utils/parseError";
+import { parseError, parseErrorOr } from "@/api-services/utils/parseError";
 
 export const StaffIntelligenceAnalytics: React.FC = () => {
   const { token, restaurants } = useAuth();
@@ -52,7 +53,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
     try {
       const response = await getAuditSummary({ restaurant_id: restaurantId }, token);
       setSummary(response);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to fetch audit summary:", err);
     }
   }, [restaurantId, token]);
@@ -69,7 +70,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
 
       const response = await getStaffReports(params, token);
       setReports(response || []);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to fetch staff reports:", err);
       throw err;
     }
@@ -88,7 +89,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
       const response = await getStaffActivity(params, token);
       setActivities(response?.results || []);
       setActivityTotalCount(response?.count || 0);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to fetch staff activity logs:", err);
       throw err;
     }
@@ -99,7 +100,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
     try {
       const response = await getShiftLogs(token);
       setShiftLogs(response || []);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to fetch shift logs:", err);
       throw err;
     }
@@ -116,11 +117,12 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
         fetchActivityData(),
         fetchShiftsData(),
       ]);
-    } catch (err: any) {
+    } catch (err) {
       setError(
-        err?.response?.data?.message ||
-          err?.message ||
+        parseErrorOr(
+          err,
           "An error occurred while retrieving staff intelligence data."
+        )
       );
     } finally {
       setLoading(false);
@@ -143,7 +145,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
   const toShow = allData;
 
   // ---------------- API Call ----------------
-  const fetchAllStaffs = async () => {
+  const fetchAllStaffs = useStableCallback(async () => {
     try {
       setFetchLoading(true);
       setFetchError("");
@@ -162,11 +164,11 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
     } finally {
       setFetchLoading(false);
     }
-  };
+  });
 
   useEffect(() => {
     if (!allData) fetchAllStaffs();
-  }, []);
+  }, [allData, fetchAllStaffs]);
 
   return (
     <PageContainer>
@@ -189,7 +191,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
                 value={staffId}
                 onChange={(e) => setStaffId(e.target.value)}
                 disabled={fetchLoading}
-                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-brand transition-all cursor-pointer disabled:opacity-50"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all cursor-pointer disabled:opacity-50"
               >
                 <option value="">All Staff</option>
                 {toShow?.map((staff: StaffMember) => (
@@ -208,7 +210,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-brand transition-all cursor-pointer"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all cursor-pointer"
               >
                 <option value="">All Roles</option>
                 <option value="waiter">Waiter</option>
@@ -226,7 +228,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
               <select
                 value={actionType}
                 onChange={(e) => setActionType(e.target.value as ActionType)}
-                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-brand transition-all cursor-pointer"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all cursor-pointer"
               >
                 <option value="">All Actions</option>
                 <option value="order_status_updated">Order Status Updated</option>
@@ -248,7 +250,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-brand transition-all"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all"
               />
             </div>
 
@@ -261,7 +263,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-[#146BE8]/24 focus:border-brand transition-all"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all"
               />
             </div>
 
@@ -371,7 +373,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
 
           {/* Error & Loading Indicators */}
           {(error || fetchError) && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-[14px] text-red-800">
+            <div className="p-4 bg-danger-soft border border-danger-line rounded-2xl text-[14px] text-danger-strong">
               {error || fetchError}
             </div>
           )}
@@ -408,7 +410,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
                         </tr>
                       ) : (
                         reports.map((item, index) => (
-                          <tr key={item.staff_id || index} className="hover:bg-surface/60 transition-colors">
+                          <tr key={item.staff_id || index} className="hover:bg-surface transition-colors">
                             <td className="p-3.5 font-medium text-ink">{item.staff_name}</td>
                             <td className="p-3.5 text-ink-secondary">{item.staff_role}</td>
                             <td className="p-3.5 text-ink-secondary">{item.restaurant_name}</td>
@@ -448,13 +450,13 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
                         </tr>
                       ) : (
                         activities.map((act) => (
-                          <tr key={act.id} className="hover:bg-surface/60 transition-colors">
+                          <tr key={act.id} className="hover:bg-surface transition-colors">
                             <td className="p-3.5 text-ink-muted">
                               {new Date(act.created_at).toLocaleString()}
                             </td>
                             <td className="p-3.5 font-medium text-ink">{act.staff_name || act.staff}</td>
                             <td className="p-3.5">
-                              <span className="inline-block px-2.5 py-1 text-[12px] font-medium rounded-full bg-sky-100 text-sky-700">
+                              <span className="inline-block px-2.5 py-1 text-[12px] font-medium rounded-full bg-inset-accent text-brand-active">
                                 {act.action_type}
                               </span>
                             </td>
@@ -492,7 +494,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
                         </tr>
                       ) : (
                         shiftLogs.map((shift) => (
-                          <tr key={shift.id} className="hover:bg-surface/60 transition-colors">
+                          <tr key={shift.id} className="hover:bg-surface transition-colors">
                             <td className="p-3.5 text-ink-muted">#{shift.id}</td>
                             <td className="p-3.5 font-medium text-ink">{shift.user}</td>
                             <td className="p-3.5 text-ink-secondary">{shift.restaurant}</td>
@@ -503,7 +505,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
                                   {new Date(shift.clock_out).toLocaleString()}
                                 </span>
                               ) : (
-                                <span className="inline-block px-2.5 py-0.5 text-[12px] font-medium rounded-full bg-green-100 text-green-700">
+                                <span className="inline-block px-2.5 py-0.5 text-[12px] font-medium rounded-full bg-success-soft text-success">
                                   Active
                                 </span>
                               )}

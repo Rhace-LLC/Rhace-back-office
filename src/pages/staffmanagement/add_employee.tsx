@@ -1,3 +1,4 @@
+import { parseErrorOr } from "@/api-services/utils/parseError";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -63,9 +64,9 @@ const RegisterEmployeeForm: React.FC = () => {
         is_verified: true,
         invitation_token: "",
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("❌ Error:", error);
-      toast.error(error?.response?.data?.message || "Registration failed.");
+      toast.error(parseErrorOr(error, "Registration failed."));
     } finally {
       setLoading(false);
     }

@@ -35,7 +35,7 @@ export default function ViewMyRestaurant({
   return (
     <div className="mx-auto max-w-7xl space-y-8">
 
-<div className="hover:shadow-3xl relative overflow-hidden rounded-3xl shadow-2xl transition-all duration-300">
+<div className="hover:shadow-3xl relative overflow-hidden rounded-3xl shadow-xl transition-all duration-300">
   {/* Cover Image */}
   <img
     src={profile.cover_image_url || fallbackCover}
@@ -44,7 +44,7 @@ export default function ViewMyRestaurant({
   />
 
   {/* Overlay Gradient */}
-  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+  <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/40 to-transparent" />
 
   {/* Content Area */}
   <div className="absolute bottom-0 left-0 w-full p-4 sm:p-6 md:p-10">
@@ -81,7 +81,7 @@ export default function ViewMyRestaurant({
           <div className="flex items-center gap-2 text-sm font-medium sm:text-base">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 fill-current text-amber-300 sm:h-5 sm:w-5"
+              className="h-4 w-4 fill-current text-warning-line sm:h-5 sm:w-5"
               viewBox="0 0 24 24"
             >
               <path d="M12 .587l3.668 7.431L24 9.748l-6 5.847 1.416 8.255L12 19.771l-7.416 4.079L6 15.595 0 9.748l8.332-1.73L12 .587z" />
@@ -94,7 +94,7 @@ export default function ViewMyRestaurant({
             {/* Open/Closed Status */}
             <span
               className={`ml-1 border-l border-white/40 pl-2 text-xs font-semibold sm:ml-2 sm:pl-3 sm:text-sm ${
-                profile.is_open ? "text-green-300" : "text-red-300"
+                profile.is_open ? "text-success-line" : "text-danger-line"
               }`}
             >
               {profile.is_open ? "Open Now" : "Currently Closed"}
@@ -148,7 +148,7 @@ export default function ViewMyRestaurant({
                 <span
                   key={idx}
                   // Updated tag styling: pill shape, subtle color
-                  className="rounded-full border border-blue-100 bg-blue-50/70 px-4 py-1.5 text-sm font-medium text-blue-700 transition duration-150 hover:bg-blue-100"
+                  className="rounded-full border border-brand-accent bg-inset-accent px-4 py-1.5 text-sm font-medium text-brand-active transition duration-150 hover:bg-inset-accent"
                 >
                   {tag.trim()}
                 </span>
@@ -168,7 +168,7 @@ export default function ViewMyRestaurant({
               ).map((h, i) => (
                 <div
                   key={i}
-                  className="rounded-2xl border bg-inset/50 p-3 shadow-sm transition-shadow hover:shadow-md"
+                  className="rounded-2xl border bg-inset p-3 shadow-sm transition-shadow hover:shadow-md"
                 >
                   <div className="font-semibold text-ink">
                     {h.day || "Not yet added"}
@@ -248,7 +248,7 @@ export default function ViewMyRestaurant({
                   <strong className="block text-ink">Email</strong>
                   <a
                     href={`mailto:${profile.email}`}
-                    className="text-blue-500 hover:underline"
+                    className="text-brand hover:underline"
                   >
                     {display(profile.email)}
                   </a>
@@ -277,7 +277,7 @@ export default function ViewMyRestaurant({
                   <strong className="block text-ink">Phone</strong>
                   <a
                     href={`tel:${profile.phone}`}
-                    className="text-blue-500 hover:underline"
+                    className="text-brand hover:underline"
                   >
                     {display(profile.phone)}
                   </a>

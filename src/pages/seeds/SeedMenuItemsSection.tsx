@@ -471,7 +471,7 @@ export function SeedMenuItemsSection() {
       )}
 
       {error && (
-        <p className="rounded-[12px] bg-red-50 px-4 py-3 text-sm text-red-600">
+        <p className="rounded-2xl bg-danger-soft px-4 py-3 text-sm text-danger">
           {error}
         </p>
       )}

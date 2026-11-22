@@ -110,10 +110,10 @@ const RenderEmployeeTable: React.FC<Props> = ({ data, onRowClick }) => {
 
                   <td className="p-3">
                     <span
-                      className={`rounded px-2 py-1 text-xs font-semibold ${
+                      className={`rounded-2xl px-2 py-1 text-xs font-semibold ${
                         employee.is_active
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
+                          ? "bg-success-soft text-success"
+                          : "bg-danger-soft text-danger-strong"
                       }`}
                     >
                       {employee.is_active ? "Active" : "Inactive"}
@@ -123,7 +123,7 @@ const RenderEmployeeTable: React.FC<Props> = ({ data, onRowClick }) => {
                   <td className="p-3 text-center">
                     {employee.is_active ? (
                       <button
-                        className="inline-flex items-center gap-2 rounded border border-red-600 bg-red-50 px-4 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-100"
+                        className="inline-flex items-center gap-2 rounded-2xl border border-danger bg-danger-soft px-4 py-1.5 text-xs font-medium text-danger-strong transition hover:bg-danger-soft"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleToggleClick(employee, "disable");
@@ -134,7 +134,7 @@ const RenderEmployeeTable: React.FC<Props> = ({ data, onRowClick }) => {
                       </button>
                     ) : (
                       <button
-                        className="inline-flex items-center gap-2 rounded border border-green-600 bg-green-50 px-4 py-1.5 text-xs font-medium text-green-700 transition hover:bg-green-100"
+                        className="inline-flex items-center gap-2 rounded-2xl border border-success bg-success-soft px-4 py-1.5 text-xs font-medium text-success transition hover:bg-success-soft"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleToggleClick(employee, "enable");

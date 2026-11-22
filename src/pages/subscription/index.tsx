@@ -1,3 +1,4 @@
+import { useStableCallback } from "@/hooks/useStableCallback";
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
 import { useEffect, useState } from "react";
 
@@ -64,7 +65,7 @@ export default function BillingPage() {
       const res = await getSubscriptionDetails(auth.token);
       dispatch(setSubscriptionDetails(res));
     } catch (err) {
-      let message = parseError(err);
+      const message = parseError(err);
       if (message == "No Subscription Found") {
         setIsSubscription(false);
       }
@@ -76,7 +77,7 @@ export default function BillingPage() {
     }
   };
 
-  const fetchStatus = async () => {
+  const fetchStatus = useStableCallback(async () => {
     try {
       setDataLoading(true);
       setError("");
@@ -85,7 +86,7 @@ export default function BillingPage() {
       auth.setHasSubscribed(true);
       fetchAllData();
     } catch (err) {
-      let message = parseError(err);
+      const message = parseError(err);
       if (message == "No subscription found") {
         setIsSubscription(false);
       }
@@ -95,32 +96,32 @@ export default function BillingPage() {
     } finally {
       setDataLoading(false);
     }
-  };
+  });
 
-  const fetchPlans = async () => {
+  const fetchPlans = useStableCallback(async () => {
     try {
       setPlansLoading(true);
       setPlansError("");
       const res = await getSubscriptionPlans(auth.token);
       dispatch(setSubscriptionPlans(res));
     } catch (err) {
-      setPlansError(parseError(err) || "Failed to fetch inventory.");
+      setPlansError(parseError(err) || "Failed to fetch subscription plans.");
     } finally {
       setPlansLoading(false);
     }
-  };
+  });
 
   useEffect(() => {
     if (!statusChecked) {
       fetchStatus().finally(() => setStatusChecked(true));
     }
-  }, [statusChecked]);
+  }, [statusChecked, fetchStatus]);
 
   useEffect(() => {
     if (!isSubscription) {
       fetchPlans();
     }
-  }, [isSubscription]);
+  }, [isSubscription, fetchPlans]);
 
   // if no subscription is found, then load the plans and render the UI for subscription plans
 
@@ -155,7 +156,7 @@ export default function BillingPage() {
     setProceedModalOpen(true);
   };
 
-  const handleProceed = async (_plan: SubscriptionPlan) => {
+  const handleProceed = async () => {
     setProceedModalOpen(false);
 
     try {
@@ -170,7 +171,7 @@ export default function BillingPage() {
 
       // You can handle success here, e.g., toast success or redirect
       toast.success("Subscription transaction initialized successfully!");
-    } catch (error: any) {
+    } catch (error) {
       const message = parseError(error);
       toast.error(message || "Failed to initiate subscription transaction.");
     } finally {
@@ -190,7 +191,7 @@ export default function BillingPage() {
       setPaystackRef(res.metadata.paystack_full_response.reference);
       setOpenPaystackDialog(true);
       toast.success("Subscription renewal initialized successfully!");
-    } catch (error: any) {
+    } catch (error) {
       const message = parseError(error);
       toast.error(message || "Failed to initiate subscription transaction.");
     } finally {
@@ -231,7 +232,7 @@ export default function BillingPage() {
         <div className="mx-auto rounded-3xl border border-line bg-surface p-8 text-center shadow-sm transition duration-300">
           {/* Icon Placeholder (Optional: Add a cool icon like a sparkle or a lock here) */}
           <svg
-            className="mx-auto mb-4 h-12 w-12 text-indigo-500"
+            className="mx-auto mb-4 h-12 w-12 text-brand"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -261,7 +262,7 @@ export default function BillingPage() {
             <p className="text-sm text-ink-secondary">
               Choosing a plan grants full access
             </p>
-            <p className="text-sm font-medium text-indigo-600">
+            <p className="text-sm font-medium text-brand">
               Select a plan below to get started immediately.
             </p>
           </div>

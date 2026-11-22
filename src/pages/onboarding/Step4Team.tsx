@@ -138,7 +138,7 @@ export function Step4Team({
           {members.map((member, i) => (
             <li
               key={i}
-              className="flex items-center justify-between gap-3 rounded-[12px] border border-line bg-surface px-4 py-3"
+              className="flex items-center justify-between gap-3 rounded-2xl border border-line bg-surface px-4 py-3"
             >
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-ink">

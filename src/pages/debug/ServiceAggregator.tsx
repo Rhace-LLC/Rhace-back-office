@@ -8,11 +8,11 @@ import type {
 } from "./aggregator.types";
 
 const METHOD_STYLES: Record<HttpMethod, string> = {
-  GET: "bg-inset/70 text-ink-secondary",
-  POST: "bg-blue-100 text-blue-700",
-  PUT: "bg-amber-100 text-amber-700",
-  PATCH: "bg-amber-100 text-amber-700",
-  DELETE: "bg-red-100 text-red-700",
+  GET: "bg-inset text-ink-secondary",
+  POST: "bg-inset-accent text-brand-active",
+  PUT: "bg-warning-soft text-warning",
+  PATCH: "bg-warning-soft text-warning",
+  DELETE: "bg-danger-soft text-danger-strong",
 };
 
 const formatBody = (value: unknown) => {
@@ -27,7 +27,7 @@ function ResponseItem({ item }: { item: AggregatedResponse }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="rounded-3xl border border-line-subtle bg-inset/60 px-3 py-2.5">
+    <div className="rounded-3xl border border-line-subtle bg-inset px-3 py-2.5">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
@@ -37,8 +37,8 @@ function ResponseItem({ item }: { item: AggregatedResponse }) {
         <span
           className={`inline-flex shrink-0 items-center rounded-2xl px-1.5 py-0.5 text-[11px] font-semibold ${
             item.ok
-              ? "bg-emerald-100 text-emerald-700"
-              : "bg-red-100 text-red-700"
+              ? "bg-success-soft text-success"
+              : "bg-danger-soft text-danger-strong"
           }`}
         >
           {item.ok ? "OK" : "FAIL"}
@@ -49,7 +49,7 @@ function ResponseItem({ item }: { item: AggregatedResponse }) {
           {item.method}
         </span>
         {item.write && (
-          <span className="inline-flex shrink-0 items-center rounded-2xl bg-orange-100 px-1.5 py-0.5 text-[11px] font-semibold text-orange-700">
+          <span className="inline-flex shrink-0 items-center rounded-2xl bg-warning-soft px-1.5 py-0.5 text-[11px] font-semibold text-warning">
             WRITE
           </span>
         )}
@@ -71,11 +71,11 @@ function ResponseItem({ item }: { item: AggregatedResponse }) {
       {open && (
         <div className="mt-2">
           {item.error ? (
-            <p className="rounded-2xl bg-red-50 px-2.5 py-2 text-xs text-red-600">
+            <p className="rounded-2xl bg-danger-soft px-2.5 py-2 text-xs text-danger">
               {item.error}
             </p>
           ) : (
-            <pre className="max-h-64 overflow-auto rounded-2xl bg-gray-900 px-3 py-2.5 font-mono text-[11px] leading-4 text-gray-100">
+            <pre className="max-h-64 overflow-auto rounded-2xl bg-ink px-3 py-2.5 font-mono text-[11px] leading-4 text-ink-inverted">
               {formatBody(item.response)}
             </pre>
           )}
@@ -126,8 +126,8 @@ export function ServiceAggregator({
         <span
           className={`inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${
             writeCount > 0
-              ? "bg-blue-50 text-blue-700"
-              : "bg-emerald-50 text-emerald-700"
+              ? "bg-inset-accent text-brand-active"
+              : "bg-success-soft text-success"
           }`}
         >
           {writeCount > 0 ? "GET + writes" : "GET only"}
@@ -148,7 +148,7 @@ export function ServiceAggregator({
       </p>
 
       {writeCount > 0 && (
-        <label className="mt-3 flex cursor-pointer items-start gap-2 rounded-2xl border border-orange-200 bg-orange-50/60 px-3 py-2 text-[13px] text-orange-800">
+        <label className="mt-3 flex cursor-pointer items-start gap-2 rounded-2xl border border-warning-line bg-warning-soft px-3 py-2 text-[13px] text-warning">
           <input
             type="checkbox"
             checked={includeWrites}
@@ -169,7 +169,7 @@ export function ServiceAggregator({
           type="button"
           onClick={() => run({ includeWrites: willRunWrites })}
           disabled={running || !isReady || probeCount === 0}
-          className="inline-flex items-center gap-1.5 rounded-2xl bg-gray-900 px-3 py-1.5 text-[13px] font-medium text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 rounded-2xl bg-ink px-3 py-1.5 text-[13px] font-medium text-white transition hover:bg-ink disabled:cursor-not-allowed disabled:opacity-40"
         >
           <Play className="h-3.5 w-3.5" />
           {running ? "Running…" : willRunWrites ? "Run all" : "Run"}
@@ -204,13 +204,13 @@ export function ServiceAggregator({
       </div>
 
       {error && (
-        <p className="mt-3 rounded-2xl bg-red-50 px-3 py-2 text-[13px] text-red-600">
+        <p className="mt-3 rounded-2xl bg-danger-soft px-3 py-2 text-[13px] text-danger">
           {error}
         </p>
       )}
 
       {probeCount === 0 && (
-        <p className="mt-3 rounded-2xl bg-amber-50 px-3 py-2 text-[13px] text-amber-700">
+        <p className="mt-3 rounded-2xl bg-warning-soft px-3 py-2 text-[13px] text-warning">
           No probes are available for this service with the current account
           context.
         </p>

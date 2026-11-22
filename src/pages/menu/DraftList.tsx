@@ -48,7 +48,7 @@ export const DraftList: React.FC<DraftListProps> = ({ onSelect }) => {
             <Button
               size="sm"
               variant="outline"
-              className="text-red-600 border-red-200 hover:bg-red-50"
+              className="text-danger border-danger-line hover:bg-danger-soft"
               onClick={() => handleDelete(draft.id)}
             >
               Delete

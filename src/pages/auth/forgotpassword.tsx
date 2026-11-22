@@ -100,7 +100,7 @@ export default function ForgotPassword() {
                   className={authField}
                 />
                 {errors.email && (
-                  <p className="mt-1 text-xs text-red-500">{errors.email}</p>
+                  <p className="mt-1 text-xs text-danger">{errors.email}</p>
                 )}
               </div>
 
