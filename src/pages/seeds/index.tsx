@@ -1,6 +1,7 @@
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
-import { useState } from "react";
-import { Sprout } from "lucide-react";
+import { useCallback, useState } from "react";
+import { Download, Loader2, RotateCw, Sprout, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -85,7 +86,7 @@ export default function SeedsPage() {
             { name: cat.label, description: `Sample ${cat.label} category` },
             token
           );
-          categoryIdMap.set(cat.label, Number((created as any)?.id));
+          categoryIdMap.set(cat.label, Number((created as { id?: number } | undefined)?.id));
         } catch (err) {
           console.warn("Seed category import skipped:", cat.label, err);
         }
@@ -109,7 +110,7 @@ export default function SeedsPage() {
             },
             token
           );
-          placeholderId = Number((created as any)?.id);
+          placeholderId = Number((created as { id?: number } | undefined)?.id);
         } catch (err) {
           console.warn("Failed to create placeholder ingredient:", err);
         }
@@ -341,7 +342,86 @@ export default function SeedsPage() {
         }
         title="Seed Data"
         description="Local-only tools. Not available in production."
+        actions={
+          <>
+            <Button
+              variant="outline"
+              onClick={flushSeedData}
+              disabled={saving || flushing}
+            >
+              {flushing ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="h-4 w-4" />
+              )}
+              {flushing ? "Flushing…" : "Flush seed data"}
+            </Button>
+            <Button onClick={importStaticSample} disabled={saving || flushing}>
+              {saving ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="h-4 w-4" />
+              )}
+              {saving ? "Importing…" : "Import sample menu"}
+            </Button>
+          </>
+        }
       />
+
+      {rows.length > 0 && (
+        <section
+          aria-label="Sample import results"
+          className="mb-5 rounded-md border border-line bg-surface shadow-sm"
+        >
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-line-subtle px-4 py-3 text-sm">
+            <span className="font-semibold text-ink">Sample import</span>
+            <span className="text-success">{successCount} imported</span>
+            <span className="text-danger">{failedCount} failed</span>
+            <span className="text-ink-muted">{pendingCount} pending</span>
+          </div>
+          <ul className="max-h-72 divide-y divide-line-subtle overflow-y-auto">
+            {rows.map((row) => (
+              <li
+                key={row.name}
+                className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm"
+              >
+                <div className="min-w-0">
+                  <p className="truncate font-medium text-ink">{row.name}</p>
+                  <p className="truncate text-xs text-ink-muted">
+                    {row.category}
+                    {row.status === "failed" && row.error ? ` · ${row.error}` : ""}
+                  </p>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <span
+                    className={cn(
+                      "rounded-full px-2.5 py-0.5 text-xs font-medium capitalize",
+                      row.status === "success" && "bg-success-soft text-success",
+                      row.status === "failed" && "bg-danger-soft text-danger",
+                      row.status === "pending" && "bg-inset text-ink-muted"
+                    )}
+                  >
+                    {row.status === "pending" && row.attempts > 0
+                      ? `Attempt ${row.attempts}`
+                      : row.status}
+                  </span>
+                  {row.status === "failed" && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => retryRow(row)}
+                      disabled={saving || flushing}
+                    >
+                      <RotateCw className="h-3.5 w-3.5" />
+                      Retry
+                    </Button>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <div
         role="tablist"
