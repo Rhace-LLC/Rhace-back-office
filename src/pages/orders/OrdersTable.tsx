@@ -1,4 +1,5 @@
 // components/OrdersTable.tsx
+import { isConfirmedForKitchen, needsWaiterConfirmation } from "@/utils/orderHelpers";
 import { orderStatusClass } from "@/utils/orderStatus";
 import {
   Table,
@@ -23,8 +24,8 @@ interface OrdersTableProps {
   waiters: Staff[];
   tables: TableType[];
   isWaiter?: boolean;
-  confirmingIds?: Set<string>;
-  onWaiterConfirm?: (orderId: string) => void;
+  confirmingIds?: Set<number>;
+  onWaiterConfirm?: (orderId: number) => void;
 }
 
 
@@ -61,7 +62,7 @@ export function OrdersTable({
 
   // ✅ SAFE ACCESSOR FUNCTIONS
   const getCustomerName = (order: Order) => {
-    return order?.customer_name || "N/A";
+    return order?.customer_name_display || order?.customer_name || "N/A";
   };
 
   const getCustomerPhone = (order: Order) => {
@@ -95,23 +96,26 @@ export function OrdersTable({
     return `#${idString.slice(-8)}`;
   };
 
-  // Get assigned waiter name
+  // Assigned waiter name. Prefer the API's `waiter_name`: waiters don't load
+  // the staff list, so a lookup alone would show "Unknown waiter" for them.
   const getAssignedWaiterName = (order: Order) => {
     if (!order.waiter) return "No waiter";
     const waiter = waiters.find((w) => w.id === order.waiter);
-    if (!waiter) return "Unknown waiter";
-
-    const name = waiter.full_name || `${waiter.first_name} ${waiter.last_name}`;
+    const name =
+      order.waiter_name ||
+      (waiter && (waiter.full_name || `${waiter.first_name} ${waiter.last_name}`));
+    if (!name) return "Unknown waiter";
     return name.length > 12 ? name.substring(0, 12) + "..." : name;
   };
 
-  // Get assigned table info - FIXED: Show table info even if not available
+  // Assigned table. Prefer the API's `table_number`: the local table list only
+  // holds *available* tables, so occupied ones (where orders are) aren't in it.
   const getAssignedTableInfo = (order: Order) => {
     if (!order.table || order.order_type !== "dine-in") return "N/A";
     const table = tables.find((t) => t.id === order.table);
-    if (!table) return "Unknown table";
-
-    return `Table ${table.table_number} (${table.max_party_size} seats)`;
+    if (table) return `Table ${table.table_number} (${table.max_party_size} seats)`;
+    if (order.table_number) return `Table ${order.table_number}`;
+    return "Unknown table";
   };
 
   // Get table availability status
@@ -125,25 +129,18 @@ export function OrdersTable({
 
   // Check if waiter is assigned
   const hasWaiterAssigned = (order: Order) => {
-    return !!order.waiter && waiters.some((w) => w.id === order.waiter);
+    return !!order.waiter;
   };
 
-  // FIXED: Check if table is assigned (regardless of availability)
+  // Check if table is assigned (regardless of availability)
   const hasTableAssigned = (order: Order) => {
-    return (
-      order.order_type === "dine-in" &&
-      !!order.table &&
-      tables.some((t) => t.id === order.table)
-    );
+    return order.order_type === "dine-in" && !!order.table;
   };
 
-  // Waiter confirmation is only meaningful while status is `received`.
-  // `waiter_confirmed` may be undefined on older payloads — treat as unconfirmed.
-  const needsConfirmation = (order: Order) =>
-    order.status === "received" && !order.waiter_confirmed;
-
-  const isConfirmed = (order: Order) =>
-    order.status === "received" && !!order.waiter_confirmed;
+  // Waiter confirmation applies while the order is `paid` or `received`
+  // (see CONFIRMABLE_STATUSES in utils/orderHelpers).
+  const needsConfirmation = needsWaiterConfirmation;
+  const isConfirmed = isConfirmedForKitchen;
 
   // Get compact order type display
   const getCompactOrderType = (orderType: string) => {
@@ -338,7 +335,7 @@ export function OrdersTable({
                         disabled={confirmingIds?.has(order.id)}
                         onClick={(e) => {
                           e.stopPropagation();
-                          onWaiterConfirm(String(order.id));
+                          onWaiterConfirm(order.id);
                         }}
                       >
                         <Check className="mr-1 h-3.5 w-3.5" />

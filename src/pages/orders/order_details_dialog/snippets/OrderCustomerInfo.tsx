@@ -7,7 +7,7 @@ interface OrderCustomerInfoProps {
 }
 
 export const OrderCustomerInfo: React.FC<OrderCustomerInfoProps> = ({ order }) => {
-  const customerName = order.customer_name || "N/A";
+  const customerName = order.customer_name_display || order.customer_name || "N/A";
   const customerPhone = order.customer_phone || "N/A";
 
   return (

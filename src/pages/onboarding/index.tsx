@@ -235,6 +235,7 @@ const persistMenu = async (
         formData.append("prep_time", DEFAULT_PREP_TIME);
         formData.append("is_special", "false");
         formData.append("available", item.available ? "true" : "false");
+        if (item.image_url) formData.append("image", item.image_url);
         formData.append("ingredients_data", ingredientsPayload);
         await createMenuItem(restaurantId, formData, auth.token);
         created++;
@@ -258,11 +259,9 @@ const persistMenu = async (
 
     let invited = 0;
     for (const member of members) {
-      const [firstName = "", ...rest] = member.name.trim().split(/\s+/);
-      const lastName = rest.join(" ");
       const body = {
-        first_name: firstName,
-        last_name: lastName,
+        first_name: member.firstName.trim(),
+        last_name: member.lastName.trim(),
         email: member.contact.trim(),
         phone: "",
         role: member.role,
@@ -272,7 +271,10 @@ const persistMenu = async (
         invited++;
       } catch (error) {
         console.error("Failed to invite team member:", error);
-        toast.error(parseError(error) || `Could not invite ${member.name}.`);
+        toast.error(
+          parseError(error) ||
+            `Could not invite ${member.firstName} ${member.lastName}.`
+        );
       }
     }
 

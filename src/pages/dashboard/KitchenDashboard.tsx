@@ -42,7 +42,7 @@ export const KitchenDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
-  const [updatingIds, setUpdatingIds] = useState<Set<string>>(new Set());
+  const [updatingIds, setUpdatingIds] = useState<Set<number>>(new Set());
   // Re-render every minute so elapsed timers stay current.
   const [now, setNow] = useState(Date.now());
 
@@ -90,7 +90,7 @@ export const KitchenDashboard = () => {
   const ready = orders.filter((o) => o.status === "ready").length;
   const awaitingWaiter = orders.filter(needsWaiterConfirmation).length;
 
-  const moveTo = async (orderId: string, status: OrderStatus) => {
+  const moveTo = async (orderId: number, status: OrderStatus) => {
     if (!token || updatingIds.has(orderId)) return;
     setUpdatingIds((prev) => new Set(prev).add(orderId));
     try {

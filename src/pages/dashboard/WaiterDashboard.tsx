@@ -42,7 +42,7 @@ export const WaiterDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
-  const [confirmingIds, setConfirmingIds] = useState<Set<string>>(new Set());
+  const [confirmingIds, setConfirmingIds] = useState<Set<number>>(new Set());
 
   const fetchOrders = useCallback(
     async (background = false) => {
@@ -80,7 +80,7 @@ export const WaiterDashboard = () => {
   const myTables = userAssignment?.tables ?? [];
   const occupiedTables = myTables.filter((t) => t.status === "occupied").length;
 
-  const handleConfirm = async (orderId: string) => {
+  const handleConfirm = async (orderId: number) => {
     if (!token || confirmingIds.has(orderId)) return;
     setConfirmingIds((prev) => new Set(prev).add(orderId));
     try {

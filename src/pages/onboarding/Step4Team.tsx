@@ -35,15 +35,35 @@ export function Step4Team({
 }) {
   const [members, setMembers] = useState<TeamMemberDraft[]>([]);
   const [draft, setDraft] = useState<TeamMemberDraft>({
-    name: "",
+    firstName: "",
+    lastName: "",
     contact: "",
     role: ROLES[0].value,
   });
+  const [errors, setErrors] = useState<{
+    firstName?: string;
+    lastName?: string;
+    contact?: string;
+  }>({});
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const validateDraft = () => {
+    const next: { firstName?: string; lastName?: string; contact?: string } = {};
+    if (!draft.firstName.trim()) next.firstName = "First name is required.";
+    if (!draft.lastName.trim()) next.lastName = "Last name is required.";
+    if (!draft.contact.trim()) next.contact = "Email is required.";
+    else if (!EMAIL_RE.test(draft.contact.trim()))
+      next.contact = "Enter a valid email address.";
+    setErrors(next);
+    return !next.firstName && !next.lastName && !next.contact;
+  };
 
   const addMember = () => {
-    if (!draft.name.trim() || !draft.contact.trim()) return;
+    if (!validateDraft()) return;
     setMembers((prev) => [...prev, { ...draft }]);
-    setDraft({ name: "", contact: "", role: ROLES[0].value });
+    setDraft({ firstName: "", lastName: "", contact: "", role: ROLES[0].value });
+    setErrors({});
   };
 
   return (
@@ -83,20 +103,31 @@ export function Step4Team({
           </span>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <Field id="ob-m-name" label="Name">
+          <Field id="ob-m-first" label="First Name" error={errors.firstName}>
             <input
-              id="ob-m-name"
-              className={`${obField} bg-surface`}
-              value={draft.name}
-              onChange={(e) => setDraft((p) => ({ ...p, name: e.target.value }))}
-              placeholder="Full name"
+              id="ob-m-first"
+              className={`${obField} bg-surface ${errors.firstName ? "border-destructive" : ""}`}
+              value={draft.firstName}
+              onChange={(e) =>
+                setDraft((p) => ({ ...p, firstName: e.target.value }))
+              }
+              placeholder="John"
             />
           </Field>
-          <Field id="ob-m-contact" label="Email">
+          <Field id="ob-m-last" label="Last Name" error={errors.lastName}>
+            <input
+              id="ob-m-last"
+              className={`${obField} bg-surface ${errors.lastName ? "border-destructive" : ""}`}
+              value={draft.lastName}
+              onChange={(e) => setDraft((p) => ({ ...p, lastName: e.target.value }))}
+              placeholder="Doe"
+            />
+          </Field>
+          <Field id="ob-m-contact" label="Email" error={errors.contact}>
             <input
               id="ob-m-contact"
               type="email"
-              className={`${obField} bg-surface`}
+              className={`${obField} bg-surface ${errors.contact ? "border-destructive" : ""}`}
               value={draft.contact}
               onChange={(e) =>
                 setDraft((p) => ({ ...p, contact: e.target.value }))
@@ -122,7 +153,11 @@ export function Step4Team({
         <button
           type="button"
           onClick={addMember}
-          disabled={!draft.name.trim() || !draft.contact.trim()}
+          disabled={
+            !draft.firstName.trim() ||
+            !draft.lastName.trim() ||
+            !draft.contact.trim()
+          }
           className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-ink px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-ink-secondary disabled:pointer-events-none disabled:opacity-50"
         >
           Add Team Member
@@ -142,7 +177,7 @@ export function Step4Team({
             >
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-ink">
-                  {member.name}
+                  {member.firstName} {member.lastName}
                 </p>
                 <p className="truncate text-xs text-ink-muted">
                   {member.contact}

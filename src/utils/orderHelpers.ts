@@ -1,15 +1,26 @@
 import type { Order } from "@/pages/orders/types/order";
 
-// Shared helpers for the role dashboards (waiter / kitchen).
+// Shared order helpers (orders page, order dialog, role dashboards).
 
-/** A `received` order the waiter hasn't confirmed yet. `waiter_confirmed`
- * may be undefined on older payloads — treat that as unconfirmed. */
+/**
+ * Statuses in which a waiter can still confirm an order. Orders reach the
+ * back office as `paid` (e.g. paid at the table via QR) or `received`; the
+ * waiter confirms them before the kitchen starts preparing.
+ */
+export const CONFIRMABLE_STATUSES: readonly string[] = ["paid", "received"];
+
+/** Is the order still at the stage where waiter confirmation applies? */
+export const isAwaitingPreparation = (o: Pick<Order, "status">) =>
+  CONFIRMABLE_STATUSES.includes(o.status);
+
+/** Order the waiter hasn't confirmed yet. `waiter_confirmed` may be
+ * undefined on older payloads — treat that as unconfirmed. */
 export const needsWaiterConfirmation = (o: Order) =>
-  o.status === "received" && !o.waiter_confirmed;
+  isAwaitingPreparation(o) && !o.waiter_confirmed;
 
-/** A `received` order the waiter has confirmed — ready for the kitchen. */
+/** Order the waiter has confirmed — ready for the kitchen to start. */
 export const isConfirmedForKitchen = (o: Order) =>
-  o.status === "received" && !!o.waiter_confirmed;
+  isAwaitingPreparation(o) && !!o.waiter_confirmed;
 
 export { parseErrorOr as getErrorMessage } from "@/api-services/utils/parseError";
 

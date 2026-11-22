@@ -22,6 +22,7 @@ export interface MenuDraftItem {
   price: string;
   description?: string;
   available: boolean;
+  image_url?: string;
 }
 
 export interface MenuData {
@@ -39,7 +40,8 @@ export interface FloorData {
 }
 
 export interface TeamMemberDraft {
-  name: string;
+  firstName: string;
+  lastName: string;
   contact: string;
   role: string;
 }

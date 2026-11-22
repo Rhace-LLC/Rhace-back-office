@@ -12,6 +12,11 @@ interface OrderAssignmentsProps {
   canAssignTable: boolean;
   assignedWaiter: Staff | undefined;
   assignedTable: Table | undefined;
+  /** Fallbacks from the order payload when the lists above don't contain the
+   * assigned waiter / table (e.g. waiters don't load staff; occupied tables
+   * aren't in the "available" list). */
+  waiterName?: string;
+  tableNumber?: string;
   waiters: Staff[];
   availableTables: Table[];
   selectedWaiter: string;
@@ -29,6 +34,8 @@ export const OrderAssignments: React.FC<OrderAssignmentsProps> = ({
   canAssignTable,
   assignedWaiter,
   assignedTable,
+  waiterName,
+  tableNumber,
   waiters,
   availableTables,
   selectedWaiter,
@@ -53,10 +60,10 @@ export const OrderAssignments: React.FC<OrderAssignmentsProps> = ({
             </div>
             <span
               className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                assignedWaiter ? "bg-inset-accent text-brand" : "bg-inset text-ink-muted"
+                assignedWaiter || waiterName ? "bg-inset-accent text-brand" : "bg-inset text-ink-muted"
               }`}
             >
-              {assignedWaiter ? assignedWaiter.full_name : "Unassigned"}
+              {assignedWaiter?.full_name || waiterName || "Unassigned"}
             </span>
           </div>
 
@@ -80,7 +87,7 @@ export const OrderAssignments: React.FC<OrderAssignmentsProps> = ({
                 disabled={!selectedWaiter}
                 className="h-8 bg-primary hover:bg-brand-hover text-white shadow-button text-xs px-3 rounded-2xl"
               >
-                {assignedWaiter ? "Change" : "Assign"}
+                {assignedWaiter || waiterName ? "Change" : "Assign"}
               </Button>
             </div>
           )}
@@ -96,10 +103,14 @@ export const OrderAssignments: React.FC<OrderAssignmentsProps> = ({
               </div>
               <span
                 className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                  assignedTable ? "bg-inset-accent text-brand" : "bg-inset text-ink-muted"
+                  assignedTable || tableNumber ? "bg-inset-accent text-brand" : "bg-inset text-ink-muted"
                 }`}
               >
-                {assignedTable ? `Table ${assignedTable.table_number}` : "Unassigned"}
+                {assignedTable
+                  ? `Table ${assignedTable.table_number}`
+                  : tableNumber
+                    ? `Table ${tableNumber}`
+                    : "Unassigned"}
               </span>
             </div>
 
@@ -123,7 +134,7 @@ export const OrderAssignments: React.FC<OrderAssignmentsProps> = ({
                   disabled={!selectedTable}
                   className="h-8 bg-primary hover:bg-brand-hover text-white shadow-button text-xs px-3 rounded-2xl"
                 >
-                  {assignedTable ? "Change" : "Assign"}
+                  {assignedTable || tableNumber ? "Change" : "Assign"}
                 </Button>
               </div>
             )}

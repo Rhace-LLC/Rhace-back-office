@@ -60,7 +60,10 @@ export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
       <div className="space-y-2">
         {items.map((item, index) => {
           if (hasSimpleItem(item)) {
-            const subtotal = Number(item.price || "0") * item.quantity;
+            // The API's `price` is the LINE TOTAL (e.g. qty 2, price 800 on an
+            // ₦800 order), so derive the unit price instead of multiplying.
+            const subtotal = Number(item.price || "0");
+            const unitPrice = item.quantity > 0 ? subtotal / item.quantity : subtotal;
             return (
               <div
                 key={item.id || index}
@@ -69,7 +72,7 @@ export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
                 <div>
                   <p className="font-medium text-ink">{item.menu_item_name || "Unknown Item"}</p>
                   <p className="text-xs text-ink-muted">
-                    Qty: {item.quantity} × {formatPrice(item.price || "0")}
+                    Qty: {item.quantity} × {formatPrice(unitPrice)}
                   </p>
                 </div>
                 <p className="text-sm font-semibold text-ink">{formatPrice(subtotal)}</p>

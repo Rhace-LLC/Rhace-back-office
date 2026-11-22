@@ -1,3 +1,4 @@
+import { isConfirmedForKitchen, needsWaiterConfirmation } from "@/utils/orderHelpers";
 import { orderStatusClass } from "@/utils/orderStatus";
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
@@ -23,10 +24,10 @@ interface OrderDetailsDialogProps {
   order: Order | null;
   isOpen: boolean;
   onClose: () => void;
-  onStatusChange: (orderId: string, status: OrderStatus) => Promise<void>;
-  onAssignTable: (orderId: string, tableId: string) => void;
-  onAssignWaiter: (orderId: string, waiterId: string) => void;
-  onWaiterConfirm?: (orderId: string) => Promise<void>;
+  onStatusChange: (orderId: number, status: OrderStatus) => Promise<void>;
+  onAssignTable: (orderId: number, tableId: string) => void;
+  onAssignWaiter: (orderId: number, waiterId: string) => void;
+  onWaiterConfirm?: (orderId: number) => Promise<void>;
   isConfirming?: boolean;
   staff: Staff[];
   tables: Table[];
@@ -69,12 +70,8 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
 
   if (!order) return null;
 
-  // The shared Order type declares items as number[], but the API returns
-  // item objects (same approach as the legacy sheet this replaces).
   const safeItems: OrderItem[] = Array.isArray(order.items)
-    ? (order.items.filter(
-        (item) => item !== null && typeof item === "object"
-      ) as unknown as OrderItem[])
+    ? order.items.filter((item) => item !== null && typeof item === "object")
     : [];
 
   const waiters = staff.filter((s) => s.role === "waiter" && s.is_active);
@@ -89,12 +86,8 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
 
     switch (currentStatus) {
       case "paid":
-        if (isKitchen || isOwner) return ["preparing", "cancelled"];
-        if (isWaiter) return ["cancelled"];
-        return [];
-
       case "received":
-        // A waiter must confirm a received order before preparation begins.
+        // A waiter must confirm the order before preparation begins.
         if (isKitchen || isOwner)
           return order.waiter_confirmed
             ? ["preparing", "cancelled"]
@@ -128,11 +121,10 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
   const assignedWaiter = staff.find((s) => s.id === order.waiter);
   const assignedTable = tables.find((t) => t.id === order.table);
 
-  // Waiter confirmation is distinct from status: a `received` order can be
-  // unconfirmed or confirmed. `waiter_confirmed` may be undefined on older
-  // payloads — treat as unconfirmed.
-  const needsConfirmation = order.status === "received" && !order.waiter_confirmed;
-  const isConfirmed = order.status === "received" && !!order.waiter_confirmed;
+  // Waiter confirmation is distinct from status: a `paid` or `received` order
+  // can be unconfirmed or confirmed (see utils/orderHelpers).
+  const needsConfirmation = needsWaiterConfirmation(order);
+  const isConfirmed = isConfirmedForKitchen(order);
 
   const handleWaiterConfirmClick = async () => {
     if (!onWaiterConfirm || isConfirming) return;
@@ -246,6 +238,8 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
               canAssignTable={isOwner}
               assignedWaiter={assignedWaiter}
               assignedTable={assignedTable}
+              waiterName={order.waiter_name ?? undefined}
+              tableNumber={order.table ? order.table_number ?? undefined : undefined}
               waiters={waiters}
               availableTables={availableTables}
               selectedWaiter={selectedWaiter}

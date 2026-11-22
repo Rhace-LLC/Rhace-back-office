@@ -1,46 +1,44 @@
+/** One line of an order. NOTE: `price` is the LINE TOTAL (unit price ×
+ * quantity), not the unit price — e.g. qty 2, price "800.00" on an ₦800 order. */
+export interface OrderLineItem {
+  id: number;
+  menu_item_name: string;
+  menu_item_id: string;
+  quantity: number;
+  price: string;
+}
+
+/** Shape returned by GET /orders/ (back-office API). */
 export interface Order {
-  id: string;
+  id: number;
   customer: string; // UUID
+  customer_name: string;
+  customer_name_display?: string;
+  customer_phone: string;
+  restaurant_name?: string;
+  paid_by?: string | null;
+  paid_by_name?: string | null;
+  group?: string | null;
   order_type: "dine-in" | "delivery" | "takeaway";
-  table: string; // UUID
-  items: number[];
+  table: string | null; // UUID
+  table_number?: string | null;
+  items: OrderLineItem[];
   total_price: string;
   status: OrderStatus;
-  waiter: string; // UUID
-  waiter_name?: string;
+  waiter: string | null; // UUID
+  waiter_name?: string | null;
   waiter_confirmed?: boolean;
-  customer_name: string;
   address: string;
-  customer_phone: string;
-  driver: string; // UUID
-  delay_reason: string;
-  restaurant: {
-    id: string;
-    name: string;
-    slug: string;
-    owner: string;
-    owner_name: string;
-    email: string;
-    phone: string;
-    address: string;
-    city: string;
-    state: string;
-    country: string;
-    postal_code: string;
-    description: string;
-    logo: string;
-    cuisine_type: string;
-    subscription_plan: string;
-    is_active: boolean;
-    trial_ends_at: string;
-    subscription_ends_at: string;
-    access_url: string;
-    access_token_url: string;
-    is_subscription_active: string;
-    created_at: string;
-    updated_at: string;
-  };
+  driver: string | null; // UUID
+  driver_name?: string | null;
+  delay_reason: string | null;
   created_at: string;
+  payment?: string;
+  payment_reference?: string | null;
+  estimated_wait_minutes?: number | null;
+  ready_at?: string | null;
+  paid_at?: string | null;
+  is_paid?: boolean;
 }
 
 export type OrderStatus =

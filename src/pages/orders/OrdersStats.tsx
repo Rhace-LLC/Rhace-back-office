@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, Banknote, Package } from "lucide-react";
 import type { Order } from "./types/order";
 import { formatPriceCompact } from "@/utils/formatPrice";
+import { needsWaiterConfirmation } from "@/utils/orderHelpers";
 
 interface OrdersStatsProps {
   orders: Order[];
@@ -39,11 +40,7 @@ export function OrdersStats({ orders = [] }: OrdersStatsProps) {
     ),
     dineIn: safeOrders.filter((o) => o.order_type === "dine-in").length,
     delivery: safeOrders.filter((o) => o.order_type === "delivery").length,
-    awaitingConfirmation: safeOrders.filter(
-      (o) =>
-        String(o.status || "").toLowerCase() === "received" &&
-        !o.waiter_confirmed
-    ).length,
+    awaitingConfirmation: safeOrders.filter(needsWaiterConfirmation).length,
   };
 
   return (

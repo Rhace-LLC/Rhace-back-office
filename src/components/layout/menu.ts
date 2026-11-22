@@ -102,7 +102,6 @@ export function useRoleBasedMenu(): MenuItem[] {
         title: "Restaurant Experience",
         icon: Sparkles,
         items: [
-          { title: "Entertainment", url: "/entertainment", icon: Gamepad2 },
           { title: "Restaurant Profile", url: "/myrestaurant", icon: Store },
         ],
       },

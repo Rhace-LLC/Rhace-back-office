@@ -24,7 +24,12 @@ import { OrdersStats } from "./OrdersStats";
 import { OrdersTable } from "./OrdersTable";
 import { OrderDetailsDialog } from "./order_details_dialog/OrderDetailsDialog";
 import { useAuth } from "../../contexts/AuthContext";
-import { getErrorMessage } from "@/utils/orderHelpers";
+import {
+  CONFIRMABLE_STATUSES,
+  getErrorMessage,
+  isConfirmedForKitchen,
+  needsWaiterConfirmation,
+} from "@/utils/orderHelpers";
 import {
   getAllOrders,
   updateOrderStatus,
@@ -91,7 +96,7 @@ export function Orders() {
   >("All");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [confirmingIds, setConfirmingIds] = useState<Set<string>>(new Set());
+  const [confirmingIds, setConfirmingIds] = useState<Set<number>>(new Set());
   const [refreshing, setRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<number>(
     () => ordersCache?.lastFetched ?? Date.now()
@@ -103,17 +108,14 @@ export function Orders() {
 
   const filteredOrders = (orders || []).filter((order) => {
     if (statusFilter !== "All" && order.status !== statusFilter) return false;
-    // Confirmation is only meaningful while status is `received`.
-    // `waiter_confirmed` may be undefined on older payloads — treat as unconfirmed.
-    if (confirmationFilter === "Awaiting")
-      return order.status === "received" && !order.waiter_confirmed;
-    if (confirmationFilter === "Confirmed")
-      return order.status === "received" && !!order.waiter_confirmed;
+    // Confirmation applies while the order is `paid` or `received`.
+    if (confirmationFilter === "Awaiting") return needsWaiterConfirmation(order);
+    if (confirmationFilter === "Confirmed") return isConfirmedForKitchen(order);
     return true;
   });
 
   const awaitingConfirmationCount = (orders || []).filter(
-    (order) => order.status === "received" && !order.waiter_confirmed
+    needsWaiterConfirmation
   ).length;
 
   // Fetch tables function
@@ -283,7 +285,7 @@ export function Orders() {
   };
 
   const handleStatusChange = async (
-    orderId: string,
+    orderId: number,
     newStatus: OrderStatus
   ) => {
     try {
@@ -308,7 +310,7 @@ export function Orders() {
     }
   };
 
-  const handleAssignTable = async (orderId: string, tableId: string) => {
+  const handleAssignTable = async (orderId: number, tableId: string) => {
     try {
       setError(null);
       if (!token) throw new Error("Authentication token not found");
@@ -323,7 +325,7 @@ export function Orders() {
     }
   };
 
-  const handleAssignWaiter = async (orderId: string, waiterId: string) => {
+  const handleAssignWaiter = async (orderId: number, waiterId: string) => {
     try {
       setError(null);
       if (!token) throw new Error("Authentication token not found");
@@ -347,7 +349,7 @@ export function Orders() {
     return getErrorMessage(err, "Failed to confirm order");
   };
 
-  const handleWaiterConfirm = async (orderId: string) => {
+  const handleWaiterConfirm = async (orderId: number) => {
     if (!token || confirmingIds.has(orderId)) return;
     try {
       setError(null);
@@ -361,8 +363,9 @@ export function Orders() {
             ? {
                 ...order,
                 ...updated,
-                // Confirmation never changes status; keep local status stable
-                // unless backend explicitly moved it.
+                // Set explicitly in case the response omits the flag.
+                waiter_confirmed: true,
+                // Keep the local status unless the backend explicitly moved it.
                 status: updated?.status ?? order.status,
               }
             : order
@@ -373,7 +376,14 @@ export function Orders() {
       updateCache(nextOrders);
       if (selectedOrder?.id === orderId) {
         setSelectedOrder((prev) =>
-          prev ? { ...prev, ...updated, status: updated?.status ?? prev.status } : prev
+          prev
+            ? {
+                ...prev,
+                ...updated,
+                waiter_confirmed: true,
+                status: updated?.status ?? prev.status,
+              }
+            : prev
         );
       }
     } catch (err) {
@@ -448,7 +458,9 @@ export function Orders() {
                 </SelectContent>
               </Select>
             </div>
-            {(isWaiter || statusFilter === "All" || statusFilter === "received") && (
+            {(isWaiter ||
+              statusFilter === "All" ||
+              CONFIRMABLE_STATUSES.includes(statusFilter)) && (
               <Select
                 value={confirmationFilter}
                 onValueChange={(v: "All" | "Awaiting" | "Confirmed") =>
