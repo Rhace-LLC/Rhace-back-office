@@ -114,7 +114,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
   };
 
   return (
-    <div className="space-y-6 rounded-2xl bg-surface p-6 shadow-sm">
+    <div className="space-y-6 rounded-md bg-surface p-6 shadow-sm">
       {/* Title */}
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-ink">Inventory Item</h2>
@@ -153,7 +153,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
               onChange={(e) =>
                 setEditableItem((prev) => ({ ...prev, unit: e.target.value }))
               }
-              className="h-10 w-full rounded-2xl border border-line bg-surface px-3 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-focus-ring"
+              className="h-10 w-full rounded-md border border-line bg-surface px-3 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-focus-ring"
             >
               {Object.values(Unit).map((u) => (
                 <option key={u} value={u}>
@@ -184,7 +184,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
               name="is_allergen"
               checked={editableItem.is_allergen}
               onChange={handleChange}
-              className="h-4 w-4 rounded-lg border-line focus:ring-danger"
+              className="h-4 w-4 rounded-md border-line focus:ring-danger"
             />
             <span className="text-sm font-medium text-danger">
               This ingredient contains allergens
@@ -238,7 +238,7 @@ export const ViewInventoryItem: React.FC<ViewInventoryItemProps> = ({
               onChange={(e) =>
                 setTransactionType(e.target.value as InventoryTransactionType)
               }
-              className="w-full rounded-2xl border border-line bg-surface px-3 py-2 shadow-sm focus:border-brand focus:ring focus:ring-brand-accent"
+              className="w-full rounded-md border border-line bg-surface px-3 py-2 shadow-sm focus:border-brand focus:ring focus:ring-brand-accent"
             >
               <option value="wastage">Wastage</option>
               <option value="restock">Restock</option>

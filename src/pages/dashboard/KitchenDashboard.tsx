@@ -162,7 +162,7 @@ export const KitchenDashboard = () => {
       </div>
 
       {error && (
-        <div className="flex items-center justify-between gap-3 rounded-3xl border border-danger-line bg-danger-soft p-4 text-sm text-danger">
+        <div className="flex items-center justify-between gap-3 rounded-md border border-danger-line bg-danger-soft p-4 text-sm text-danger">
           <span>{error}</span>
           <Button variant="outline" size="sm" onClick={() => fetchOrders()}>
             Retry
@@ -181,7 +181,7 @@ export const KitchenDashboard = () => {
               <Skeleton key={i} className="mb-2 h-12 w-full" />
             ))
           ) : queue.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-line p-6 text-center text-sm text-ink-muted">
+            <div className="rounded-md border border-dashed border-line p-6 text-center text-sm text-ink-muted">
               No orders in the queue
             </div>
           ) : (

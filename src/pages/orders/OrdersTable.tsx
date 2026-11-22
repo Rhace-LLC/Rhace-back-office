@@ -157,7 +157,7 @@ export function OrdersTable({
   };
 
   return (
-    <div className="rounded-3xl border border-line bg-surface shadow-sm">
+    <div className="rounded-md border border-line bg-surface shadow-sm">
       <Table className="compact-table">
         <TableHeader>
           <TableRow className="hover:bg-transparent">

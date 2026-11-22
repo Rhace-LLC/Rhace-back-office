@@ -12,7 +12,9 @@
      NO bg-opacity overlays, NO gradients/glows for surfaces.
    - Canvas #F4F6F9 → cards #FFFFFF → nested #F1F5F9 / #EBF1FF.
    - Primary #2A66FF / hover #1D4ED8. Borders #E2E8F0.
-   - Radii: cards 28/20, buttons 16, pills 9999.
+   - Radii: rounded-md (6px) for buttons, inputs, cards, tables, dialogs;
+     rounded-full for pills/avatars/badges. (Tighter than visual-direction.md's
+     28/20/16 by product decision.)
    - Do NOT introduce new hex values in components — use tokens.
    ============================================================= */
 
@@ -22,20 +24,21 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --radius: 1rem; /* legacy var(--radius) consumers → 16px button radius */
+  --radius: 6px; /* legacy var(--radius) consumers → matches rounded-md */
 }
 
 @theme {
   /* ---- typography ---- */
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  /* ---- radii: tactile scale (card 28/20, button 16, pill 9999) ---- */
-  --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
-  --radius-2xl: 16px; /* buttons, inputs, chips (--radius-button) */
-  --radius-3xl: 28px; /* base cards (--radius-card-lg) */
+  /* ---- radii ----
+     Product decision (overrides visual-direction.md's 28/20/16): a tighter
+     radius. Buttons, inputs, cards, tables, dialogs and panels all use
+     `rounded-md` (6px). Pills/avatars/badges stay `rounded-full`. */
+  --radius-sm: 4px;
+  --radius-md: 6px; /* default for every control and surface */
+  --radius-lg: 8px;
+  --radius-xl: 12px;
   --radius-full: 9999px;
 
   /* ---- surfaces (all opaque) ---- */

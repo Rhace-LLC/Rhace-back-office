@@ -412,7 +412,7 @@ export function Orders() {
   return (
     <PageContainer>
       {error && (
-        <div className="relative rounded-2xl border border-danger-line bg-danger-soft px-4 py-3 pr-12 text-sm text-danger-strong">
+        <div className="relative rounded-md border border-danger-line bg-danger-soft px-4 py-3 pr-12 text-sm text-danger-strong">
           {error}
           <button
             onClick={() => setError(null)}

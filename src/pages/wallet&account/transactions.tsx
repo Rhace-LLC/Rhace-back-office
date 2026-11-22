@@ -83,7 +83,7 @@ export const TransactionsPage = () => {
   return (
     <div className="space-y-6">
       {/* TABLE */}
-      <div className="rounded-3xl border bg-surface">
+      <div className="rounded-md border bg-surface">
         <Table>
           <TableHeader>
             <TableRow>

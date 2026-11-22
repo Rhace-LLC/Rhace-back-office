@@ -121,7 +121,7 @@ export const AddInventoryItem: React.FC<{
               name="unit"
               value={formData.unit}
               onChange={(e) => setFormData((prev) => ({ ...prev, unit: e.target.value }))}
-              className="h-10 w-full rounded-2xl border border-line bg-surface px-3 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-focus-ring"
+              className="h-10 w-full rounded-md border border-line bg-surface px-3 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-focus-ring"
             >
               <option value="" disabled>
                 Select unit
@@ -165,7 +165,7 @@ export const AddInventoryItem: React.FC<{
             checked={formData.is_allergen}
             onChange={handleChange}
             // Using native input with custom Tailwind classes for modern look
-            className="h-4 w-4 rounded-lg border-line text-danger focus:ring-danger"
+            className="h-4 w-4 rounded-md border-line text-danger focus:ring-danger"
           />
           <Label
             htmlFor="is_allergen"

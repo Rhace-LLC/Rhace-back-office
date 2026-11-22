@@ -27,9 +27,9 @@ export const SelectedAddressCard = ({
   onConfirm: (data: MapLocation) => void;
 }) => (
   <div className="animate-in slide-in-from-bottom-4 absolute right-6 bottom-10 left-6 mx-auto max-w-[500px] duration-500">
-    <div className="rounded-[28px] border border-line bg-surface p-6 shadow-lg">
+    <div className="rounded-md border border-line bg-surface p-6 shadow-lg">
       <div className="flex items-start gap-4">
-        <div className="mt-1 rounded-2xl bg-inset p-3">
+        <div className="mt-1 rounded-md bg-inset p-3">
           <MapPin size={20} className="text-ink" />
         </div>
         <div className="flex-1">
@@ -44,7 +44,7 @@ export const SelectedAddressCard = ({
 
       <button
         onClick={() => onConfirm(address)}
-        className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-ink font-bold text-white transition-all hover:bg-ink-secondary active:scale-[0.98]"
+        className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-md bg-ink font-bold text-white transition-all hover:bg-ink-secondary active:scale-[0.98]"
       >
         Confirm Address
         <ArrowRight size={18} />

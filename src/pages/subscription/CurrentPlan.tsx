@@ -88,7 +88,7 @@ export const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
         {showRenew && onRenew && (
           <div className="mt-10 flex justify-center">
             <Button
-              className="h-12 w-full cursor-pointer rounded-2xl"
+              className="h-12 w-full cursor-pointer rounded-md"
               onClick={() => onRenew(details)}
             >
               Renew Subscription

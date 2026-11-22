@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 const emptyForm = { name: "", description: "", image: "" };
 
 const inputClass =
-  "h-11 w-full rounded-2xl border border-line bg-surface px-3 text-sm text-ink placeholder:text-ink-subtle focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none";
+  "h-11 w-full rounded-md border border-line bg-surface px-3 text-sm text-ink placeholder:text-ink-subtle focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none";
 
 export function SeedCategoriesSection() {
   const { token } = useAuth();
@@ -117,7 +117,7 @@ export function SeedCategoriesSection() {
             type="button"
             onClick={fetchItems}
             disabled={loading}
-            className="inline-flex h-10 items-center gap-2 rounded-2xl border border-line bg-surface px-4 text-sm font-medium text-ink transition-colors hover:border-line-strong disabled:opacity-50"
+            className="inline-flex h-10 items-center gap-2 rounded-md border border-line bg-surface px-4 text-sm font-medium text-ink transition-colors hover:border-line-strong disabled:opacity-50"
           >
             <RefreshCcw className={cn("h-4 w-4", loading && "animate-spin")} />
             Refresh
@@ -125,7 +125,7 @@ export function SeedCategoriesSection() {
           <button
             type="button"
             onClick={startCreate}
-            className="inline-flex h-10 items-center gap-2 rounded-2xl bg-ink px-4 text-sm font-medium text-white transition-colors hover:bg-ink-secondary"
+            className="inline-flex h-10 items-center gap-2 rounded-md bg-ink px-4 text-sm font-medium text-white transition-colors hover:bg-ink-secondary"
           >
             <Plus className="h-4 w-4" />
             New category
@@ -136,7 +136,7 @@ export function SeedCategoriesSection() {
       {showForm && (
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 rounded-[20px] border border-line bg-cardfill p-4 sm:p-5"
+          className="space-y-4 rounded-md border border-line bg-cardfill p-4 sm:p-5"
         >
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="block text-sm font-medium text-ink">
@@ -173,14 +173,14 @@ export function SeedCategoriesSection() {
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex h-10 items-center rounded-2xl bg-ink px-5 text-sm font-medium text-white transition-colors hover:bg-ink-secondary disabled:opacity-50"
+              className="inline-flex h-10 items-center rounded-md bg-ink px-5 text-sm font-medium text-white transition-colors hover:bg-ink-secondary disabled:opacity-50"
             >
               {saving ? "Saving…" : editingId == null ? "Create" : "Save changes"}
             </button>
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="inline-flex h-10 items-center gap-2 rounded-2xl border border-line bg-surface px-4 text-sm font-medium text-ink transition-colors hover:border-line-strong"
+              className="inline-flex h-10 items-center gap-2 rounded-md border border-line bg-surface px-4 text-sm font-medium text-ink transition-colors hover:border-line-strong"
             >
               <X className="h-4 w-4" />
               Cancel
@@ -190,7 +190,7 @@ export function SeedCategoriesSection() {
       )}
 
       {error && (
-        <p className="rounded-2xl bg-danger-soft px-4 py-3 text-sm text-danger">
+        <p className="rounded-md bg-danger-soft px-4 py-3 text-sm text-danger">
           {error}
         </p>
       )}
@@ -198,7 +198,7 @@ export function SeedCategoriesSection() {
       {loading && items.length === 0 ? (
         <ListSkeleton rows={3} />
       ) : items.length === 0 ? (
-        <p className="rounded-[20px] border border-dashed border-line py-10 text-center text-sm text-ink-muted">
+        <p className="rounded-md border border-dashed border-line py-10 text-center text-sm text-ink-muted">
           No seed categories yet. Create the first one above.
         </p>
       ) : (
@@ -206,7 +206,7 @@ export function SeedCategoriesSection() {
           {items.map((item) => (
             <li
               key={item.id}
-              className="flex items-start justify-between gap-3 rounded-[20px] border border-line bg-cardfill p-4"
+              className="flex items-start justify-between gap-3 rounded-md border border-line bg-cardfill p-4"
             >
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-ink">
@@ -229,7 +229,7 @@ export function SeedCategoriesSection() {
                   type="button"
                   aria-label={`Edit ${item.name}`}
                   onClick={() => startEdit(item)}
-                  className="flex h-8 w-8 items-center justify-center rounded-2xl text-ink-subtle transition-colors hover:bg-line-subtle hover:text-ink"
+                  className="flex h-8 w-8 items-center justify-center rounded-md text-ink-subtle transition-colors hover:bg-line-subtle hover:text-ink"
                 >
                   <Pencil className="h-4 w-4" />
                 </button>
@@ -238,7 +238,7 @@ export function SeedCategoriesSection() {
                   aria-label={`Delete ${item.name}`}
                   onClick={() => handleDelete(item)}
                   disabled={deletingId === item.id}
-                  className="flex h-8 w-8 items-center justify-center rounded-2xl text-ink-subtle transition-colors hover:bg-line-subtle hover:text-destructive disabled:opacity-50"
+                  className="flex h-8 w-8 items-center justify-center rounded-md text-ink-subtle transition-colors hover:bg-line-subtle hover:text-destructive disabled:opacity-50"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>

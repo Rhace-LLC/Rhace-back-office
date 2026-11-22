@@ -49,7 +49,7 @@ export const TableCard: React.FC<TableCardProps> = ({ table, waiterName }) => {
 
   return (
     <div>
-      <Card className="flex flex-col justify-between rounded-3xl border border-line shadow-sm transition-all duration-200 hover:shadow-md">
+      <Card className="flex flex-col justify-between rounded-md border border-line shadow-sm transition-all duration-200 hover:shadow-md">
         <CardHeader className="p-4">
           <div className="flex items-center justify-between">
             <CardTitle className="text-md font-semibold">
@@ -72,7 +72,7 @@ export const TableCard: React.FC<TableCardProps> = ({ table, waiterName }) => {
         <CardContent className="p-3">
           <div className="grid grid-cols-2 gap-3">
             {/* Seats box */}
-            <div className="flex flex-col items-start rounded-2xl bg-inset-accent p-3">
+            <div className="flex flex-col items-start rounded-md bg-inset-accent p-3">
               <span className="text-xs font-semibold tracking-wide text-brand-active uppercase">
                 Seats
               </span>
@@ -84,7 +84,7 @@ export const TableCard: React.FC<TableCardProps> = ({ table, waiterName }) => {
             {/* Status box */}
             <div
               className={clsx(
-                "flex flex-col items-start rounded-2xl p-3",
+                "flex flex-col items-start rounded-md p-3",
                 statusBoxColor
               )}
             >
@@ -96,7 +96,7 @@ export const TableCard: React.FC<TableCardProps> = ({ table, waiterName }) => {
           </div>
 
           {/* Waiter */}
-          <div className="mt-3 rounded-2xl bg-inset-accent p-3">
+          <div className="mt-3 rounded-md bg-inset-accent p-3">
             <span className="text-xs font-semibold tracking-wide text-brand-active uppercase">
               Waiter
             </span>

@@ -254,7 +254,7 @@ export function Login() {
               className="absolute inset-0 h-full w-full object-cover"
             />
             <div className="relative flex h-full min-h-[640px] flex-col items-start justify-end p-10">
-              <div className="max-w-sm rounded-[20px] border border-line bg-surface p-6 text-center shadow-md">
+              <div className="max-w-sm rounded-md border border-line bg-surface p-6 text-center shadow-md">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={visibleIndex}

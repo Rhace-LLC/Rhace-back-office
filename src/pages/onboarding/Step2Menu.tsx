@@ -236,7 +236,7 @@ export function Step2Menu({
             onClick={() => setMode(key)}
             disabled={saving}
             className={cn(
-              "flex flex-col items-start gap-3 rounded-[20px] border p-4 text-left transition-colors duration-150 focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none disabled:opacity-60",
+              "flex flex-col items-start gap-3 rounded-md border p-4 text-left transition-colors duration-150 focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none disabled:opacity-60",
               mode === key
                 ? "border-brand bg-brand/[0.04] ring-1 ring-brand"
                 : "border-line bg-surface hover:border-line-strong"
@@ -244,7 +244,7 @@ export function Step2Menu({
           >
             <span
               className={cn(
-                "flex h-9 w-9 items-center justify-center rounded-2xl transition-colors",
+                "flex h-9 w-9 items-center justify-center rounded-md transition-colors",
                 mode === key ? "bg-brand text-white" : "bg-cardfill text-ink-muted"
               )}
             >
@@ -285,7 +285,7 @@ export function Step2Menu({
             <p className="text-sm font-medium leading-5 text-ink-secondary">
               Select the dishes you'd like on your menu
             </p>
-            <span className="shrink-0 rounded-2xl bg-cardfill px-2.5 py-1 text-xs font-medium text-ink-secondary ring-1 ring-line">
+            <span className="shrink-0 rounded-md bg-cardfill px-2.5 py-1 text-xs font-medium text-ink-secondary ring-1 ring-line">
               {chosen.length} selected
             </span>
           </div>
@@ -300,7 +300,7 @@ export function Step2Menu({
               {categories.map((cat) => (
                 <span
                   key={cat}
-                  className="inline-flex items-center gap-1.5 rounded-2xl border border-brand bg-cardfill px-3 py-1.5 text-sm text-brand"
+                  className="inline-flex items-center gap-1.5 rounded-md border border-brand bg-cardfill px-3 py-1.5 text-sm text-brand"
                 >
                   {cat}
                 </span>
@@ -329,7 +329,7 @@ export function Step2Menu({
                         onClick={() => toggleDish(dish.name)}
                         disabled={saving}
                         className={cn(
-                          "flex items-start gap-3 rounded-[20px] border p-3.5 text-left transition-colors duration-150 disabled:opacity-60",
+                          "flex items-start gap-3 rounded-md border p-3.5 text-left transition-colors duration-150 disabled:opacity-60",
                           active
                             ? "border-brand bg-brand/[0.04] ring-1 ring-brand"
                             : "border-line bg-surface hover:border-line-strong"
@@ -340,7 +340,7 @@ export function Step2Menu({
                             <img
                               src={dish.image_url}
                               alt=""
-                              className="h-10 w-10 rounded-xl object-cover border border-line"
+                              className="h-10 w-10 rounded-md object-cover border border-line"
                             />
                           </span>
                         )}
@@ -395,7 +395,7 @@ export function Step2Menu({
 
       {/* ---------- MANUAL FLOW ---------- */}
       {mode === "manual" && (
-        <div className="mt-6 space-y-4 rounded-[20px] border border-line bg-cardfill p-4 sm:p-5">
+        <div className="mt-6 space-y-4 rounded-md border border-line bg-cardfill p-4 sm:p-5">
           <p className="text-sm font-medium text-ink">Add a menu item</p>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field id="ob-item-name" label="Item name">
@@ -448,7 +448,7 @@ export function Step2Menu({
             type="button"
             onClick={addItem}
             disabled={!draft.name.trim() || !draft.price.trim() || saving}
-            className="inline-flex items-center gap-2 rounded-2xl bg-ink px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-ink-secondary disabled:pointer-events-none disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-ink-secondary disabled:pointer-events-none disabled:opacity-50"
           >
             <Plus className="h-4 w-4" />
             Add Menu Item
@@ -459,7 +459,7 @@ export function Step2Menu({
               {items.map((item, i) => (
                 <li
                   key={i}
-                  className="flex items-center justify-between gap-3 rounded-2xl border border-line bg-surface px-3 py-2.5"
+                  className="flex items-center justify-between gap-3 rounded-md border border-line bg-surface px-3 py-2.5"
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-ink">
@@ -475,7 +475,7 @@ export function Step2Menu({
                     onClick={() =>
                       setItems((prev) => prev.filter((_, idx) => idx !== i))
                     }
-                    className="flex h-8 w-8 items-center justify-center rounded-2xl text-ink-subtle transition-colors hover:bg-line-subtle hover:text-destructive"
+                    className="flex h-8 w-8 items-center justify-center rounded-md text-ink-subtle transition-colors hover:bg-line-subtle hover:text-destructive"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -488,7 +488,7 @@ export function Step2Menu({
 
       {/* ---------- BULK UPLOAD (placeholder until backend) ---------- */}
       {mode === "import" && (
-        <div className="mt-6 rounded-[20px] border border-line bg-cardfill p-6 text-center">
+        <div className="mt-6 rounded-md border border-line bg-cardfill p-6 text-center">
           <FileUp className="mx-auto mb-2 h-8 w-8 text-brand" />
           <p className="text-sm text-ink-muted">
             Upload a{" "}
@@ -497,7 +497,7 @@ export function Step2Menu({
           </p>
           <button
             type="button"
-            className="mx-auto mt-4 inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-line bg-surface px-5 text-sm font-medium text-ink transition-colors hover:bg-cardfill"
+            className="mx-auto mt-4 inline-flex h-11 items-center justify-center gap-2 rounded-md border border-line bg-surface px-5 text-sm font-medium text-ink transition-colors hover:bg-cardfill"
           >
             <FileUp className="h-4 w-4" />
             Upload Menu
@@ -507,7 +507,7 @@ export function Step2Menu({
 
       {showProgress && (
         <div
-          className="mt-6 rounded-[20px] border border-line bg-cardfill p-4 sm:p-5"
+          className="mt-6 rounded-md border border-line bg-cardfill p-4 sm:p-5"
           role="status"
           aria-live="polite"
         >

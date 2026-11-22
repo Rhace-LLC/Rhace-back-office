@@ -9,11 +9,11 @@ export const obPage = "flex min-h-screen w-full justify-center bg-page";
 
 /** Shared rounded card — white, 28px radius, line border, card shadow. */
 export const obPanel =
-  "w-full rounded-[28px] border border-line bg-surface shadow-md";
+  "w-full rounded-md border border-line bg-surface shadow-md";
 
 /** Input — 16px radius, height 48px, solid surface, line border. */
 export const obField =
-  "flex h-12 w-full rounded-2xl border border-line bg-surface px-3.5 text-sm leading-5 text-ink transition-[border-color,box-shadow] duration-150 outline-none placeholder:text-ink-subtle focus:border-brand focus:ring-[3px] focus:ring-focus-ring";
+  "flex h-12 w-full rounded-md border border-line bg-surface px-3.5 text-sm leading-5 text-ink transition-[border-color,box-shadow] duration-150 outline-none placeholder:text-ink-subtle focus:border-brand focus:ring-[3px] focus:ring-focus-ring";
 
 /** Multi-line field variant. */
 export const obTextarea = `${obField} min-h-[88px] resize-none py-3`;
@@ -34,18 +34,18 @@ export const obEyebrow =
 
 /** Primary CTA — solid royal blue with button shadow. */
 export const obCta =
-  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-primary px-5 text-sm font-medium leading-5 text-white shadow-button transition-colors duration-150 hover:bg-brand-hover active:bg-brand-active focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-primary px-5 text-sm font-medium leading-5 text-white shadow-button transition-colors duration-150 hover:bg-brand-hover active:bg-brand-active focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50";
 
 /** Quiet secondary action on soft inset tint. */
 export const obCtaGhost =
-  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-inset px-5 text-sm font-medium leading-5 text-ink-secondary transition-colors duration-150 hover:bg-inset-accent hover:text-ink focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none";
+  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-inset px-5 text-sm font-medium leading-5 text-ink-secondary transition-colors duration-150 hover:bg-inset-accent hover:text-ink focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none";
 
 export const obLink =
   "font-medium text-brand transition-colors hover:text-brand-hover";
 
 /** Selectable option card — solid surface, 20px radius. */
 export const obChoice =
-  "group flex w-full items-start gap-3 rounded-[20px] border bg-surface p-4 text-left transition-colors duration-150 focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none";
+  "group flex w-full items-start gap-3 rounded-md border bg-surface p-4 text-left transition-colors duration-150 focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none";
 
 export const obChoiceIdle = "border-line bg-surface hover:border-line-strong";
 

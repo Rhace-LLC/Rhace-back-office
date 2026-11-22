@@ -11,7 +11,7 @@ export const OrderCustomerInfo: React.FC<OrderCustomerInfoProps> = ({ order }) =
   const customerPhone = order.customer_phone || "N/A";
 
   return (
-    <div className="rounded-[20px] border border-line bg-inset p-4">
+    <div className="rounded-md border border-line bg-inset p-4">
       <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-ink-muted">
         Customer Details
       </h4>

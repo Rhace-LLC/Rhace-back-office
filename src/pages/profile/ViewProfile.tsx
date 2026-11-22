@@ -11,7 +11,7 @@ interface ViewProfileProps {
 
 const ViewProfile: React.FC<ViewProfileProps> = ({ profile, onEdit }) => {
   return (
-    <Card className="w-full rounded-2xl shadow-sm">
+    <Card className="w-full rounded-md shadow-sm">
       <CardContent className="space-y-4 p-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-ink">

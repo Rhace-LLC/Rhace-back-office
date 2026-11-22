@@ -199,7 +199,7 @@ export function Step5Payments({
                 !bankCode ||
                 verifying
               }
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-ink px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-ink-secondary focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 sm:w-auto sm:shrink-0"
+              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-ink px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-ink-secondary focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 sm:w-auto sm:shrink-0"
             >
               {verifying ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -211,14 +211,14 @@ export function Step5Payments({
           </div>
         </div>
       ) : (
-        <div className="rounded-[20px] border border-success-line bg-success-soft p-5">
+        <div className="rounded-md border border-success-line bg-success-soft p-5">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-5 w-5 text-success" />
             <p className="text-sm font-semibold text-success">
               Account verified
             </p>
           </div>
-          <div className="mt-3 rounded-2xl bg-surface px-4 py-3 ring-1 ring-line">
+          <div className="mt-3 rounded-md bg-surface px-4 py-3 ring-1 ring-line">
             <p className="text-sm font-semibold text-ink">{accountName}</p>
             <p className="text-xs text-ink-muted">
               {bankName} · {masked}
@@ -229,7 +229,7 @@ export function Step5Payments({
 
       {verified && (
         <>
-          <p className="mt-4 rounded-2xl border border-line bg-cardfill px-4 py-3 text-xs leading-[17px] text-ink-subtle">
+          <p className="mt-4 rounded-md border border-line bg-cardfill px-4 py-3 text-xs leading-[17px] text-ink-subtle">
             Your bank details are encrypted and used only for payment
             settlement.
           </p>
@@ -237,14 +237,14 @@ export function Step5Payments({
             <button
               type="button"
               onClick={onComplete}
-              className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-ink px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-ink-secondary focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none"
+              className="inline-flex h-12 w-full items-center justify-center rounded-md bg-ink px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-ink-secondary focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none"
             >
               Finish Setup
             </button>
             <button
               type="button"
               onClick={onExit}
-              className="inline-flex h-12 w-full items-center justify-center rounded-2xl px-5 text-sm font-medium text-ink-muted transition-colors duration-150 hover:bg-line-subtle hover:text-ink"
+              className="inline-flex h-12 w-full items-center justify-center rounded-md px-5 text-sm font-medium text-ink-muted transition-colors duration-150 hover:bg-line-subtle hover:text-ink"
             >
               Back
             </button>

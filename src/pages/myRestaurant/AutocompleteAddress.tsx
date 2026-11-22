@@ -52,7 +52,7 @@ export const AutocompleteAddress = ({ value, onChange, onSelect }: Props) => {
         placeholder="Street address, building name, etc."
       />
       {open && (
-        <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-2xl border bg-surface shadow-lg">
+        <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-surface shadow-lg">
           {suggestions.map((s, i) => (
             <li
               key={i}

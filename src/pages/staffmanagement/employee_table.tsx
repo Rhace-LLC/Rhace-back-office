@@ -110,7 +110,7 @@ const RenderEmployeeTable: React.FC<Props> = ({ data, onRowClick }) => {
 
                   <td className="p-3">
                     <span
-                      className={`rounded-2xl px-2 py-1 text-xs font-semibold ${
+                      className={`rounded-md px-2 py-1 text-xs font-semibold ${
                         employee.is_active
                           ? "bg-success-soft text-success"
                           : "bg-danger-soft text-danger-strong"
@@ -123,7 +123,7 @@ const RenderEmployeeTable: React.FC<Props> = ({ data, onRowClick }) => {
                   <td className="p-3 text-center">
                     {employee.is_active ? (
                       <button
-                        className="inline-flex items-center gap-2 rounded-2xl border border-danger bg-danger-soft px-4 py-1.5 text-xs font-medium text-danger-strong transition hover:bg-danger-soft"
+                        className="inline-flex items-center gap-2 rounded-md border border-danger bg-danger-soft px-4 py-1.5 text-xs font-medium text-danger-strong transition hover:bg-danger-soft"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleToggleClick(employee, "disable");
@@ -134,7 +134,7 @@ const RenderEmployeeTable: React.FC<Props> = ({ data, onRowClick }) => {
                       </button>
                     ) : (
                       <button
-                        className="inline-flex items-center gap-2 rounded-2xl border border-success bg-success-soft px-4 py-1.5 text-xs font-medium text-success transition hover:bg-success-soft"
+                        className="inline-flex items-center gap-2 rounded-md border border-success bg-success-soft px-4 py-1.5 text-xs font-medium text-success transition hover:bg-success-soft"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleToggleClick(employee, "enable");

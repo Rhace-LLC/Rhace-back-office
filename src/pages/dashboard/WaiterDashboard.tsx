@@ -157,7 +157,7 @@ export const WaiterDashboard = () => {
       </div>
 
       {error && (
-        <div className="flex items-center justify-between gap-3 rounded-3xl border border-danger-line bg-danger-soft p-4 text-sm text-danger">
+        <div className="flex items-center justify-between gap-3 rounded-md border border-danger-line bg-danger-soft p-4 text-sm text-danger">
           <span>{error}</span>
           <Button variant="outline" size="sm" onClick={() => fetchOrders()}>
             Retry
@@ -189,7 +189,7 @@ export const WaiterDashboard = () => {
                 ))}
 
               {!loading && pendingOrders.length === 0 && (
-                <div className="rounded-2xl border border-dashed border-line p-6 text-center text-sm text-ink-muted">
+                <div className="rounded-md border border-dashed border-line p-6 text-center text-sm text-ink-muted">
                   No orders awaiting confirmation
                 </div>
               )}
@@ -200,7 +200,7 @@ export const WaiterDashboard = () => {
                   return (
                     <div
                       key={order.id}
-                      className="flex items-center justify-between gap-3 rounded-2xl border border-line p-3"
+                      className="flex items-center justify-between gap-3 rounded-md border border-line p-3"
                     >
                       <div className="min-w-0">
                         <div className="font-mono text-sm font-semibold text-ink">
@@ -256,13 +256,13 @@ export const WaiterDashboard = () => {
                 ))}
 
               {!tablesLoading && tablesError && (
-                <div className="rounded-2xl border border-danger-line bg-danger-soft p-4 text-sm text-danger">
+                <div className="rounded-md border border-danger-line bg-danger-soft p-4 text-sm text-danger">
                   {tablesError}
                 </div>
               )}
 
               {!tablesLoading && !tablesError && myTables.length === 0 && (
-                <div className="rounded-2xl border border-dashed border-line p-6 text-center text-sm text-ink-muted">
+                <div className="rounded-md border border-dashed border-line p-6 text-center text-sm text-ink-muted">
                   You have no tables assigned today
                 </div>
               )}
@@ -280,7 +280,7 @@ export const WaiterDashboard = () => {
                   return (
                     <div
                       key={table.id}
-                      className="flex items-center justify-between rounded-2xl border border-line p-3"
+                      className="flex items-center justify-between rounded-md border border-line p-3"
                     >
                       <div className="flex items-center gap-3">
                         <div className="text-base font-medium text-ink">

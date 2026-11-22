@@ -74,9 +74,9 @@ export default function EntertainmentPage() {
       >
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {/* Build your dish */}
-          <section className="rounded-[20px] border border-line bg-cardfill p-6 shadow-md">
+          <section className="rounded-md border border-line bg-cardfill p-6 shadow-md">
             <div className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-surface text-brand">
+              <span className="flex h-9 w-9 items-center justify-center rounded-md bg-surface text-brand">
                 <UtensilsCrossed className="h-5 w-5" />
               </span>
               <div>
@@ -93,7 +93,7 @@ export default function EntertainmentPage() {
               {(buildYourDish?.questions ?? []).map((question) => (
                 <div
                   key={question.key}
-                  className="rounded-[20px] border border-line-subtle bg-surface p-4"
+                  className="rounded-md border border-line-subtle bg-surface p-4"
                 >
                   <p className="text-[13px] leading-5 font-medium text-ink">
                     {question.question}
@@ -114,9 +114,9 @@ export default function EntertainmentPage() {
           </section>
 
           {/* Did you know */}
-          <section className="rounded-[20px] border border-line bg-cardfill p-6 shadow-md">
+          <section className="rounded-md border border-line bg-cardfill p-6 shadow-md">
             <div className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-surface text-brand">
+              <span className="flex h-9 w-9 items-center justify-center rounded-md bg-surface text-brand">
                 <Lightbulb className="h-5 w-5" />
               </span>
               <div>
@@ -133,7 +133,7 @@ export default function EntertainmentPage() {
               {(didYouKnow?.facts ?? []).map((fact) => (
                 <li
                   key={fact.id}
-                  className="rounded-[20px] border border-line-subtle bg-surface p-4"
+                  className="rounded-md border border-line-subtle bg-surface p-4"
                 >
                   <span className="inline-flex items-center gap-1 text-[10px] leading-[14px] font-semibold tracking-[0.08em] text-brand uppercase">
                     <Sparkles className="h-3.5 w-3.5" />

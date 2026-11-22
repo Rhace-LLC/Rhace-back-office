@@ -18,7 +18,7 @@ export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = ({ order, items
     : "N/A";
 
   return (
-    <div className="rounded-[20px] border border-line bg-inset p-4 space-y-3">
+    <div className="rounded-md border border-line bg-inset p-4 space-y-3">
       <h4 className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
         Order Summary
       </h4>
@@ -43,7 +43,7 @@ export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = ({ order, items
         </div>
       </div>
       {order.delay_reason && (
-        <div className="mt-2 rounded-2xl bg-danger-soft border border-danger-line p-2.5 text-xs text-danger-strong">
+        <div className="mt-2 rounded-md bg-danger-soft border border-danger-line p-2.5 text-xs text-danger-strong">
           <span className="font-semibold block">Delay Reason:</span>
           {order.delay_reason}
         </div>

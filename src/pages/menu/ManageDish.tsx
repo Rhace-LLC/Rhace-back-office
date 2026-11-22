@@ -86,10 +86,10 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
             <img
               src={preview}
               alt="Dish"
-              className="h-[150px] w-full rounded-3xl object-cover shadow-sm"
+              className="h-[150px] w-full rounded-md object-cover shadow-sm"
             />
           ) : (
-            <div className="flex h-[150px] w-full items-center justify-center rounded-3xl border bg-inset text-sm text-ink-subtle">
+            <div className="flex h-[150px] w-full items-center justify-center rounded-md border bg-inset text-sm text-ink-subtle">
               No Image
             </div>
           )}
@@ -149,14 +149,14 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
           <div className="relative">
             <img
               src={preview}
-              className="h-[150px] w-full rounded-3xl object-cover shadow-sm"
+              className="h-[150px] w-full rounded-md object-cover shadow-sm"
             />
             <button
               onClick={() => {
                 setPreview(null);
                 setDishForm((p) => ({ ...p, image: null }));
               }}
-              className="absolute top-2 right-2 rounded-2xl bg-ink/60 px-2 py-1 text-xs text-white"
+              className="absolute top-2 right-2 rounded-md bg-ink/60 px-2 py-1 text-xs text-white"
             >
               Remove
             </button>
@@ -164,7 +164,7 @@ export const ManageDish: React.FC<{ dish: MenuItem }> = ({ dish }) => {
         ) : (
           <label
             htmlFor="image"
-            className="flex h-[150px] w-full cursor-pointer flex-col items-center justify-center rounded-3xl border border-dashed bg-inset text-ink-subtle transition hover:bg-inset"
+            className="flex h-[150px] w-full cursor-pointer flex-col items-center justify-center rounded-md border border-dashed bg-inset text-ink-subtle transition hover:bg-inset"
           >
             <p className="text-sm font-medium">Click to upload image</p>
           </label>

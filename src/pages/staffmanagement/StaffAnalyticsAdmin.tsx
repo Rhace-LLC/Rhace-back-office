@@ -180,7 +180,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
         />
 
         {/* Global Filter Bar */}
-        <div className="bg-surface border border-line rounded-[20px] p-5 shadow-md">
+        <div className="bg-surface border border-line rounded-md p-5 shadow-md">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end">
             
             {/* Staff Dropdown */}
@@ -192,7 +192,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
                 value={staffId}
                 onChange={(e) => setStaffId(e.target.value)}
                 disabled={fetchLoading}
-                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all cursor-pointer disabled:opacity-50"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-md text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all cursor-pointer disabled:opacity-50"
               >
                 <option value="">All Staff</option>
                 {toShow?.map((staff: StaffMember) => (
@@ -211,7 +211,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all cursor-pointer"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-md text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all cursor-pointer"
               >
                 <option value="">All Roles</option>
                 <option value="waiter">Waiter</option>
@@ -229,7 +229,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
               <select
                 value={actionType}
                 onChange={(e) => setActionType(e.target.value as ActionType)}
-                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all cursor-pointer"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-md text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all cursor-pointer"
               >
                 <option value="">All Actions</option>
                 <option value="order_status_updated">Order Status Updated</option>
@@ -251,7 +251,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-md text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all"
               />
             </div>
 
@@ -264,7 +264,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full h-[40px] px-3 bg-surface border border-line rounded-2xl text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all"
+                className="w-full h-[40px] px-3 bg-surface border border-line rounded-md text-[14px] text-ink focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-brand transition-all"
               />
             </div>
 
@@ -275,35 +275,35 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
         {summary && (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             
-            <div className="bg-surface border border-line rounded-[20px] p-5 shadow-sm">
+            <div className="bg-surface border border-line rounded-md p-5 shadow-sm">
               <span className="text-[12px] font-medium leading-[17px] text-ink-muted">Total Sales</span>
               <div className="text-[24px] font-semibold tracking-[-0.4px] text-ink mt-1">
                 {summary.total_sales}
               </div>
             </div>
 
-            <div className="bg-surface border border-line rounded-[20px] p-5 shadow-sm">
+            <div className="bg-surface border border-line rounded-md p-5 shadow-sm">
               <span className="text-[12px] font-medium leading-[17px] text-ink-muted">Total Orders</span>
               <div className="text-[24px] font-semibold tracking-[-0.4px] text-ink mt-1">
                 {summary.total_orders}
               </div>
             </div>
 
-            <div className="bg-surface border border-line rounded-[20px] p-5 shadow-sm">
+            <div className="bg-surface border border-line rounded-md p-5 shadow-sm">
               <span className="text-[12px] font-medium leading-[17px] text-ink-muted">Avg Order Value</span>
               <div className="text-[24px] font-semibold tracking-[-0.4px] text-ink mt-1">
                 {summary.avg_order_value}
               </div>
             </div>
 
-            <div className="bg-surface border border-line rounded-[20px] p-5 shadow-sm">
+            <div className="bg-surface border border-line rounded-md p-5 shadow-sm">
               <span className="text-[12px] font-medium leading-[17px] text-ink-muted">Voided Orders</span>
               <div className="text-[24px] font-semibold tracking-[-0.4px] text-destructive mt-1">
                 {summary.voided_orders}
               </div>
             </div>
 
-            <div className="bg-surface border border-line rounded-[20px] p-5 shadow-sm col-span-2 lg:col-span-1">
+            <div className="bg-surface border border-line rounded-md p-5 shadow-sm col-span-2 lg:col-span-1">
               <span className="text-[12px] font-medium leading-[17px] text-ink-muted">Avg Service Time</span>
               <div className="text-[24px] font-semibold tracking-[-0.4px] text-ink mt-1">
                 {summary.avg_service_minutes} <span className="text-[14px] font-normal text-ink-muted">mins</span>
@@ -314,7 +314,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
         )}
 
         {/* Content Area */}
-        <div className="bg-surface border border-line rounded-[20px] p-6 shadow-md space-y-6">
+        <div className="bg-surface border border-line rounded-md p-6 shadow-md space-y-6">
           
           {/* Tabs Control */}
           <div className="flex border-b border-line-subtle gap-6">
@@ -374,7 +374,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
 
           {/* Error & Loading Indicators */}
           {(error || fetchError) && (
-            <div className="p-4 bg-danger-soft border border-danger-line rounded-2xl text-[14px] text-danger-strong">
+            <div className="p-4 bg-danger-soft border border-danger-line rounded-md text-[14px] text-danger-strong">
               {error || fetchError}
             </div>
           )}
@@ -385,7 +385,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
             <div>
               {/* TAB 1: Staff Performance Reports */}
               {activeTab === "performance" && (
-                <div className="overflow-x-auto rounded-2xl border border-line-subtle">
+                <div className="overflow-x-auto rounded-md border border-line-subtle">
                   <table className="w-full text-left text-[14px] border-collapse">
                     <thead>
                       <tr className="bg-surface border-b border-line-subtle text-ink-muted font-medium">
@@ -427,7 +427,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
 
               {/* TAB 2: Audit Activity Logs */}
               {activeTab === "audit" && (
-                <div className="overflow-x-auto rounded-2xl border border-line-subtle">
+                <div className="overflow-x-auto rounded-md border border-line-subtle">
                   <table className="w-full text-left text-[14px] border-collapse">
                     <thead>
                       <tr className="bg-surface border-b border-line-subtle text-ink-muted font-medium">
@@ -471,7 +471,7 @@ export const StaffIntelligenceAnalytics: React.FC = () => {
 
               {/* TAB 3: Shift Logs */}
               {activeTab === "shifts" && (
-                <div className="overflow-x-auto rounded-2xl border border-line-subtle">
+                <div className="overflow-x-auto rounded-md border border-line-subtle">
                   <table className="w-full text-left text-[14px] border-collapse">
                     <thead>
                       <tr className="bg-surface border-b border-line-subtle text-ink-muted font-medium">

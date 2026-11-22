@@ -314,7 +314,7 @@ export const WalletAndAccount = () => {
             CREATE SUBACCOUNT FLOW
       ============================================================ */}
       {error === "No subaccount found for this restaurant" && (
-        <div className="space-y-4 rounded-2xl border bg-surface p-6 shadow">
+        <div className="space-y-4 rounded-md border bg-surface p-6 shadow">
           <h2 className="text-lg font-semibold tracking-tight text-ink">
             Link Your Payout Account
           </h2>
@@ -414,7 +414,7 @@ export const WalletAndAccount = () => {
               Wallet & Sub Account
             </h2>
 
-            <div className="space-y-3 rounded-2xl border bg-surface p-4 shadow-sm">
+            <div className="space-y-3 rounded-md border bg-surface p-4 shadow-sm">
               <p>
                 <strong>Account Name:</strong> {subaccount?.account_name}
               </p>

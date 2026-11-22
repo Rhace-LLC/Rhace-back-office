@@ -9,7 +9,7 @@ export default function RenderTableData({ data }: { data: CategoryData[] }) {
   const [selectedOpen, setSelectedOpen] = useState<boolean>(false);
 
   return (
-    <div className="bg-card text-card-foreground flex flex-col gap-6 rounded-3xl border">
+    <div className="bg-card text-card-foreground flex flex-col gap-6 rounded-md border">
       <div className="p-0 [&:last-child]:pb-6">
         <div className="relative w-full overflow-x-auto">
           <table className="w-full caption-bottom text-sm">
@@ -35,7 +35,7 @@ export default function RenderTableData({ data }: { data: CategoryData[] }) {
                 >
                   <td className="px-3 py-2">
                     <img
-                      className="h-12 w-12 rounded-2xl object-cover"
+                      className="h-12 w-12 rounded-md object-cover"
                       src={item.image_url || "/placeholder.png"}
                       alt={item.name}
                     />

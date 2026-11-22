@@ -37,7 +37,7 @@ export const MapLocationGate = ({
   if (permissionStatus !== "granted") {
     return (
       <MapCentered>
-        <div className="mb-4 rounded-3xl bg-inset p-4">
+        <div className="mb-4 rounded-md bg-inset p-4">
           <ShieldCheck size={32} strokeWidth={1.5} className="text-ink-subtle" />
         </div>
         <h2 className="text-xl font-bold tracking-tight text-ink">
@@ -48,7 +48,7 @@ export const MapLocationGate = ({
         </p>
         <button
           onClick={requestPermission}
-          className="h-12 rounded-2xl bg-ink px-8 text-[14px] font-bold text-white transition-all active:scale-95"
+          className="h-12 rounded-md bg-ink px-8 text-[14px] font-bold text-white transition-all active:scale-95"
         >
           Allow Access
         </button>
@@ -59,7 +59,7 @@ export const MapLocationGate = ({
   if (!locationEnabled) {
     return (
       <MapCentered>
-        <div className="mb-4 rounded-3xl bg-inset p-4 text-ink-subtle">
+        <div className="mb-4 rounded-md bg-inset p-4 text-ink-subtle">
           <Navigation size={32} strokeWidth={1.5} />
         </div>
         <p className="mb-6 text-[14px] font-medium text-ink-subtle">
@@ -67,7 +67,7 @@ export const MapLocationGate = ({
         </p>
         <button
           onClick={checkLocationEnabled}
-          className="h-12 rounded-2xl bg-ink px-8 text-[14px] font-bold text-white transition-all active:scale-95"
+          className="h-12 rounded-md bg-ink px-8 text-[14px] font-bold text-white transition-all active:scale-95"
         >
           I’ve turned it on
         </button>

@@ -90,7 +90,7 @@ export const RenderReservationTableData: React.FC<
 
   return (
     // Outer div for context and potential container styling
-    <div className="overflow-hidden rounded-3xl border bg-surface shadow-sm">
+    <div className="overflow-hidden rounded-md border bg-surface shadow-sm">
       <Table className="w-full">
         <TableHeader className="border-b bg-inset">
           <TableRow className="hover:bg-inset">

@@ -58,7 +58,7 @@ export const PaystackCheckoutDialog: React.FC<PaystackCheckoutDialogProps> = ({
       }}
     >
       <DialogContent
-        className="flex h-[500px] w-[80%] max-w-[600px] flex-col overflow-auto rounded-2xl p-0"
+        className="flex h-[500px] w-[80%] max-w-[600px] flex-col overflow-auto rounded-md p-0"
         onInteractOutside={(e) => e.preventDefault()} // Prevent closing on outside click
       >
         {/* Compact Header */}

@@ -183,7 +183,7 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
         <div className="space-y-4 max-h-[65vh] overflow-y-auto pr-1">
           {(needsConfirmation || isConfirmed) && (
             <div
-              className={`flex items-center justify-between gap-3 rounded-3xl border p-3 text-sm ${
+              className={`flex items-center justify-between gap-3 rounded-md border p-3 text-sm ${
                 isConfirmed
                   ? "border-success-line bg-success-soft"
                   : "border-warning-line bg-warning-soft"
@@ -216,7 +216,7 @@ export const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
                 <button
                   onClick={handleWaiterConfirmClick}
                   disabled={isConfirming}
-                  className="flex h-9 items-center gap-1.5 rounded-2xl bg-success-strong px-4 text-xs font-semibold text-white hover:bg-success disabled:opacity-60"
+                  className="flex h-9 items-center gap-1.5 rounded-md bg-success-strong px-4 text-xs font-semibold text-white hover:bg-success disabled:opacity-60"
                 >
                   <Check className="h-4 w-4" />
                   {isConfirming ? "Confirming…" : "Confirm Order"}

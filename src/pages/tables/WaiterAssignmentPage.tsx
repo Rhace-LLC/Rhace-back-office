@@ -62,11 +62,11 @@ export function WaiterAssignmentPage() {
         <>
 
           {setupError && (
-            <div className="flex flex-col gap-3 rounded-2xl border border-danger-line bg-danger-soft p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-3 rounded-md border border-danger-line bg-danger-soft p-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-danger">{setupError}</p>
               <button
                 onClick={setUpForToday}
-                className="flex-shrink-0 cursor-pointer rounded-2xl bg-danger px-4 py-2 text-sm font-medium text-white transition hover:bg-danger-strong"
+                className="flex-shrink-0 cursor-pointer rounded-md bg-danger px-4 py-2 text-sm font-medium text-white transition hover:bg-danger-strong"
               >
                 Retry
               </button>
@@ -79,11 +79,11 @@ export function WaiterAssignmentPage() {
             )}
 
             {!loading && error && (
-              <div className="flex flex-col gap-3 rounded-2xl border border-danger-line bg-danger-soft p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-3 rounded-md border border-danger-line bg-danger-soft p-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-sm text-danger">{error}</p>
                 <button
                   onClick={() => fetchAssignments(true)}
-                  className="flex-shrink-0 cursor-pointer rounded-2xl bg-danger px-4 py-2 text-sm font-medium text-white transition hover:bg-danger-strong"
+                  className="flex-shrink-0 cursor-pointer rounded-md bg-danger px-4 py-2 text-sm font-medium text-white transition hover:bg-danger-strong"
                 >
                   Retry
                 </button>
@@ -91,7 +91,7 @@ export function WaiterAssignmentPage() {
             )}
 
             {!loading && !error && (
-              <div className="overflow-x-auto rounded-2xl border border-line bg-surface p-4">
+              <div className="overflow-x-auto rounded-md border border-line bg-surface p-4">
                 <table className="w-full table-auto">
                   <thead>
                     <tr className="bg-inset text-left text-sm text-ink-secondary">

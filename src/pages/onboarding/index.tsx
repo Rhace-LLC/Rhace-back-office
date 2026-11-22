@@ -381,7 +381,7 @@ const persistMenu = async (
             <button
               type="button"
               onClick={() => setStep(backStep)}
-              className="inline-flex h-9 items-center gap-1.5 rounded-2xl px-3 text-sm font-medium text-ink-muted transition-colors hover:bg-line-subtle hover:text-ink"
+              className="inline-flex h-9 items-center gap-1.5 rounded-md px-3 text-sm font-medium text-ink-muted transition-colors hover:bg-line-subtle hover:text-ink"
             >
               <ArrowLeft className="h-4 w-4" />
               {STEP_LABEL[backStep]}
@@ -393,7 +393,7 @@ const persistMenu = async (
           <button
             type="button"
             onClick={() => setLogoutOpen(true)}
-            className="inline-flex h-9 items-center gap-1.5 rounded-2xl px-3 text-sm font-medium text-ink-muted transition-colors hover:bg-danger-soft hover:text-danger"
+            className="inline-flex h-9 items-center gap-1.5 rounded-md px-3 text-sm font-medium text-ink-muted transition-colors hover:bg-danger-soft hover:text-danger"
           >
             <LogOut className="h-4 w-4" />
             Log out
@@ -407,7 +407,7 @@ const persistMenu = async (
         />
 
         {/* Progress indicator */}
-        <div className="mb-8 rounded-[20px] border border-line bg-surface px-4 py-5 shadow-sm sm:px-6">
+        <div className="mb-8 rounded-md border border-line bg-surface px-4 py-5 shadow-sm sm:px-6">
           <StepProgress current={step} />
         </div>
 

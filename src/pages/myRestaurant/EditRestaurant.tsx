@@ -152,7 +152,7 @@ export default function EditRestaurantProfile({
       </div>
 
       {/* --- SECTION: BASIC INFORMATION --- */}
-      <section className="space-y-6 rounded-3xl border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
+      <section className="space-y-6 rounded-md border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
         <h3 className="text-xl font-bold text-ink">Basic Details</h3>
         <p className="text-sm text-ink-muted">
           Provide the fundamental information about your restaurant.
@@ -202,7 +202,7 @@ export default function EditRestaurantProfile({
       </section>
 
       {/* --- SECTION: LOCATION & CONTACT --- */}
-      <section className="space-y-6 rounded-3xl border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
+      <section className="space-y-6 rounded-md border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
         <div className="flex justify-between">
           <div className="flex flex-col gap-1">
             <h3 className="text-[22px] font-bold tracking-tight text-ink">
@@ -252,7 +252,7 @@ export default function EditRestaurantProfile({
           </button>
         </div>
 
-        <div className="relative overflow-hidden rounded-3xl bg-inset ring-1 ring-line-subtle">
+        <div className="relative overflow-hidden rounded-md bg-inset ring-1 ring-line-subtle">
           {pickAddrFromMap && (
             <div className="animate-in fade-in zoom-in-95 duration-500">
               <MapPicker
@@ -343,7 +343,7 @@ export default function EditRestaurantProfile({
       </section>
 
       {/* --- SECTION: BRANDING & MEDIA --- */}
-      <section className="space-y-6 rounded-3xl border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
+      <section className="space-y-6 rounded-md border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
         <h3 className="text-xl font-bold text-ink">Branding & Media</h3>
         <p className="text-sm text-ink-muted">
           Upload high-quality images to attract visitors.
@@ -359,13 +359,13 @@ export default function EditRestaurantProfile({
               <img
                 src={logoPreview}
                 alt="Logo Preview"
-                className="h-24 w-24 flex-shrink-0 rounded-3xl border-4 border-white object-cover shadow-md"
+                className="h-24 w-24 flex-shrink-0 rounded-md border-4 border-white object-cover shadow-md"
               />
             )}
             <Input
               type="file"
               accept="image/*"
-              className="h-12 cursor-pointer p-2 file:rounded-2xl file:border-0 file:bg-inset file:text-sm file:font-medium"
+              className="h-12 cursor-pointer p-2 file:rounded-md file:border-0 file:bg-inset file:text-sm file:font-medium"
               onChange={(e) => handleImageUpload(e, "logo")}
             />
           </div>
@@ -381,13 +381,13 @@ export default function EditRestaurantProfile({
               <img
                 src={coverPreview}
                 alt="Cover Preview"
-                className="h-48 w-full rounded-3xl border object-cover shadow-md"
+                className="h-48 w-full rounded-md border object-cover shadow-md"
               />
             )}
             <Input
               type="file"
               accept="image/*"
-              className="h-12 cursor-pointer p-2 file:rounded-2xl file:border-0 file:bg-inset file:text-sm file:font-medium"
+              className="h-12 cursor-pointer p-2 file:rounded-md file:border-0 file:bg-inset file:text-sm file:font-medium"
               onChange={(e) => handleImageUpload(e, "cover")}
             />
           </div>
@@ -446,7 +446,7 @@ export default function EditRestaurantProfile({
                 className="inline-block h-5 w-5 rounded-full border border-line"
                 style={{ backgroundColor: form.brand_color || "#2A66FF" }}
               />
-              <span className="font-mono text-xs font-semibold text-ink-secondary uppercase tracking-wider bg-inset border border-line px-2 py-0.5 rounded-2xl">
+              <span className="font-mono text-xs font-semibold text-ink-secondary uppercase tracking-wider bg-inset border border-line px-2 py-0.5 rounded-md">
                 {form.brand_color || "#2A66FF"}
               </span>
             </div>
@@ -455,7 +455,7 @@ export default function EditRestaurantProfile({
       </section>
 
       {/* --- SECTION: TAGS --- */}
-      <section className="space-y-6 rounded-3xl border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
+      <section className="space-y-6 rounded-md border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
         <h3 className="text-xl font-bold text-ink">Tags & Categories</h3>
         <FormField
           label="Tags"
@@ -491,7 +491,7 @@ export default function EditRestaurantProfile({
       </section>
 
       {/* --- SECTION: OPENING HOURS --- */}
-      <section className="space-y-6 rounded-3xl border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
+      <section className="space-y-6 rounded-md border border-line-subtle bg-surface p-6 shadow-lg md:p-8">
         <h3 className="text-xl font-bold text-ink">Operating Hours</h3>
         <p className="text-sm text-ink-muted">
           <Calendar size={16} className="mr-2 inline-block text-ink-muted" />
@@ -543,7 +543,7 @@ export default function EditRestaurantProfile({
           {(form.opening_hours ?? []).map((hour, idx) => (
             <div
               key={hour.day}
-              className="flex flex-col gap-4 rounded-2xl border border-line bg-inset p-4 shadow-inner md:flex-row"
+              className="flex flex-col gap-4 rounded-md border border-line bg-inset p-4 shadow-inner md:flex-row"
             >
               <p className="w-full flex-shrink-0 self-center font-semibold text-ink md:w-1/4">
                 {hour.day}
@@ -590,7 +590,7 @@ export default function EditRestaurantProfile({
       {/* SAVE BUTTON */}
       <div className="border-t pt-6">
         <Button
-          className="h-12 w-full rounded-2xl bg-brand text-base font-semibold shadow-lg transition duration-200 hover:bg-brand-hover"
+          className="h-12 w-full rounded-md bg-brand text-base font-semibold shadow-lg transition duration-200 hover:bg-brand-hover"
           onClick={handleSave}
         >
           Save Changes

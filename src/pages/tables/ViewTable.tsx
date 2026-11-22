@@ -240,7 +240,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
     <div className="space-y-4 pt-5">
       <Tabs defaultValue="overview" className="w-full space-y-4">
         {/* --- TAB TRIGGERS --- */}
-        <TabsList className="grid w-full grid-cols-2 rounded-2xl border-b border-line bg-inset p-1">
+        <TabsList className="grid w-full grid-cols-2 rounded-md border-b border-line bg-inset p-1">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="qr">
             <QrCode className="h-4 w-4" />
@@ -251,7 +251,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
         <TabsContent value="overview">
           <div className="grid grid-cols-2 gap-4">
             {/* Seats */}
-            <div className="rounded-3xl border border-brand-accent bg-inset-accent p-4 shadow-sm">
+            <div className="rounded-md border border-brand-accent bg-inset-accent p-4 shadow-sm">
               <p className="text-xs font-medium tracking-wide text-brand uppercase">
                 Available Seats
               </p>
@@ -261,7 +261,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
             </div>
 
             {/* Table Number */}
-            <div className="rounded-3xl border border-brand-accent bg-inset-accent p-4 shadow-sm">
+            <div className="rounded-md border border-brand-accent bg-inset-accent p-4 shadow-sm">
               <p className="text-xs font-medium tracking-wide text-brand uppercase">
                 Table Number
               </p>
@@ -271,7 +271,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
             </div>
 
             {/* Current Status */}
-            <div className="rounded-3xl border border-success-line bg-success-soft p-4 shadow-sm">
+            <div className="rounded-md border border-success-line bg-success-soft p-4 shadow-sm">
               <p className="text-xs font-medium tracking-wide text-success uppercase">
                 Current Status
               </p>
@@ -284,14 +284,14 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
           {/* Actions */}
           <div className="grid grid-cols-2 gap-3 space-y-2 pt-5">
             <Button
-              className="h-12 w-full cursor-pointer rounded-2xl bg-brand text-white transition hover:bg-brand-hover"
+              className="h-12 w-full cursor-pointer rounded-md bg-brand text-white transition hover:bg-brand-hover"
               onClick={() => setStatusDialogOpen(true)}
             >
               Update Table Status
             </Button>
 
             <Button
-              className="h-12 w-full cursor-pointer rounded-2xl transition"
+              className="h-12 w-full cursor-pointer rounded-md transition"
               onClick={() => setTableInfoDialogOpen(true)}
             >
               Update Table Info
@@ -312,18 +312,18 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
 
             {/* Loading state */}
             {waiterReqLoading && (
-              <div className="rounded-2xl border border-line bg-surface p-4 text-sm text-ink-secondary">
+              <div className="rounded-md border border-line bg-surface p-4 text-sm text-ink-secondary">
                 Loading waiters…
               </div>
             )}
 
             {/* Error state */}
             {!waiterReqLoading && waiterReqError && (
-              <div className="rounded-2xl border border-danger-line bg-danger-soft p-4">
+              <div className="rounded-md border border-danger-line bg-danger-soft p-4">
                 <p className="text-sm text-danger">{waiterReqError}</p>
                 <button
                   onClick={fetchWaiters}
-                  className="mt-3 inline-flex items-center rounded-2xl bg-danger px-4 py-2 text-sm font-medium text-white transition hover:bg-danger-strong"
+                  className="mt-3 inline-flex items-center rounded-md bg-danger px-4 py-2 text-sm font-medium text-white transition hover:bg-danger-strong"
                 >
                   Retry
                 </button>
@@ -340,7 +340,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
                   waiters.map((waiter) => (
                     <div
                       key={waiter.id}
-                      className="flex items-center justify-between rounded-2xl border border-line bg-surface p-4"
+                      className="flex items-center justify-between rounded-md border border-line bg-surface p-4"
                     >
                       {/* Waiter Info */}
                       <div>
@@ -357,7 +357,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
                         onClick={() => {
                           // assign waiter to table logic here
                         }}
-                        className="rounded-2xl bg-ink px-4 py-2 text-sm font-medium text-white transition hover:bg-ink-secondary"
+                        className="rounded-md bg-ink px-4 py-2 text-sm font-medium text-white transition hover:bg-ink-secondary"
                       >
                         Assign to table
                       </button>
@@ -372,7 +372,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
         {/* --- QR TAB --- */}
         <TabsContent
           value="qr"
-          className="space-y-4 rounded-2xl border border-line bg-surface p-4"
+          className="space-y-4 rounded-md border border-line bg-surface p-4"
         >
           <h2 className="text-center text-lg font-semibold">Table QR Code</h2>
           <p className="text-center text-sm text-ink-secondary">
@@ -383,7 +383,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
           </p>
 
           <div className="flex flex-col items-center space-y-4">
-            <div className="rounded-2xl border bg-inset p-4">
+            <div className="rounded-md border bg-inset p-4">
               <QRCode value={qrValue} size={250} />
             </div>
 
@@ -395,7 +395,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
                 )}`}
                 download={`Table-${table.table_number}-QR.png`}
                 target="_blank"
-                className="flex items-center gap-2 rounded-2xl bg-primary px-4 py-2 text-sm font-medium text-white shadow-button hover:bg-brand-hover"
+                className="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-white shadow-button hover:bg-brand-hover"
               >
                 <Download className="h-4 w-4" /> Download QR
               </a>
@@ -452,7 +452,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
                   <label
                     key={label}
                     className={cn(
-                      "group relative flex cursor-pointer flex-col items-start rounded-3xl border-2 p-4 transition-all duration-200",
+                      "group relative flex cursor-pointer flex-col items-start rounded-md border-2 p-4 transition-all duration-200",
                       color,
                       isSelected
                         ? `shadow-lg ${ring} ring-4 ring-offset-2`
@@ -537,7 +537,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
                 Table Number
               </label>
               <Input
-                className="h-11 rounded-2xl"
+                className="h-11 rounded-md"
                 value={editTableNumber}
                 onChange={(e) => {
                   let { value } = e.target;
@@ -558,7 +558,7 @@ export const ViewTable: React.FC<ViewTableProps> = ({ table }) => {
               </label>
               <Input
                 type="number"
-                className="h-11 rounded-2xl"
+                className="h-11 rounded-md"
                 value={String(editMaxSeats)}
                 onChange={(e) => setEditMaxSeats(Number(e.target.value))}
                 placeholder="Enter max seats"

@@ -83,7 +83,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               type="button"
               aria-label="Open menu"
               onClick={() => setMobileMenuOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-2xl text-ink-muted transition-colors hover:bg-inset hover:text-ink md:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-md text-ink-muted transition-colors hover:bg-inset hover:text-ink md:hidden"
             >
               <Menu className="h-5 w-5" />
             </button>
@@ -95,7 +95,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               type="button"
               aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
               onClick={() => setSidebarCollapsed((prev) => !prev)}
-              className="hidden h-9 w-9 items-center justify-center rounded-2xl text-ink-muted transition-colors hover:bg-inset hover:text-ink md:flex"
+              className="hidden h-9 w-9 items-center justify-center rounded-md text-ink-muted transition-colors hover:bg-inset hover:text-ink md:flex"
             >
               {sidebarCollapsed ? (
                 <PanelLeft className="h-5 w-5" />
@@ -120,7 +120,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <Link
             to="/notifications"
             aria-label="Notifications"
-            className="relative flex h-9 w-9 items-center justify-center rounded-2xl text-ink-muted transition-colors hover:bg-inset hover:text-ink"
+            className="relative flex h-9 w-9 items-center justify-center rounded-md text-ink-muted transition-colors hover:bg-inset hover:text-ink"
           >
             <Bell className="h-5 w-5" />
           </Link>

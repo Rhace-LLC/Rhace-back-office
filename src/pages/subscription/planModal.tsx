@@ -34,7 +34,7 @@ export const PlanSelectionModal: React.FC<PlanSelectionModalProps> = ({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       {/* Increased max-width slightly for better desktop feel, made width relative */}
-      <DialogContent className="w-[90%] max-w-lg rounded-3xl p-6 sm:p-8">
+      <DialogContent className="w-[90%] max-w-lg rounded-md p-6 sm:p-8">
         <DialogHeader className="mb-4 border-b pb-4 !text-center">
           {/* Enhanced title style */}
           <DialogTitle className="text-2xl font-bold tracking-tight text-ink">

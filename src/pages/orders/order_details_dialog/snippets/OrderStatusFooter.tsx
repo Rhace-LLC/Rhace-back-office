@@ -35,7 +35,7 @@ export const OrderStatusFooter: React.FC<OrderStatusFooterProps> = ({
           variant="outline"
           size="sm"
           onClick={() => onStatusChange("cancelled")}
-          className="border-danger-line text-danger-strong hover:bg-danger-soft hover:text-danger-strong h-10 px-4 rounded-2xl text-xs font-medium"
+          className="border-danger-line text-danger-strong hover:bg-danger-soft hover:text-danger-strong h-10 px-4 rounded-md text-xs font-medium"
         >
           <XCircle className="mr-1.5 h-4 w-4" />
           Cancel Order
@@ -49,7 +49,7 @@ export const OrderStatusFooter: React.FC<OrderStatusFooterProps> = ({
           variant="secondary"
           size="sm"
           onClick={onClose}
-          className="bg-inset hover:bg-inset-accent text-ink-secondary h-10 px-4 rounded-2xl text-xs font-medium"
+          className="bg-inset hover:bg-inset-accent text-ink-secondary h-10 px-4 rounded-md text-xs font-medium"
         >
           Close
         </Button>
@@ -58,7 +58,7 @@ export const OrderStatusFooter: React.FC<OrderStatusFooterProps> = ({
           <Button
             size="sm"
             onClick={() => onStatusChange(primaryNextStatus)}
-            className="bg-primary hover:bg-brand-hover text-white h-10 px-5 rounded-2xl text-xs font-semibold shadow-button"
+            className="bg-primary hover:bg-brand-hover text-white h-10 px-5 rounded-md text-xs font-semibold shadow-button"
           >
             <span>{actionLabels[primaryNextStatus] || `Move to ${primaryNextStatus}`}</span>
             <ArrowRight className="ml-1.5 h-4 w-4" />

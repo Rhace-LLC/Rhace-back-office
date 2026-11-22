@@ -52,7 +52,7 @@ export const OrderAssignments: React.FC<OrderAssignmentsProps> = ({
       </h4>
       <div className="grid grid-cols-1 gap-3">
         {/* Waiter Management */}
-        <div className="rounded-3xl border border-line bg-surface p-3 space-y-2">
+        <div className="rounded-md border border-line bg-surface p-3 space-y-2">
           <div className="flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
               <User className="h-4 w-4 text-brand" />
@@ -85,7 +85,7 @@ export const OrderAssignments: React.FC<OrderAssignmentsProps> = ({
                 size="sm"
                 onClick={onAssignWaiter}
                 disabled={!selectedWaiter}
-                className="h-8 bg-primary hover:bg-brand-hover text-white shadow-button text-xs px-3 rounded-2xl"
+                className="h-8 bg-primary hover:bg-brand-hover text-white shadow-button text-xs px-3 rounded-md"
               >
                 {assignedWaiter || waiterName ? "Change" : "Assign"}
               </Button>
@@ -95,7 +95,7 @@ export const OrderAssignments: React.FC<OrderAssignmentsProps> = ({
 
         {/* Table Management (Dine-in only) */}
         {isDineIn && (
-          <div className="rounded-3xl border border-line bg-surface p-3 space-y-2">
+          <div className="rounded-md border border-line bg-surface p-3 space-y-2">
             <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
                 <TableIcon className="h-4 w-4 text-brand" />
@@ -132,7 +132,7 @@ export const OrderAssignments: React.FC<OrderAssignmentsProps> = ({
                   size="sm"
                   onClick={onAssignTable}
                   disabled={!selectedTable}
-                  className="h-8 bg-primary hover:bg-brand-hover text-white shadow-button text-xs px-3 rounded-2xl"
+                  className="h-8 bg-primary hover:bg-brand-hover text-white shadow-button text-xs px-3 rounded-md"
                 >
                   {assignedTable || tableNumber ? "Change" : "Assign"}
                 </Button>

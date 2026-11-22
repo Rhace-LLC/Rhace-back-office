@@ -28,7 +28,7 @@ export const DraftList: React.FC<DraftListProps> = ({ onSelect }) => {
       {drafts.map((draft) => (
         <div
           key={draft.id}
-          className="flex items-center justify-between rounded-2xl border p-4"
+          className="flex items-center justify-between rounded-md border p-4"
         >
           <div className="flex-1 min-w-0">
             <p className="font-medium truncate">

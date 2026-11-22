@@ -35,7 +35,7 @@ const StaffFilters: React.FC<StaffFiltersProps> = ({
   onSearch,
 }) => {
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-line-subtle bg-inset p-4 md:flex-row md:items-center md:gap-4">
+    <div className="flex flex-col gap-3 rounded-md border border-line-subtle bg-inset p-4 md:flex-row md:items-center md:gap-4">
       {/* Search */}
       <div className="flex w-full items-center gap-2 md:w-1/3">
         <LucideSearch className="h-4 w-4 text-ink-subtle" />

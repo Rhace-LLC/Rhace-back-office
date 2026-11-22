@@ -167,7 +167,7 @@ export function MenuManagement() {
                   <img
                     src={dish.image_url || "/placeholder-dish.png"}
                     alt={dish.name}
-                    className="h-12 w-12 rounded-2xl border object-cover"
+                    className="h-12 w-12 rounded-md border object-cover"
                   />
                 </TableCell>
 

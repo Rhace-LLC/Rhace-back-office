@@ -61,7 +61,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[90%] max-w-[420px] rounded-2xl p-0">
+      <DialogContent className="w-[90%] max-w-[420px] rounded-md p-0">
         <div className="p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold">Bulk Upload Menu Items</h2>
@@ -76,7 +76,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
           {!file ? (
             <div
               onClick={() => inputRef.current?.click()}
-              className="flex cursor-pointer flex-col items-center gap-3 rounded-3xl border-2 border-dashed border-line p-8 text-center transition hover:border-brand hover:bg-inset-accent"
+              className="flex cursor-pointer flex-col items-center gap-3 rounded-md border-2 border-dashed border-line p-8 text-center transition hover:border-brand hover:bg-inset-accent"
             >
               <Upload className="h-10 w-10 text-ink-subtle" />
               <div>
@@ -87,7 +87,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
               </div>
             </div>
           ) : (
-            <div className="rounded-3xl border border-line bg-inset p-4">
+            <div className="rounded-md border border-line bg-inset p-4">
               <div className="flex items-center gap-3">
                 <FileSpreadsheet className="h-8 w-8 text-success" />
                 <div className="flex-1 truncate">

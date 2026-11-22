@@ -81,17 +81,17 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
     <div className="space-y-6 pt-7">
       {!isEditing ? (
         <>
-          <div className="grid grid-cols-1 gap-6 rounded-2xl border-line bg-surface">
+          <div className="grid grid-cols-1 gap-6 rounded-md border-line bg-surface">
             {/* Image */}
             <div className="col-span-1">
               {data.image_url ? (
                 <img
                   src={data.image_url}
                   alt={data.name}
-                  className="h-56 w-full rounded-3xl border border-line object-cover"
+                  className="h-56 w-full rounded-md border border-line object-cover"
                 />
               ) : (
-                <div className="flex h-56 w-full items-center justify-center rounded-3xl border-2 border-dashed border-line bg-inset font-medium text-ink-secondary">
+                <div className="flex h-56 w-full items-center justify-center rounded-md border-2 border-dashed border-line bg-inset font-medium text-ink-secondary">
                   No Image Available
                 </div>
               )}
@@ -127,7 +127,7 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
                 <button
                   type="button"
                   onClick={() => setIsEditing(true)}
-                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border border-line bg-inset py-2 text-ink-secondary transition-colors hover:bg-inset hover:text-ink"
+                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-line bg-inset py-2 text-ink-secondary transition-colors hover:bg-inset hover:text-ink"
                 >
                   <Edit3 size={16} className="text-ink-muted" />
                   Edit Category
@@ -139,7 +139,7 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
       ) : (
         <form
           onSubmit={handleSave}
-          className="space-y-5 rounded-2xl bg-surface"
+          className="space-y-5 rounded-md bg-surface"
         >
           <div className="space-y-2">
             <Label htmlFor="name">Category Name</Label>
@@ -166,7 +166,7 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
           {/* Cute Image Upload */}
           <div className="space-y-2">
             <Label htmlFor="image">Category Image</Label>
-            <div className="relative flex cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-line p-3 transition-colors duration-200 hover:border-brand">
+            <div className="relative flex cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-line p-3 transition-colors duration-200 hover:border-brand">
               <input
                 id="image"
                 type="file"
@@ -179,12 +179,12 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ data }) => {
                   <img
                     src={form.image}
                     alt="Preview"
-                    className="h-56 w-full rounded-2xl border border-line object-cover"
+                    className="h-56 w-full rounded-md border border-line object-cover"
                   />
 
                   <button
                     type="button"
-                    className="w-full rounded-2xl border border-line bg-inset py-2 text-sm font-medium text-ink-secondary transition-colors hover:bg-inset hover:text-ink"
+                    className="w-full rounded-md border border-line bg-inset py-2 text-sm font-medium text-ink-secondary transition-colors hover:bg-inset hover:text-ink"
                   >
                     Click to Change
                   </button>

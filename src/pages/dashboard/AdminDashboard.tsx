@@ -403,7 +403,7 @@ export const AdminDashboard = () => {
     const { active, payload, label } = props;
     if (active && payload && payload.length) {
       return (
-        <div className="rounded-2xl border border-line bg-surface p-3 shadow-sm">
+        <div className="rounded-md border border-line bg-surface p-3 shadow-sm">
           <p className="font-medium">{`Day: ${label}`}</p>
           <p className="text-brand">
             {`Revenue: ${formatPrice(payload?.[0]?.value ?? 0)}`}
@@ -419,7 +419,7 @@ export const AdminDashboard = () => {
     const { active, payload } = props;
     if (active && payload && payload.length) {
       return (
-        <div className="rounded-2xl border border-line bg-surface p-3 shadow-sm">
+        <div className="rounded-md border border-line bg-surface p-3 shadow-sm">
           <p className="font-medium">{payload[0].name}</p>
           <p className="text-brand">{`${payload[0].value} orders`}</p>
         </div>
@@ -571,7 +571,7 @@ export const AdminDashboard = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="rounded-2xl border border-danger-line bg-danger-soft p-4 text-danger-strong">
+        <div className="rounded-md border border-danger-line bg-danger-soft p-4 text-danger-strong">
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4" />
             <span>{error}</span>
@@ -735,7 +735,7 @@ export const AdminDashboard = () => {
                 {dashboardStats.peak_hours.map((hour: PeakHour, index: number) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between rounded-2xl border p-3"
+                    className="flex items-center justify-between rounded-md border p-3"
                   >
                     <span className="font-medium">{formatHour(hour.hour)}</span>
                     <Badge variant="secondary">
@@ -771,7 +771,7 @@ export const AdminDashboard = () => {
             {hasData(dashboardStats.average_order_value) ||
             hasData(dashboardStats.wait_time_accuracy?.avg_accuracy) ? (
               <>
-                <div className="flex items-center justify-between rounded-2xl bg-inset p-3">
+                <div className="flex items-center justify-between rounded-md bg-inset p-3">
                   <div className="flex items-center gap-2">
                     <Target className="h-4 w-4 text-brand" />
                     <span className="text-sm font-medium">
@@ -783,7 +783,7 @@ export const AdminDashboard = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between rounded-2xl bg-inset p-3">
+                <div className="flex items-center justify-between rounded-md bg-inset p-3">
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-success" />
                     <span className="text-sm font-medium">
@@ -797,7 +797,7 @@ export const AdminDashboard = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between rounded-2xl bg-inset p-3">
+                <div className="flex items-center justify-between rounded-md bg-inset p-3">
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4 text-brand" />
                     <span className="text-sm font-medium">Staff Coverage</span>
@@ -911,7 +911,7 @@ export const AdminDashboard = () => {
               {dashboardData.staff_activity.map((staff, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between rounded-2xl border p-4 transition-colors hover:bg-inset"
+                  className="flex items-center justify-between rounded-md border p-4 transition-colors hover:bg-inset"
                 >
                   <div>
                     <p className="font-medium">{staff.staff_name}</p>

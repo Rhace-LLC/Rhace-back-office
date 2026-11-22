@@ -18,7 +18,7 @@ export default function NotFound() {
       {/* Button */}
       <Link
         to="/"
-        className="bg-royalblue-600 hover:bg-royalblue-700 rounded-2xl px-6 py-3 font-medium text-white shadow-md transition"
+        className="bg-royalblue-600 hover:bg-royalblue-700 rounded-md px-6 py-3 font-medium text-white shadow-md transition"
       >
         Go Back Home
       </Link>

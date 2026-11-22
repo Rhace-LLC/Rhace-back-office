@@ -41,8 +41,8 @@ export const WaiterAssignmentView = ({
         <CardGridSkeleton count={3} label="Loading assignment details…" />
       ) : !assignment ? (
         /* --- EMPTY STATE: NO ASSIGNMENT --- */
-        <div className="flex flex-col items-center justify-center rounded-3xl bg-inset p-12 text-center ring-1 ring-line-subtle">
-          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-surface shadow-sm ring-1 ring-line-subtle">
+        <div className="flex flex-col items-center justify-center rounded-md bg-inset p-12 text-center ring-1 ring-line-subtle">
+          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-md bg-surface shadow-sm ring-1 ring-line-subtle">
             <LayoutGrid size={32} strokeWidth={1.2} className="text-ink-subtle" />
           </div>
           <h3 className="text-lg font-bold tracking-tight text-ink">
@@ -61,7 +61,7 @@ export const WaiterAssignmentView = ({
             }}
             disabled={isRefreshing}
             className={cn(
-              "group mt-6 flex items-center gap-2 rounded-3xl px-4 py-2 text-[13px] font-bold tracking-tight transition-all active:scale-95",
+              "group mt-6 flex items-center gap-2 rounded-md px-4 py-2 text-[13px] font-bold tracking-tight transition-all active:scale-95",
               "border border-line-subtle bg-surface text-ink-muted shadow-sm shadow-gray-200/50",
               "hover:border-line hover:bg-inset hover:text-ink",
               isRefreshing && "cursor-not-allowed opacity-50"
@@ -80,7 +80,7 @@ export const WaiterAssignmentView = ({
         </div>
       ) : (
         /* --- ACTIVE STATE: ASSIGNMENT DETECTED --- */
-        <div className="group relative overflow-hidden rounded-3xl bg-surface p-8 shadow-sm ring-1 ring-line-subtle transition-all hover:shadow-lg">
+        <div className="group relative overflow-hidden rounded-md bg-surface p-8 shadow-sm ring-1 ring-line-subtle transition-all hover:shadow-lg">
           {/* HEADER */}
           <div className="flex items-start justify-between pb-8">
             <div>
@@ -96,7 +96,7 @@ export const WaiterAssignmentView = ({
               </div>
             </div>
 
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-inset text-[18px] font-black text-ink ring-1 ring-line-subtle">
+            <div className="flex h-12 w-12 items-center justify-center rounded-md bg-inset text-[18px] font-black text-ink ring-1 ring-line-subtle">
               {assignment.table_count}
             </div>
           </div>
@@ -106,10 +106,10 @@ export const WaiterAssignmentView = ({
             {assignment.tables.map((table) => (
               <div
                 key={table.id}
-                className="flex items-center gap-3 rounded-2xl bg-inset px-5 py-3 ring-1 ring-line-subtle transition-all hover:bg-surface hover:shadow-md hover:ring-transparent"
+                className="flex items-center gap-3 rounded-md bg-inset px-5 py-3 ring-1 ring-line-subtle transition-all hover:bg-surface hover:shadow-md hover:ring-transparent"
               >
                 Table
-                <div className="flex h-6 w-6 items-center justify-center rounded-2xl bg-surface text-[10px] font-bold text-ink-subtle ring-1 ring-line-subtle">
+                <div className="flex h-6 w-6 items-center justify-center rounded-md bg-surface text-[10px] font-bold text-ink-subtle ring-1 ring-line-subtle">
                   <Hash size={10} />
                 </div>
                 <span className="text-[14px] font-bold tracking-tight text-ink">
@@ -121,7 +121,7 @@ export const WaiterAssignmentView = ({
 
           {/* FOOTER: NOTES */}
           {assignment.notes && (
-            <div className="mt-10 rounded-[20px] bg-inset p-5 ring-1 ring-line-subtle">
+            <div className="mt-10 rounded-md bg-inset p-5 ring-1 ring-line-subtle">
               <div className="mb-2 flex items-center gap-2 text-ink-subtle">
                 <StickyNote size={14} strokeWidth={2.5} />
                 <span className="text-[11px] font-bold tracking-wider uppercase">

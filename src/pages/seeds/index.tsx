@@ -335,7 +335,7 @@ export default function SeedsPage() {
     <PageContainer>
       <PageHeader
         leading={
-          <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-cardfill text-brand">
+          <span className="flex h-9 w-9 items-center justify-center rounded-md bg-cardfill text-brand">
             <Sprout className="h-5 w-5" />
           </span>
         }
@@ -346,7 +346,7 @@ export default function SeedsPage() {
       <div
         role="tablist"
         aria-label="Seed data sections"
-        className="mb-5 flex w-max max-w-full gap-1 overflow-x-auto rounded-2xl border border-line bg-cardfill p-1"
+        className="mb-5 flex w-max max-w-full gap-1 overflow-x-auto rounded-md border border-line bg-cardfill p-1"
       >
         {TABS.map(({ key, label }) => (
           <button
@@ -356,7 +356,7 @@ export default function SeedsPage() {
             type="button"
             onClick={() => setTab(key)}
             className={cn(
-              "rounded-2xl px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors",
+              "rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors",
               tab === key
                 ? "bg-surface text-ink shadow-sm ring-1 ring-line"
                 : "text-ink-muted hover:text-ink"

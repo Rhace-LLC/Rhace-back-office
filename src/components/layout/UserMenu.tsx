@@ -53,7 +53,7 @@ export function UserMenu({
   useEffect(() => setOpen(false), [location.pathname]);
 
   const itemClass =
-    "flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm transition-colors";
+    "flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm transition-colors";
 
   return (
     <div ref={containerRef} className="relative">
@@ -63,7 +63,7 @@ export function UserMenu({
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
         className={cn(
-          "flex items-center gap-2.5 rounded-2xl p-1 transition-colors hover:bg-inset",
+          "flex items-center gap-2.5 rounded-md p-1 transition-colors hover:bg-inset",
           open && "bg-inset"
         )}
       >
@@ -91,7 +91,7 @@ export function UserMenu({
       {open && (
         <div
           role="menu"
-          className="absolute right-0 z-[60] mt-2 w-60 rounded-2xl border border-line bg-surface p-1.5 shadow-lg"
+          className="absolute right-0 z-[60] mt-2 w-60 rounded-md border border-line bg-surface p-1.5 shadow-lg"
         >
           <div className="px-3 py-2">
             <div className="truncate text-sm font-medium text-ink">

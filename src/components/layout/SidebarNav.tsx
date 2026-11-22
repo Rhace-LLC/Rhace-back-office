@@ -80,7 +80,7 @@ export function SidebarNav({ collapsed = false, onNavigate }: SidebarNavProps) {
               aria-expanded={hasChildren ? isOpen : undefined}
               onClick={() => handleItemClick(item)}
               className={cn(
-                "group relative flex h-10 w-full items-center gap-2 rounded-2xl text-[14px] leading-5 transition-colors duration-150 focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none",
+                "group relative flex h-10 w-full items-center gap-2 rounded-md text-[14px] leading-5 transition-colors duration-150 focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none",
                 collapsed ? "justify-center px-0" : "px-4",
                 active
                   ? "bg-primary font-medium text-white shadow-button"
@@ -131,7 +131,7 @@ export function SidebarNav({ collapsed = false, onNavigate }: SidebarNavProps) {
                         aria-current={childIsActive ? "page" : undefined}
                         onClick={() => handleNavigate(child.url)}
                         className={cn(
-                          "group flex h-8 w-full items-center gap-2 rounded-2xl px-3 text-[13px] leading-5 transition-colors duration-150 focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none",
+                          "group flex h-8 w-full items-center gap-2 rounded-md px-3 text-[13px] leading-5 transition-colors duration-150 focus-visible:ring-[3px] focus-visible:ring-focus-ring focus-visible:outline-none",
                           childIsActive
                             ? "bg-primary font-medium text-white shadow-button"
                             : "text-ink-muted hover:bg-inset hover:text-ink"

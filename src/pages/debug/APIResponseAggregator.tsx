@@ -34,7 +34,7 @@ if (import.meta.env.DEV) {
 export function APIResponseAggregator() {
   return (
     <section className="space-y-4" aria-label="API service aggregators">
-      <div className="rounded-2xl border border-line bg-surface px-5 py-4">
+      <div className="rounded-md border border-line bg-surface px-5 py-4">
         <h2 className="text-base font-semibold text-ink">
           Service API aggregators
         </h2>

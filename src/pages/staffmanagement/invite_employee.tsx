@@ -144,7 +144,7 @@ const InviteEmployeeForm: React.FC<Props> = ({ onSubmit }) => {
 
       {/* Invite Link Display */}
       {inviteLink && (
-        <div className="rounded-2xl border bg-inset p-3 text-sm">
+        <div className="rounded-md border bg-inset p-3 text-sm">
           <p className="mb-2 text-ink-secondary">Invite Link:</p>
           <p
             className="cursor-pointer break-all text-brand underline"

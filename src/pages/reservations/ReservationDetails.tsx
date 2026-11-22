@@ -235,7 +235,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
         className="flex flex-grow flex-col"
       >
         <TabsList
-          className={`rounded-2xl bg-inset ${
+          className={`rounded-md bg-inset ${
             isCompleted ? "grid grid-cols-1" : "grid grid-cols-2"
           }`}
         >
@@ -248,7 +248,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
           {/* Details Tab */}
           <TabsContent value="details" className="space-y-8 bg-surface">
             {/* Booking Time Section */}
-            <section className="space-y-4 rounded-2xl bg-surface py-4">
+            <section className="space-y-4 rounded-md bg-surface py-4">
               <h3 className="flex items-center text-lg font-semibold text-ink">
                 <Calendar className="mr-2 h-5 w-5 text-brand" /> Booking
                 Time
@@ -280,7 +280,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
             <div className="my-5 border border-line" />
 
             {/* Customer Info Section */}
-            <section className="space-y-4 rounded-2xl bg-surface py-4">
+            <section className="space-y-4 rounded-md bg-surface py-4">
               <h3 className="flex items-center text-lg font-semibold text-ink">
                 <User className="mr-2 h-5 w-5 text-brand" /> Customer Info
               </h3>
@@ -334,7 +334,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
           <TabsContent value="actions" className="space-y-6">
             {/* Pending => Confirm */}
             {reservation.status === "cancelled" && (
-              <div className="mt-6 rounded-3xl border border-line bg-inset p-5 shadow-sm">
+              <div className="mt-6 rounded-md border border-line bg-inset p-5 shadow-sm">
                 <div className="flex items-center space-x-3">
                   <XCircle className="h-6 w-6 text-danger" />
                   <h4 className="text-lg font-semibold text-ink">
@@ -352,7 +352,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
             {reservation.status !== "cancelled" &&
               reservation.status !== "completed" &&
               reservation.table && (
-                <div className="mt-4 rounded-2xl border bg-inset p-3">
+                <div className="mt-4 rounded-md border bg-inset p-3">
                   <p className="mb-1 font-semibold text-ink-secondary">
                     Assigned Table
                   </p>
@@ -364,7 +364,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 </div>
               )}
             {reservation.status === "pending" && (
-              <div className="space-y-3 rounded-3xl border border-success-line bg-success-soft p-5 shadow-sm">
+              <div className="space-y-3 rounded-md border border-success-line bg-success-soft p-5 shadow-sm">
                 <h4 className="flex items-center text-lg font-semibold text-success">
                   <CheckCircle className="mr-2 h-5 w-5" /> Confirm Reservation
                 </h4>
@@ -385,7 +385,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
             {reservation.status !== "cancelled" &&
               reservation.status !== "completed" &&
               !reservation.table && (
-                <div className="space-y-3 rounded-3xl border border-line bg-inset p-5 shadow-sm">
+                <div className="space-y-3 rounded-md border border-line bg-inset p-5 shadow-sm">
                   <h4 className="flex items-center text-lg font-semibold text-ink">
                     Assign Table
                   </h4>
@@ -417,7 +417,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                         id="table-select"
                         value={selectedTable || ""}
                         onChange={(e) => setSelectedTable(e.target.value)}
-                        className="flex-1 rounded-2xl border border-line p-2 text-sm focus:border-brand focus:ring-focus-ring"
+                        className="flex-1 rounded-md border border-line p-2 text-sm focus:border-brand focus:ring-focus-ring"
                       >
                         <option value="">-- Select Table --</option>
                         {allTables
@@ -441,7 +441,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               )}
 
             {reservation.status == "confirmed" && (
-              <div className="space-y-2 rounded-3xl border border-brand-accent bg-inset-accent p-5 shadow-sm">
+              <div className="space-y-2 rounded-md border border-brand-accent bg-inset-accent p-5 shadow-sm">
                 <h4 className="flex items-center text-lg font-semibold text-brand-active">
                   <CheckCircle className="mr-2 h-5 w-5" /> Complete Reservation
                 </h4>
@@ -561,7 +561,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               <textarea
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                className={`w-full rounded-2xl border p-3 text-sm outline-none focus:ring-2 ${
+                className={`w-full rounded-md border p-3 text-sm outline-none focus:ring-2 ${
                   reasonError
                     ? "border-danger ring-danger-line"
                     : "border-line focus:border-brand focus:ring-brand-accent"

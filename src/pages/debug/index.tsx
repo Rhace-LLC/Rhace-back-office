@@ -7,7 +7,7 @@ export default function DebugPage() {
     <PageContainer>
       <PageHeader
         leading={
-          <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-cardfill text-brand">
+          <span className="flex h-9 w-9 items-center justify-center rounded-md bg-cardfill text-brand">
             <Bug className="h-5 w-5" />
           </span>
         }

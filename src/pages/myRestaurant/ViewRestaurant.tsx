@@ -35,7 +35,7 @@ export default function ViewMyRestaurant({
   return (
     <div className="mx-auto max-w-7xl space-y-8">
 
-<div className="hover:shadow-3xl relative overflow-hidden rounded-3xl shadow-xl transition-all duration-300">
+<div className="hover:shadow-3xl relative overflow-hidden rounded-md shadow-xl transition-all duration-300">
   {/* Cover Image */}
   <img
     src={profile.cover_image_url || fallbackCover}
@@ -119,7 +119,7 @@ export default function ViewMyRestaurant({
       {/* Left Column: Overview, Tags, Hours (2/3 width on desktop) */}
       <div className="space-y-8">
         {/* Overview Card */}
-        <section className="rounded-3xl border border-line-subtle bg-surface p-6 shadow-md transition-shadow hover:shadow-lg md:p-8">
+        <section className="rounded-md border border-line-subtle bg-surface p-6 shadow-md transition-shadow hover:shadow-lg md:p-8">
           <h2 className="text-2xl font-bold tracking-tight text-ink">
             Overview
           </h2>
@@ -168,7 +168,7 @@ export default function ViewMyRestaurant({
               ).map((h, i) => (
                 <div
                   key={i}
-                  className="rounded-2xl border bg-inset p-3 shadow-sm transition-shadow hover:shadow-md"
+                  className="rounded-md border bg-inset p-3 shadow-sm transition-shadow hover:shadow-md"
                 >
                   <div className="font-semibold text-ink">
                     {h.day || "Not yet added"}
@@ -190,7 +190,7 @@ export default function ViewMyRestaurant({
                 className="inline-block h-5 w-5 rounded-full border border-line"
                 style={{ backgroundColor: profile?.brand_color || "#ffffff" }}
               />
-              <span className="font-mono text-xs font-semibold text-ink-secondary uppercase tracking-wider bg-inset border border-line px-2 py-0.5 rounded-2xl">
+              <span className="font-mono text-xs font-semibold text-ink-secondary uppercase tracking-wider bg-inset border border-line px-2 py-0.5 rounded-md">
                 {profile?.brand_color || "Not yet added"}
               </span>
             </div>
@@ -198,7 +198,7 @@ export default function ViewMyRestaurant({
 
         {/* Right Column: Contact Info (1/3 width on desktop) */}
         <div className="">
-          <section className="sticky top-8 rounded-3xl border border-line-subtle bg-surface p-6 shadow-md transition-shadow hover:shadow-lg">
+          <section className="sticky top-8 rounded-md border border-line-subtle bg-surface p-6 shadow-md transition-shadow hover:shadow-lg">
             <h3 className="text-xl font-bold tracking-tight text-ink">
               Contact Information
             </h3>
@@ -288,7 +288,7 @@ export default function ViewMyRestaurant({
         </div>
 
         {/* Gallery Card */}
-        <section className="hidden rounded-3xl border border-line-subtle bg-surface p-6 shadow-md transition-shadow hover:shadow-lg md:p-8">
+        <section className="hidden rounded-md border border-line-subtle bg-surface p-6 shadow-md transition-shadow hover:shadow-lg md:p-8">
           <h2 className="text-2xl font-bold tracking-tight text-ink">
             Gallery
           </h2>
@@ -301,7 +301,7 @@ export default function ViewMyRestaurant({
               <div
                 key={i}
                 // Aspect ratio maintained for images, added hover effect
-                className="group aspect-square w-full cursor-pointer overflow-hidden rounded-3xl border bg-inset shadow-inner"
+                className="group aspect-square w-full cursor-pointer overflow-hidden rounded-md border bg-inset shadow-inner"
               >
                 <img
                   src={img || fallbackCover}

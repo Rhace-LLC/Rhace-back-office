@@ -95,7 +95,7 @@ export const ReqErr: React.FC<ReqErrProps> = ({
             <Button
               onClick={onAction}
               className={
-                "h-11 w-full cursor-pointer rounded-2xl bg-danger text-white transition-colors hover:bg-danger"
+                "h-11 w-full cursor-pointer rounded-md bg-danger text-white transition-colors hover:bg-danger"
               }
             >
               {actionText}

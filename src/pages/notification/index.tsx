@@ -664,7 +664,7 @@ export function Notifications() {
                 return (
                   <div
                     key={notification.id}
-                    className={`flex items-start gap-3 rounded-2xl border border-l-4 p-4 transition-all ${priorityColors[notification.priority]} ${notification.read ? "bg-inset" : "bg-background border"} ${!notification.read ? "shadow-sm" : ""} `}
+                    className={`flex items-start gap-3 rounded-md border border-l-4 p-4 transition-all ${priorityColors[notification.priority]} ${notification.read ? "bg-inset" : "bg-background border"} ${!notification.read ? "shadow-sm" : ""} `}
                   >
                     <div className={`mt-1 ${notification.color}`}>
                       <IconComponent className="h-5 w-5" />

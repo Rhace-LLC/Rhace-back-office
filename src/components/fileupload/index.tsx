@@ -62,7 +62,7 @@ export function FileUpload({
           <img
             src={preview}
             alt="File preview"
-            className="max-h-32 max-w-full rounded-2xl object-contain"
+            className="max-h-32 max-w-full rounded-md object-contain"
           />
         </div>
       );
@@ -89,7 +89,7 @@ export function FileUpload({
       <motion.div
         className={`relative w-full border-2 p-4 ${
           error ? "border-danger-line" : "border-dashed border-line-strong"
-        } rounded-3xl transition-colors duration-300 hover:border-brand`}
+        } rounded-md transition-colors duration-300 hover:border-brand`}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}

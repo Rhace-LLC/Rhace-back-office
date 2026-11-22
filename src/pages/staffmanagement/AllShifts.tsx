@@ -82,7 +82,7 @@ export const AllShiftsAdmin = () => {
         }
       />
 
-      <div className="overflow-hidden rounded-3xl border border-line bg-surface shadow-sm">
+      <div className="overflow-hidden rounded-md border border-line bg-surface shadow-sm">
 
       {/* Content area */}
       {loading ? (

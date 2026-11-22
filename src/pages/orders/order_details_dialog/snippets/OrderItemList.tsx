@@ -46,7 +46,7 @@ export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
 
   if (!items || items.length === 0) {
     return (
-      <div className="rounded-3xl border border-dashed border-line bg-inset p-6 text-center text-sm text-ink-muted">
+      <div className="rounded-md border border-dashed border-line bg-inset p-6 text-center text-sm text-ink-muted">
         No items in this order
       </div>
     );
@@ -67,7 +67,7 @@ export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
             return (
               <div
                 key={item.id || index}
-                className="flex items-center justify-between rounded-[20px] border border-line bg-surface p-3 shadow-sm"
+                className="flex items-center justify-between rounded-md border border-line bg-surface p-3 shadow-sm"
               >
                 <div>
                   <p className="font-medium text-ink">{item.menu_item_name || "Unknown Item"}</p>
@@ -87,7 +87,7 @@ export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
             return (
               <div
                 key={item.id || index}
-                className="rounded-[20px] border border-line bg-surface p-3.5 shadow-sm space-y-2.5"
+                className="rounded-md border border-line bg-surface p-3.5 shadow-sm space-y-2.5"
               >
                 <div className="flex gap-3 items-start justify-between">
                   <div className="flex-1">
@@ -106,7 +106,7 @@ export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
                     <img
                       src={menuItem.image_url}
                       alt={menuItem.name}
-                      className="h-14 w-14 rounded-2xl object-cover border border-line-subtle shrink-0"
+                      className="h-14 w-14 rounded-md object-cover border border-line-subtle shrink-0"
                     />
                   )}
                 </div>
@@ -116,7 +116,7 @@ export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
                     <Utensils className="h-3.5 w-3.5 text-brand mt-0.5 shrink-0" />
                     <div className="flex flex-wrap gap-1">
                       {menuItem.display_ingredients.map((ing, i) => (
-                        <span key={i} className="inline-block rounded-2xl bg-inset px-2 py-0.5 text-[11px] border border-line-subtle">
+                        <span key={i} className="inline-block rounded-md bg-inset px-2 py-0.5 text-[11px] border border-line-subtle">
                           {ing}
                         </span>
                       ))}

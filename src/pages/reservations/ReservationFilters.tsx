@@ -30,7 +30,7 @@ export const ReservationFilters: React.FC<ReservationFiltersProps> = ({
       <div className="w-48">
         <Label>Status</Label>
         <select
-          className="mt-1 w-full rounded-2xl border p-2"
+          className="mt-1 w-full rounded-md border p-2"
           value={filters.status}
           onChange={(e) => setFilters({ ...filters, status: e.target.value })}
         >

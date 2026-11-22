@@ -230,7 +230,7 @@ export default function BillingPage() {
       )}
 
       {!isSubscription && (
-        <div className="mx-auto rounded-3xl border border-line bg-surface p-8 text-center shadow-sm transition duration-300">
+        <div className="mx-auto rounded-md border border-line bg-surface p-8 text-center shadow-sm transition duration-300">
           {/* Icon Placeholder (Optional: Add a cool icon like a sparkle or a lock here) */}
           <svg
             className="mx-auto mb-4 h-12 w-12 text-brand"

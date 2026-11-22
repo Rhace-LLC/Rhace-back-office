@@ -47,7 +47,7 @@ const DetailItem: React.FC<{
 const ViewEmployeeDetails: React.FC<Props> = ({ employee }) => {
   if (!employee) {
     return (
-      <div className="rounded-3xl bg-surface p-8 text-center text-ink-muted shadow-lg">
+      <div className="rounded-md bg-surface p-8 text-center text-ink-muted shadow-lg">
         No employee data available.
       </div>
     );

@@ -53,7 +53,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ profile, onEdit }) => {
   };
 
   return (
-    <Card className="w-full rounded-2xl shadow-sm">
+    <Card className="w-full rounded-md shadow-sm">
       <CardContent className="space-y-6 p-6">
         <h2 className="text-xl font-semibold text-ink">Edit Profile</h2>
 
